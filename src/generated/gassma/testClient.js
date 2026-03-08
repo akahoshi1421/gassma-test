@@ -76,21 +76,17 @@ const testRelations = {
       "reference": "categoryId"
     },
     "parent": {
-      "type": "oneToOne",
+      "type": "manyToOne",
+      "to": "Category",
+      "field": "parentId",
+      "reference": "id",
+      "onDelete": "SetNull"
+    },
+    "children": {
+      "type": "oneToMany",
       "to": "Category",
       "field": "id",
       "reference": "parentId"
-    },
-    "children": {
-      "type": "manyToMany",
-      "to": "Category",
-      "field": "id",
-      "reference": "id",
-      "through": {
-        "sheet": "_CategoryToCategory",
-        "field": "categoryId",
-        "reference": "categoryId"
-      }
     }
   },
   "Comment": {
