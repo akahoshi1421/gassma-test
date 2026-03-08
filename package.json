@@ -1,12 +1,25 @@
 {
   "name": "gassma-test",
   "version": "1.0.0",
-  "description": "",
-  "license": "ISC",
-  "author": "",
-  "type": "commonjs",
+  "description": "GASsma test environment with clasp",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "webpack",
+    "push": "npm run build && clasp push",
+    "push:watch": "npm run build --watch & clasp push --watch"
+  },
+  "author": "akahoshi1421",
+  "license": "ISC",
+  "dependencies": {
+    "gassma": "file:../gassma-cli"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.29.0",
+    "@babel/preset-typescript": "^7.28.5",
+    "@types/google-apps-script": "^2.0.8",
+    "babel-loader": "^10.1.0",
+    "gas-webpack-plugin": "^2.6.0",
+    "webpack": "^5.105.4",
+    "webpack-cli": "^6.0.1"
   }
 }
