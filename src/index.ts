@@ -3,4 +3,8 @@ import { resetAllSheets } from "./reset/resetAllSheets";
 import { resetSheet } from "./reset/resetSheet";
 import { testRead } from "./test/read";
 
-export { getSheetSnapshot, resetAllSheets, resetSheet, testRead };
+function main() {
+  testRead();
+}
+
+export { main, getSheetSnapshot, resetAllSheets, resetSheet, testRead };
