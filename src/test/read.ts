@@ -6,6 +6,7 @@ import { testAggregate } from "./read/testAggregate";
 import { testGroupBy } from "./read/testGroupBy";
 import { testWhereRelation } from "./read/testWhereRelation";
 import { testCursor } from "./read/testCursor";
+import { testGlobalOmit } from "./read/testGlobalOmit";
 
 function testRead() {
   testFindMany();
@@ -16,6 +17,7 @@ function testRead() {
   testGroupBy();
   testWhereRelation();
   testCursor();
+  testGlobalOmit();
 
   Logger.log("🎉 All read tests passed!");
 }
