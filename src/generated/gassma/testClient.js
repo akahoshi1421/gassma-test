@@ -13,7 +13,8 @@ const testRelations = {
       "to": "Profile",
       "field": "id",
       "reference": "userId",
-      "onDelete": "Cascade"
+      "onDelete": "Cascade",
+      "onUpdate": "Cascade"
     },
     "posts": {
       "type": "oneToMany",
@@ -28,14 +29,16 @@ const testRelations = {
       "to": "Comment",
       "field": "id",
       "reference": "authorId",
-      "onDelete": "Cascade"
+      "onDelete": "Cascade",
+      "onUpdate": "NoAction"
     },
     "orders": {
       "type": "oneToMany",
       "to": "Order",
       "field": "id",
       "reference": "userId",
-      "onDelete": "Restrict"
+      "onDelete": "Restrict",
+      "onUpdate": "Restrict"
     }
   },
   "Post": {
@@ -76,7 +79,8 @@ const testRelations = {
       "to": "Post",
       "field": "id",
       "reference": "categoryId",
-      "onDelete": "SetNull"
+      "onDelete": "SetNull",
+      "onUpdate": "SetNull"
     },
     "parent": {
       "type": "manyToOne",

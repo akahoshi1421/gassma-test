@@ -2128,7 +2128,7 @@ declare type GassmaTestOrderItemFindManyData = GassmaTestOrderItemFindData;
 
 declare type GassmaTestUserUpdateData = {
   where?: GassmaTestUserWhereUse;
-  data: { [K in keyof GassmaTestUserUse]: GassmaTestUserUse[K] | Gassma.NumberOperation } & {
+  data: Partial<{ [K in keyof GassmaTestUserUse]: GassmaTestUserUse[K] | Gassma.NumberOperation }> & {
     "profile"?: Gassma.NestedWriteOperation;
     "posts"?: Gassma.NestedWriteOperation;
     "comments"?: Gassma.NestedWriteOperation;
@@ -2139,7 +2139,7 @@ declare type GassmaTestUserUpdateData = {
 
 declare type GassmaTestProfileUpdateData = {
   where?: GassmaTestProfileWhereUse;
-  data: { [K in keyof GassmaTestProfileUse]: GassmaTestProfileUse[K] | Gassma.NumberOperation } & {
+  data: Partial<{ [K in keyof GassmaTestProfileUse]: GassmaTestProfileUse[K] | Gassma.NumberOperation }> & {
     "user"?: Gassma.NestedWriteOperation;
   };
   limit?: number;
@@ -2147,7 +2147,7 @@ declare type GassmaTestProfileUpdateData = {
 
 declare type GassmaTestPostUpdateData = {
   where?: GassmaTestPostWhereUse;
-  data: { [K in keyof GassmaTestPostUse]: GassmaTestPostUse[K] | Gassma.NumberOperation } & {
+  data: Partial<{ [K in keyof GassmaTestPostUse]: GassmaTestPostUse[K] | Gassma.NumberOperation }> & {
     "author"?: Gassma.NestedWriteOperation;
     "category"?: Gassma.NestedWriteOperation;
     "comments"?: Gassma.NestedWriteOperation;
@@ -2158,7 +2158,7 @@ declare type GassmaTestPostUpdateData = {
 
 declare type GassmaTestCommentUpdateData = {
   where?: GassmaTestCommentWhereUse;
-  data: { [K in keyof GassmaTestCommentUse]: GassmaTestCommentUse[K] | Gassma.NumberOperation } & {
+  data: Partial<{ [K in keyof GassmaTestCommentUse]: GassmaTestCommentUse[K] | Gassma.NumberOperation }> & {
     "author"?: Gassma.NestedWriteOperation;
     "post"?: Gassma.NestedWriteOperation;
   };
@@ -2167,7 +2167,7 @@ declare type GassmaTestCommentUpdateData = {
 
 declare type GassmaTestCategoryUpdateData = {
   where?: GassmaTestCategoryWhereUse;
-  data: { [K in keyof GassmaTestCategoryUse]: GassmaTestCategoryUse[K] | Gassma.NumberOperation } & {
+  data: Partial<{ [K in keyof GassmaTestCategoryUse]: GassmaTestCategoryUse[K] | Gassma.NumberOperation }> & {
     "posts"?: Gassma.NestedWriteOperation;
     "parent"?: Gassma.NestedWriteOperation;
     "children"?: Gassma.NestedWriteOperation;
@@ -2177,7 +2177,7 @@ declare type GassmaTestCategoryUpdateData = {
 
 declare type GassmaTestTagUpdateData = {
   where?: GassmaTestTagWhereUse;
-  data: { [K in keyof GassmaTestTagUse]: GassmaTestTagUse[K] | Gassma.NumberOperation } & {
+  data: Partial<{ [K in keyof GassmaTestTagUse]: GassmaTestTagUse[K] | Gassma.NumberOperation }> & {
     "posts"?: Gassma.NestedWriteOperation;
   };
   limit?: number;
@@ -2185,7 +2185,7 @@ declare type GassmaTestTagUpdateData = {
 
 declare type GassmaTestProductUpdateData = {
   where?: GassmaTestProductWhereUse;
-  data: { [K in keyof GassmaTestProductUse]: GassmaTestProductUse[K] | Gassma.NumberOperation } & {
+  data: Partial<{ [K in keyof GassmaTestProductUse]: GassmaTestProductUse[K] | Gassma.NumberOperation }> & {
     "orderItems"?: Gassma.NestedWriteOperation;
   };
   limit?: number;
@@ -2193,7 +2193,7 @@ declare type GassmaTestProductUpdateData = {
 
 declare type GassmaTestOrderUpdateData = {
   where?: GassmaTestOrderWhereUse;
-  data: { [K in keyof GassmaTestOrderUse]: GassmaTestOrderUse[K] | Gassma.NumberOperation } & {
+  data: Partial<{ [K in keyof GassmaTestOrderUse]: GassmaTestOrderUse[K] | Gassma.NumberOperation }> & {
     "user"?: Gassma.NestedWriteOperation;
     "items"?: Gassma.NestedWriteOperation;
   };
@@ -2202,7 +2202,7 @@ declare type GassmaTestOrderUpdateData = {
 
 declare type GassmaTestOrderItemUpdateData = {
   where?: GassmaTestOrderItemWhereUse;
-  data: { [K in keyof GassmaTestOrderItemUse]: GassmaTestOrderItemUse[K] | Gassma.NumberOperation } & {
+  data: Partial<{ [K in keyof GassmaTestOrderItemUse]: GassmaTestOrderItemUse[K] | Gassma.NumberOperation }> & {
     "order"?: Gassma.NestedWriteOperation;
     "product"?: Gassma.NestedWriteOperation;
   };
@@ -2211,7 +2211,7 @@ declare type GassmaTestOrderItemUpdateData = {
 
 declare type GassmaTestUserUpdateSingleData = {
   where: GassmaTestUserWhereUse;
-  data: { [K in keyof GassmaTestUserUse]: GassmaTestUserUse[K] | Gassma.NumberOperation } & {
+  data: Partial<{ [K in keyof GassmaTestUserUse]: GassmaTestUserUse[K] | Gassma.NumberOperation }> & {
     "profile"?: Gassma.NestedWriteOperation;
     "posts"?: Gassma.NestedWriteOperation;
     "comments"?: Gassma.NestedWriteOperation;
@@ -2223,7 +2223,7 @@ declare type GassmaTestUserUpdateSingleData = {
 
 declare type GassmaTestProfileUpdateSingleData = {
   where: GassmaTestProfileWhereUse;
-  data: { [K in keyof GassmaTestProfileUse]: GassmaTestProfileUse[K] | Gassma.NumberOperation } & {
+  data: Partial<{ [K in keyof GassmaTestProfileUse]: GassmaTestProfileUse[K] | Gassma.NumberOperation }> & {
     "user"?: Gassma.NestedWriteOperation;
   };
   select?: GassmaTestProfileSelect;
@@ -2232,7 +2232,7 @@ declare type GassmaTestProfileUpdateSingleData = {
 
 declare type GassmaTestPostUpdateSingleData = {
   where: GassmaTestPostWhereUse;
-  data: { [K in keyof GassmaTestPostUse]: GassmaTestPostUse[K] | Gassma.NumberOperation } & {
+  data: Partial<{ [K in keyof GassmaTestPostUse]: GassmaTestPostUse[K] | Gassma.NumberOperation }> & {
     "author"?: Gassma.NestedWriteOperation;
     "category"?: Gassma.NestedWriteOperation;
     "comments"?: Gassma.NestedWriteOperation;
@@ -2244,7 +2244,7 @@ declare type GassmaTestPostUpdateSingleData = {
 
 declare type GassmaTestCommentUpdateSingleData = {
   where: GassmaTestCommentWhereUse;
-  data: { [K in keyof GassmaTestCommentUse]: GassmaTestCommentUse[K] | Gassma.NumberOperation } & {
+  data: Partial<{ [K in keyof GassmaTestCommentUse]: GassmaTestCommentUse[K] | Gassma.NumberOperation }> & {
     "author"?: Gassma.NestedWriteOperation;
     "post"?: Gassma.NestedWriteOperation;
   };
@@ -2254,7 +2254,7 @@ declare type GassmaTestCommentUpdateSingleData = {
 
 declare type GassmaTestCategoryUpdateSingleData = {
   where: GassmaTestCategoryWhereUse;
-  data: { [K in keyof GassmaTestCategoryUse]: GassmaTestCategoryUse[K] | Gassma.NumberOperation } & {
+  data: Partial<{ [K in keyof GassmaTestCategoryUse]: GassmaTestCategoryUse[K] | Gassma.NumberOperation }> & {
     "posts"?: Gassma.NestedWriteOperation;
     "parent"?: Gassma.NestedWriteOperation;
     "children"?: Gassma.NestedWriteOperation;
@@ -2265,7 +2265,7 @@ declare type GassmaTestCategoryUpdateSingleData = {
 
 declare type GassmaTestTagUpdateSingleData = {
   where: GassmaTestTagWhereUse;
-  data: { [K in keyof GassmaTestTagUse]: GassmaTestTagUse[K] | Gassma.NumberOperation } & {
+  data: Partial<{ [K in keyof GassmaTestTagUse]: GassmaTestTagUse[K] | Gassma.NumberOperation }> & {
     "posts"?: Gassma.NestedWriteOperation;
   };
   select?: GassmaTestTagSelect;
@@ -2274,7 +2274,7 @@ declare type GassmaTestTagUpdateSingleData = {
 
 declare type GassmaTestProductUpdateSingleData = {
   where: GassmaTestProductWhereUse;
-  data: { [K in keyof GassmaTestProductUse]: GassmaTestProductUse[K] | Gassma.NumberOperation } & {
+  data: Partial<{ [K in keyof GassmaTestProductUse]: GassmaTestProductUse[K] | Gassma.NumberOperation }> & {
     "orderItems"?: Gassma.NestedWriteOperation;
   };
   select?: GassmaTestProductSelect;
@@ -2283,7 +2283,7 @@ declare type GassmaTestProductUpdateSingleData = {
 
 declare type GassmaTestOrderUpdateSingleData = {
   where: GassmaTestOrderWhereUse;
-  data: { [K in keyof GassmaTestOrderUse]: GassmaTestOrderUse[K] | Gassma.NumberOperation } & {
+  data: Partial<{ [K in keyof GassmaTestOrderUse]: GassmaTestOrderUse[K] | Gassma.NumberOperation }> & {
     "user"?: Gassma.NestedWriteOperation;
     "items"?: Gassma.NestedWriteOperation;
   };
@@ -2293,7 +2293,7 @@ declare type GassmaTestOrderUpdateSingleData = {
 
 declare type GassmaTestOrderItemUpdateSingleData = {
   where: GassmaTestOrderItemWhereUse;
-  data: { [K in keyof GassmaTestOrderItemUse]: GassmaTestOrderItemUse[K] | Gassma.NumberOperation } & {
+  data: Partial<{ [K in keyof GassmaTestOrderItemUse]: GassmaTestOrderItemUse[K] | Gassma.NumberOperation }> & {
     "order"?: Gassma.NestedWriteOperation;
     "product"?: Gassma.NestedWriteOperation;
   };
@@ -2303,55 +2303,55 @@ declare type GassmaTestOrderItemUpdateSingleData = {
 
 declare type GassmaTestUserUpsertData = {
   where: GassmaTestUserWhereUse;
-  update: GassmaTestUserUse;
+  update: Partial<{ [K in keyof GassmaTestUserUse]: GassmaTestUserUse[K] | Gassma.NumberOperation }>;
   data: GassmaTestUserUse;
 };
 
 declare type GassmaTestProfileUpsertData = {
   where: GassmaTestProfileWhereUse;
-  update: GassmaTestProfileUse;
+  update: Partial<{ [K in keyof GassmaTestProfileUse]: GassmaTestProfileUse[K] | Gassma.NumberOperation }>;
   data: GassmaTestProfileUse;
 };
 
 declare type GassmaTestPostUpsertData = {
   where: GassmaTestPostWhereUse;
-  update: GassmaTestPostUse;
+  update: Partial<{ [K in keyof GassmaTestPostUse]: GassmaTestPostUse[K] | Gassma.NumberOperation }>;
   data: GassmaTestPostUse;
 };
 
 declare type GassmaTestCommentUpsertData = {
   where: GassmaTestCommentWhereUse;
-  update: GassmaTestCommentUse;
+  update: Partial<{ [K in keyof GassmaTestCommentUse]: GassmaTestCommentUse[K] | Gassma.NumberOperation }>;
   data: GassmaTestCommentUse;
 };
 
 declare type GassmaTestCategoryUpsertData = {
   where: GassmaTestCategoryWhereUse;
-  update: GassmaTestCategoryUse;
+  update: Partial<{ [K in keyof GassmaTestCategoryUse]: GassmaTestCategoryUse[K] | Gassma.NumberOperation }>;
   data: GassmaTestCategoryUse;
 };
 
 declare type GassmaTestTagUpsertData = {
   where: GassmaTestTagWhereUse;
-  update: GassmaTestTagUse;
+  update: Partial<{ [K in keyof GassmaTestTagUse]: GassmaTestTagUse[K] | Gassma.NumberOperation }>;
   data: GassmaTestTagUse;
 };
 
 declare type GassmaTestProductUpsertData = {
   where: GassmaTestProductWhereUse;
-  update: GassmaTestProductUse;
+  update: Partial<{ [K in keyof GassmaTestProductUse]: GassmaTestProductUse[K] | Gassma.NumberOperation }>;
   data: GassmaTestProductUse;
 };
 
 declare type GassmaTestOrderUpsertData = {
   where: GassmaTestOrderWhereUse;
-  update: GassmaTestOrderUse;
+  update: Partial<{ [K in keyof GassmaTestOrderUse]: GassmaTestOrderUse[K] | Gassma.NumberOperation }>;
   data: GassmaTestOrderUse;
 };
 
 declare type GassmaTestOrderItemUpsertData = {
   where: GassmaTestOrderItemWhereUse;
-  update: GassmaTestOrderItemUse;
+  update: Partial<{ [K in keyof GassmaTestOrderItemUse]: GassmaTestOrderItemUse[K] | Gassma.NumberOperation }>;
   data: GassmaTestOrderItemUse;
 };
 
@@ -2363,7 +2363,7 @@ declare type GassmaTestUserUpsertSingleData = {
     "comments"?: Gassma.NestedWriteOperation;
     "orders"?: Gassma.NestedWriteOperation;
   };
-  update: { [K in keyof GassmaTestUserUse]: GassmaTestUserUse[K] | Gassma.NumberOperation } & {
+  update: Partial<{ [K in keyof GassmaTestUserUse]: GassmaTestUserUse[K] | Gassma.NumberOperation }> & {
     "profile"?: Gassma.NestedWriteOperation;
     "posts"?: Gassma.NestedWriteOperation;
     "comments"?: Gassma.NestedWriteOperation;
@@ -2379,7 +2379,7 @@ declare type GassmaTestProfileUpsertSingleData = {
   create: GassmaTestProfileUse & {
     "user"?: Gassma.NestedWriteOperation;
   };
-  update: { [K in keyof GassmaTestProfileUse]: GassmaTestProfileUse[K] | Gassma.NumberOperation } & {
+  update: Partial<{ [K in keyof GassmaTestProfileUse]: GassmaTestProfileUse[K] | Gassma.NumberOperation }> & {
     "user"?: Gassma.NestedWriteOperation;
   };
   select?: GassmaTestProfileSelect;
@@ -2395,7 +2395,7 @@ declare type GassmaTestPostUpsertSingleData = {
     "comments"?: Gassma.NestedWriteOperation;
     "tags"?: Gassma.NestedWriteOperation;
   };
-  update: { [K in keyof GassmaTestPostUse]: GassmaTestPostUse[K] | Gassma.NumberOperation } & {
+  update: Partial<{ [K in keyof GassmaTestPostUse]: GassmaTestPostUse[K] | Gassma.NumberOperation }> & {
     "author"?: Gassma.NestedWriteOperation;
     "category"?: Gassma.NestedWriteOperation;
     "comments"?: Gassma.NestedWriteOperation;
@@ -2412,7 +2412,7 @@ declare type GassmaTestCommentUpsertSingleData = {
     "author"?: Gassma.NestedWriteOperation;
     "post"?: Gassma.NestedWriteOperation;
   };
-  update: { [K in keyof GassmaTestCommentUse]: GassmaTestCommentUse[K] | Gassma.NumberOperation } & {
+  update: Partial<{ [K in keyof GassmaTestCommentUse]: GassmaTestCommentUse[K] | Gassma.NumberOperation }> & {
     "author"?: Gassma.NestedWriteOperation;
     "post"?: Gassma.NestedWriteOperation;
   };
@@ -2428,7 +2428,7 @@ declare type GassmaTestCategoryUpsertSingleData = {
     "parent"?: Gassma.NestedWriteOperation;
     "children"?: Gassma.NestedWriteOperation;
   };
-  update: { [K in keyof GassmaTestCategoryUse]: GassmaTestCategoryUse[K] | Gassma.NumberOperation } & {
+  update: Partial<{ [K in keyof GassmaTestCategoryUse]: GassmaTestCategoryUse[K] | Gassma.NumberOperation }> & {
     "posts"?: Gassma.NestedWriteOperation;
     "parent"?: Gassma.NestedWriteOperation;
     "children"?: Gassma.NestedWriteOperation;
@@ -2443,7 +2443,7 @@ declare type GassmaTestTagUpsertSingleData = {
   create: GassmaTestTagUse & {
     "posts"?: Gassma.NestedWriteOperation;
   };
-  update: { [K in keyof GassmaTestTagUse]: GassmaTestTagUse[K] | Gassma.NumberOperation } & {
+  update: Partial<{ [K in keyof GassmaTestTagUse]: GassmaTestTagUse[K] | Gassma.NumberOperation }> & {
     "posts"?: Gassma.NestedWriteOperation;
   };
   select?: GassmaTestTagSelect;
@@ -2456,7 +2456,7 @@ declare type GassmaTestProductUpsertSingleData = {
   create: GassmaTestProductUse & {
     "orderItems"?: Gassma.NestedWriteOperation;
   };
-  update: { [K in keyof GassmaTestProductUse]: GassmaTestProductUse[K] | Gassma.NumberOperation } & {
+  update: Partial<{ [K in keyof GassmaTestProductUse]: GassmaTestProductUse[K] | Gassma.NumberOperation }> & {
     "orderItems"?: Gassma.NestedWriteOperation;
   };
   select?: GassmaTestProductSelect;
@@ -2470,7 +2470,7 @@ declare type GassmaTestOrderUpsertSingleData = {
     "user"?: Gassma.NestedWriteOperation;
     "items"?: Gassma.NestedWriteOperation;
   };
-  update: { [K in keyof GassmaTestOrderUse]: GassmaTestOrderUse[K] | Gassma.NumberOperation } & {
+  update: Partial<{ [K in keyof GassmaTestOrderUse]: GassmaTestOrderUse[K] | Gassma.NumberOperation }> & {
     "user"?: Gassma.NestedWriteOperation;
     "items"?: Gassma.NestedWriteOperation;
   };
@@ -2485,7 +2485,7 @@ declare type GassmaTestOrderItemUpsertSingleData = {
     "order"?: Gassma.NestedWriteOperation;
     "product"?: Gassma.NestedWriteOperation;
   };
-  update: { [K in keyof GassmaTestOrderItemUse]: GassmaTestOrderItemUse[K] | Gassma.NumberOperation } & {
+  update: Partial<{ [K in keyof GassmaTestOrderItemUse]: GassmaTestOrderItemUse[K] | Gassma.NumberOperation }> & {
     "order"?: Gassma.NestedWriteOperation;
     "product"?: Gassma.NestedWriteOperation;
   };
