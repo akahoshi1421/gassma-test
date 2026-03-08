@@ -23,5 +23,5 @@ module.exports = {
       },
     ],
   },
-  plugins: [new GasPlugin()],
+  plugins: [new GasPlugin({ autoGlobalExportsFiles: ["./src/index.ts"] })],
 };
