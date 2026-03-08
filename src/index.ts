@@ -1,3 +1,4 @@
-function main() {
-  Logger.log("GASsma test environment ready");
-}
+import { resetAllSheets } from "./reset/resetAllSheets";
+import { resetSheet } from "./reset/resetSheet";
+
+export { resetAllSheets, resetSheet };
