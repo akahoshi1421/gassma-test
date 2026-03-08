@@ -13,6 +13,8 @@ function testNestedCreate() {
   testNestedCreateOneToMany(client);
   testNestedCreateOneToOne(client);
   testNestedCreateConnect(client);
+  testNestedCreateConnectOrCreateNew(client);
+  testNestedCreateConnectOrCreateExisting(client);
   testNestedCreateSelfReferencing(client);
 
   Logger.log("✅ testNestedCreate: all passed");
@@ -97,6 +99,64 @@ function testNestedCreateConnect(client: GassmaClient) {
 
   const itemSnapshot = getSheetSnapshot("OrderItem");
   itemSnapshot.assertRowEquals({ id: 1 }, { orderId: 902 });
+
+  resetSheet("Order", orderData);
+  resetSheet("OrderItem", orderItemData);
+}
+
+function testNestedCreateConnectOrCreateNew(client: GassmaClient) {
+  client.sheets.Order.create({
+    data: {
+      id: 903,
+      userId: 1,
+      totalAmount: 12000,
+      quantity: 1,
+      status: "pending",
+      createdAt: new Date("2025-03-01T00:00:00"),
+      items: {
+        connectOrCreate: {
+          where: { id: 999 },
+          create: { id: 903, orderId: 903, productId: 3, quantity: 2, unitPrice: 6000 },
+        },
+      },
+    },
+  });
+
+  const orderSnapshot = getSheetSnapshot("Order");
+  orderSnapshot.assertRowExists({ id: 903 });
+
+  const itemSnapshot = getSheetSnapshot("OrderItem");
+  itemSnapshot.assertRowExists({ id: 903, orderId: 903 });
+  itemSnapshot.assertRowEquals({ id: 903 }, { productId: 3, unitPrice: 6000 });
+
+  resetSheet("Order", orderData);
+  resetSheet("OrderItem", orderItemData);
+}
+
+function testNestedCreateConnectOrCreateExisting(client: GassmaClient) {
+  client.sheets.Order.create({
+    data: {
+      id: 904,
+      userId: 1,
+      totalAmount: 9000,
+      quantity: 1,
+      status: "pending",
+      createdAt: new Date("2025-04-01T00:00:00"),
+      items: {
+        connectOrCreate: {
+          where: { id: 1 },
+          create: { id: 999, orderId: 904, productId: 1, quantity: 1, unitPrice: 9000 },
+        },
+      },
+    },
+  });
+
+  const orderSnapshot = getSheetSnapshot("Order");
+  orderSnapshot.assertRowExists({ id: 904 });
+
+  const itemSnapshot = getSheetSnapshot("OrderItem");
+  itemSnapshot.assertRowEquals({ id: 1 }, { orderId: 904 });
+  itemSnapshot.assertRowNotExists({ id: 999 });
 
   resetSheet("Order", orderData);
   resetSheet("OrderItem", orderItemData);
