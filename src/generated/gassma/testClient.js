@@ -4,8 +4,7 @@ const testRelations = {
       "type": "oneToOne",
       "to": "User",
       "field": "userId",
-      "reference": "id",
-      "onDelete": "Cascade"
+      "reference": "id"
     }
   },
   "User": {
@@ -13,25 +12,30 @@ const testRelations = {
       "type": "oneToOne",
       "to": "Profile",
       "field": "id",
-      "reference": "userId"
+      "reference": "userId",
+      "onDelete": "Cascade"
     },
     "posts": {
       "type": "oneToMany",
       "to": "Post",
       "field": "id",
-      "reference": "authorId"
+      "reference": "authorId",
+      "onDelete": "Cascade",
+      "onUpdate": "Cascade"
     },
     "comments": {
       "type": "oneToMany",
       "to": "Comment",
       "field": "id",
-      "reference": "authorId"
+      "reference": "authorId",
+      "onDelete": "Cascade"
     },
     "orders": {
       "type": "oneToMany",
       "to": "Order",
       "field": "id",
-      "reference": "userId"
+      "reference": "userId",
+      "onDelete": "Restrict"
     }
   },
   "Post": {
@@ -39,22 +43,20 @@ const testRelations = {
       "type": "manyToOne",
       "to": "User",
       "field": "authorId",
-      "reference": "id",
-      "onDelete": "Cascade",
-      "onUpdate": "Cascade"
+      "reference": "id"
     },
     "category": {
       "type": "manyToOne",
       "to": "Category",
       "field": "categoryId",
-      "reference": "id",
-      "onDelete": "SetNull"
+      "reference": "id"
     },
     "comments": {
       "type": "oneToMany",
       "to": "Comment",
       "field": "id",
-      "reference": "postId"
+      "reference": "postId",
+      "onDelete": "Cascade"
     },
     "tags": {
       "type": "manyToMany",
@@ -73,20 +75,21 @@ const testRelations = {
       "type": "oneToMany",
       "to": "Post",
       "field": "id",
-      "reference": "categoryId"
+      "reference": "categoryId",
+      "onDelete": "SetNull"
     },
     "parent": {
       "type": "manyToOne",
       "to": "Category",
       "field": "parentId",
-      "reference": "id",
-      "onDelete": "SetNull"
+      "reference": "id"
     },
     "children": {
       "type": "oneToMany",
       "to": "Category",
       "field": "id",
-      "reference": "parentId"
+      "reference": "parentId",
+      "onDelete": "SetNull"
     }
   },
   "Comment": {
@@ -94,15 +97,13 @@ const testRelations = {
       "type": "manyToOne",
       "to": "User",
       "field": "authorId",
-      "reference": "id",
-      "onDelete": "Cascade"
+      "reference": "id"
     },
     "post": {
       "type": "manyToOne",
       "to": "Post",
       "field": "postId",
-      "reference": "id",
-      "onDelete": "Cascade"
+      "reference": "id"
     }
   },
   "Order": {
@@ -110,14 +111,14 @@ const testRelations = {
       "type": "manyToOne",
       "to": "User",
       "field": "userId",
-      "reference": "id",
-      "onDelete": "Restrict"
+      "reference": "id"
     },
     "items": {
       "type": "oneToMany",
       "to": "OrderItem",
       "field": "id",
-      "reference": "orderId"
+      "reference": "orderId",
+      "onDelete": "Cascade"
     }
   },
   "OrderItem": {
@@ -125,15 +126,13 @@ const testRelations = {
       "type": "manyToOne",
       "to": "Order",
       "field": "orderId",
-      "reference": "id",
-      "onDelete": "Cascade"
+      "reference": "id"
     },
     "product": {
       "type": "manyToOne",
       "to": "Product",
       "field": "productId",
-      "reference": "id",
-      "onDelete": "Restrict"
+      "reference": "id"
     }
   },
   "Product": {
@@ -141,7 +140,8 @@ const testRelations = {
       "type": "oneToMany",
       "to": "OrderItem",
       "field": "id",
-      "reference": "productId"
+      "reference": "productId",
+      "onDelete": "Restrict"
     }
   },
   "Tag": {
