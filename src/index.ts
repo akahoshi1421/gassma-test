@@ -5,6 +5,7 @@ import { testRead } from "./test/read";
 import { testCreateAll } from "./test/create";
 
 function main() {
+  resetAllSheets();
   testRead();
   testCreateAll();
 }
