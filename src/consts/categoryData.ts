@@ -1,0 +1,25 @@
+const categoryData = [
+  ["id", "name", "parentId"],
+  [1, "テクノロジー", null],
+  [2, "ビジネス", null],
+  [3, "Science", null],
+  [4, "Entertainment", null],
+  [5, "スポーツ", null],
+  [6, "Health", null],
+  [7, "教育", null],
+  [8, "Travel", null],
+  [9, "プログラミング", 7],
+  [10, "AI/ML", 1],
+  [11, "Web開発", 3],
+  [12, "モバイル", 4],
+  [13, "Finance", 6],
+  [14, "映画", 1],
+  [15, "Music", 6],
+  [16, "サッカー", 3],
+  [17, "Fitness", 7],
+  [18, "大学", 6],
+  [19, "国内旅行", 1],
+  [20, "海外旅行", 7],
+];
+
+export { categoryData };
