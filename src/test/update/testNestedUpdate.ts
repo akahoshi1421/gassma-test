@@ -99,7 +99,7 @@ function testNestedDelete(client: GassmaClient) {
     where: { id: 1 },
     data: {
       comments: {
-        delete: { where: { id: 951 } },
+        delete: { id: 951 },
       },
     },
   });
@@ -123,7 +123,7 @@ function testNestedDeleteMany(client: GassmaClient) {
     where: { id: 1 },
     data: {
       comments: {
-        deleteMany: { where: { id: { in: [951, 952] } } },
+        deleteMany: { id: { in: [951, 952] } },
       },
     },
   });
