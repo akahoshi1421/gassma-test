@@ -54,6 +54,10 @@ function testUpdateManyLimit(client: GassmaClient) {
 
   assertEquals(result.count, 3, "updateMany limit count");
 
+  const snapshot = getSheetSnapshot("Tag");
+  // limit外のレコードが影響を受けていないことを確認
+  snapshot.assertRowEquals({ id: 10 }, { name: "Kubernetes" });
+
   resetSheet("Tag", tagData);
 }
 

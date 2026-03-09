@@ -77,6 +77,15 @@ function testNestedUpdate_(client: GassmaClient) {
     postSnapshot.assertRowEquals({ id: post.id }, { title: "nested updated title" });
   });
 
+  // authorId != 3 のPostが影響を受けていないことを確認
+  const otherPost = client.sheets.Post.findFirst({
+    where: { authorId: 1 },
+    select: { id: true, title: true },
+  });
+  if (otherPost) {
+    postSnapshot.assertRowEquals({ id: otherPost.id }, { title: otherPost.title });
+  }
+
   Logger.log(`  Nested update: ${posts.length} posts updated`);
 
   resetSheet("Post", postData);
@@ -106,6 +115,8 @@ function testNestedDelete(client: GassmaClient) {
 
   const commentSnapshot = getSheetSnapshot("Comment");
   commentSnapshot.assertRowNotExists({ id: 951 });
+  // 既存のコメントが影響を受けていないことを確認
+  commentSnapshot.assertRowExists({ postId: 1 });
 
   resetSheet("Comment", commentData);
 }
@@ -131,6 +142,9 @@ function testNestedDeleteMany(client: GassmaClient) {
   const commentSnapshot = getSheetSnapshot("Comment");
   commentSnapshot.assertRowNotExists({ id: 951 });
   commentSnapshot.assertRowNotExists({ id: 952 });
+  // 既存のコメントが影響を受けていないことを確認
+  commentSnapshot.assertRowExists({ postId: 1 });
+  commentSnapshot.assertRowExists({ authorId: 1 });
 
   resetSheet("Comment", commentData);
 }
@@ -149,6 +163,8 @@ function testNestedConnect(client: GassmaClient) {
 
   const pivotSnapshot = getSheetSnapshot("_PostToTag");
   pivotSnapshot.assertRowExists({ postId: 1, tagId: 30 });
+  // 既存の紐付けが影響を受けていないことを確認
+  pivotSnapshot.assertRowExists({ postId: 2 });
 
   // 元に戻す: pivot テーブルから削除
   client.sheets.Post.update({
@@ -186,6 +202,8 @@ function testNestedDisconnect(client: GassmaClient) {
 
   const pivotAfter = getSheetSnapshot("_PostToTag");
   pivotAfter.assertRowNotExists({ postId: 1, tagId: 29 });
+  // 他の紐付けが影響を受けていないことを確認
+  pivotAfter.assertRowExists({ postId: 2 });
 }
 
 function testNestedConnectOrCreate(client: GassmaClient) {
@@ -273,6 +291,8 @@ function testNestedSetManyToMany(client: GassmaClient) {
   afterPivot.assertRowExists({ postId: 1, tagId: 2 });
   // 他のtagは紐付かない
   afterPivot.assertRowNotExists({ postId: 1, tagId: 3 });
+  // 他のPostの紐付けが影響を受けていないことを確認
+  afterPivot.assertRowExists({ postId: 2 });
 
   // 元に戻す
   resetSheet("_PostToTag", postToTagData);

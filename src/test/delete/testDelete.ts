@@ -22,6 +22,8 @@ function testDeleteBasic(client: GassmaClient) {
 
   const snapshot = getSheetSnapshot("Tag");
   snapshot.assertRowNotExists({ id: 1 });
+  snapshot.assertRowExists({ id: 2 });
+  snapshot.assertRowExists({ id: 30 });
   snapshot.assertCount(29);
 
   resetSheet("Tag", tagData);

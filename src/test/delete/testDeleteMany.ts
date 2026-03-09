@@ -26,6 +26,8 @@ function testDeleteManyBasic(client: GassmaClient) {
   snapshot.assertRowNotExists({ id: 1 });
   snapshot.assertRowNotExists({ id: 2 });
   snapshot.assertRowNotExists({ id: 3 });
+  snapshot.assertRowExists({ id: 4 });
+  snapshot.assertRowExists({ id: 30 });
   snapshot.assertCount(27);
 
   resetSheet("Tag", tagData);
@@ -44,6 +46,8 @@ function testDeleteManyWhere(client: GassmaClient) {
 
   const snapshot = getSheetSnapshot("Comment");
   snapshot.assertRowNotExists({ authorId: 1 });
+  snapshot.assertRowExists({ authorId: 2 });
+  snapshot.assertRowExists({ authorId: 3 });
 
   resetSheet("Comment", commentData);
 }
@@ -57,6 +61,8 @@ function testDeleteManyLimit(client: GassmaClient) {
   assertEquals(result.count, 5, "deleteMany limit count");
 
   const snapshot = getSheetSnapshot("Tag");
+  snapshot.assertRowExists({ id: 6 });
+  snapshot.assertRowExists({ id: 30 });
   snapshot.assertCount(25);
 
   resetSheet("Tag", tagData);
