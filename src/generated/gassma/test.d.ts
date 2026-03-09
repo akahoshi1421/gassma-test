@@ -1,14 +1,6 @@
 declare namespace Gassma {
   type RelationsConfig = Record<string, Record<string, unknown>>;
 
-  type IncludeData = {
-    [relationName: string]: unknown;
-  };
-
-  type CountSelectItem = true | { where?: Record<string, unknown> };
-  type CountSelect = { select: { [relationName: string]: CountSelectItem } };
-  type CountValue = true | CountSelect;
-
   type NumberOperation = {
     increment?: number;
     decrement?: number;
@@ -16,35 +8,9 @@ declare namespace Gassma {
     divide?: number;
   };
 
-  type NestedWriteOperation = {
-    create?: unknown;
-    connect?: unknown;
-    connectOrCreate?: unknown;
-    update?: unknown;
-    delete?: unknown;
-    deleteMany?: unknown;
-    disconnect?: unknown;
-    set?: unknown;
-  };
-
   type SortOrderInput = {
     sort: "asc" | "desc";
     nulls?: "first" | "last";
-  };
-
-  type RelationOrderBy = {
-    [key: string]: "asc" | "desc";
-  };
-
-  type RelationListFilter = {
-    some?: Record<string, unknown>;
-    every?: Record<string, unknown>;
-    none?: Record<string, unknown>;
-  };
-
-  type RelationSingleFilter = {
-    is?: Record<string, unknown>;
-    isNot?: Record<string, unknown>;
   };
 
   type TrueKeys<T> = { [K in keyof T]: T[K] extends true ? K : never }[keyof T];
@@ -240,14 +206,14 @@ declare class GassmaTestUserController<GO extends GassmaTestUserOmit = {}> {
     endColumnNumber: number
   ): void;
   createMany(createdData: GassmaTestUserCreateManyData): CreateManyReturn;
-  createManyAndReturn(createdData: GassmaTestUserCreateManyData): Record<string, unknown>[];
+  createManyAndReturn(createdData: GassmaTestUserCreateManyData): GassmaTestUserDefaultFindResult[];
   create<T extends GassmaTestUserCreateData>(createdData: T): GassmaTestUserFindResult<T["select"], T["omit"], GO>;
   findFirst<T extends GassmaTestUserFindData>(findData: T): GassmaTestUserFindResult<T["select"], T["omit"], GO> | null;
   findFirstOrThrow<T extends GassmaTestUserFindData>(findData: T): GassmaTestUserFindResult<T["select"], T["omit"], GO>;
   findMany<T extends GassmaTestUserFindManyData>(findData: T): GassmaTestUserFindResult<T["select"], T["omit"], GO>[];
   update<T extends GassmaTestUserUpdateSingleData>(updateData: T): GassmaTestUserFindResult<T["select"], T["omit"], GO> | null;
   updateMany(updateData: GassmaTestUserUpdateData): UpdateManyReturn;
-  updateManyAndReturn(updateData: GassmaTestUserUpdateData): Record<string, unknown>[];
+  updateManyAndReturn(updateData: GassmaTestUserUpdateData): GassmaTestUserDefaultFindResult[];
   upsert<T extends GassmaTestUserUpsertSingleData>(upsertData: T): GassmaTestUserFindResult<T["select"], T["omit"], GO>;
   upsertMany(upsertData: GassmaTestUserUpsertData): UpsertManyReturn;
   delete<T extends GassmaTestUserDeleteSingleData>(deleteData: T): GassmaTestUserFindResult<T["select"], T["omit"], GO> | null;
@@ -267,14 +233,14 @@ declare class GassmaTestProfileController<GO extends GassmaTestProfileOmit = {}>
     endColumnNumber: number
   ): void;
   createMany(createdData: GassmaTestProfileCreateManyData): CreateManyReturn;
-  createManyAndReturn(createdData: GassmaTestProfileCreateManyData): Record<string, unknown>[];
+  createManyAndReturn(createdData: GassmaTestProfileCreateManyData): GassmaTestProfileDefaultFindResult[];
   create<T extends GassmaTestProfileCreateData>(createdData: T): GassmaTestProfileFindResult<T["select"], T["omit"], GO>;
   findFirst<T extends GassmaTestProfileFindData>(findData: T): GassmaTestProfileFindResult<T["select"], T["omit"], GO> | null;
   findFirstOrThrow<T extends GassmaTestProfileFindData>(findData: T): GassmaTestProfileFindResult<T["select"], T["omit"], GO>;
   findMany<T extends GassmaTestProfileFindManyData>(findData: T): GassmaTestProfileFindResult<T["select"], T["omit"], GO>[];
   update<T extends GassmaTestProfileUpdateSingleData>(updateData: T): GassmaTestProfileFindResult<T["select"], T["omit"], GO> | null;
   updateMany(updateData: GassmaTestProfileUpdateData): UpdateManyReturn;
-  updateManyAndReturn(updateData: GassmaTestProfileUpdateData): Record<string, unknown>[];
+  updateManyAndReturn(updateData: GassmaTestProfileUpdateData): GassmaTestProfileDefaultFindResult[];
   upsert<T extends GassmaTestProfileUpsertSingleData>(upsertData: T): GassmaTestProfileFindResult<T["select"], T["omit"], GO>;
   upsertMany(upsertData: GassmaTestProfileUpsertData): UpsertManyReturn;
   delete<T extends GassmaTestProfileDeleteSingleData>(deleteData: T): GassmaTestProfileFindResult<T["select"], T["omit"], GO> | null;
@@ -294,14 +260,14 @@ declare class GassmaTestPostController<GO extends GassmaTestPostOmit = {}> {
     endColumnNumber: number
   ): void;
   createMany(createdData: GassmaTestPostCreateManyData): CreateManyReturn;
-  createManyAndReturn(createdData: GassmaTestPostCreateManyData): Record<string, unknown>[];
+  createManyAndReturn(createdData: GassmaTestPostCreateManyData): GassmaTestPostDefaultFindResult[];
   create<T extends GassmaTestPostCreateData>(createdData: T): GassmaTestPostFindResult<T["select"], T["omit"], GO>;
   findFirst<T extends GassmaTestPostFindData>(findData: T): GassmaTestPostFindResult<T["select"], T["omit"], GO> | null;
   findFirstOrThrow<T extends GassmaTestPostFindData>(findData: T): GassmaTestPostFindResult<T["select"], T["omit"], GO>;
   findMany<T extends GassmaTestPostFindManyData>(findData: T): GassmaTestPostFindResult<T["select"], T["omit"], GO>[];
   update<T extends GassmaTestPostUpdateSingleData>(updateData: T): GassmaTestPostFindResult<T["select"], T["omit"], GO> | null;
   updateMany(updateData: GassmaTestPostUpdateData): UpdateManyReturn;
-  updateManyAndReturn(updateData: GassmaTestPostUpdateData): Record<string, unknown>[];
+  updateManyAndReturn(updateData: GassmaTestPostUpdateData): GassmaTestPostDefaultFindResult[];
   upsert<T extends GassmaTestPostUpsertSingleData>(upsertData: T): GassmaTestPostFindResult<T["select"], T["omit"], GO>;
   upsertMany(upsertData: GassmaTestPostUpsertData): UpsertManyReturn;
   delete<T extends GassmaTestPostDeleteSingleData>(deleteData: T): GassmaTestPostFindResult<T["select"], T["omit"], GO> | null;
@@ -321,14 +287,14 @@ declare class GassmaTestCommentController<GO extends GassmaTestCommentOmit = {}>
     endColumnNumber: number
   ): void;
   createMany(createdData: GassmaTestCommentCreateManyData): CreateManyReturn;
-  createManyAndReturn(createdData: GassmaTestCommentCreateManyData): Record<string, unknown>[];
+  createManyAndReturn(createdData: GassmaTestCommentCreateManyData): GassmaTestCommentDefaultFindResult[];
   create<T extends GassmaTestCommentCreateData>(createdData: T): GassmaTestCommentFindResult<T["select"], T["omit"], GO>;
   findFirst<T extends GassmaTestCommentFindData>(findData: T): GassmaTestCommentFindResult<T["select"], T["omit"], GO> | null;
   findFirstOrThrow<T extends GassmaTestCommentFindData>(findData: T): GassmaTestCommentFindResult<T["select"], T["omit"], GO>;
   findMany<T extends GassmaTestCommentFindManyData>(findData: T): GassmaTestCommentFindResult<T["select"], T["omit"], GO>[];
   update<T extends GassmaTestCommentUpdateSingleData>(updateData: T): GassmaTestCommentFindResult<T["select"], T["omit"], GO> | null;
   updateMany(updateData: GassmaTestCommentUpdateData): UpdateManyReturn;
-  updateManyAndReturn(updateData: GassmaTestCommentUpdateData): Record<string, unknown>[];
+  updateManyAndReturn(updateData: GassmaTestCommentUpdateData): GassmaTestCommentDefaultFindResult[];
   upsert<T extends GassmaTestCommentUpsertSingleData>(upsertData: T): GassmaTestCommentFindResult<T["select"], T["omit"], GO>;
   upsertMany(upsertData: GassmaTestCommentUpsertData): UpsertManyReturn;
   delete<T extends GassmaTestCommentDeleteSingleData>(deleteData: T): GassmaTestCommentFindResult<T["select"], T["omit"], GO> | null;
@@ -348,14 +314,14 @@ declare class GassmaTestCategoryController<GO extends GassmaTestCategoryOmit = {
     endColumnNumber: number
   ): void;
   createMany(createdData: GassmaTestCategoryCreateManyData): CreateManyReturn;
-  createManyAndReturn(createdData: GassmaTestCategoryCreateManyData): Record<string, unknown>[];
+  createManyAndReturn(createdData: GassmaTestCategoryCreateManyData): GassmaTestCategoryDefaultFindResult[];
   create<T extends GassmaTestCategoryCreateData>(createdData: T): GassmaTestCategoryFindResult<T["select"], T["omit"], GO>;
   findFirst<T extends GassmaTestCategoryFindData>(findData: T): GassmaTestCategoryFindResult<T["select"], T["omit"], GO> | null;
   findFirstOrThrow<T extends GassmaTestCategoryFindData>(findData: T): GassmaTestCategoryFindResult<T["select"], T["omit"], GO>;
   findMany<T extends GassmaTestCategoryFindManyData>(findData: T): GassmaTestCategoryFindResult<T["select"], T["omit"], GO>[];
   update<T extends GassmaTestCategoryUpdateSingleData>(updateData: T): GassmaTestCategoryFindResult<T["select"], T["omit"], GO> | null;
   updateMany(updateData: GassmaTestCategoryUpdateData): UpdateManyReturn;
-  updateManyAndReturn(updateData: GassmaTestCategoryUpdateData): Record<string, unknown>[];
+  updateManyAndReturn(updateData: GassmaTestCategoryUpdateData): GassmaTestCategoryDefaultFindResult[];
   upsert<T extends GassmaTestCategoryUpsertSingleData>(upsertData: T): GassmaTestCategoryFindResult<T["select"], T["omit"], GO>;
   upsertMany(upsertData: GassmaTestCategoryUpsertData): UpsertManyReturn;
   delete<T extends GassmaTestCategoryDeleteSingleData>(deleteData: T): GassmaTestCategoryFindResult<T["select"], T["omit"], GO> | null;
@@ -375,14 +341,14 @@ declare class GassmaTestTagController<GO extends GassmaTestTagOmit = {}> {
     endColumnNumber: number
   ): void;
   createMany(createdData: GassmaTestTagCreateManyData): CreateManyReturn;
-  createManyAndReturn(createdData: GassmaTestTagCreateManyData): Record<string, unknown>[];
+  createManyAndReturn(createdData: GassmaTestTagCreateManyData): GassmaTestTagDefaultFindResult[];
   create<T extends GassmaTestTagCreateData>(createdData: T): GassmaTestTagFindResult<T["select"], T["omit"], GO>;
   findFirst<T extends GassmaTestTagFindData>(findData: T): GassmaTestTagFindResult<T["select"], T["omit"], GO> | null;
   findFirstOrThrow<T extends GassmaTestTagFindData>(findData: T): GassmaTestTagFindResult<T["select"], T["omit"], GO>;
   findMany<T extends GassmaTestTagFindManyData>(findData: T): GassmaTestTagFindResult<T["select"], T["omit"], GO>[];
   update<T extends GassmaTestTagUpdateSingleData>(updateData: T): GassmaTestTagFindResult<T["select"], T["omit"], GO> | null;
   updateMany(updateData: GassmaTestTagUpdateData): UpdateManyReturn;
-  updateManyAndReturn(updateData: GassmaTestTagUpdateData): Record<string, unknown>[];
+  updateManyAndReturn(updateData: GassmaTestTagUpdateData): GassmaTestTagDefaultFindResult[];
   upsert<T extends GassmaTestTagUpsertSingleData>(upsertData: T): GassmaTestTagFindResult<T["select"], T["omit"], GO>;
   upsertMany(upsertData: GassmaTestTagUpsertData): UpsertManyReturn;
   delete<T extends GassmaTestTagDeleteSingleData>(deleteData: T): GassmaTestTagFindResult<T["select"], T["omit"], GO> | null;
@@ -402,14 +368,14 @@ declare class GassmaTestProductController<GO extends GassmaTestProductOmit = {}>
     endColumnNumber: number
   ): void;
   createMany(createdData: GassmaTestProductCreateManyData): CreateManyReturn;
-  createManyAndReturn(createdData: GassmaTestProductCreateManyData): Record<string, unknown>[];
+  createManyAndReturn(createdData: GassmaTestProductCreateManyData): GassmaTestProductDefaultFindResult[];
   create<T extends GassmaTestProductCreateData>(createdData: T): GassmaTestProductFindResult<T["select"], T["omit"], GO>;
   findFirst<T extends GassmaTestProductFindData>(findData: T): GassmaTestProductFindResult<T["select"], T["omit"], GO> | null;
   findFirstOrThrow<T extends GassmaTestProductFindData>(findData: T): GassmaTestProductFindResult<T["select"], T["omit"], GO>;
   findMany<T extends GassmaTestProductFindManyData>(findData: T): GassmaTestProductFindResult<T["select"], T["omit"], GO>[];
   update<T extends GassmaTestProductUpdateSingleData>(updateData: T): GassmaTestProductFindResult<T["select"], T["omit"], GO> | null;
   updateMany(updateData: GassmaTestProductUpdateData): UpdateManyReturn;
-  updateManyAndReturn(updateData: GassmaTestProductUpdateData): Record<string, unknown>[];
+  updateManyAndReturn(updateData: GassmaTestProductUpdateData): GassmaTestProductDefaultFindResult[];
   upsert<T extends GassmaTestProductUpsertSingleData>(upsertData: T): GassmaTestProductFindResult<T["select"], T["omit"], GO>;
   upsertMany(upsertData: GassmaTestProductUpsertData): UpsertManyReturn;
   delete<T extends GassmaTestProductDeleteSingleData>(deleteData: T): GassmaTestProductFindResult<T["select"], T["omit"], GO> | null;
@@ -429,14 +395,14 @@ declare class GassmaTestOrderController<GO extends GassmaTestOrderOmit = {}> {
     endColumnNumber: number
   ): void;
   createMany(createdData: GassmaTestOrderCreateManyData): CreateManyReturn;
-  createManyAndReturn(createdData: GassmaTestOrderCreateManyData): Record<string, unknown>[];
+  createManyAndReturn(createdData: GassmaTestOrderCreateManyData): GassmaTestOrderDefaultFindResult[];
   create<T extends GassmaTestOrderCreateData>(createdData: T): GassmaTestOrderFindResult<T["select"], T["omit"], GO>;
   findFirst<T extends GassmaTestOrderFindData>(findData: T): GassmaTestOrderFindResult<T["select"], T["omit"], GO> | null;
   findFirstOrThrow<T extends GassmaTestOrderFindData>(findData: T): GassmaTestOrderFindResult<T["select"], T["omit"], GO>;
   findMany<T extends GassmaTestOrderFindManyData>(findData: T): GassmaTestOrderFindResult<T["select"], T["omit"], GO>[];
   update<T extends GassmaTestOrderUpdateSingleData>(updateData: T): GassmaTestOrderFindResult<T["select"], T["omit"], GO> | null;
   updateMany(updateData: GassmaTestOrderUpdateData): UpdateManyReturn;
-  updateManyAndReturn(updateData: GassmaTestOrderUpdateData): Record<string, unknown>[];
+  updateManyAndReturn(updateData: GassmaTestOrderUpdateData): GassmaTestOrderDefaultFindResult[];
   upsert<T extends GassmaTestOrderUpsertSingleData>(upsertData: T): GassmaTestOrderFindResult<T["select"], T["omit"], GO>;
   upsertMany(upsertData: GassmaTestOrderUpsertData): UpsertManyReturn;
   delete<T extends GassmaTestOrderDeleteSingleData>(deleteData: T): GassmaTestOrderFindResult<T["select"], T["omit"], GO> | null;
@@ -456,14 +422,14 @@ declare class GassmaTestOrderItemController<GO extends GassmaTestOrderItemOmit =
     endColumnNumber: number
   ): void;
   createMany(createdData: GassmaTestOrderItemCreateManyData): CreateManyReturn;
-  createManyAndReturn(createdData: GassmaTestOrderItemCreateManyData): Record<string, unknown>[];
+  createManyAndReturn(createdData: GassmaTestOrderItemCreateManyData): GassmaTestOrderItemDefaultFindResult[];
   create<T extends GassmaTestOrderItemCreateData>(createdData: T): GassmaTestOrderItemFindResult<T["select"], T["omit"], GO>;
   findFirst<T extends GassmaTestOrderItemFindData>(findData: T): GassmaTestOrderItemFindResult<T["select"], T["omit"], GO> | null;
   findFirstOrThrow<T extends GassmaTestOrderItemFindData>(findData: T): GassmaTestOrderItemFindResult<T["select"], T["omit"], GO>;
   findMany<T extends GassmaTestOrderItemFindManyData>(findData: T): GassmaTestOrderItemFindResult<T["select"], T["omit"], GO>[];
   update<T extends GassmaTestOrderItemUpdateSingleData>(updateData: T): GassmaTestOrderItemFindResult<T["select"], T["omit"], GO> | null;
   updateMany(updateData: GassmaTestOrderItemUpdateData): UpdateManyReturn;
-  updateManyAndReturn(updateData: GassmaTestOrderItemUpdateData): Record<string, unknown>[];
+  updateManyAndReturn(updateData: GassmaTestOrderItemUpdateData): GassmaTestOrderItemDefaultFindResult[];
   upsert<T extends GassmaTestOrderItemUpsertSingleData>(upsertData: T): GassmaTestOrderItemFindResult<T["select"], T["omit"], GO>;
   upsertMany(upsertData: GassmaTestOrderItemUpsertData): UpsertManyReturn;
   delete<T extends GassmaTestOrderItemDeleteSingleData>(deleteData: T): GassmaTestOrderItemFindResult<T["select"], T["omit"], GO> | null;
@@ -558,10 +524,10 @@ declare type GassmaTestOrderItemUse = {
 
 declare type GassmaTestUserCreateData = {
   data: GassmaTestUserUse & {
-    "profile"?: Gassma.NestedWriteOperation;
-    "posts"?: Gassma.NestedWriteOperation;
-    "comments"?: Gassma.NestedWriteOperation;
-    "orders"?: Gassma.NestedWriteOperation;
+    "profile"?: { create?: GassmaTestProfileUse; connect?: GassmaTestProfileWhereUse; connectOrCreate?: { where: GassmaTestProfileWhereUse; create: GassmaTestProfileUse } };
+    "posts"?: { create?: GassmaTestPostUse | GassmaTestPostUse[]; connect?: GassmaTestPostWhereUse | GassmaTestPostWhereUse[]; connectOrCreate?: { where: GassmaTestPostWhereUse; create: GassmaTestPostUse } | { where: GassmaTestPostWhereUse; create: GassmaTestPostUse }[] };
+    "comments"?: { create?: GassmaTestCommentUse | GassmaTestCommentUse[]; connect?: GassmaTestCommentWhereUse | GassmaTestCommentWhereUse[]; connectOrCreate?: { where: GassmaTestCommentWhereUse; create: GassmaTestCommentUse } | { where: GassmaTestCommentWhereUse; create: GassmaTestCommentUse }[] };
+    "orders"?: { create?: GassmaTestOrderUse | GassmaTestOrderUse[]; connect?: GassmaTestOrderWhereUse | GassmaTestOrderWhereUse[]; connectOrCreate?: { where: GassmaTestOrderWhereUse; create: GassmaTestOrderUse } | { where: GassmaTestOrderWhereUse; create: GassmaTestOrderUse }[] };
   };
   select?: GassmaTestUserSelect;
   omit?: GassmaTestUserOmit;
@@ -569,7 +535,7 @@ declare type GassmaTestUserCreateData = {
 
 declare type GassmaTestProfileCreateData = {
   data: GassmaTestProfileUse & {
-    "user"?: Gassma.NestedWriteOperation;
+    "user"?: { create?: GassmaTestUserUse; connect?: GassmaTestUserWhereUse; connectOrCreate?: { where: GassmaTestUserWhereUse; create: GassmaTestUserUse } };
   };
   select?: GassmaTestProfileSelect;
   omit?: GassmaTestProfileOmit;
@@ -577,10 +543,10 @@ declare type GassmaTestProfileCreateData = {
 
 declare type GassmaTestPostCreateData = {
   data: GassmaTestPostUse & {
-    "author"?: Gassma.NestedWriteOperation;
-    "category"?: Gassma.NestedWriteOperation;
-    "comments"?: Gassma.NestedWriteOperation;
-    "tags"?: Gassma.NestedWriteOperation;
+    "author"?: { create?: GassmaTestUserUse; connect?: GassmaTestUserWhereUse; connectOrCreate?: { where: GassmaTestUserWhereUse; create: GassmaTestUserUse } };
+    "category"?: { create?: GassmaTestCategoryUse; connect?: GassmaTestCategoryWhereUse; connectOrCreate?: { where: GassmaTestCategoryWhereUse; create: GassmaTestCategoryUse } };
+    "comments"?: { create?: GassmaTestCommentUse | GassmaTestCommentUse[]; connect?: GassmaTestCommentWhereUse | GassmaTestCommentWhereUse[]; connectOrCreate?: { where: GassmaTestCommentWhereUse; create: GassmaTestCommentUse } | { where: GassmaTestCommentWhereUse; create: GassmaTestCommentUse }[] };
+    "tags"?: { create?: GassmaTestTagUse | GassmaTestTagUse[]; connect?: GassmaTestTagWhereUse | GassmaTestTagWhereUse[]; connectOrCreate?: { where: GassmaTestTagWhereUse; create: GassmaTestTagUse } | { where: GassmaTestTagWhereUse; create: GassmaTestTagUse }[] };
   };
   select?: GassmaTestPostSelect;
   omit?: GassmaTestPostOmit;
@@ -588,8 +554,8 @@ declare type GassmaTestPostCreateData = {
 
 declare type GassmaTestCommentCreateData = {
   data: GassmaTestCommentUse & {
-    "author"?: Gassma.NestedWriteOperation;
-    "post"?: Gassma.NestedWriteOperation;
+    "author"?: { create?: GassmaTestUserUse; connect?: GassmaTestUserWhereUse; connectOrCreate?: { where: GassmaTestUserWhereUse; create: GassmaTestUserUse } };
+    "post"?: { create?: GassmaTestPostUse; connect?: GassmaTestPostWhereUse; connectOrCreate?: { where: GassmaTestPostWhereUse; create: GassmaTestPostUse } };
   };
   select?: GassmaTestCommentSelect;
   omit?: GassmaTestCommentOmit;
@@ -597,9 +563,9 @@ declare type GassmaTestCommentCreateData = {
 
 declare type GassmaTestCategoryCreateData = {
   data: GassmaTestCategoryUse & {
-    "posts"?: Gassma.NestedWriteOperation;
-    "parent"?: Gassma.NestedWriteOperation;
-    "children"?: Gassma.NestedWriteOperation;
+    "posts"?: { create?: GassmaTestPostUse | GassmaTestPostUse[]; connect?: GassmaTestPostWhereUse | GassmaTestPostWhereUse[]; connectOrCreate?: { where: GassmaTestPostWhereUse; create: GassmaTestPostUse } | { where: GassmaTestPostWhereUse; create: GassmaTestPostUse }[] };
+    "parent"?: { create?: GassmaTestCategoryUse; connect?: GassmaTestCategoryWhereUse; connectOrCreate?: { where: GassmaTestCategoryWhereUse; create: GassmaTestCategoryUse } };
+    "children"?: { create?: GassmaTestCategoryUse | GassmaTestCategoryUse[]; connect?: GassmaTestCategoryWhereUse | GassmaTestCategoryWhereUse[]; connectOrCreate?: { where: GassmaTestCategoryWhereUse; create: GassmaTestCategoryUse } | { where: GassmaTestCategoryWhereUse; create: GassmaTestCategoryUse }[] };
   };
   select?: GassmaTestCategorySelect;
   omit?: GassmaTestCategoryOmit;
@@ -607,7 +573,7 @@ declare type GassmaTestCategoryCreateData = {
 
 declare type GassmaTestTagCreateData = {
   data: GassmaTestTagUse & {
-    "posts"?: Gassma.NestedWriteOperation;
+    "posts"?: { create?: GassmaTestPostUse | GassmaTestPostUse[]; connect?: GassmaTestPostWhereUse | GassmaTestPostWhereUse[]; connectOrCreate?: { where: GassmaTestPostWhereUse; create: GassmaTestPostUse } | { where: GassmaTestPostWhereUse; create: GassmaTestPostUse }[] };
   };
   select?: GassmaTestTagSelect;
   omit?: GassmaTestTagOmit;
@@ -615,7 +581,7 @@ declare type GassmaTestTagCreateData = {
 
 declare type GassmaTestProductCreateData = {
   data: GassmaTestProductUse & {
-    "orderItems"?: Gassma.NestedWriteOperation;
+    "orderItems"?: { create?: GassmaTestOrderItemUse | GassmaTestOrderItemUse[]; connect?: GassmaTestOrderItemWhereUse | GassmaTestOrderItemWhereUse[]; connectOrCreate?: { where: GassmaTestOrderItemWhereUse; create: GassmaTestOrderItemUse } | { where: GassmaTestOrderItemWhereUse; create: GassmaTestOrderItemUse }[] };
   };
   select?: GassmaTestProductSelect;
   omit?: GassmaTestProductOmit;
@@ -623,8 +589,8 @@ declare type GassmaTestProductCreateData = {
 
 declare type GassmaTestOrderCreateData = {
   data: GassmaTestOrderUse & {
-    "user"?: Gassma.NestedWriteOperation;
-    "items"?: Gassma.NestedWriteOperation;
+    "user"?: { create?: GassmaTestUserUse; connect?: GassmaTestUserWhereUse; connectOrCreate?: { where: GassmaTestUserWhereUse; create: GassmaTestUserUse } };
+    "items"?: { create?: GassmaTestOrderItemUse | GassmaTestOrderItemUse[]; connect?: GassmaTestOrderItemWhereUse | GassmaTestOrderItemWhereUse[]; connectOrCreate?: { where: GassmaTestOrderItemWhereUse; create: GassmaTestOrderItemUse } | { where: GassmaTestOrderItemWhereUse; create: GassmaTestOrderItemUse }[] };
   };
   select?: GassmaTestOrderSelect;
   omit?: GassmaTestOrderOmit;
@@ -632,8 +598,8 @@ declare type GassmaTestOrderCreateData = {
 
 declare type GassmaTestOrderItemCreateData = {
   data: GassmaTestOrderItemUse & {
-    "order"?: Gassma.NestedWriteOperation;
-    "product"?: Gassma.NestedWriteOperation;
+    "order"?: { create?: GassmaTestOrderUse; connect?: GassmaTestOrderWhereUse; connectOrCreate?: { where: GassmaTestOrderWhereUse; create: GassmaTestOrderUse } };
+    "product"?: { create?: GassmaTestProductUse; connect?: GassmaTestProductWhereUse; connectOrCreate?: { where: GassmaTestProductWhereUse; create: GassmaTestProductUse } };
   };
   select?: GassmaTestOrderItemSelect;
   omit?: GassmaTestOrderItemOmit;
@@ -1388,10 +1354,10 @@ declare type GassmaTestUserWhereUse = {
   "isActive"?: boolean | GassmaTestUserisActiveFilterConditions;
   "role"?: string | "admin" | "user" | "moderator" | GassmaTestUserroleFilterConditions;
   "createdAt"?: Date | GassmaTestUsercreatedAtFilterConditions;
-  "profile"?: Gassma.RelationSingleFilter;
-  "posts"?: Gassma.RelationListFilter;
-  "comments"?: Gassma.RelationListFilter;
-  "orders"?: Gassma.RelationListFilter;
+  "profile"?: { is?: GassmaTestProfileWhereUse; isNot?: GassmaTestProfileWhereUse };
+  "posts"?: { some?: GassmaTestPostWhereUse; every?: GassmaTestPostWhereUse; none?: GassmaTestPostWhereUse };
+  "comments"?: { some?: GassmaTestCommentWhereUse; every?: GassmaTestCommentWhereUse; none?: GassmaTestCommentWhereUse };
+  "orders"?: { some?: GassmaTestOrderWhereUse; every?: GassmaTestOrderWhereUse; none?: GassmaTestOrderWhereUse };
 
   AND?: GassmaTestUserWhereUse[] | GassmaTestUserWhereUse;
   OR?: GassmaTestUserWhereUse[];
@@ -1403,7 +1369,7 @@ declare type GassmaTestProfileWhereUse = {
   "bio"?: string | null | GassmaTestProfilebioFilterConditions;
   "website"?: string | null | GassmaTestProfilewebsiteFilterConditions;
   "userId"?: number | GassmaTestProfileuserIdFilterConditions;
-  "user"?: Gassma.RelationSingleFilter;
+  "user"?: { is?: GassmaTestUserWhereUse; isNot?: GassmaTestUserWhereUse };
 
   AND?: GassmaTestProfileWhereUse[] | GassmaTestProfileWhereUse;
   OR?: GassmaTestProfileWhereUse[];
@@ -1420,10 +1386,10 @@ declare type GassmaTestPostWhereUse = {
   "authorId"?: number | GassmaTestPostauthorIdFilterConditions;
   "categoryId"?: number | null | GassmaTestPostcategoryIdFilterConditions;
   "createdAt"?: Date | GassmaTestPostcreatedAtFilterConditions;
-  "author"?: Gassma.RelationSingleFilter;
-  "category"?: Gassma.RelationSingleFilter;
-  "comments"?: Gassma.RelationListFilter;
-  "tags"?: Gassma.RelationListFilter;
+  "author"?: { is?: GassmaTestUserWhereUse; isNot?: GassmaTestUserWhereUse };
+  "category"?: { is?: GassmaTestCategoryWhereUse; isNot?: GassmaTestCategoryWhereUse };
+  "comments"?: { some?: GassmaTestCommentWhereUse; every?: GassmaTestCommentWhereUse; none?: GassmaTestCommentWhereUse };
+  "tags"?: { some?: GassmaTestTagWhereUse; every?: GassmaTestTagWhereUse; none?: GassmaTestTagWhereUse };
 
   AND?: GassmaTestPostWhereUse[] | GassmaTestPostWhereUse;
   OR?: GassmaTestPostWhereUse[];
@@ -1436,8 +1402,8 @@ declare type GassmaTestCommentWhereUse = {
   "authorId"?: number | GassmaTestCommentauthorIdFilterConditions;
   "postId"?: number | GassmaTestCommentpostIdFilterConditions;
   "createdAt"?: Date | GassmaTestCommentcreatedAtFilterConditions;
-  "author"?: Gassma.RelationSingleFilter;
-  "post"?: Gassma.RelationSingleFilter;
+  "author"?: { is?: GassmaTestUserWhereUse; isNot?: GassmaTestUserWhereUse };
+  "post"?: { is?: GassmaTestPostWhereUse; isNot?: GassmaTestPostWhereUse };
 
   AND?: GassmaTestCommentWhereUse[] | GassmaTestCommentWhereUse;
   OR?: GassmaTestCommentWhereUse[];
@@ -1448,9 +1414,9 @@ declare type GassmaTestCategoryWhereUse = {
   "id"?: number | GassmaTestCategoryidFilterConditions;
   "name"?: string | GassmaTestCategorynameFilterConditions;
   "parentId"?: number | null | GassmaTestCategoryparentIdFilterConditions;
-  "posts"?: Gassma.RelationListFilter;
-  "parent"?: Gassma.RelationSingleFilter;
-  "children"?: Gassma.RelationListFilter;
+  "posts"?: { some?: GassmaTestPostWhereUse; every?: GassmaTestPostWhereUse; none?: GassmaTestPostWhereUse };
+  "parent"?: { is?: GassmaTestCategoryWhereUse; isNot?: GassmaTestCategoryWhereUse };
+  "children"?: { some?: GassmaTestCategoryWhereUse; every?: GassmaTestCategoryWhereUse; none?: GassmaTestCategoryWhereUse };
 
   AND?: GassmaTestCategoryWhereUse[] | GassmaTestCategoryWhereUse;
   OR?: GassmaTestCategoryWhereUse[];
@@ -1460,7 +1426,7 @@ declare type GassmaTestCategoryWhereUse = {
 declare type GassmaTestTagWhereUse = {
   "id"?: number | GassmaTestTagidFilterConditions;
   "name"?: string | GassmaTestTagnameFilterConditions;
-  "posts"?: Gassma.RelationListFilter;
+  "posts"?: { some?: GassmaTestPostWhereUse; every?: GassmaTestPostWhereUse; none?: GassmaTestPostWhereUse };
 
   AND?: GassmaTestTagWhereUse[] | GassmaTestTagWhereUse;
   OR?: GassmaTestTagWhereUse[];
@@ -1474,7 +1440,7 @@ declare type GassmaTestProductWhereUse = {
   "stock"?: number | GassmaTestProductstockFilterConditions;
   "status"?: string | "available" | "soldout" | "discontinued" | GassmaTestProductstatusFilterConditions;
   "createdAt"?: Date | GassmaTestProductcreatedAtFilterConditions;
-  "orderItems"?: Gassma.RelationListFilter;
+  "orderItems"?: { some?: GassmaTestOrderItemWhereUse; every?: GassmaTestOrderItemWhereUse; none?: GassmaTestOrderItemWhereUse };
 
   AND?: GassmaTestProductWhereUse[] | GassmaTestProductWhereUse;
   OR?: GassmaTestProductWhereUse[];
@@ -1488,8 +1454,8 @@ declare type GassmaTestOrderWhereUse = {
   "quantity"?: number | GassmaTestOrderquantityFilterConditions;
   "status"?: string | "pending" | "shipped" | "delivered" | "cancelled" | GassmaTestOrderstatusFilterConditions;
   "createdAt"?: Date | GassmaTestOrdercreatedAtFilterConditions;
-  "user"?: Gassma.RelationSingleFilter;
-  "items"?: Gassma.RelationListFilter;
+  "user"?: { is?: GassmaTestUserWhereUse; isNot?: GassmaTestUserWhereUse };
+  "items"?: { some?: GassmaTestOrderItemWhereUse; every?: GassmaTestOrderItemWhereUse; none?: GassmaTestOrderItemWhereUse };
 
   AND?: GassmaTestOrderWhereUse[] | GassmaTestOrderWhereUse;
   OR?: GassmaTestOrderWhereUse[];
@@ -1502,8 +1468,8 @@ declare type GassmaTestOrderItemWhereUse = {
   "productId"?: number | GassmaTestOrderItemproductIdFilterConditions;
   "quantity"?: number | GassmaTestOrderItemquantityFilterConditions;
   "unitPrice"?: number | GassmaTestOrderItemunitPriceFilterConditions;
-  "order"?: Gassma.RelationSingleFilter;
-  "product"?: Gassma.RelationSingleFilter;
+  "order"?: { is?: GassmaTestOrderWhereUse; isNot?: GassmaTestOrderWhereUse };
+  "product"?: { is?: GassmaTestProductWhereUse; isNot?: GassmaTestProductWhereUse };
 
   AND?: GassmaTestOrderItemWhereUse[] | GassmaTestOrderItemWhereUse;
   OR?: GassmaTestOrderItemWhereUse[];
@@ -2004,9 +1970,9 @@ declare type GassmaTestUserFindData = {
   take?: number;
   skip?: number;
   distinct?: "id" | "email" | "name" | "age" | "isActive" | "role" | "createdAt" | ("id" | "email" | "name" | "age" | "isActive" | "role" | "createdAt")[];
-  include?: Gassma.IncludeData;
+  include?: GassmaTestUserInclude;
   cursor?: Partial<GassmaTestUserUse>;
-  _count?: Gassma.CountValue;
+  _count?: GassmaTestUserCountValue;
 };
 
 declare type GassmaTestProfileFindData = {
@@ -2017,9 +1983,9 @@ declare type GassmaTestProfileFindData = {
   take?: number;
   skip?: number;
   distinct?: "id" | "bio" | "website" | "userId" | ("id" | "bio" | "website" | "userId")[];
-  include?: Gassma.IncludeData;
+  include?: GassmaTestProfileInclude;
   cursor?: Partial<GassmaTestProfileUse>;
-  _count?: Gassma.CountValue;
+  _count?: GassmaTestProfileCountValue;
 };
 
 declare type GassmaTestPostFindData = {
@@ -2030,9 +1996,9 @@ declare type GassmaTestPostFindData = {
   take?: number;
   skip?: number;
   distinct?: "id" | "title" | "content" | "published" | "viewCount" | "rating" | "authorId" | "categoryId" | "createdAt" | ("id" | "title" | "content" | "published" | "viewCount" | "rating" | "authorId" | "categoryId" | "createdAt")[];
-  include?: Gassma.IncludeData;
+  include?: GassmaTestPostInclude;
   cursor?: Partial<GassmaTestPostUse>;
-  _count?: Gassma.CountValue;
+  _count?: GassmaTestPostCountValue;
 };
 
 declare type GassmaTestCommentFindData = {
@@ -2043,9 +2009,9 @@ declare type GassmaTestCommentFindData = {
   take?: number;
   skip?: number;
   distinct?: "id" | "text" | "authorId" | "postId" | "createdAt" | ("id" | "text" | "authorId" | "postId" | "createdAt")[];
-  include?: Gassma.IncludeData;
+  include?: GassmaTestCommentInclude;
   cursor?: Partial<GassmaTestCommentUse>;
-  _count?: Gassma.CountValue;
+  _count?: GassmaTestCommentCountValue;
 };
 
 declare type GassmaTestCategoryFindData = {
@@ -2056,9 +2022,9 @@ declare type GassmaTestCategoryFindData = {
   take?: number;
   skip?: number;
   distinct?: "id" | "name" | "parentId" | ("id" | "name" | "parentId")[];
-  include?: Gassma.IncludeData;
+  include?: GassmaTestCategoryInclude;
   cursor?: Partial<GassmaTestCategoryUse>;
-  _count?: Gassma.CountValue;
+  _count?: GassmaTestCategoryCountValue;
 };
 
 declare type GassmaTestTagFindData = {
@@ -2069,9 +2035,9 @@ declare type GassmaTestTagFindData = {
   take?: number;
   skip?: number;
   distinct?: "id" | "name" | ("id" | "name")[];
-  include?: Gassma.IncludeData;
+  include?: GassmaTestTagInclude;
   cursor?: Partial<GassmaTestTagUse>;
-  _count?: Gassma.CountValue;
+  _count?: GassmaTestTagCountValue;
 };
 
 declare type GassmaTestProductFindData = {
@@ -2082,9 +2048,9 @@ declare type GassmaTestProductFindData = {
   take?: number;
   skip?: number;
   distinct?: "id" | "name" | "price" | "stock" | "status" | "createdAt" | ("id" | "name" | "price" | "stock" | "status" | "createdAt")[];
-  include?: Gassma.IncludeData;
+  include?: GassmaTestProductInclude;
   cursor?: Partial<GassmaTestProductUse>;
-  _count?: Gassma.CountValue;
+  _count?: GassmaTestProductCountValue;
 };
 
 declare type GassmaTestOrderFindData = {
@@ -2095,9 +2061,9 @@ declare type GassmaTestOrderFindData = {
   take?: number;
   skip?: number;
   distinct?: "id" | "userId" | "totalAmount" | "quantity" | "status" | "createdAt" | ("id" | "userId" | "totalAmount" | "quantity" | "status" | "createdAt")[];
-  include?: Gassma.IncludeData;
+  include?: GassmaTestOrderInclude;
   cursor?: Partial<GassmaTestOrderUse>;
-  _count?: Gassma.CountValue;
+  _count?: GassmaTestOrderCountValue;
 };
 
 declare type GassmaTestOrderItemFindData = {
@@ -2108,9 +2074,9 @@ declare type GassmaTestOrderItemFindData = {
   take?: number;
   skip?: number;
   distinct?: "id" | "orderId" | "productId" | "quantity" | "unitPrice" | ("id" | "orderId" | "productId" | "quantity" | "unitPrice")[];
-  include?: Gassma.IncludeData;
+  include?: GassmaTestOrderItemInclude;
   cursor?: Partial<GassmaTestOrderItemUse>;
-  _count?: Gassma.CountValue;
+  _count?: GassmaTestOrderItemCountValue;
 };
 
 declare type GassmaTestUserFindManyData = GassmaTestUserFindData;
@@ -2134,10 +2100,10 @@ declare type GassmaTestOrderItemFindManyData = GassmaTestOrderItemFindData;
 declare type GassmaTestUserUpdateData = {
   where?: GassmaTestUserWhereUse;
   data: Partial<{ [K in keyof GassmaTestUserUse]: GassmaTestUserUse[K] | Gassma.NumberOperation }> & {
-    "profile"?: Gassma.NestedWriteOperation;
-    "posts"?: Gassma.NestedWriteOperation;
-    "comments"?: Gassma.NestedWriteOperation;
-    "orders"?: Gassma.NestedWriteOperation;
+    "profile"?: { create?: GassmaTestProfileUse; connect?: GassmaTestProfileWhereUse; connectOrCreate?: { where: GassmaTestProfileWhereUse; create: GassmaTestProfileUse } };
+    "posts"?: { create?: GassmaTestPostUse | GassmaTestPostUse[]; connect?: GassmaTestPostWhereUse | GassmaTestPostWhereUse[]; connectOrCreate?: { where: GassmaTestPostWhereUse; create: GassmaTestPostUse } | { where: GassmaTestPostWhereUse; create: GassmaTestPostUse }[] };
+    "comments"?: { create?: GassmaTestCommentUse | GassmaTestCommentUse[]; connect?: GassmaTestCommentWhereUse | GassmaTestCommentWhereUse[]; connectOrCreate?: { where: GassmaTestCommentWhereUse; create: GassmaTestCommentUse } | { where: GassmaTestCommentWhereUse; create: GassmaTestCommentUse }[] };
+    "orders"?: { create?: GassmaTestOrderUse | GassmaTestOrderUse[]; connect?: GassmaTestOrderWhereUse | GassmaTestOrderWhereUse[]; connectOrCreate?: { where: GassmaTestOrderWhereUse; create: GassmaTestOrderUse } | { where: GassmaTestOrderWhereUse; create: GassmaTestOrderUse }[] };
   };
   limit?: number;
 };
@@ -2145,7 +2111,7 @@ declare type GassmaTestUserUpdateData = {
 declare type GassmaTestProfileUpdateData = {
   where?: GassmaTestProfileWhereUse;
   data: Partial<{ [K in keyof GassmaTestProfileUse]: GassmaTestProfileUse[K] | Gassma.NumberOperation }> & {
-    "user"?: Gassma.NestedWriteOperation;
+    "user"?: { create?: GassmaTestUserUse; connect?: GassmaTestUserWhereUse; connectOrCreate?: { where: GassmaTestUserWhereUse; create: GassmaTestUserUse } };
   };
   limit?: number;
 };
@@ -2153,10 +2119,10 @@ declare type GassmaTestProfileUpdateData = {
 declare type GassmaTestPostUpdateData = {
   where?: GassmaTestPostWhereUse;
   data: Partial<{ [K in keyof GassmaTestPostUse]: GassmaTestPostUse[K] | Gassma.NumberOperation }> & {
-    "author"?: Gassma.NestedWriteOperation;
-    "category"?: Gassma.NestedWriteOperation;
-    "comments"?: Gassma.NestedWriteOperation;
-    "tags"?: Gassma.NestedWriteOperation;
+    "author"?: { create?: GassmaTestUserUse; connect?: GassmaTestUserWhereUse; connectOrCreate?: { where: GassmaTestUserWhereUse; create: GassmaTestUserUse } };
+    "category"?: { create?: GassmaTestCategoryUse; connect?: GassmaTestCategoryWhereUse; connectOrCreate?: { where: GassmaTestCategoryWhereUse; create: GassmaTestCategoryUse } };
+    "comments"?: { create?: GassmaTestCommentUse | GassmaTestCommentUse[]; connect?: GassmaTestCommentWhereUse | GassmaTestCommentWhereUse[]; connectOrCreate?: { where: GassmaTestCommentWhereUse; create: GassmaTestCommentUse } | { where: GassmaTestCommentWhereUse; create: GassmaTestCommentUse }[] };
+    "tags"?: { create?: GassmaTestTagUse | GassmaTestTagUse[]; connect?: GassmaTestTagWhereUse | GassmaTestTagWhereUse[]; connectOrCreate?: { where: GassmaTestTagWhereUse; create: GassmaTestTagUse } | { where: GassmaTestTagWhereUse; create: GassmaTestTagUse }[] };
   };
   limit?: number;
 };
@@ -2164,8 +2130,8 @@ declare type GassmaTestPostUpdateData = {
 declare type GassmaTestCommentUpdateData = {
   where?: GassmaTestCommentWhereUse;
   data: Partial<{ [K in keyof GassmaTestCommentUse]: GassmaTestCommentUse[K] | Gassma.NumberOperation }> & {
-    "author"?: Gassma.NestedWriteOperation;
-    "post"?: Gassma.NestedWriteOperation;
+    "author"?: { create?: GassmaTestUserUse; connect?: GassmaTestUserWhereUse; connectOrCreate?: { where: GassmaTestUserWhereUse; create: GassmaTestUserUse } };
+    "post"?: { create?: GassmaTestPostUse; connect?: GassmaTestPostWhereUse; connectOrCreate?: { where: GassmaTestPostWhereUse; create: GassmaTestPostUse } };
   };
   limit?: number;
 };
@@ -2173,9 +2139,9 @@ declare type GassmaTestCommentUpdateData = {
 declare type GassmaTestCategoryUpdateData = {
   where?: GassmaTestCategoryWhereUse;
   data: Partial<{ [K in keyof GassmaTestCategoryUse]: GassmaTestCategoryUse[K] | Gassma.NumberOperation }> & {
-    "posts"?: Gassma.NestedWriteOperation;
-    "parent"?: Gassma.NestedWriteOperation;
-    "children"?: Gassma.NestedWriteOperation;
+    "posts"?: { create?: GassmaTestPostUse | GassmaTestPostUse[]; connect?: GassmaTestPostWhereUse | GassmaTestPostWhereUse[]; connectOrCreate?: { where: GassmaTestPostWhereUse; create: GassmaTestPostUse } | { where: GassmaTestPostWhereUse; create: GassmaTestPostUse }[] };
+    "parent"?: { create?: GassmaTestCategoryUse; connect?: GassmaTestCategoryWhereUse; connectOrCreate?: { where: GassmaTestCategoryWhereUse; create: GassmaTestCategoryUse } };
+    "children"?: { create?: GassmaTestCategoryUse | GassmaTestCategoryUse[]; connect?: GassmaTestCategoryWhereUse | GassmaTestCategoryWhereUse[]; connectOrCreate?: { where: GassmaTestCategoryWhereUse; create: GassmaTestCategoryUse } | { where: GassmaTestCategoryWhereUse; create: GassmaTestCategoryUse }[] };
   };
   limit?: number;
 };
@@ -2183,7 +2149,7 @@ declare type GassmaTestCategoryUpdateData = {
 declare type GassmaTestTagUpdateData = {
   where?: GassmaTestTagWhereUse;
   data: Partial<{ [K in keyof GassmaTestTagUse]: GassmaTestTagUse[K] | Gassma.NumberOperation }> & {
-    "posts"?: Gassma.NestedWriteOperation;
+    "posts"?: { create?: GassmaTestPostUse | GassmaTestPostUse[]; connect?: GassmaTestPostWhereUse | GassmaTestPostWhereUse[]; connectOrCreate?: { where: GassmaTestPostWhereUse; create: GassmaTestPostUse } | { where: GassmaTestPostWhereUse; create: GassmaTestPostUse }[] };
   };
   limit?: number;
 };
@@ -2191,7 +2157,7 @@ declare type GassmaTestTagUpdateData = {
 declare type GassmaTestProductUpdateData = {
   where?: GassmaTestProductWhereUse;
   data: Partial<{ [K in keyof GassmaTestProductUse]: GassmaTestProductUse[K] | Gassma.NumberOperation }> & {
-    "orderItems"?: Gassma.NestedWriteOperation;
+    "orderItems"?: { create?: GassmaTestOrderItemUse | GassmaTestOrderItemUse[]; connect?: GassmaTestOrderItemWhereUse | GassmaTestOrderItemWhereUse[]; connectOrCreate?: { where: GassmaTestOrderItemWhereUse; create: GassmaTestOrderItemUse } | { where: GassmaTestOrderItemWhereUse; create: GassmaTestOrderItemUse }[] };
   };
   limit?: number;
 };
@@ -2199,8 +2165,8 @@ declare type GassmaTestProductUpdateData = {
 declare type GassmaTestOrderUpdateData = {
   where?: GassmaTestOrderWhereUse;
   data: Partial<{ [K in keyof GassmaTestOrderUse]: GassmaTestOrderUse[K] | Gassma.NumberOperation }> & {
-    "user"?: Gassma.NestedWriteOperation;
-    "items"?: Gassma.NestedWriteOperation;
+    "user"?: { create?: GassmaTestUserUse; connect?: GassmaTestUserWhereUse; connectOrCreate?: { where: GassmaTestUserWhereUse; create: GassmaTestUserUse } };
+    "items"?: { create?: GassmaTestOrderItemUse | GassmaTestOrderItemUse[]; connect?: GassmaTestOrderItemWhereUse | GassmaTestOrderItemWhereUse[]; connectOrCreate?: { where: GassmaTestOrderItemWhereUse; create: GassmaTestOrderItemUse } | { where: GassmaTestOrderItemWhereUse; create: GassmaTestOrderItemUse }[] };
   };
   limit?: number;
 };
@@ -2208,8 +2174,8 @@ declare type GassmaTestOrderUpdateData = {
 declare type GassmaTestOrderItemUpdateData = {
   where?: GassmaTestOrderItemWhereUse;
   data: Partial<{ [K in keyof GassmaTestOrderItemUse]: GassmaTestOrderItemUse[K] | Gassma.NumberOperation }> & {
-    "order"?: Gassma.NestedWriteOperation;
-    "product"?: Gassma.NestedWriteOperation;
+    "order"?: { create?: GassmaTestOrderUse; connect?: GassmaTestOrderWhereUse; connectOrCreate?: { where: GassmaTestOrderWhereUse; create: GassmaTestOrderUse } };
+    "product"?: { create?: GassmaTestProductUse; connect?: GassmaTestProductWhereUse; connectOrCreate?: { where: GassmaTestProductWhereUse; create: GassmaTestProductUse } };
   };
   limit?: number;
 };
@@ -2217,10 +2183,10 @@ declare type GassmaTestOrderItemUpdateData = {
 declare type GassmaTestUserUpdateSingleData = {
   where: GassmaTestUserWhereUse;
   data: Partial<{ [K in keyof GassmaTestUserUse]: GassmaTestUserUse[K] | Gassma.NumberOperation }> & {
-    "profile"?: Gassma.NestedWriteOperation;
-    "posts"?: Gassma.NestedWriteOperation;
-    "comments"?: Gassma.NestedWriteOperation;
-    "orders"?: Gassma.NestedWriteOperation;
+    "profile"?: { create?: GassmaTestProfileUse; connect?: GassmaTestProfileWhereUse; connectOrCreate?: { where: GassmaTestProfileWhereUse; create: GassmaTestProfileUse } };
+    "posts"?: { create?: GassmaTestPostUse | GassmaTestPostUse[]; connect?: GassmaTestPostWhereUse | GassmaTestPostWhereUse[]; connectOrCreate?: { where: GassmaTestPostWhereUse; create: GassmaTestPostUse } | { where: GassmaTestPostWhereUse; create: GassmaTestPostUse }[] };
+    "comments"?: { create?: GassmaTestCommentUse | GassmaTestCommentUse[]; connect?: GassmaTestCommentWhereUse | GassmaTestCommentWhereUse[]; connectOrCreate?: { where: GassmaTestCommentWhereUse; create: GassmaTestCommentUse } | { where: GassmaTestCommentWhereUse; create: GassmaTestCommentUse }[] };
+    "orders"?: { create?: GassmaTestOrderUse | GassmaTestOrderUse[]; connect?: GassmaTestOrderWhereUse | GassmaTestOrderWhereUse[]; connectOrCreate?: { where: GassmaTestOrderWhereUse; create: GassmaTestOrderUse } | { where: GassmaTestOrderWhereUse; create: GassmaTestOrderUse }[] };
   };
   select?: GassmaTestUserSelect;
   omit?: GassmaTestUserOmit;
@@ -2229,7 +2195,7 @@ declare type GassmaTestUserUpdateSingleData = {
 declare type GassmaTestProfileUpdateSingleData = {
   where: GassmaTestProfileWhereUse;
   data: Partial<{ [K in keyof GassmaTestProfileUse]: GassmaTestProfileUse[K] | Gassma.NumberOperation }> & {
-    "user"?: Gassma.NestedWriteOperation;
+    "user"?: { create?: GassmaTestUserUse; connect?: GassmaTestUserWhereUse; connectOrCreate?: { where: GassmaTestUserWhereUse; create: GassmaTestUserUse } };
   };
   select?: GassmaTestProfileSelect;
   omit?: GassmaTestProfileOmit;
@@ -2238,10 +2204,10 @@ declare type GassmaTestProfileUpdateSingleData = {
 declare type GassmaTestPostUpdateSingleData = {
   where: GassmaTestPostWhereUse;
   data: Partial<{ [K in keyof GassmaTestPostUse]: GassmaTestPostUse[K] | Gassma.NumberOperation }> & {
-    "author"?: Gassma.NestedWriteOperation;
-    "category"?: Gassma.NestedWriteOperation;
-    "comments"?: Gassma.NestedWriteOperation;
-    "tags"?: Gassma.NestedWriteOperation;
+    "author"?: { create?: GassmaTestUserUse; connect?: GassmaTestUserWhereUse; connectOrCreate?: { where: GassmaTestUserWhereUse; create: GassmaTestUserUse } };
+    "category"?: { create?: GassmaTestCategoryUse; connect?: GassmaTestCategoryWhereUse; connectOrCreate?: { where: GassmaTestCategoryWhereUse; create: GassmaTestCategoryUse } };
+    "comments"?: { create?: GassmaTestCommentUse | GassmaTestCommentUse[]; connect?: GassmaTestCommentWhereUse | GassmaTestCommentWhereUse[]; connectOrCreate?: { where: GassmaTestCommentWhereUse; create: GassmaTestCommentUse } | { where: GassmaTestCommentWhereUse; create: GassmaTestCommentUse }[] };
+    "tags"?: { create?: GassmaTestTagUse | GassmaTestTagUse[]; connect?: GassmaTestTagWhereUse | GassmaTestTagWhereUse[]; connectOrCreate?: { where: GassmaTestTagWhereUse; create: GassmaTestTagUse } | { where: GassmaTestTagWhereUse; create: GassmaTestTagUse }[] };
   };
   select?: GassmaTestPostSelect;
   omit?: GassmaTestPostOmit;
@@ -2250,8 +2216,8 @@ declare type GassmaTestPostUpdateSingleData = {
 declare type GassmaTestCommentUpdateSingleData = {
   where: GassmaTestCommentWhereUse;
   data: Partial<{ [K in keyof GassmaTestCommentUse]: GassmaTestCommentUse[K] | Gassma.NumberOperation }> & {
-    "author"?: Gassma.NestedWriteOperation;
-    "post"?: Gassma.NestedWriteOperation;
+    "author"?: { create?: GassmaTestUserUse; connect?: GassmaTestUserWhereUse; connectOrCreate?: { where: GassmaTestUserWhereUse; create: GassmaTestUserUse } };
+    "post"?: { create?: GassmaTestPostUse; connect?: GassmaTestPostWhereUse; connectOrCreate?: { where: GassmaTestPostWhereUse; create: GassmaTestPostUse } };
   };
   select?: GassmaTestCommentSelect;
   omit?: GassmaTestCommentOmit;
@@ -2260,9 +2226,9 @@ declare type GassmaTestCommentUpdateSingleData = {
 declare type GassmaTestCategoryUpdateSingleData = {
   where: GassmaTestCategoryWhereUse;
   data: Partial<{ [K in keyof GassmaTestCategoryUse]: GassmaTestCategoryUse[K] | Gassma.NumberOperation }> & {
-    "posts"?: Gassma.NestedWriteOperation;
-    "parent"?: Gassma.NestedWriteOperation;
-    "children"?: Gassma.NestedWriteOperation;
+    "posts"?: { create?: GassmaTestPostUse | GassmaTestPostUse[]; connect?: GassmaTestPostWhereUse | GassmaTestPostWhereUse[]; connectOrCreate?: { where: GassmaTestPostWhereUse; create: GassmaTestPostUse } | { where: GassmaTestPostWhereUse; create: GassmaTestPostUse }[] };
+    "parent"?: { create?: GassmaTestCategoryUse; connect?: GassmaTestCategoryWhereUse; connectOrCreate?: { where: GassmaTestCategoryWhereUse; create: GassmaTestCategoryUse } };
+    "children"?: { create?: GassmaTestCategoryUse | GassmaTestCategoryUse[]; connect?: GassmaTestCategoryWhereUse | GassmaTestCategoryWhereUse[]; connectOrCreate?: { where: GassmaTestCategoryWhereUse; create: GassmaTestCategoryUse } | { where: GassmaTestCategoryWhereUse; create: GassmaTestCategoryUse }[] };
   };
   select?: GassmaTestCategorySelect;
   omit?: GassmaTestCategoryOmit;
@@ -2271,7 +2237,7 @@ declare type GassmaTestCategoryUpdateSingleData = {
 declare type GassmaTestTagUpdateSingleData = {
   where: GassmaTestTagWhereUse;
   data: Partial<{ [K in keyof GassmaTestTagUse]: GassmaTestTagUse[K] | Gassma.NumberOperation }> & {
-    "posts"?: Gassma.NestedWriteOperation;
+    "posts"?: { create?: GassmaTestPostUse | GassmaTestPostUse[]; connect?: GassmaTestPostWhereUse | GassmaTestPostWhereUse[]; connectOrCreate?: { where: GassmaTestPostWhereUse; create: GassmaTestPostUse } | { where: GassmaTestPostWhereUse; create: GassmaTestPostUse }[] };
   };
   select?: GassmaTestTagSelect;
   omit?: GassmaTestTagOmit;
@@ -2280,7 +2246,7 @@ declare type GassmaTestTagUpdateSingleData = {
 declare type GassmaTestProductUpdateSingleData = {
   where: GassmaTestProductWhereUse;
   data: Partial<{ [K in keyof GassmaTestProductUse]: GassmaTestProductUse[K] | Gassma.NumberOperation }> & {
-    "orderItems"?: Gassma.NestedWriteOperation;
+    "orderItems"?: { create?: GassmaTestOrderItemUse | GassmaTestOrderItemUse[]; connect?: GassmaTestOrderItemWhereUse | GassmaTestOrderItemWhereUse[]; connectOrCreate?: { where: GassmaTestOrderItemWhereUse; create: GassmaTestOrderItemUse } | { where: GassmaTestOrderItemWhereUse; create: GassmaTestOrderItemUse }[] };
   };
   select?: GassmaTestProductSelect;
   omit?: GassmaTestProductOmit;
@@ -2289,8 +2255,8 @@ declare type GassmaTestProductUpdateSingleData = {
 declare type GassmaTestOrderUpdateSingleData = {
   where: GassmaTestOrderWhereUse;
   data: Partial<{ [K in keyof GassmaTestOrderUse]: GassmaTestOrderUse[K] | Gassma.NumberOperation }> & {
-    "user"?: Gassma.NestedWriteOperation;
-    "items"?: Gassma.NestedWriteOperation;
+    "user"?: { create?: GassmaTestUserUse; connect?: GassmaTestUserWhereUse; connectOrCreate?: { where: GassmaTestUserWhereUse; create: GassmaTestUserUse } };
+    "items"?: { create?: GassmaTestOrderItemUse | GassmaTestOrderItemUse[]; connect?: GassmaTestOrderItemWhereUse | GassmaTestOrderItemWhereUse[]; connectOrCreate?: { where: GassmaTestOrderItemWhereUse; create: GassmaTestOrderItemUse } | { where: GassmaTestOrderItemWhereUse; create: GassmaTestOrderItemUse }[] };
   };
   select?: GassmaTestOrderSelect;
   omit?: GassmaTestOrderOmit;
@@ -2299,8 +2265,8 @@ declare type GassmaTestOrderUpdateSingleData = {
 declare type GassmaTestOrderItemUpdateSingleData = {
   where: GassmaTestOrderItemWhereUse;
   data: Partial<{ [K in keyof GassmaTestOrderItemUse]: GassmaTestOrderItemUse[K] | Gassma.NumberOperation }> & {
-    "order"?: Gassma.NestedWriteOperation;
-    "product"?: Gassma.NestedWriteOperation;
+    "order"?: { create?: GassmaTestOrderUse; connect?: GassmaTestOrderWhereUse; connectOrCreate?: { where: GassmaTestOrderWhereUse; create: GassmaTestOrderUse } };
+    "product"?: { create?: GassmaTestProductUse; connect?: GassmaTestProductWhereUse; connectOrCreate?: { where: GassmaTestProductWhereUse; create: GassmaTestProductUse } };
   };
   select?: GassmaTestOrderItemSelect;
   omit?: GassmaTestOrderItemOmit;
@@ -2363,139 +2329,139 @@ declare type GassmaTestOrderItemUpsertData = {
 declare type GassmaTestUserUpsertSingleData = {
   where: GassmaTestUserWhereUse;
   create: GassmaTestUserUse & {
-    "profile"?: Gassma.NestedWriteOperation;
-    "posts"?: Gassma.NestedWriteOperation;
-    "comments"?: Gassma.NestedWriteOperation;
-    "orders"?: Gassma.NestedWriteOperation;
+    "profile"?: { create?: GassmaTestProfileUse; connect?: GassmaTestProfileWhereUse; connectOrCreate?: { where: GassmaTestProfileWhereUse; create: GassmaTestProfileUse } };
+    "posts"?: { create?: GassmaTestPostUse | GassmaTestPostUse[]; connect?: GassmaTestPostWhereUse | GassmaTestPostWhereUse[]; connectOrCreate?: { where: GassmaTestPostWhereUse; create: GassmaTestPostUse } | { where: GassmaTestPostWhereUse; create: GassmaTestPostUse }[] };
+    "comments"?: { create?: GassmaTestCommentUse | GassmaTestCommentUse[]; connect?: GassmaTestCommentWhereUse | GassmaTestCommentWhereUse[]; connectOrCreate?: { where: GassmaTestCommentWhereUse; create: GassmaTestCommentUse } | { where: GassmaTestCommentWhereUse; create: GassmaTestCommentUse }[] };
+    "orders"?: { create?: GassmaTestOrderUse | GassmaTestOrderUse[]; connect?: GassmaTestOrderWhereUse | GassmaTestOrderWhereUse[]; connectOrCreate?: { where: GassmaTestOrderWhereUse; create: GassmaTestOrderUse } | { where: GassmaTestOrderWhereUse; create: GassmaTestOrderUse }[] };
   };
   update: Partial<{ [K in keyof GassmaTestUserUse]: GassmaTestUserUse[K] | Gassma.NumberOperation }> & {
-    "profile"?: Gassma.NestedWriteOperation;
-    "posts"?: Gassma.NestedWriteOperation;
-    "comments"?: Gassma.NestedWriteOperation;
-    "orders"?: Gassma.NestedWriteOperation;
+    "profile"?: { create?: GassmaTestProfileUse; connect?: GassmaTestProfileWhereUse; connectOrCreate?: { where: GassmaTestProfileWhereUse; create: GassmaTestProfileUse } };
+    "posts"?: { create?: GassmaTestPostUse | GassmaTestPostUse[]; connect?: GassmaTestPostWhereUse | GassmaTestPostWhereUse[]; connectOrCreate?: { where: GassmaTestPostWhereUse; create: GassmaTestPostUse } | { where: GassmaTestPostWhereUse; create: GassmaTestPostUse }[] };
+    "comments"?: { create?: GassmaTestCommentUse | GassmaTestCommentUse[]; connect?: GassmaTestCommentWhereUse | GassmaTestCommentWhereUse[]; connectOrCreate?: { where: GassmaTestCommentWhereUse; create: GassmaTestCommentUse } | { where: GassmaTestCommentWhereUse; create: GassmaTestCommentUse }[] };
+    "orders"?: { create?: GassmaTestOrderUse | GassmaTestOrderUse[]; connect?: GassmaTestOrderWhereUse | GassmaTestOrderWhereUse[]; connectOrCreate?: { where: GassmaTestOrderWhereUse; create: GassmaTestOrderUse } | { where: GassmaTestOrderWhereUse; create: GassmaTestOrderUse }[] };
   };
   select?: GassmaTestUserSelect;
-  include?: Gassma.IncludeData;
+  include?: GassmaTestUserInclude;
   omit?: GassmaTestUserOmit;
 };
 
 declare type GassmaTestProfileUpsertSingleData = {
   where: GassmaTestProfileWhereUse;
   create: GassmaTestProfileUse & {
-    "user"?: Gassma.NestedWriteOperation;
+    "user"?: { create?: GassmaTestUserUse; connect?: GassmaTestUserWhereUse; connectOrCreate?: { where: GassmaTestUserWhereUse; create: GassmaTestUserUse } };
   };
   update: Partial<{ [K in keyof GassmaTestProfileUse]: GassmaTestProfileUse[K] | Gassma.NumberOperation }> & {
-    "user"?: Gassma.NestedWriteOperation;
+    "user"?: { create?: GassmaTestUserUse; connect?: GassmaTestUserWhereUse; connectOrCreate?: { where: GassmaTestUserWhereUse; create: GassmaTestUserUse } };
   };
   select?: GassmaTestProfileSelect;
-  include?: Gassma.IncludeData;
+  include?: GassmaTestProfileInclude;
   omit?: GassmaTestProfileOmit;
 };
 
 declare type GassmaTestPostUpsertSingleData = {
   where: GassmaTestPostWhereUse;
   create: GassmaTestPostUse & {
-    "author"?: Gassma.NestedWriteOperation;
-    "category"?: Gassma.NestedWriteOperation;
-    "comments"?: Gassma.NestedWriteOperation;
-    "tags"?: Gassma.NestedWriteOperation;
+    "author"?: { create?: GassmaTestUserUse; connect?: GassmaTestUserWhereUse; connectOrCreate?: { where: GassmaTestUserWhereUse; create: GassmaTestUserUse } };
+    "category"?: { create?: GassmaTestCategoryUse; connect?: GassmaTestCategoryWhereUse; connectOrCreate?: { where: GassmaTestCategoryWhereUse; create: GassmaTestCategoryUse } };
+    "comments"?: { create?: GassmaTestCommentUse | GassmaTestCommentUse[]; connect?: GassmaTestCommentWhereUse | GassmaTestCommentWhereUse[]; connectOrCreate?: { where: GassmaTestCommentWhereUse; create: GassmaTestCommentUse } | { where: GassmaTestCommentWhereUse; create: GassmaTestCommentUse }[] };
+    "tags"?: { create?: GassmaTestTagUse | GassmaTestTagUse[]; connect?: GassmaTestTagWhereUse | GassmaTestTagWhereUse[]; connectOrCreate?: { where: GassmaTestTagWhereUse; create: GassmaTestTagUse } | { where: GassmaTestTagWhereUse; create: GassmaTestTagUse }[] };
   };
   update: Partial<{ [K in keyof GassmaTestPostUse]: GassmaTestPostUse[K] | Gassma.NumberOperation }> & {
-    "author"?: Gassma.NestedWriteOperation;
-    "category"?: Gassma.NestedWriteOperation;
-    "comments"?: Gassma.NestedWriteOperation;
-    "tags"?: Gassma.NestedWriteOperation;
+    "author"?: { create?: GassmaTestUserUse; connect?: GassmaTestUserWhereUse; connectOrCreate?: { where: GassmaTestUserWhereUse; create: GassmaTestUserUse } };
+    "category"?: { create?: GassmaTestCategoryUse; connect?: GassmaTestCategoryWhereUse; connectOrCreate?: { where: GassmaTestCategoryWhereUse; create: GassmaTestCategoryUse } };
+    "comments"?: { create?: GassmaTestCommentUse | GassmaTestCommentUse[]; connect?: GassmaTestCommentWhereUse | GassmaTestCommentWhereUse[]; connectOrCreate?: { where: GassmaTestCommentWhereUse; create: GassmaTestCommentUse } | { where: GassmaTestCommentWhereUse; create: GassmaTestCommentUse }[] };
+    "tags"?: { create?: GassmaTestTagUse | GassmaTestTagUse[]; connect?: GassmaTestTagWhereUse | GassmaTestTagWhereUse[]; connectOrCreate?: { where: GassmaTestTagWhereUse; create: GassmaTestTagUse } | { where: GassmaTestTagWhereUse; create: GassmaTestTagUse }[] };
   };
   select?: GassmaTestPostSelect;
-  include?: Gassma.IncludeData;
+  include?: GassmaTestPostInclude;
   omit?: GassmaTestPostOmit;
 };
 
 declare type GassmaTestCommentUpsertSingleData = {
   where: GassmaTestCommentWhereUse;
   create: GassmaTestCommentUse & {
-    "author"?: Gassma.NestedWriteOperation;
-    "post"?: Gassma.NestedWriteOperation;
+    "author"?: { create?: GassmaTestUserUse; connect?: GassmaTestUserWhereUse; connectOrCreate?: { where: GassmaTestUserWhereUse; create: GassmaTestUserUse } };
+    "post"?: { create?: GassmaTestPostUse; connect?: GassmaTestPostWhereUse; connectOrCreate?: { where: GassmaTestPostWhereUse; create: GassmaTestPostUse } };
   };
   update: Partial<{ [K in keyof GassmaTestCommentUse]: GassmaTestCommentUse[K] | Gassma.NumberOperation }> & {
-    "author"?: Gassma.NestedWriteOperation;
-    "post"?: Gassma.NestedWriteOperation;
+    "author"?: { create?: GassmaTestUserUse; connect?: GassmaTestUserWhereUse; connectOrCreate?: { where: GassmaTestUserWhereUse; create: GassmaTestUserUse } };
+    "post"?: { create?: GassmaTestPostUse; connect?: GassmaTestPostWhereUse; connectOrCreate?: { where: GassmaTestPostWhereUse; create: GassmaTestPostUse } };
   };
   select?: GassmaTestCommentSelect;
-  include?: Gassma.IncludeData;
+  include?: GassmaTestCommentInclude;
   omit?: GassmaTestCommentOmit;
 };
 
 declare type GassmaTestCategoryUpsertSingleData = {
   where: GassmaTestCategoryWhereUse;
   create: GassmaTestCategoryUse & {
-    "posts"?: Gassma.NestedWriteOperation;
-    "parent"?: Gassma.NestedWriteOperation;
-    "children"?: Gassma.NestedWriteOperation;
+    "posts"?: { create?: GassmaTestPostUse | GassmaTestPostUse[]; connect?: GassmaTestPostWhereUse | GassmaTestPostWhereUse[]; connectOrCreate?: { where: GassmaTestPostWhereUse; create: GassmaTestPostUse } | { where: GassmaTestPostWhereUse; create: GassmaTestPostUse }[] };
+    "parent"?: { create?: GassmaTestCategoryUse; connect?: GassmaTestCategoryWhereUse; connectOrCreate?: { where: GassmaTestCategoryWhereUse; create: GassmaTestCategoryUse } };
+    "children"?: { create?: GassmaTestCategoryUse | GassmaTestCategoryUse[]; connect?: GassmaTestCategoryWhereUse | GassmaTestCategoryWhereUse[]; connectOrCreate?: { where: GassmaTestCategoryWhereUse; create: GassmaTestCategoryUse } | { where: GassmaTestCategoryWhereUse; create: GassmaTestCategoryUse }[] };
   };
   update: Partial<{ [K in keyof GassmaTestCategoryUse]: GassmaTestCategoryUse[K] | Gassma.NumberOperation }> & {
-    "posts"?: Gassma.NestedWriteOperation;
-    "parent"?: Gassma.NestedWriteOperation;
-    "children"?: Gassma.NestedWriteOperation;
+    "posts"?: { create?: GassmaTestPostUse | GassmaTestPostUse[]; connect?: GassmaTestPostWhereUse | GassmaTestPostWhereUse[]; connectOrCreate?: { where: GassmaTestPostWhereUse; create: GassmaTestPostUse } | { where: GassmaTestPostWhereUse; create: GassmaTestPostUse }[] };
+    "parent"?: { create?: GassmaTestCategoryUse; connect?: GassmaTestCategoryWhereUse; connectOrCreate?: { where: GassmaTestCategoryWhereUse; create: GassmaTestCategoryUse } };
+    "children"?: { create?: GassmaTestCategoryUse | GassmaTestCategoryUse[]; connect?: GassmaTestCategoryWhereUse | GassmaTestCategoryWhereUse[]; connectOrCreate?: { where: GassmaTestCategoryWhereUse; create: GassmaTestCategoryUse } | { where: GassmaTestCategoryWhereUse; create: GassmaTestCategoryUse }[] };
   };
   select?: GassmaTestCategorySelect;
-  include?: Gassma.IncludeData;
+  include?: GassmaTestCategoryInclude;
   omit?: GassmaTestCategoryOmit;
 };
 
 declare type GassmaTestTagUpsertSingleData = {
   where: GassmaTestTagWhereUse;
   create: GassmaTestTagUse & {
-    "posts"?: Gassma.NestedWriteOperation;
+    "posts"?: { create?: GassmaTestPostUse | GassmaTestPostUse[]; connect?: GassmaTestPostWhereUse | GassmaTestPostWhereUse[]; connectOrCreate?: { where: GassmaTestPostWhereUse; create: GassmaTestPostUse } | { where: GassmaTestPostWhereUse; create: GassmaTestPostUse }[] };
   };
   update: Partial<{ [K in keyof GassmaTestTagUse]: GassmaTestTagUse[K] | Gassma.NumberOperation }> & {
-    "posts"?: Gassma.NestedWriteOperation;
+    "posts"?: { create?: GassmaTestPostUse | GassmaTestPostUse[]; connect?: GassmaTestPostWhereUse | GassmaTestPostWhereUse[]; connectOrCreate?: { where: GassmaTestPostWhereUse; create: GassmaTestPostUse } | { where: GassmaTestPostWhereUse; create: GassmaTestPostUse }[] };
   };
   select?: GassmaTestTagSelect;
-  include?: Gassma.IncludeData;
+  include?: GassmaTestTagInclude;
   omit?: GassmaTestTagOmit;
 };
 
 declare type GassmaTestProductUpsertSingleData = {
   where: GassmaTestProductWhereUse;
   create: GassmaTestProductUse & {
-    "orderItems"?: Gassma.NestedWriteOperation;
+    "orderItems"?: { create?: GassmaTestOrderItemUse | GassmaTestOrderItemUse[]; connect?: GassmaTestOrderItemWhereUse | GassmaTestOrderItemWhereUse[]; connectOrCreate?: { where: GassmaTestOrderItemWhereUse; create: GassmaTestOrderItemUse } | { where: GassmaTestOrderItemWhereUse; create: GassmaTestOrderItemUse }[] };
   };
   update: Partial<{ [K in keyof GassmaTestProductUse]: GassmaTestProductUse[K] | Gassma.NumberOperation }> & {
-    "orderItems"?: Gassma.NestedWriteOperation;
+    "orderItems"?: { create?: GassmaTestOrderItemUse | GassmaTestOrderItemUse[]; connect?: GassmaTestOrderItemWhereUse | GassmaTestOrderItemWhereUse[]; connectOrCreate?: { where: GassmaTestOrderItemWhereUse; create: GassmaTestOrderItemUse } | { where: GassmaTestOrderItemWhereUse; create: GassmaTestOrderItemUse }[] };
   };
   select?: GassmaTestProductSelect;
-  include?: Gassma.IncludeData;
+  include?: GassmaTestProductInclude;
   omit?: GassmaTestProductOmit;
 };
 
 declare type GassmaTestOrderUpsertSingleData = {
   where: GassmaTestOrderWhereUse;
   create: GassmaTestOrderUse & {
-    "user"?: Gassma.NestedWriteOperation;
-    "items"?: Gassma.NestedWriteOperation;
+    "user"?: { create?: GassmaTestUserUse; connect?: GassmaTestUserWhereUse; connectOrCreate?: { where: GassmaTestUserWhereUse; create: GassmaTestUserUse } };
+    "items"?: { create?: GassmaTestOrderItemUse | GassmaTestOrderItemUse[]; connect?: GassmaTestOrderItemWhereUse | GassmaTestOrderItemWhereUse[]; connectOrCreate?: { where: GassmaTestOrderItemWhereUse; create: GassmaTestOrderItemUse } | { where: GassmaTestOrderItemWhereUse; create: GassmaTestOrderItemUse }[] };
   };
   update: Partial<{ [K in keyof GassmaTestOrderUse]: GassmaTestOrderUse[K] | Gassma.NumberOperation }> & {
-    "user"?: Gassma.NestedWriteOperation;
-    "items"?: Gassma.NestedWriteOperation;
+    "user"?: { create?: GassmaTestUserUse; connect?: GassmaTestUserWhereUse; connectOrCreate?: { where: GassmaTestUserWhereUse; create: GassmaTestUserUse } };
+    "items"?: { create?: GassmaTestOrderItemUse | GassmaTestOrderItemUse[]; connect?: GassmaTestOrderItemWhereUse | GassmaTestOrderItemWhereUse[]; connectOrCreate?: { where: GassmaTestOrderItemWhereUse; create: GassmaTestOrderItemUse } | { where: GassmaTestOrderItemWhereUse; create: GassmaTestOrderItemUse }[] };
   };
   select?: GassmaTestOrderSelect;
-  include?: Gassma.IncludeData;
+  include?: GassmaTestOrderInclude;
   omit?: GassmaTestOrderOmit;
 };
 
 declare type GassmaTestOrderItemUpsertSingleData = {
   where: GassmaTestOrderItemWhereUse;
   create: GassmaTestOrderItemUse & {
-    "order"?: Gassma.NestedWriteOperation;
-    "product"?: Gassma.NestedWriteOperation;
+    "order"?: { create?: GassmaTestOrderUse; connect?: GassmaTestOrderWhereUse; connectOrCreate?: { where: GassmaTestOrderWhereUse; create: GassmaTestOrderUse } };
+    "product"?: { create?: GassmaTestProductUse; connect?: GassmaTestProductWhereUse; connectOrCreate?: { where: GassmaTestProductWhereUse; create: GassmaTestProductUse } };
   };
   update: Partial<{ [K in keyof GassmaTestOrderItemUse]: GassmaTestOrderItemUse[K] | Gassma.NumberOperation }> & {
-    "order"?: Gassma.NestedWriteOperation;
-    "product"?: Gassma.NestedWriteOperation;
+    "order"?: { create?: GassmaTestOrderUse; connect?: GassmaTestOrderWhereUse; connectOrCreate?: { where: GassmaTestOrderWhereUse; create: GassmaTestOrderUse } };
+    "product"?: { create?: GassmaTestProductUse; connect?: GassmaTestProductWhereUse; connectOrCreate?: { where: GassmaTestProductWhereUse; create: GassmaTestProductUse } };
   };
   select?: GassmaTestOrderItemSelect;
-  include?: Gassma.IncludeData;
+  include?: GassmaTestOrderItemInclude;
   omit?: GassmaTestOrderItemOmit;
 };
 
@@ -2547,63 +2513,63 @@ declare type GassmaTestOrderItemDeleteData = {
 declare type GassmaTestUserDeleteSingleData = {
   where: GassmaTestUserWhereUse;
   select?: GassmaTestUserSelect;
-  include?: Gassma.IncludeData;
+  include?: GassmaTestUserInclude;
   omit?: GassmaTestUserOmit;
 };
 
 declare type GassmaTestProfileDeleteSingleData = {
   where: GassmaTestProfileWhereUse;
   select?: GassmaTestProfileSelect;
-  include?: Gassma.IncludeData;
+  include?: GassmaTestProfileInclude;
   omit?: GassmaTestProfileOmit;
 };
 
 declare type GassmaTestPostDeleteSingleData = {
   where: GassmaTestPostWhereUse;
   select?: GassmaTestPostSelect;
-  include?: Gassma.IncludeData;
+  include?: GassmaTestPostInclude;
   omit?: GassmaTestPostOmit;
 };
 
 declare type GassmaTestCommentDeleteSingleData = {
   where: GassmaTestCommentWhereUse;
   select?: GassmaTestCommentSelect;
-  include?: Gassma.IncludeData;
+  include?: GassmaTestCommentInclude;
   omit?: GassmaTestCommentOmit;
 };
 
 declare type GassmaTestCategoryDeleteSingleData = {
   where: GassmaTestCategoryWhereUse;
   select?: GassmaTestCategorySelect;
-  include?: Gassma.IncludeData;
+  include?: GassmaTestCategoryInclude;
   omit?: GassmaTestCategoryOmit;
 };
 
 declare type GassmaTestTagDeleteSingleData = {
   where: GassmaTestTagWhereUse;
   select?: GassmaTestTagSelect;
-  include?: Gassma.IncludeData;
+  include?: GassmaTestTagInclude;
   omit?: GassmaTestTagOmit;
 };
 
 declare type GassmaTestProductDeleteSingleData = {
   where: GassmaTestProductWhereUse;
   select?: GassmaTestProductSelect;
-  include?: Gassma.IncludeData;
+  include?: GassmaTestProductInclude;
   omit?: GassmaTestProductOmit;
 };
 
 declare type GassmaTestOrderDeleteSingleData = {
   where: GassmaTestOrderWhereUse;
   select?: GassmaTestOrderSelect;
-  include?: Gassma.IncludeData;
+  include?: GassmaTestOrderInclude;
   omit?: GassmaTestOrderOmit;
 };
 
 declare type GassmaTestOrderItemDeleteSingleData = {
   where: GassmaTestOrderItemWhereUse;
   select?: GassmaTestOrderItemSelect;
-  include?: Gassma.IncludeData;
+  include?: GassmaTestOrderItemInclude;
   omit?: GassmaTestOrderItemOmit;
 };
 
@@ -2760,6 +2726,100 @@ declare type GassmaTestOrderItemGroupByData = GassmaTestOrderItemAggregateData &
   having?: GassmaTestOrderItemHavingUse;
 };
 
+declare type GassmaTestUserInclude = {
+  "profile"?: true | { select?: GassmaTestProfileSelect; omit?: GassmaTestProfileOmit; where?: GassmaTestProfileWhereUse; orderBy?: GassmaTestProfileOrderBy; take?: number; skip?: number; _count?: GassmaTestProfileCountValue };
+  "posts"?: true | { select?: GassmaTestPostSelect; omit?: GassmaTestPostOmit; where?: GassmaTestPostWhereUse; orderBy?: GassmaTestPostOrderBy; take?: number; skip?: number; _count?: GassmaTestPostCountValue };
+  "comments"?: true | { select?: GassmaTestCommentSelect; omit?: GassmaTestCommentOmit; where?: GassmaTestCommentWhereUse; orderBy?: GassmaTestCommentOrderBy; take?: number; skip?: number; _count?: GassmaTestCommentCountValue };
+  "orders"?: true | { select?: GassmaTestOrderSelect; omit?: GassmaTestOrderOmit; where?: GassmaTestOrderWhereUse; orderBy?: GassmaTestOrderOrderBy; take?: number; skip?: number; _count?: GassmaTestOrderCountValue };
+};
+
+declare type GassmaTestProfileInclude = {
+  "user"?: true | { select?: GassmaTestUserSelect; omit?: GassmaTestUserOmit; where?: GassmaTestUserWhereUse; orderBy?: GassmaTestUserOrderBy; take?: number; skip?: number; _count?: GassmaTestUserCountValue };
+};
+
+declare type GassmaTestPostInclude = {
+  "author"?: true | { select?: GassmaTestUserSelect; omit?: GassmaTestUserOmit; where?: GassmaTestUserWhereUse; orderBy?: GassmaTestUserOrderBy; take?: number; skip?: number; _count?: GassmaTestUserCountValue };
+  "category"?: true | { select?: GassmaTestCategorySelect; omit?: GassmaTestCategoryOmit; where?: GassmaTestCategoryWhereUse; orderBy?: GassmaTestCategoryOrderBy; take?: number; skip?: number; _count?: GassmaTestCategoryCountValue };
+  "comments"?: true | { select?: GassmaTestCommentSelect; omit?: GassmaTestCommentOmit; where?: GassmaTestCommentWhereUse; orderBy?: GassmaTestCommentOrderBy; take?: number; skip?: number; _count?: GassmaTestCommentCountValue };
+  "tags"?: true | { select?: GassmaTestTagSelect; omit?: GassmaTestTagOmit; where?: GassmaTestTagWhereUse; orderBy?: GassmaTestTagOrderBy; take?: number; skip?: number; _count?: GassmaTestTagCountValue };
+};
+
+declare type GassmaTestCommentInclude = {
+  "author"?: true | { select?: GassmaTestUserSelect; omit?: GassmaTestUserOmit; where?: GassmaTestUserWhereUse; orderBy?: GassmaTestUserOrderBy; take?: number; skip?: number; _count?: GassmaTestUserCountValue };
+  "post"?: true | { select?: GassmaTestPostSelect; omit?: GassmaTestPostOmit; where?: GassmaTestPostWhereUse; orderBy?: GassmaTestPostOrderBy; take?: number; skip?: number; _count?: GassmaTestPostCountValue };
+};
+
+declare type GassmaTestCategoryInclude = {
+  "posts"?: true | { select?: GassmaTestPostSelect; omit?: GassmaTestPostOmit; where?: GassmaTestPostWhereUse; orderBy?: GassmaTestPostOrderBy; take?: number; skip?: number; _count?: GassmaTestPostCountValue };
+  "parent"?: true | { select?: GassmaTestCategorySelect; omit?: GassmaTestCategoryOmit; where?: GassmaTestCategoryWhereUse; orderBy?: GassmaTestCategoryOrderBy; take?: number; skip?: number; _count?: GassmaTestCategoryCountValue };
+  "children"?: true | { select?: GassmaTestCategorySelect; omit?: GassmaTestCategoryOmit; where?: GassmaTestCategoryWhereUse; orderBy?: GassmaTestCategoryOrderBy; take?: number; skip?: number; _count?: GassmaTestCategoryCountValue };
+};
+
+declare type GassmaTestTagInclude = {
+  "posts"?: true | { select?: GassmaTestPostSelect; omit?: GassmaTestPostOmit; where?: GassmaTestPostWhereUse; orderBy?: GassmaTestPostOrderBy; take?: number; skip?: number; _count?: GassmaTestPostCountValue };
+};
+
+declare type GassmaTestProductInclude = {
+  "orderItems"?: true | { select?: GassmaTestOrderItemSelect; omit?: GassmaTestOrderItemOmit; where?: GassmaTestOrderItemWhereUse; orderBy?: GassmaTestOrderItemOrderBy; take?: number; skip?: number; _count?: GassmaTestOrderItemCountValue };
+};
+
+declare type GassmaTestOrderInclude = {
+  "user"?: true | { select?: GassmaTestUserSelect; omit?: GassmaTestUserOmit; where?: GassmaTestUserWhereUse; orderBy?: GassmaTestUserOrderBy; take?: number; skip?: number; _count?: GassmaTestUserCountValue };
+  "items"?: true | { select?: GassmaTestOrderItemSelect; omit?: GassmaTestOrderItemOmit; where?: GassmaTestOrderItemWhereUse; orderBy?: GassmaTestOrderItemOrderBy; take?: number; skip?: number; _count?: GassmaTestOrderItemCountValue };
+};
+
+declare type GassmaTestOrderItemInclude = {
+  "order"?: true | { select?: GassmaTestOrderSelect; omit?: GassmaTestOrderOmit; where?: GassmaTestOrderWhereUse; orderBy?: GassmaTestOrderOrderBy; take?: number; skip?: number; _count?: GassmaTestOrderCountValue };
+  "product"?: true | { select?: GassmaTestProductSelect; omit?: GassmaTestProductOmit; where?: GassmaTestProductWhereUse; orderBy?: GassmaTestProductOrderBy; take?: number; skip?: number; _count?: GassmaTestProductCountValue };
+};
+
+declare type GassmaTestUserCountValue = true | { select: {
+    "profile"?: true | { where?: GassmaTestProfileWhereUse };
+    "posts"?: true | { where?: GassmaTestPostWhereUse };
+    "comments"?: true | { where?: GassmaTestCommentWhereUse };
+    "orders"?: true | { where?: GassmaTestOrderWhereUse };
+  } };
+
+declare type GassmaTestProfileCountValue = true | { select: {
+    "user"?: true | { where?: GassmaTestUserWhereUse };
+  } };
+
+declare type GassmaTestPostCountValue = true | { select: {
+    "author"?: true | { where?: GassmaTestUserWhereUse };
+    "category"?: true | { where?: GassmaTestCategoryWhereUse };
+    "comments"?: true | { where?: GassmaTestCommentWhereUse };
+    "tags"?: true | { where?: GassmaTestTagWhereUse };
+  } };
+
+declare type GassmaTestCommentCountValue = true | { select: {
+    "author"?: true | { where?: GassmaTestUserWhereUse };
+    "post"?: true | { where?: GassmaTestPostWhereUse };
+  } };
+
+declare type GassmaTestCategoryCountValue = true | { select: {
+    "posts"?: true | { where?: GassmaTestPostWhereUse };
+    "parent"?: true | { where?: GassmaTestCategoryWhereUse };
+    "children"?: true | { where?: GassmaTestCategoryWhereUse };
+  } };
+
+declare type GassmaTestTagCountValue = true | { select: {
+    "posts"?: true | { where?: GassmaTestPostWhereUse };
+  } };
+
+declare type GassmaTestProductCountValue = true | { select: {
+    "orderItems"?: true | { where?: GassmaTestOrderItemWhereUse };
+  } };
+
+declare type GassmaTestOrderCountValue = true | { select: {
+    "user"?: true | { where?: GassmaTestUserWhereUse };
+    "items"?: true | { where?: GassmaTestOrderItemWhereUse };
+  } };
+
+declare type GassmaTestOrderItemCountValue = true | { select: {
+    "order"?: true | { where?: GassmaTestOrderWhereUse };
+    "product"?: true | { where?: GassmaTestProductWhereUse };
+  } };
+
 declare type GassmaTestUserOrderBy = {
   "id"?: "asc" | "desc" | Gassma.SortOrderInput;
   "email"?: "asc" | "desc" | Gassma.SortOrderInput;
@@ -2768,11 +2828,11 @@ declare type GassmaTestUserOrderBy = {
   "isActive"?: "asc" | "desc" | Gassma.SortOrderInput;
   "role"?: "asc" | "desc" | Gassma.SortOrderInput;
   "createdAt"?: "asc" | "desc" | Gassma.SortOrderInput;
-  "profile"?: Gassma.RelationOrderBy;
-  "posts"?: Gassma.RelationOrderBy;
-  "comments"?: Gassma.RelationOrderBy;
-  "orders"?: Gassma.RelationOrderBy;
-  "_count"?: Gassma.RelationOrderBy;
+  "profile"?: GassmaTestProfileOrderBy;
+  "posts"?: GassmaTestPostOrderBy;
+  "comments"?: GassmaTestCommentOrderBy;
+  "orders"?: GassmaTestOrderOrderBy;
+  "_count"?: { "profile"?: "asc" | "desc"; "posts"?: "asc" | "desc"; "comments"?: "asc" | "desc"; "orders"?: "asc" | "desc" };
 };
 
 declare type GassmaTestProfileOrderBy = {
@@ -2780,8 +2840,8 @@ declare type GassmaTestProfileOrderBy = {
   "bio"?: "asc" | "desc" | Gassma.SortOrderInput;
   "website"?: "asc" | "desc" | Gassma.SortOrderInput;
   "userId"?: "asc" | "desc" | Gassma.SortOrderInput;
-  "user"?: Gassma.RelationOrderBy;
-  "_count"?: Gassma.RelationOrderBy;
+  "user"?: GassmaTestUserOrderBy;
+  "_count"?: { "user"?: "asc" | "desc" };
 };
 
 declare type GassmaTestPostOrderBy = {
@@ -2794,11 +2854,11 @@ declare type GassmaTestPostOrderBy = {
   "authorId"?: "asc" | "desc" | Gassma.SortOrderInput;
   "categoryId"?: "asc" | "desc" | Gassma.SortOrderInput;
   "createdAt"?: "asc" | "desc" | Gassma.SortOrderInput;
-  "author"?: Gassma.RelationOrderBy;
-  "category"?: Gassma.RelationOrderBy;
-  "comments"?: Gassma.RelationOrderBy;
-  "tags"?: Gassma.RelationOrderBy;
-  "_count"?: Gassma.RelationOrderBy;
+  "author"?: GassmaTestUserOrderBy;
+  "category"?: GassmaTestCategoryOrderBy;
+  "comments"?: GassmaTestCommentOrderBy;
+  "tags"?: GassmaTestTagOrderBy;
+  "_count"?: { "author"?: "asc" | "desc"; "category"?: "asc" | "desc"; "comments"?: "asc" | "desc"; "tags"?: "asc" | "desc" };
 };
 
 declare type GassmaTestCommentOrderBy = {
@@ -2807,26 +2867,26 @@ declare type GassmaTestCommentOrderBy = {
   "authorId"?: "asc" | "desc" | Gassma.SortOrderInput;
   "postId"?: "asc" | "desc" | Gassma.SortOrderInput;
   "createdAt"?: "asc" | "desc" | Gassma.SortOrderInput;
-  "author"?: Gassma.RelationOrderBy;
-  "post"?: Gassma.RelationOrderBy;
-  "_count"?: Gassma.RelationOrderBy;
+  "author"?: GassmaTestUserOrderBy;
+  "post"?: GassmaTestPostOrderBy;
+  "_count"?: { "author"?: "asc" | "desc"; "post"?: "asc" | "desc" };
 };
 
 declare type GassmaTestCategoryOrderBy = {
   "id"?: "asc" | "desc" | Gassma.SortOrderInput;
   "name"?: "asc" | "desc" | Gassma.SortOrderInput;
   "parentId"?: "asc" | "desc" | Gassma.SortOrderInput;
-  "posts"?: Gassma.RelationOrderBy;
-  "parent"?: Gassma.RelationOrderBy;
-  "children"?: Gassma.RelationOrderBy;
-  "_count"?: Gassma.RelationOrderBy;
+  "posts"?: GassmaTestPostOrderBy;
+  "parent"?: GassmaTestCategoryOrderBy;
+  "children"?: GassmaTestCategoryOrderBy;
+  "_count"?: { "posts"?: "asc" | "desc"; "parent"?: "asc" | "desc"; "children"?: "asc" | "desc" };
 };
 
 declare type GassmaTestTagOrderBy = {
   "id"?: "asc" | "desc" | Gassma.SortOrderInput;
   "name"?: "asc" | "desc" | Gassma.SortOrderInput;
-  "posts"?: Gassma.RelationOrderBy;
-  "_count"?: Gassma.RelationOrderBy;
+  "posts"?: GassmaTestPostOrderBy;
+  "_count"?: { "posts"?: "asc" | "desc" };
 };
 
 declare type GassmaTestProductOrderBy = {
@@ -2836,8 +2896,8 @@ declare type GassmaTestProductOrderBy = {
   "stock"?: "asc" | "desc" | Gassma.SortOrderInput;
   "status"?: "asc" | "desc" | Gassma.SortOrderInput;
   "createdAt"?: "asc" | "desc" | Gassma.SortOrderInput;
-  "orderItems"?: Gassma.RelationOrderBy;
-  "_count"?: Gassma.RelationOrderBy;
+  "orderItems"?: GassmaTestOrderItemOrderBy;
+  "_count"?: { "orderItems"?: "asc" | "desc" };
 };
 
 declare type GassmaTestOrderOrderBy = {
@@ -2847,9 +2907,9 @@ declare type GassmaTestOrderOrderBy = {
   "quantity"?: "asc" | "desc" | Gassma.SortOrderInput;
   "status"?: "asc" | "desc" | Gassma.SortOrderInput;
   "createdAt"?: "asc" | "desc" | Gassma.SortOrderInput;
-  "user"?: Gassma.RelationOrderBy;
-  "items"?: Gassma.RelationOrderBy;
-  "_count"?: Gassma.RelationOrderBy;
+  "user"?: GassmaTestUserOrderBy;
+  "items"?: GassmaTestOrderItemOrderBy;
+  "_count"?: { "user"?: "asc" | "desc"; "items"?: "asc" | "desc" };
 };
 
 declare type GassmaTestOrderItemOrderBy = {
@@ -2858,9 +2918,9 @@ declare type GassmaTestOrderItemOrderBy = {
   "productId"?: "asc" | "desc" | Gassma.SortOrderInput;
   "quantity"?: "asc" | "desc" | Gassma.SortOrderInput;
   "unitPrice"?: "asc" | "desc" | Gassma.SortOrderInput;
-  "order"?: Gassma.RelationOrderBy;
-  "product"?: Gassma.RelationOrderBy;
-  "_count"?: Gassma.RelationOrderBy;
+  "order"?: GassmaTestOrderOrderBy;
+  "product"?: GassmaTestProductOrderBy;
+  "_count"?: { "order"?: "asc" | "desc"; "product"?: "asc" | "desc" };
 };
 
 declare type GassmaTestUserSelect = {
