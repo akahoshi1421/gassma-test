@@ -6,7 +6,7 @@ import { userData } from "../../consts/userData";
 import { profileData } from "../../consts/profileData";
 import { postData } from "../../consts/postData";
 import { commentData } from "../../consts/commentData";
-import { tagData } from "../../consts/tagData";
+import { postToTagData } from "../../consts/postToTagData";
 
 function testNestedUpdate() {
   const client = new GassmaClient();
@@ -18,6 +18,8 @@ function testNestedUpdate() {
   testNestedConnect(client);
   testNestedDisconnect(client);
   testNestedConnectOrCreate(client);
+  testNestedSetOneToMany(client);
+  testNestedSetManyToMany(client);
 
   Logger.log("✅ testNestedUpdate: all passed");
 }
@@ -211,6 +213,69 @@ function testNestedConnectOrCreate(client: GassmaClient) {
   commentSnapshot.assertRowEquals({ id: 951 }, { text: "connectOrCreate new" });
 
   resetSheet("Comment", commentData);
+}
+
+function testNestedSetOneToMany(client: GassmaClient) {
+  // User id=3 の comments を set で入替え
+  // まず現在の comments を確認
+  const beforeComments = client.sheets.Comment.findMany({
+    where: { authorId: 3 },
+  });
+
+  // Comment id=1,2 を User id=3 に set（既存を切り離して新しく紐付け）
+  client.sheets.User.update({
+    where: { id: 3 },
+    data: {
+      comments: {
+        set: [{ id: 1 }, { id: 2 }],
+      },
+    },
+  });
+
+  // set したレコードが紐付いているか確認
+  const afterComments = client.sheets.Comment.findMany({
+    where: { authorId: 3 },
+  });
+  assertEquals(afterComments.length, 2, "nested set oneToMany count");
+
+  const afterIds = afterComments.map((c) => c.id);
+  if (afterIds.indexOf(1) === -1 || afterIds.indexOf(2) === -1) {
+    throw new Error(`nested set oneToMany: expected ids [1,2] but got ${JSON.stringify(afterIds)}`);
+  }
+
+  // 元の comments は authorId が null になっているはず
+  beforeComments.forEach((c) => {
+    if (c.id !== 1 && c.id !== 2) {
+      const updated = client.sheets.Comment.findFirst({ where: { id: c.id } });
+      if (updated && updated.authorId === 3) {
+        throw new Error(`nested set oneToMany: comment ${c.id} should be disconnected`);
+      }
+    }
+  });
+
+  resetSheet("Comment", commentData);
+}
+
+function testNestedSetManyToMany(client: GassmaClient) {
+  // Post id=1 の tags を set で入替え（Tag id=1, id=2 のみに）
+  client.sheets.Post.update({
+    where: { id: 1 },
+    data: {
+      tags: {
+        set: [{ id: 1 }, { id: 2 }],
+      },
+    },
+  });
+
+  // pivot テーブルで確認
+  const afterPivot = getSheetSnapshot("_PostToTag");
+  afterPivot.assertRowExists({ postId: 1, tagId: 1 });
+  afterPivot.assertRowExists({ postId: 1, tagId: 2 });
+  // 他のtagは紐付かない
+  afterPivot.assertRowNotExists({ postId: 1, tagId: 3 });
+
+  // 元に戻す
+  resetSheet("_PostToTag", postToTagData);
 }
 
 export { testNestedUpdate };
