@@ -8,6 +8,7 @@ function testGlobalOmit() {
   testGlobalOmitMultipleModels();
   testGlobalOmitOverrideBySelect();
   testGlobalOmitOverrideByOmit();
+  testGlobalOmitFalseOverride();
 
   Logger.log("✅ testGlobalOmit: all passed");
 }
@@ -116,6 +117,46 @@ function testGlobalOmitOverrideByOmit() {
   }
   if (keys.indexOf("id") === -1) {
     throw new Error("globalOmit omit override: id should be present");
+  }
+}
+
+function testGlobalOmitFalseOverride() {
+  // omit: { field: false } でグローバルomitを解除できる（Prisma の仕様）
+  const client = new GassmaClient({
+    omit: { User: { createdAt: true, age: true } },
+  });
+
+  // createdAt を false で解除、age はグローバルomitのまま
+  const user = client.sheets.User.findFirst({
+    where: { id: 1 },
+    omit: { createdAt: false },
+  });
+  if (!user) throw new Error("globalOmit false override: got null");
+
+  const keys = Object.keys(user);
+  if (keys.indexOf("createdAt") === -1) {
+    throw new Error("globalOmit false override: createdAt should be present (overridden by false)");
+  }
+  if (keys.indexOf("age") !== -1) {
+    throw new Error("globalOmit false override: age should still be omitted");
+  }
+  if (keys.indexOf("id") === -1) {
+    throw new Error("globalOmit false override: id should be present");
+  }
+
+  // findMany でも同様
+  const users = client.sheets.User.findMany({
+    where: { id: 1 },
+    omit: { createdAt: false, age: false },
+  });
+  assertEquals(users.length, 1, "globalOmit false override findMany count");
+
+  const manyKeys = Object.keys(users[0]);
+  if (manyKeys.indexOf("createdAt") === -1) {
+    throw new Error("globalOmit false override findMany: createdAt should be present");
+  }
+  if (manyKeys.indexOf("age") === -1) {
+    throw new Error("globalOmit false override findMany: age should be present");
   }
 }
 
