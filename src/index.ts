@@ -6,6 +6,7 @@ import { testCreateAll } from "./test/create";
 import { testDeleteAll } from "./test/delete";
 import { testUpdateAll } from "./test/update";
 import { testUpsertAll } from "./test/upsert";
+import { testErrorAll } from "./test/error";
 
 function main() {
   resetAllSheets();
@@ -14,6 +15,7 @@ function main() {
   testDeleteAll();
   testUpdateAll();
   testUpsertAll();
+  testErrorAll();
 }
 
-export { main, getSheetSnapshot, resetAllSheets, resetSheet, testRead, testCreateAll, testDeleteAll, testUpdateAll, testUpsertAll };
+export { main, getSheetSnapshot, resetAllSheets, resetSheet, testRead, testCreateAll, testDeleteAll, testUpdateAll, testUpsertAll, testErrorAll };
