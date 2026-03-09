@@ -47,6 +47,10 @@ declare namespace Gassma {
     isNot?: Record<string, unknown>;
   };
 
+  type TrueKeys<T> = { [K in keyof T]: T[K] extends true ? K : never }[keyof T];
+  type FalseKeys<T> = { [K in keyof T]: T[K] extends false ? K : never }[keyof T];
+  type ResolveOmitKeys<GO, QO> = Exclude<TrueKeys<GO>, FalseKeys<QO>> | TrueKeys<QO>;
+
   type ManyReturn = {
     count: number;
   };
@@ -193,6 +197,7 @@ declare namespace Gassma {
     "Test": {
       sheets: GassmaTestSheet;
       options: GassmaTestClientOptions;
+      globalOmitConfig: GassmaTestGlobalOmitConfig;
     };
   }
 }
@@ -208,24 +213,24 @@ declare type GassmaTestGlobalOmitConfig = {
   "Order"?: GassmaTestOrderOmit;
   "OrderItem"?: GassmaTestOrderItemOmit;
 };
-declare type GassmaTestClientOptions = {
+declare type GassmaTestClientOptions<O extends GassmaTestGlobalOmitConfig = {}> = {
   id?: string;
   relations?: Gassma.RelationsConfig;
-  omit?: GassmaTestGlobalOmitConfig;
+  omit?: O;
 };
-declare type GassmaTestSheet = {
-  "User": GassmaTestUserController;
-  "Profile": GassmaTestProfileController;
-  "Post": GassmaTestPostController;
-  "Comment": GassmaTestCommentController;
-  "Category": GassmaTestCategoryController;
-  "Tag": GassmaTestTagController;
-  "Product": GassmaTestProductController;
-  "Order": GassmaTestOrderController;
-  "OrderItem": GassmaTestOrderItemController;
+declare type GassmaTestSheet<O extends GassmaTestGlobalOmitConfig = {}> = {
+  "User": GassmaTestUserController<O extends { "User": infer UO } ? UO extends GassmaTestUserOmit ? UO : {} : {}>;
+  "Profile": GassmaTestProfileController<O extends { "Profile": infer UO } ? UO extends GassmaTestProfileOmit ? UO : {} : {}>;
+  "Post": GassmaTestPostController<O extends { "Post": infer UO } ? UO extends GassmaTestPostOmit ? UO : {} : {}>;
+  "Comment": GassmaTestCommentController<O extends { "Comment": infer UO } ? UO extends GassmaTestCommentOmit ? UO : {} : {}>;
+  "Category": GassmaTestCategoryController<O extends { "Category": infer UO } ? UO extends GassmaTestCategoryOmit ? UO : {} : {}>;
+  "Tag": GassmaTestTagController<O extends { "Tag": infer UO } ? UO extends GassmaTestTagOmit ? UO : {} : {}>;
+  "Product": GassmaTestProductController<O extends { "Product": infer UO } ? UO extends GassmaTestProductOmit ? UO : {} : {}>;
+  "Order": GassmaTestOrderController<O extends { "Order": infer UO } ? UO extends GassmaTestOrderOmit ? UO : {} : {}>;
+  "OrderItem": GassmaTestOrderItemController<O extends { "OrderItem": infer UO } ? UO extends GassmaTestOrderItemOmit ? UO : {} : {}>;
 };
 
-declare class GassmaTestUserController {
+declare class GassmaTestUserController<GO extends GassmaTestUserOmit = {}> {
   constructor(sheetName: string, id?: string);
 
   readonly fields: Record<string, Gassma.FieldRef>;
@@ -236,23 +241,23 @@ declare class GassmaTestUserController {
   ): void;
   createMany(createdData: GassmaTestUserCreateManyData): CreateManyReturn;
   createManyAndReturn(createdData: GassmaTestUserCreateManyData): Record<string, unknown>[];
-  create<T extends GassmaTestUserCreateData>(createdData: T): GassmaTestUserFindResult<T["select"]>;
-  findFirst<T extends GassmaTestUserFindData>(findData: T): GassmaTestUserFindResult<T["select"]> | null;
-  findFirstOrThrow<T extends GassmaTestUserFindData>(findData: T): GassmaTestUserFindResult<T["select"]>;
-  findMany<T extends GassmaTestUserFindManyData>(findData: T): GassmaTestUserFindResult<T["select"]>[];
-  update<T extends GassmaTestUserUpdateSingleData>(updateData: T): GassmaTestUserFindResult<T["select"]> | null;
+  create<T extends GassmaTestUserCreateData>(createdData: T): GassmaTestUserFindResult<T["select"], T["omit"], GO>;
+  findFirst<T extends GassmaTestUserFindData>(findData: T): GassmaTestUserFindResult<T["select"], T["omit"], GO> | null;
+  findFirstOrThrow<T extends GassmaTestUserFindData>(findData: T): GassmaTestUserFindResult<T["select"], T["omit"], GO>;
+  findMany<T extends GassmaTestUserFindManyData>(findData: T): GassmaTestUserFindResult<T["select"], T["omit"], GO>[];
+  update<T extends GassmaTestUserUpdateSingleData>(updateData: T): GassmaTestUserFindResult<T["select"], T["omit"], GO> | null;
   updateMany(updateData: GassmaTestUserUpdateData): UpdateManyReturn;
   updateManyAndReturn(updateData: GassmaTestUserUpdateData): Record<string, unknown>[];
-  upsert<T extends GassmaTestUserUpsertSingleData>(upsertData: T): GassmaTestUserFindResult<T["select"]>;
+  upsert<T extends GassmaTestUserUpsertSingleData>(upsertData: T): GassmaTestUserFindResult<T["select"], T["omit"], GO>;
   upsertMany(upsertData: GassmaTestUserUpsertData): UpsertManyReturn;
-  delete<T extends GassmaTestUserDeleteSingleData>(deleteData: T): GassmaTestUserFindResult<T["select"]> | null;
+  delete<T extends GassmaTestUserDeleteSingleData>(deleteData: T): GassmaTestUserFindResult<T["select"], T["omit"], GO> | null;
   deleteMany(deleteData: GassmaTestUserDeleteData): DeleteManyReturn;
   aggregate<T extends GassmaTestUserAggregateData>(aggregateData: T): GassmaTestUserAggregateResult<T>;
   count(coutData: GassmaTestUserCountData): number;
   groupBy<T extends GassmaTestUserGroupByData>(groupByData: T): GassmaTestUserGroupByResult<T>[];
 }
 
-declare class GassmaTestProfileController {
+declare class GassmaTestProfileController<GO extends GassmaTestProfileOmit = {}> {
   constructor(sheetName: string, id?: string);
 
   readonly fields: Record<string, Gassma.FieldRef>;
@@ -263,23 +268,23 @@ declare class GassmaTestProfileController {
   ): void;
   createMany(createdData: GassmaTestProfileCreateManyData): CreateManyReturn;
   createManyAndReturn(createdData: GassmaTestProfileCreateManyData): Record<string, unknown>[];
-  create<T extends GassmaTestProfileCreateData>(createdData: T): GassmaTestProfileFindResult<T["select"]>;
-  findFirst<T extends GassmaTestProfileFindData>(findData: T): GassmaTestProfileFindResult<T["select"]> | null;
-  findFirstOrThrow<T extends GassmaTestProfileFindData>(findData: T): GassmaTestProfileFindResult<T["select"]>;
-  findMany<T extends GassmaTestProfileFindManyData>(findData: T): GassmaTestProfileFindResult<T["select"]>[];
-  update<T extends GassmaTestProfileUpdateSingleData>(updateData: T): GassmaTestProfileFindResult<T["select"]> | null;
+  create<T extends GassmaTestProfileCreateData>(createdData: T): GassmaTestProfileFindResult<T["select"], T["omit"], GO>;
+  findFirst<T extends GassmaTestProfileFindData>(findData: T): GassmaTestProfileFindResult<T["select"], T["omit"], GO> | null;
+  findFirstOrThrow<T extends GassmaTestProfileFindData>(findData: T): GassmaTestProfileFindResult<T["select"], T["omit"], GO>;
+  findMany<T extends GassmaTestProfileFindManyData>(findData: T): GassmaTestProfileFindResult<T["select"], T["omit"], GO>[];
+  update<T extends GassmaTestProfileUpdateSingleData>(updateData: T): GassmaTestProfileFindResult<T["select"], T["omit"], GO> | null;
   updateMany(updateData: GassmaTestProfileUpdateData): UpdateManyReturn;
   updateManyAndReturn(updateData: GassmaTestProfileUpdateData): Record<string, unknown>[];
-  upsert<T extends GassmaTestProfileUpsertSingleData>(upsertData: T): GassmaTestProfileFindResult<T["select"]>;
+  upsert<T extends GassmaTestProfileUpsertSingleData>(upsertData: T): GassmaTestProfileFindResult<T["select"], T["omit"], GO>;
   upsertMany(upsertData: GassmaTestProfileUpsertData): UpsertManyReturn;
-  delete<T extends GassmaTestProfileDeleteSingleData>(deleteData: T): GassmaTestProfileFindResult<T["select"]> | null;
+  delete<T extends GassmaTestProfileDeleteSingleData>(deleteData: T): GassmaTestProfileFindResult<T["select"], T["omit"], GO> | null;
   deleteMany(deleteData: GassmaTestProfileDeleteData): DeleteManyReturn;
   aggregate<T extends GassmaTestProfileAggregateData>(aggregateData: T): GassmaTestProfileAggregateResult<T>;
   count(coutData: GassmaTestProfileCountData): number;
   groupBy<T extends GassmaTestProfileGroupByData>(groupByData: T): GassmaTestProfileGroupByResult<T>[];
 }
 
-declare class GassmaTestPostController {
+declare class GassmaTestPostController<GO extends GassmaTestPostOmit = {}> {
   constructor(sheetName: string, id?: string);
 
   readonly fields: Record<string, Gassma.FieldRef>;
@@ -290,23 +295,23 @@ declare class GassmaTestPostController {
   ): void;
   createMany(createdData: GassmaTestPostCreateManyData): CreateManyReturn;
   createManyAndReturn(createdData: GassmaTestPostCreateManyData): Record<string, unknown>[];
-  create<T extends GassmaTestPostCreateData>(createdData: T): GassmaTestPostFindResult<T["select"]>;
-  findFirst<T extends GassmaTestPostFindData>(findData: T): GassmaTestPostFindResult<T["select"]> | null;
-  findFirstOrThrow<T extends GassmaTestPostFindData>(findData: T): GassmaTestPostFindResult<T["select"]>;
-  findMany<T extends GassmaTestPostFindManyData>(findData: T): GassmaTestPostFindResult<T["select"]>[];
-  update<T extends GassmaTestPostUpdateSingleData>(updateData: T): GassmaTestPostFindResult<T["select"]> | null;
+  create<T extends GassmaTestPostCreateData>(createdData: T): GassmaTestPostFindResult<T["select"], T["omit"], GO>;
+  findFirst<T extends GassmaTestPostFindData>(findData: T): GassmaTestPostFindResult<T["select"], T["omit"], GO> | null;
+  findFirstOrThrow<T extends GassmaTestPostFindData>(findData: T): GassmaTestPostFindResult<T["select"], T["omit"], GO>;
+  findMany<T extends GassmaTestPostFindManyData>(findData: T): GassmaTestPostFindResult<T["select"], T["omit"], GO>[];
+  update<T extends GassmaTestPostUpdateSingleData>(updateData: T): GassmaTestPostFindResult<T["select"], T["omit"], GO> | null;
   updateMany(updateData: GassmaTestPostUpdateData): UpdateManyReturn;
   updateManyAndReturn(updateData: GassmaTestPostUpdateData): Record<string, unknown>[];
-  upsert<T extends GassmaTestPostUpsertSingleData>(upsertData: T): GassmaTestPostFindResult<T["select"]>;
+  upsert<T extends GassmaTestPostUpsertSingleData>(upsertData: T): GassmaTestPostFindResult<T["select"], T["omit"], GO>;
   upsertMany(upsertData: GassmaTestPostUpsertData): UpsertManyReturn;
-  delete<T extends GassmaTestPostDeleteSingleData>(deleteData: T): GassmaTestPostFindResult<T["select"]> | null;
+  delete<T extends GassmaTestPostDeleteSingleData>(deleteData: T): GassmaTestPostFindResult<T["select"], T["omit"], GO> | null;
   deleteMany(deleteData: GassmaTestPostDeleteData): DeleteManyReturn;
   aggregate<T extends GassmaTestPostAggregateData>(aggregateData: T): GassmaTestPostAggregateResult<T>;
   count(coutData: GassmaTestPostCountData): number;
   groupBy<T extends GassmaTestPostGroupByData>(groupByData: T): GassmaTestPostGroupByResult<T>[];
 }
 
-declare class GassmaTestCommentController {
+declare class GassmaTestCommentController<GO extends GassmaTestCommentOmit = {}> {
   constructor(sheetName: string, id?: string);
 
   readonly fields: Record<string, Gassma.FieldRef>;
@@ -317,23 +322,23 @@ declare class GassmaTestCommentController {
   ): void;
   createMany(createdData: GassmaTestCommentCreateManyData): CreateManyReturn;
   createManyAndReturn(createdData: GassmaTestCommentCreateManyData): Record<string, unknown>[];
-  create<T extends GassmaTestCommentCreateData>(createdData: T): GassmaTestCommentFindResult<T["select"]>;
-  findFirst<T extends GassmaTestCommentFindData>(findData: T): GassmaTestCommentFindResult<T["select"]> | null;
-  findFirstOrThrow<T extends GassmaTestCommentFindData>(findData: T): GassmaTestCommentFindResult<T["select"]>;
-  findMany<T extends GassmaTestCommentFindManyData>(findData: T): GassmaTestCommentFindResult<T["select"]>[];
-  update<T extends GassmaTestCommentUpdateSingleData>(updateData: T): GassmaTestCommentFindResult<T["select"]> | null;
+  create<T extends GassmaTestCommentCreateData>(createdData: T): GassmaTestCommentFindResult<T["select"], T["omit"], GO>;
+  findFirst<T extends GassmaTestCommentFindData>(findData: T): GassmaTestCommentFindResult<T["select"], T["omit"], GO> | null;
+  findFirstOrThrow<T extends GassmaTestCommentFindData>(findData: T): GassmaTestCommentFindResult<T["select"], T["omit"], GO>;
+  findMany<T extends GassmaTestCommentFindManyData>(findData: T): GassmaTestCommentFindResult<T["select"], T["omit"], GO>[];
+  update<T extends GassmaTestCommentUpdateSingleData>(updateData: T): GassmaTestCommentFindResult<T["select"], T["omit"], GO> | null;
   updateMany(updateData: GassmaTestCommentUpdateData): UpdateManyReturn;
   updateManyAndReturn(updateData: GassmaTestCommentUpdateData): Record<string, unknown>[];
-  upsert<T extends GassmaTestCommentUpsertSingleData>(upsertData: T): GassmaTestCommentFindResult<T["select"]>;
+  upsert<T extends GassmaTestCommentUpsertSingleData>(upsertData: T): GassmaTestCommentFindResult<T["select"], T["omit"], GO>;
   upsertMany(upsertData: GassmaTestCommentUpsertData): UpsertManyReturn;
-  delete<T extends GassmaTestCommentDeleteSingleData>(deleteData: T): GassmaTestCommentFindResult<T["select"]> | null;
+  delete<T extends GassmaTestCommentDeleteSingleData>(deleteData: T): GassmaTestCommentFindResult<T["select"], T["omit"], GO> | null;
   deleteMany(deleteData: GassmaTestCommentDeleteData): DeleteManyReturn;
   aggregate<T extends GassmaTestCommentAggregateData>(aggregateData: T): GassmaTestCommentAggregateResult<T>;
   count(coutData: GassmaTestCommentCountData): number;
   groupBy<T extends GassmaTestCommentGroupByData>(groupByData: T): GassmaTestCommentGroupByResult<T>[];
 }
 
-declare class GassmaTestCategoryController {
+declare class GassmaTestCategoryController<GO extends GassmaTestCategoryOmit = {}> {
   constructor(sheetName: string, id?: string);
 
   readonly fields: Record<string, Gassma.FieldRef>;
@@ -344,23 +349,23 @@ declare class GassmaTestCategoryController {
   ): void;
   createMany(createdData: GassmaTestCategoryCreateManyData): CreateManyReturn;
   createManyAndReturn(createdData: GassmaTestCategoryCreateManyData): Record<string, unknown>[];
-  create<T extends GassmaTestCategoryCreateData>(createdData: T): GassmaTestCategoryFindResult<T["select"]>;
-  findFirst<T extends GassmaTestCategoryFindData>(findData: T): GassmaTestCategoryFindResult<T["select"]> | null;
-  findFirstOrThrow<T extends GassmaTestCategoryFindData>(findData: T): GassmaTestCategoryFindResult<T["select"]>;
-  findMany<T extends GassmaTestCategoryFindManyData>(findData: T): GassmaTestCategoryFindResult<T["select"]>[];
-  update<T extends GassmaTestCategoryUpdateSingleData>(updateData: T): GassmaTestCategoryFindResult<T["select"]> | null;
+  create<T extends GassmaTestCategoryCreateData>(createdData: T): GassmaTestCategoryFindResult<T["select"], T["omit"], GO>;
+  findFirst<T extends GassmaTestCategoryFindData>(findData: T): GassmaTestCategoryFindResult<T["select"], T["omit"], GO> | null;
+  findFirstOrThrow<T extends GassmaTestCategoryFindData>(findData: T): GassmaTestCategoryFindResult<T["select"], T["omit"], GO>;
+  findMany<T extends GassmaTestCategoryFindManyData>(findData: T): GassmaTestCategoryFindResult<T["select"], T["omit"], GO>[];
+  update<T extends GassmaTestCategoryUpdateSingleData>(updateData: T): GassmaTestCategoryFindResult<T["select"], T["omit"], GO> | null;
   updateMany(updateData: GassmaTestCategoryUpdateData): UpdateManyReturn;
   updateManyAndReturn(updateData: GassmaTestCategoryUpdateData): Record<string, unknown>[];
-  upsert<T extends GassmaTestCategoryUpsertSingleData>(upsertData: T): GassmaTestCategoryFindResult<T["select"]>;
+  upsert<T extends GassmaTestCategoryUpsertSingleData>(upsertData: T): GassmaTestCategoryFindResult<T["select"], T["omit"], GO>;
   upsertMany(upsertData: GassmaTestCategoryUpsertData): UpsertManyReturn;
-  delete<T extends GassmaTestCategoryDeleteSingleData>(deleteData: T): GassmaTestCategoryFindResult<T["select"]> | null;
+  delete<T extends GassmaTestCategoryDeleteSingleData>(deleteData: T): GassmaTestCategoryFindResult<T["select"], T["omit"], GO> | null;
   deleteMany(deleteData: GassmaTestCategoryDeleteData): DeleteManyReturn;
   aggregate<T extends GassmaTestCategoryAggregateData>(aggregateData: T): GassmaTestCategoryAggregateResult<T>;
   count(coutData: GassmaTestCategoryCountData): number;
   groupBy<T extends GassmaTestCategoryGroupByData>(groupByData: T): GassmaTestCategoryGroupByResult<T>[];
 }
 
-declare class GassmaTestTagController {
+declare class GassmaTestTagController<GO extends GassmaTestTagOmit = {}> {
   constructor(sheetName: string, id?: string);
 
   readonly fields: Record<string, Gassma.FieldRef>;
@@ -371,23 +376,23 @@ declare class GassmaTestTagController {
   ): void;
   createMany(createdData: GassmaTestTagCreateManyData): CreateManyReturn;
   createManyAndReturn(createdData: GassmaTestTagCreateManyData): Record<string, unknown>[];
-  create<T extends GassmaTestTagCreateData>(createdData: T): GassmaTestTagFindResult<T["select"]>;
-  findFirst<T extends GassmaTestTagFindData>(findData: T): GassmaTestTagFindResult<T["select"]> | null;
-  findFirstOrThrow<T extends GassmaTestTagFindData>(findData: T): GassmaTestTagFindResult<T["select"]>;
-  findMany<T extends GassmaTestTagFindManyData>(findData: T): GassmaTestTagFindResult<T["select"]>[];
-  update<T extends GassmaTestTagUpdateSingleData>(updateData: T): GassmaTestTagFindResult<T["select"]> | null;
+  create<T extends GassmaTestTagCreateData>(createdData: T): GassmaTestTagFindResult<T["select"], T["omit"], GO>;
+  findFirst<T extends GassmaTestTagFindData>(findData: T): GassmaTestTagFindResult<T["select"], T["omit"], GO> | null;
+  findFirstOrThrow<T extends GassmaTestTagFindData>(findData: T): GassmaTestTagFindResult<T["select"], T["omit"], GO>;
+  findMany<T extends GassmaTestTagFindManyData>(findData: T): GassmaTestTagFindResult<T["select"], T["omit"], GO>[];
+  update<T extends GassmaTestTagUpdateSingleData>(updateData: T): GassmaTestTagFindResult<T["select"], T["omit"], GO> | null;
   updateMany(updateData: GassmaTestTagUpdateData): UpdateManyReturn;
   updateManyAndReturn(updateData: GassmaTestTagUpdateData): Record<string, unknown>[];
-  upsert<T extends GassmaTestTagUpsertSingleData>(upsertData: T): GassmaTestTagFindResult<T["select"]>;
+  upsert<T extends GassmaTestTagUpsertSingleData>(upsertData: T): GassmaTestTagFindResult<T["select"], T["omit"], GO>;
   upsertMany(upsertData: GassmaTestTagUpsertData): UpsertManyReturn;
-  delete<T extends GassmaTestTagDeleteSingleData>(deleteData: T): GassmaTestTagFindResult<T["select"]> | null;
+  delete<T extends GassmaTestTagDeleteSingleData>(deleteData: T): GassmaTestTagFindResult<T["select"], T["omit"], GO> | null;
   deleteMany(deleteData: GassmaTestTagDeleteData): DeleteManyReturn;
   aggregate<T extends GassmaTestTagAggregateData>(aggregateData: T): GassmaTestTagAggregateResult<T>;
   count(coutData: GassmaTestTagCountData): number;
   groupBy<T extends GassmaTestTagGroupByData>(groupByData: T): GassmaTestTagGroupByResult<T>[];
 }
 
-declare class GassmaTestProductController {
+declare class GassmaTestProductController<GO extends GassmaTestProductOmit = {}> {
   constructor(sheetName: string, id?: string);
 
   readonly fields: Record<string, Gassma.FieldRef>;
@@ -398,23 +403,23 @@ declare class GassmaTestProductController {
   ): void;
   createMany(createdData: GassmaTestProductCreateManyData): CreateManyReturn;
   createManyAndReturn(createdData: GassmaTestProductCreateManyData): Record<string, unknown>[];
-  create<T extends GassmaTestProductCreateData>(createdData: T): GassmaTestProductFindResult<T["select"]>;
-  findFirst<T extends GassmaTestProductFindData>(findData: T): GassmaTestProductFindResult<T["select"]> | null;
-  findFirstOrThrow<T extends GassmaTestProductFindData>(findData: T): GassmaTestProductFindResult<T["select"]>;
-  findMany<T extends GassmaTestProductFindManyData>(findData: T): GassmaTestProductFindResult<T["select"]>[];
-  update<T extends GassmaTestProductUpdateSingleData>(updateData: T): GassmaTestProductFindResult<T["select"]> | null;
+  create<T extends GassmaTestProductCreateData>(createdData: T): GassmaTestProductFindResult<T["select"], T["omit"], GO>;
+  findFirst<T extends GassmaTestProductFindData>(findData: T): GassmaTestProductFindResult<T["select"], T["omit"], GO> | null;
+  findFirstOrThrow<T extends GassmaTestProductFindData>(findData: T): GassmaTestProductFindResult<T["select"], T["omit"], GO>;
+  findMany<T extends GassmaTestProductFindManyData>(findData: T): GassmaTestProductFindResult<T["select"], T["omit"], GO>[];
+  update<T extends GassmaTestProductUpdateSingleData>(updateData: T): GassmaTestProductFindResult<T["select"], T["omit"], GO> | null;
   updateMany(updateData: GassmaTestProductUpdateData): UpdateManyReturn;
   updateManyAndReturn(updateData: GassmaTestProductUpdateData): Record<string, unknown>[];
-  upsert<T extends GassmaTestProductUpsertSingleData>(upsertData: T): GassmaTestProductFindResult<T["select"]>;
+  upsert<T extends GassmaTestProductUpsertSingleData>(upsertData: T): GassmaTestProductFindResult<T["select"], T["omit"], GO>;
   upsertMany(upsertData: GassmaTestProductUpsertData): UpsertManyReturn;
-  delete<T extends GassmaTestProductDeleteSingleData>(deleteData: T): GassmaTestProductFindResult<T["select"]> | null;
+  delete<T extends GassmaTestProductDeleteSingleData>(deleteData: T): GassmaTestProductFindResult<T["select"], T["omit"], GO> | null;
   deleteMany(deleteData: GassmaTestProductDeleteData): DeleteManyReturn;
   aggregate<T extends GassmaTestProductAggregateData>(aggregateData: T): GassmaTestProductAggregateResult<T>;
   count(coutData: GassmaTestProductCountData): number;
   groupBy<T extends GassmaTestProductGroupByData>(groupByData: T): GassmaTestProductGroupByResult<T>[];
 }
 
-declare class GassmaTestOrderController {
+declare class GassmaTestOrderController<GO extends GassmaTestOrderOmit = {}> {
   constructor(sheetName: string, id?: string);
 
   readonly fields: Record<string, Gassma.FieldRef>;
@@ -425,23 +430,23 @@ declare class GassmaTestOrderController {
   ): void;
   createMany(createdData: GassmaTestOrderCreateManyData): CreateManyReturn;
   createManyAndReturn(createdData: GassmaTestOrderCreateManyData): Record<string, unknown>[];
-  create<T extends GassmaTestOrderCreateData>(createdData: T): GassmaTestOrderFindResult<T["select"]>;
-  findFirst<T extends GassmaTestOrderFindData>(findData: T): GassmaTestOrderFindResult<T["select"]> | null;
-  findFirstOrThrow<T extends GassmaTestOrderFindData>(findData: T): GassmaTestOrderFindResult<T["select"]>;
-  findMany<T extends GassmaTestOrderFindManyData>(findData: T): GassmaTestOrderFindResult<T["select"]>[];
-  update<T extends GassmaTestOrderUpdateSingleData>(updateData: T): GassmaTestOrderFindResult<T["select"]> | null;
+  create<T extends GassmaTestOrderCreateData>(createdData: T): GassmaTestOrderFindResult<T["select"], T["omit"], GO>;
+  findFirst<T extends GassmaTestOrderFindData>(findData: T): GassmaTestOrderFindResult<T["select"], T["omit"], GO> | null;
+  findFirstOrThrow<T extends GassmaTestOrderFindData>(findData: T): GassmaTestOrderFindResult<T["select"], T["omit"], GO>;
+  findMany<T extends GassmaTestOrderFindManyData>(findData: T): GassmaTestOrderFindResult<T["select"], T["omit"], GO>[];
+  update<T extends GassmaTestOrderUpdateSingleData>(updateData: T): GassmaTestOrderFindResult<T["select"], T["omit"], GO> | null;
   updateMany(updateData: GassmaTestOrderUpdateData): UpdateManyReturn;
   updateManyAndReturn(updateData: GassmaTestOrderUpdateData): Record<string, unknown>[];
-  upsert<T extends GassmaTestOrderUpsertSingleData>(upsertData: T): GassmaTestOrderFindResult<T["select"]>;
+  upsert<T extends GassmaTestOrderUpsertSingleData>(upsertData: T): GassmaTestOrderFindResult<T["select"], T["omit"], GO>;
   upsertMany(upsertData: GassmaTestOrderUpsertData): UpsertManyReturn;
-  delete<T extends GassmaTestOrderDeleteSingleData>(deleteData: T): GassmaTestOrderFindResult<T["select"]> | null;
+  delete<T extends GassmaTestOrderDeleteSingleData>(deleteData: T): GassmaTestOrderFindResult<T["select"], T["omit"], GO> | null;
   deleteMany(deleteData: GassmaTestOrderDeleteData): DeleteManyReturn;
   aggregate<T extends GassmaTestOrderAggregateData>(aggregateData: T): GassmaTestOrderAggregateResult<T>;
   count(coutData: GassmaTestOrderCountData): number;
   groupBy<T extends GassmaTestOrderGroupByData>(groupByData: T): GassmaTestOrderGroupByResult<T>[];
 }
 
-declare class GassmaTestOrderItemController {
+declare class GassmaTestOrderItemController<GO extends GassmaTestOrderItemOmit = {}> {
   constructor(sheetName: string, id?: string);
 
   readonly fields: Record<string, Gassma.FieldRef>;
@@ -452,16 +457,16 @@ declare class GassmaTestOrderItemController {
   ): void;
   createMany(createdData: GassmaTestOrderItemCreateManyData): CreateManyReturn;
   createManyAndReturn(createdData: GassmaTestOrderItemCreateManyData): Record<string, unknown>[];
-  create<T extends GassmaTestOrderItemCreateData>(createdData: T): GassmaTestOrderItemFindResult<T["select"]>;
-  findFirst<T extends GassmaTestOrderItemFindData>(findData: T): GassmaTestOrderItemFindResult<T["select"]> | null;
-  findFirstOrThrow<T extends GassmaTestOrderItemFindData>(findData: T): GassmaTestOrderItemFindResult<T["select"]>;
-  findMany<T extends GassmaTestOrderItemFindManyData>(findData: T): GassmaTestOrderItemFindResult<T["select"]>[];
-  update<T extends GassmaTestOrderItemUpdateSingleData>(updateData: T): GassmaTestOrderItemFindResult<T["select"]> | null;
+  create<T extends GassmaTestOrderItemCreateData>(createdData: T): GassmaTestOrderItemFindResult<T["select"], T["omit"], GO>;
+  findFirst<T extends GassmaTestOrderItemFindData>(findData: T): GassmaTestOrderItemFindResult<T["select"], T["omit"], GO> | null;
+  findFirstOrThrow<T extends GassmaTestOrderItemFindData>(findData: T): GassmaTestOrderItemFindResult<T["select"], T["omit"], GO>;
+  findMany<T extends GassmaTestOrderItemFindManyData>(findData: T): GassmaTestOrderItemFindResult<T["select"], T["omit"], GO>[];
+  update<T extends GassmaTestOrderItemUpdateSingleData>(updateData: T): GassmaTestOrderItemFindResult<T["select"], T["omit"], GO> | null;
   updateMany(updateData: GassmaTestOrderItemUpdateData): UpdateManyReturn;
   updateManyAndReturn(updateData: GassmaTestOrderItemUpdateData): Record<string, unknown>[];
-  upsert<T extends GassmaTestOrderItemUpsertSingleData>(upsertData: T): GassmaTestOrderItemFindResult<T["select"]>;
+  upsert<T extends GassmaTestOrderItemUpsertSingleData>(upsertData: T): GassmaTestOrderItemFindResult<T["select"], T["omit"], GO>;
   upsertMany(upsertData: GassmaTestOrderItemUpsertData): UpsertManyReturn;
-  delete<T extends GassmaTestOrderItemDeleteSingleData>(deleteData: T): GassmaTestOrderItemFindResult<T["select"]> | null;
+  delete<T extends GassmaTestOrderItemDeleteSingleData>(deleteData: T): GassmaTestOrderItemFindResult<T["select"], T["omit"], GO> | null;
   deleteMany(deleteData: GassmaTestOrderItemDeleteData): DeleteManyReturn;
   aggregate<T extends GassmaTestOrderItemAggregateData>(aggregateData: T): GassmaTestOrderItemAggregateResult<T>;
   count(coutData: GassmaTestOrderItemCountData): number;
@@ -2933,77 +2938,77 @@ declare type GassmaTestOrderItemSelect = {
 };
 
 declare type GassmaTestUserOmit = {
-  "id"?: true;
-  "email"?: true;
-  "name"?: true;
-  "age"?: true;
-  "isActive"?: true;
-  "role"?: true;
-  "createdAt"?: true;
+  "id"?: true | false;
+  "email"?: true | false;
+  "name"?: true | false;
+  "age"?: true | false;
+  "isActive"?: true | false;
+  "role"?: true | false;
+  "createdAt"?: true | false;
 };
 
 declare type GassmaTestProfileOmit = {
-  "id"?: true;
-  "bio"?: true;
-  "website"?: true;
-  "userId"?: true;
+  "id"?: true | false;
+  "bio"?: true | false;
+  "website"?: true | false;
+  "userId"?: true | false;
 };
 
 declare type GassmaTestPostOmit = {
-  "id"?: true;
-  "title"?: true;
-  "content"?: true;
-  "published"?: true;
-  "viewCount"?: true;
-  "rating"?: true;
-  "authorId"?: true;
-  "categoryId"?: true;
-  "createdAt"?: true;
+  "id"?: true | false;
+  "title"?: true | false;
+  "content"?: true | false;
+  "published"?: true | false;
+  "viewCount"?: true | false;
+  "rating"?: true | false;
+  "authorId"?: true | false;
+  "categoryId"?: true | false;
+  "createdAt"?: true | false;
 };
 
 declare type GassmaTestCommentOmit = {
-  "id"?: true;
-  "text"?: true;
-  "authorId"?: true;
-  "postId"?: true;
-  "createdAt"?: true;
+  "id"?: true | false;
+  "text"?: true | false;
+  "authorId"?: true | false;
+  "postId"?: true | false;
+  "createdAt"?: true | false;
 };
 
 declare type GassmaTestCategoryOmit = {
-  "id"?: true;
-  "name"?: true;
-  "parentId"?: true;
+  "id"?: true | false;
+  "name"?: true | false;
+  "parentId"?: true | false;
 };
 
 declare type GassmaTestTagOmit = {
-  "id"?: true;
-  "name"?: true;
+  "id"?: true | false;
+  "name"?: true | false;
 };
 
 declare type GassmaTestProductOmit = {
-  "id"?: true;
-  "name"?: true;
-  "price"?: true;
-  "stock"?: true;
-  "status"?: true;
-  "createdAt"?: true;
+  "id"?: true | false;
+  "name"?: true | false;
+  "price"?: true | false;
+  "stock"?: true | false;
+  "status"?: true | false;
+  "createdAt"?: true | false;
 };
 
 declare type GassmaTestOrderOmit = {
-  "id"?: true;
-  "userId"?: true;
-  "totalAmount"?: true;
-  "quantity"?: true;
-  "status"?: true;
-  "createdAt"?: true;
+  "id"?: true | false;
+  "userId"?: true | false;
+  "totalAmount"?: true | false;
+  "quantity"?: true | false;
+  "status"?: true | false;
+  "createdAt"?: true | false;
 };
 
 declare type GassmaTestOrderItemOmit = {
-  "id"?: true;
-  "orderId"?: true;
-  "productId"?: true;
-  "quantity"?: true;
-  "unitPrice"?: true;
+  "id"?: true | false;
+  "orderId"?: true | false;
+  "productId"?: true | false;
+  "quantity"?: true | false;
+  "unitPrice"?: true | false;
 };
 
 declare type GassmaTestUserCountData = {
@@ -3161,95 +3166,113 @@ declare type GassmaTestOrderDefaultFindResult = GassmaTestOrderCreateReturn;
 
 declare type GassmaTestOrderItemDefaultFindResult = GassmaTestOrderItemCreateReturn;
 
-declare type GassmaTestUserFindResult<T> = T extends undefined
-  ? GassmaTestUserDefaultFindResult
-  : T extends GassmaTestUserSelect
-    ? {
-        [K in keyof T as T[K] extends true
-          ? K & keyof GassmaTestUserDefaultFindResult
-          : never]: GassmaTestUserDefaultFindResult[K & keyof GassmaTestUserDefaultFindResult];
-      }
-    : GassmaTestUserDefaultFindResult;
+declare type GassmaTestUserFindResult<S, QO = undefined, GO = {}> = S extends GassmaTestUserSelect
+  ? {
+      [K in keyof S as S[K] extends true
+        ? K & keyof GassmaTestUserDefaultFindResult
+        : never]: GassmaTestUserDefaultFindResult[K & keyof GassmaTestUserDefaultFindResult];
+    }
+  : {
+      [K in keyof GassmaTestUserDefaultFindResult as
+        K extends Gassma.ResolveOmitKeys<GO, QO> ? never : K
+      ]: GassmaTestUserDefaultFindResult[K];
+    };
 
-declare type GassmaTestProfileFindResult<T> = T extends undefined
-  ? GassmaTestProfileDefaultFindResult
-  : T extends GassmaTestProfileSelect
-    ? {
-        [K in keyof T as T[K] extends true
-          ? K & keyof GassmaTestProfileDefaultFindResult
-          : never]: GassmaTestProfileDefaultFindResult[K & keyof GassmaTestProfileDefaultFindResult];
-      }
-    : GassmaTestProfileDefaultFindResult;
+declare type GassmaTestProfileFindResult<S, QO = undefined, GO = {}> = S extends GassmaTestProfileSelect
+  ? {
+      [K in keyof S as S[K] extends true
+        ? K & keyof GassmaTestProfileDefaultFindResult
+        : never]: GassmaTestProfileDefaultFindResult[K & keyof GassmaTestProfileDefaultFindResult];
+    }
+  : {
+      [K in keyof GassmaTestProfileDefaultFindResult as
+        K extends Gassma.ResolveOmitKeys<GO, QO> ? never : K
+      ]: GassmaTestProfileDefaultFindResult[K];
+    };
 
-declare type GassmaTestPostFindResult<T> = T extends undefined
-  ? GassmaTestPostDefaultFindResult
-  : T extends GassmaTestPostSelect
-    ? {
-        [K in keyof T as T[K] extends true
-          ? K & keyof GassmaTestPostDefaultFindResult
-          : never]: GassmaTestPostDefaultFindResult[K & keyof GassmaTestPostDefaultFindResult];
-      }
-    : GassmaTestPostDefaultFindResult;
+declare type GassmaTestPostFindResult<S, QO = undefined, GO = {}> = S extends GassmaTestPostSelect
+  ? {
+      [K in keyof S as S[K] extends true
+        ? K & keyof GassmaTestPostDefaultFindResult
+        : never]: GassmaTestPostDefaultFindResult[K & keyof GassmaTestPostDefaultFindResult];
+    }
+  : {
+      [K in keyof GassmaTestPostDefaultFindResult as
+        K extends Gassma.ResolveOmitKeys<GO, QO> ? never : K
+      ]: GassmaTestPostDefaultFindResult[K];
+    };
 
-declare type GassmaTestCommentFindResult<T> = T extends undefined
-  ? GassmaTestCommentDefaultFindResult
-  : T extends GassmaTestCommentSelect
-    ? {
-        [K in keyof T as T[K] extends true
-          ? K & keyof GassmaTestCommentDefaultFindResult
-          : never]: GassmaTestCommentDefaultFindResult[K & keyof GassmaTestCommentDefaultFindResult];
-      }
-    : GassmaTestCommentDefaultFindResult;
+declare type GassmaTestCommentFindResult<S, QO = undefined, GO = {}> = S extends GassmaTestCommentSelect
+  ? {
+      [K in keyof S as S[K] extends true
+        ? K & keyof GassmaTestCommentDefaultFindResult
+        : never]: GassmaTestCommentDefaultFindResult[K & keyof GassmaTestCommentDefaultFindResult];
+    }
+  : {
+      [K in keyof GassmaTestCommentDefaultFindResult as
+        K extends Gassma.ResolveOmitKeys<GO, QO> ? never : K
+      ]: GassmaTestCommentDefaultFindResult[K];
+    };
 
-declare type GassmaTestCategoryFindResult<T> = T extends undefined
-  ? GassmaTestCategoryDefaultFindResult
-  : T extends GassmaTestCategorySelect
-    ? {
-        [K in keyof T as T[K] extends true
-          ? K & keyof GassmaTestCategoryDefaultFindResult
-          : never]: GassmaTestCategoryDefaultFindResult[K & keyof GassmaTestCategoryDefaultFindResult];
-      }
-    : GassmaTestCategoryDefaultFindResult;
+declare type GassmaTestCategoryFindResult<S, QO = undefined, GO = {}> = S extends GassmaTestCategorySelect
+  ? {
+      [K in keyof S as S[K] extends true
+        ? K & keyof GassmaTestCategoryDefaultFindResult
+        : never]: GassmaTestCategoryDefaultFindResult[K & keyof GassmaTestCategoryDefaultFindResult];
+    }
+  : {
+      [K in keyof GassmaTestCategoryDefaultFindResult as
+        K extends Gassma.ResolveOmitKeys<GO, QO> ? never : K
+      ]: GassmaTestCategoryDefaultFindResult[K];
+    };
 
-declare type GassmaTestTagFindResult<T> = T extends undefined
-  ? GassmaTestTagDefaultFindResult
-  : T extends GassmaTestTagSelect
-    ? {
-        [K in keyof T as T[K] extends true
-          ? K & keyof GassmaTestTagDefaultFindResult
-          : never]: GassmaTestTagDefaultFindResult[K & keyof GassmaTestTagDefaultFindResult];
-      }
-    : GassmaTestTagDefaultFindResult;
+declare type GassmaTestTagFindResult<S, QO = undefined, GO = {}> = S extends GassmaTestTagSelect
+  ? {
+      [K in keyof S as S[K] extends true
+        ? K & keyof GassmaTestTagDefaultFindResult
+        : never]: GassmaTestTagDefaultFindResult[K & keyof GassmaTestTagDefaultFindResult];
+    }
+  : {
+      [K in keyof GassmaTestTagDefaultFindResult as
+        K extends Gassma.ResolveOmitKeys<GO, QO> ? never : K
+      ]: GassmaTestTagDefaultFindResult[K];
+    };
 
-declare type GassmaTestProductFindResult<T> = T extends undefined
-  ? GassmaTestProductDefaultFindResult
-  : T extends GassmaTestProductSelect
-    ? {
-        [K in keyof T as T[K] extends true
-          ? K & keyof GassmaTestProductDefaultFindResult
-          : never]: GassmaTestProductDefaultFindResult[K & keyof GassmaTestProductDefaultFindResult];
-      }
-    : GassmaTestProductDefaultFindResult;
+declare type GassmaTestProductFindResult<S, QO = undefined, GO = {}> = S extends GassmaTestProductSelect
+  ? {
+      [K in keyof S as S[K] extends true
+        ? K & keyof GassmaTestProductDefaultFindResult
+        : never]: GassmaTestProductDefaultFindResult[K & keyof GassmaTestProductDefaultFindResult];
+    }
+  : {
+      [K in keyof GassmaTestProductDefaultFindResult as
+        K extends Gassma.ResolveOmitKeys<GO, QO> ? never : K
+      ]: GassmaTestProductDefaultFindResult[K];
+    };
 
-declare type GassmaTestOrderFindResult<T> = T extends undefined
-  ? GassmaTestOrderDefaultFindResult
-  : T extends GassmaTestOrderSelect
-    ? {
-        [K in keyof T as T[K] extends true
-          ? K & keyof GassmaTestOrderDefaultFindResult
-          : never]: GassmaTestOrderDefaultFindResult[K & keyof GassmaTestOrderDefaultFindResult];
-      }
-    : GassmaTestOrderDefaultFindResult;
+declare type GassmaTestOrderFindResult<S, QO = undefined, GO = {}> = S extends GassmaTestOrderSelect
+  ? {
+      [K in keyof S as S[K] extends true
+        ? K & keyof GassmaTestOrderDefaultFindResult
+        : never]: GassmaTestOrderDefaultFindResult[K & keyof GassmaTestOrderDefaultFindResult];
+    }
+  : {
+      [K in keyof GassmaTestOrderDefaultFindResult as
+        K extends Gassma.ResolveOmitKeys<GO, QO> ? never : K
+      ]: GassmaTestOrderDefaultFindResult[K];
+    };
 
-declare type GassmaTestOrderItemFindResult<T> = T extends undefined
-  ? GassmaTestOrderItemDefaultFindResult
-  : T extends GassmaTestOrderItemSelect
-    ? {
-        [K in keyof T as T[K] extends true
-          ? K & keyof GassmaTestOrderItemDefaultFindResult
-          : never]: GassmaTestOrderItemDefaultFindResult[K & keyof GassmaTestOrderItemDefaultFindResult];
-      }
-    : GassmaTestOrderItemDefaultFindResult;
+declare type GassmaTestOrderItemFindResult<S, QO = undefined, GO = {}> = S extends GassmaTestOrderItemSelect
+  ? {
+      [K in keyof S as S[K] extends true
+        ? K & keyof GassmaTestOrderItemDefaultFindResult
+        : never]: GassmaTestOrderItemDefaultFindResult[K & keyof GassmaTestOrderItemDefaultFindResult];
+    }
+  : {
+      [K in keyof GassmaTestOrderItemDefaultFindResult as
+        K extends Gassma.ResolveOmitKeys<GO, QO> ? never : K
+      ]: GassmaTestOrderItemDefaultFindResult[K];
+    };
 
 declare type GassmaTestUserAggregateBaseReturn = {
   "id": number

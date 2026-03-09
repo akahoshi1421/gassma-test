@@ -1,4 +1,4 @@
-export declare class GassmaClient {
-  constructor(options?: GassmaTestClientOptions);
-  readonly sheets: GassmaTestSheet;
+export declare class GassmaClient<O extends GassmaTestGlobalOmitConfig = {}> {
+  constructor(options?: GassmaTestClientOptions<O>);
+  readonly sheets: GassmaTestSheet<O>;
 }
