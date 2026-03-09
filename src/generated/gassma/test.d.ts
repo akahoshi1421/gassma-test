@@ -529,17 +529,13 @@ declare type GassmaTestUserCreateData = {
     "comments"?: { create?: GassmaTestCommentUse | GassmaTestCommentUse[]; connect?: GassmaTestCommentWhereUse | GassmaTestCommentWhereUse[]; connectOrCreate?: { where: GassmaTestCommentWhereUse; create: GassmaTestCommentUse } | { where: GassmaTestCommentWhereUse; create: GassmaTestCommentUse }[]; update?: { where: GassmaTestCommentWhereUse; data: Partial<GassmaTestCommentUse> } | { where: GassmaTestCommentWhereUse; data: Partial<GassmaTestCommentUse> }[]; delete?: boolean | GassmaTestCommentWhereUse | GassmaTestCommentWhereUse[]; deleteMany?: GassmaTestCommentWhereUse | GassmaTestCommentWhereUse[]; disconnect?: boolean | GassmaTestCommentWhereUse | GassmaTestCommentWhereUse[]; set?: GassmaTestCommentWhereUse[] };
     "orders"?: { create?: GassmaTestOrderUse | GassmaTestOrderUse[]; connect?: GassmaTestOrderWhereUse | GassmaTestOrderWhereUse[]; connectOrCreate?: { where: GassmaTestOrderWhereUse; create: GassmaTestOrderUse } | { where: GassmaTestOrderWhereUse; create: GassmaTestOrderUse }[]; update?: { where: GassmaTestOrderWhereUse; data: Partial<GassmaTestOrderUse> } | { where: GassmaTestOrderWhereUse; data: Partial<GassmaTestOrderUse> }[]; delete?: boolean | GassmaTestOrderWhereUse | GassmaTestOrderWhereUse[]; deleteMany?: GassmaTestOrderWhereUse | GassmaTestOrderWhereUse[]; disconnect?: boolean | GassmaTestOrderWhereUse | GassmaTestOrderWhereUse[]; set?: GassmaTestOrderWhereUse[] };
   };
-  select?: GassmaTestUserSelect;
-  omit?: GassmaTestUserOmit;
-};
+} & ({ select?: GassmaTestUserSelect; omit?: never } | { select?: never; omit?: GassmaTestUserOmit });
 
 declare type GassmaTestProfileCreateData = {
   data: GassmaTestProfileUse & {
     "user"?: { create?: GassmaTestUserUse; connect?: GassmaTestUserWhereUse; connectOrCreate?: { where: GassmaTestUserWhereUse; create: GassmaTestUserUse }; update?: Partial<GassmaTestUserUse>; delete?: true; disconnect?: true };
   };
-  select?: GassmaTestProfileSelect;
-  omit?: GassmaTestProfileOmit;
-};
+} & ({ select?: GassmaTestProfileSelect; omit?: never } | { select?: never; omit?: GassmaTestProfileOmit });
 
 declare type GassmaTestPostCreateData = {
   data: GassmaTestPostUse & {
@@ -548,18 +544,14 @@ declare type GassmaTestPostCreateData = {
     "comments"?: { create?: GassmaTestCommentUse | GassmaTestCommentUse[]; connect?: GassmaTestCommentWhereUse | GassmaTestCommentWhereUse[]; connectOrCreate?: { where: GassmaTestCommentWhereUse; create: GassmaTestCommentUse } | { where: GassmaTestCommentWhereUse; create: GassmaTestCommentUse }[]; update?: { where: GassmaTestCommentWhereUse; data: Partial<GassmaTestCommentUse> } | { where: GassmaTestCommentWhereUse; data: Partial<GassmaTestCommentUse> }[]; delete?: boolean | GassmaTestCommentWhereUse | GassmaTestCommentWhereUse[]; deleteMany?: GassmaTestCommentWhereUse | GassmaTestCommentWhereUse[]; disconnect?: boolean | GassmaTestCommentWhereUse | GassmaTestCommentWhereUse[]; set?: GassmaTestCommentWhereUse[] };
     "tags"?: { create?: GassmaTestTagUse | GassmaTestTagUse[]; connect?: GassmaTestTagWhereUse | GassmaTestTagWhereUse[]; connectOrCreate?: { where: GassmaTestTagWhereUse; create: GassmaTestTagUse } | { where: GassmaTestTagWhereUse; create: GassmaTestTagUse }[]; disconnect?: GassmaTestTagWhereUse | GassmaTestTagWhereUse[]; set?: GassmaTestTagWhereUse[] };
   };
-  select?: GassmaTestPostSelect;
-  omit?: GassmaTestPostOmit;
-};
+} & ({ select?: GassmaTestPostSelect; omit?: never } | { select?: never; omit?: GassmaTestPostOmit });
 
 declare type GassmaTestCommentCreateData = {
   data: GassmaTestCommentUse & {
     "author"?: { create?: GassmaTestUserUse; connect?: GassmaTestUserWhereUse; connectOrCreate?: { where: GassmaTestUserWhereUse; create: GassmaTestUserUse } };
     "post"?: { create?: GassmaTestPostUse; connect?: GassmaTestPostWhereUse; connectOrCreate?: { where: GassmaTestPostWhereUse; create: GassmaTestPostUse } };
   };
-  select?: GassmaTestCommentSelect;
-  omit?: GassmaTestCommentOmit;
-};
+} & ({ select?: GassmaTestCommentSelect; omit?: never } | { select?: never; omit?: GassmaTestCommentOmit });
 
 declare type GassmaTestCategoryCreateData = {
   data: GassmaTestCategoryUse & {
@@ -567,43 +559,33 @@ declare type GassmaTestCategoryCreateData = {
     "parent"?: { create?: GassmaTestCategoryUse; connect?: GassmaTestCategoryWhereUse; connectOrCreate?: { where: GassmaTestCategoryWhereUse; create: GassmaTestCategoryUse } };
     "children"?: { create?: GassmaTestCategoryUse | GassmaTestCategoryUse[]; connect?: GassmaTestCategoryWhereUse | GassmaTestCategoryWhereUse[]; connectOrCreate?: { where: GassmaTestCategoryWhereUse; create: GassmaTestCategoryUse } | { where: GassmaTestCategoryWhereUse; create: GassmaTestCategoryUse }[]; update?: { where: GassmaTestCategoryWhereUse; data: Partial<GassmaTestCategoryUse> } | { where: GassmaTestCategoryWhereUse; data: Partial<GassmaTestCategoryUse> }[]; delete?: boolean | GassmaTestCategoryWhereUse | GassmaTestCategoryWhereUse[]; deleteMany?: GassmaTestCategoryWhereUse | GassmaTestCategoryWhereUse[]; disconnect?: boolean | GassmaTestCategoryWhereUse | GassmaTestCategoryWhereUse[]; set?: GassmaTestCategoryWhereUse[] };
   };
-  select?: GassmaTestCategorySelect;
-  omit?: GassmaTestCategoryOmit;
-};
+} & ({ select?: GassmaTestCategorySelect; omit?: never } | { select?: never; omit?: GassmaTestCategoryOmit });
 
 declare type GassmaTestTagCreateData = {
   data: GassmaTestTagUse & {
     "posts"?: { create?: GassmaTestPostUse | GassmaTestPostUse[]; connect?: GassmaTestPostWhereUse | GassmaTestPostWhereUse[]; connectOrCreate?: { where: GassmaTestPostWhereUse; create: GassmaTestPostUse } | { where: GassmaTestPostWhereUse; create: GassmaTestPostUse }[]; disconnect?: GassmaTestPostWhereUse | GassmaTestPostWhereUse[]; set?: GassmaTestPostWhereUse[] };
   };
-  select?: GassmaTestTagSelect;
-  omit?: GassmaTestTagOmit;
-};
+} & ({ select?: GassmaTestTagSelect; omit?: never } | { select?: never; omit?: GassmaTestTagOmit });
 
 declare type GassmaTestProductCreateData = {
   data: GassmaTestProductUse & {
     "orderItems"?: { create?: GassmaTestOrderItemUse | GassmaTestOrderItemUse[]; connect?: GassmaTestOrderItemWhereUse | GassmaTestOrderItemWhereUse[]; connectOrCreate?: { where: GassmaTestOrderItemWhereUse; create: GassmaTestOrderItemUse } | { where: GassmaTestOrderItemWhereUse; create: GassmaTestOrderItemUse }[]; update?: { where: GassmaTestOrderItemWhereUse; data: Partial<GassmaTestOrderItemUse> } | { where: GassmaTestOrderItemWhereUse; data: Partial<GassmaTestOrderItemUse> }[]; delete?: boolean | GassmaTestOrderItemWhereUse | GassmaTestOrderItemWhereUse[]; deleteMany?: GassmaTestOrderItemWhereUse | GassmaTestOrderItemWhereUse[]; disconnect?: boolean | GassmaTestOrderItemWhereUse | GassmaTestOrderItemWhereUse[]; set?: GassmaTestOrderItemWhereUse[] };
   };
-  select?: GassmaTestProductSelect;
-  omit?: GassmaTestProductOmit;
-};
+} & ({ select?: GassmaTestProductSelect; omit?: never } | { select?: never; omit?: GassmaTestProductOmit });
 
 declare type GassmaTestOrderCreateData = {
   data: GassmaTestOrderUse & {
     "user"?: { create?: GassmaTestUserUse; connect?: GassmaTestUserWhereUse; connectOrCreate?: { where: GassmaTestUserWhereUse; create: GassmaTestUserUse } };
     "items"?: { create?: GassmaTestOrderItemUse | GassmaTestOrderItemUse[]; connect?: GassmaTestOrderItemWhereUse | GassmaTestOrderItemWhereUse[]; connectOrCreate?: { where: GassmaTestOrderItemWhereUse; create: GassmaTestOrderItemUse } | { where: GassmaTestOrderItemWhereUse; create: GassmaTestOrderItemUse }[]; update?: { where: GassmaTestOrderItemWhereUse; data: Partial<GassmaTestOrderItemUse> } | { where: GassmaTestOrderItemWhereUse; data: Partial<GassmaTestOrderItemUse> }[]; delete?: boolean | GassmaTestOrderItemWhereUse | GassmaTestOrderItemWhereUse[]; deleteMany?: GassmaTestOrderItemWhereUse | GassmaTestOrderItemWhereUse[]; disconnect?: boolean | GassmaTestOrderItemWhereUse | GassmaTestOrderItemWhereUse[]; set?: GassmaTestOrderItemWhereUse[] };
   };
-  select?: GassmaTestOrderSelect;
-  omit?: GassmaTestOrderOmit;
-};
+} & ({ select?: GassmaTestOrderSelect; omit?: never } | { select?: never; omit?: GassmaTestOrderOmit });
 
 declare type GassmaTestOrderItemCreateData = {
   data: GassmaTestOrderItemUse & {
     "order"?: { create?: GassmaTestOrderUse; connect?: GassmaTestOrderWhereUse; connectOrCreate?: { where: GassmaTestOrderWhereUse; create: GassmaTestOrderUse } };
     "product"?: { create?: GassmaTestProductUse; connect?: GassmaTestProductWhereUse; connectOrCreate?: { where: GassmaTestProductWhereUse; create: GassmaTestProductUse } };
   };
-  select?: GassmaTestOrderItemSelect;
-  omit?: GassmaTestOrderItemOmit;
-};
+} & ({ select?: GassmaTestOrderItemSelect; omit?: never } | { select?: never; omit?: GassmaTestOrderItemOmit });
 
 declare type GassmaTestUserCreateManyData = {
   data: GassmaTestUserUse[];
@@ -1964,8 +1946,6 @@ declare type GassmaTestOrderItemHavingUse = {
 
 declare type GassmaTestUserFindData = {
   where?: GassmaTestUserWhereUse;
-  select?: GassmaTestUserSelect;
-  omit?: GassmaTestUserOmit;
   orderBy?: GassmaTestUserOrderBy;
   take?: number;
   skip?: number;
@@ -1973,12 +1953,10 @@ declare type GassmaTestUserFindData = {
   include?: GassmaTestUserInclude;
   cursor?: Partial<GassmaTestUserUse>;
   _count?: GassmaTestUserCountValue;
-};
+} & ({ select?: GassmaTestUserSelect; omit?: never } | { select?: never; omit?: GassmaTestUserOmit });
 
 declare type GassmaTestProfileFindData = {
   where?: GassmaTestProfileWhereUse;
-  select?: GassmaTestProfileSelect;
-  omit?: GassmaTestProfileOmit;
   orderBy?: GassmaTestProfileOrderBy;
   take?: number;
   skip?: number;
@@ -1986,12 +1964,10 @@ declare type GassmaTestProfileFindData = {
   include?: GassmaTestProfileInclude;
   cursor?: Partial<GassmaTestProfileUse>;
   _count?: GassmaTestProfileCountValue;
-};
+} & ({ select?: GassmaTestProfileSelect; omit?: never } | { select?: never; omit?: GassmaTestProfileOmit });
 
 declare type GassmaTestPostFindData = {
   where?: GassmaTestPostWhereUse;
-  select?: GassmaTestPostSelect;
-  omit?: GassmaTestPostOmit;
   orderBy?: GassmaTestPostOrderBy;
   take?: number;
   skip?: number;
@@ -1999,12 +1975,10 @@ declare type GassmaTestPostFindData = {
   include?: GassmaTestPostInclude;
   cursor?: Partial<GassmaTestPostUse>;
   _count?: GassmaTestPostCountValue;
-};
+} & ({ select?: GassmaTestPostSelect; omit?: never } | { select?: never; omit?: GassmaTestPostOmit });
 
 declare type GassmaTestCommentFindData = {
   where?: GassmaTestCommentWhereUse;
-  select?: GassmaTestCommentSelect;
-  omit?: GassmaTestCommentOmit;
   orderBy?: GassmaTestCommentOrderBy;
   take?: number;
   skip?: number;
@@ -2012,12 +1986,10 @@ declare type GassmaTestCommentFindData = {
   include?: GassmaTestCommentInclude;
   cursor?: Partial<GassmaTestCommentUse>;
   _count?: GassmaTestCommentCountValue;
-};
+} & ({ select?: GassmaTestCommentSelect; omit?: never } | { select?: never; omit?: GassmaTestCommentOmit });
 
 declare type GassmaTestCategoryFindData = {
   where?: GassmaTestCategoryWhereUse;
-  select?: GassmaTestCategorySelect;
-  omit?: GassmaTestCategoryOmit;
   orderBy?: GassmaTestCategoryOrderBy;
   take?: number;
   skip?: number;
@@ -2025,12 +1997,10 @@ declare type GassmaTestCategoryFindData = {
   include?: GassmaTestCategoryInclude;
   cursor?: Partial<GassmaTestCategoryUse>;
   _count?: GassmaTestCategoryCountValue;
-};
+} & ({ select?: GassmaTestCategorySelect; omit?: never } | { select?: never; omit?: GassmaTestCategoryOmit });
 
 declare type GassmaTestTagFindData = {
   where?: GassmaTestTagWhereUse;
-  select?: GassmaTestTagSelect;
-  omit?: GassmaTestTagOmit;
   orderBy?: GassmaTestTagOrderBy;
   take?: number;
   skip?: number;
@@ -2038,12 +2008,10 @@ declare type GassmaTestTagFindData = {
   include?: GassmaTestTagInclude;
   cursor?: Partial<GassmaTestTagUse>;
   _count?: GassmaTestTagCountValue;
-};
+} & ({ select?: GassmaTestTagSelect; omit?: never } | { select?: never; omit?: GassmaTestTagOmit });
 
 declare type GassmaTestProductFindData = {
   where?: GassmaTestProductWhereUse;
-  select?: GassmaTestProductSelect;
-  omit?: GassmaTestProductOmit;
   orderBy?: GassmaTestProductOrderBy;
   take?: number;
   skip?: number;
@@ -2051,12 +2019,10 @@ declare type GassmaTestProductFindData = {
   include?: GassmaTestProductInclude;
   cursor?: Partial<GassmaTestProductUse>;
   _count?: GassmaTestProductCountValue;
-};
+} & ({ select?: GassmaTestProductSelect; omit?: never } | { select?: never; omit?: GassmaTestProductOmit });
 
 declare type GassmaTestOrderFindData = {
   where?: GassmaTestOrderWhereUse;
-  select?: GassmaTestOrderSelect;
-  omit?: GassmaTestOrderOmit;
   orderBy?: GassmaTestOrderOrderBy;
   take?: number;
   skip?: number;
@@ -2064,12 +2030,10 @@ declare type GassmaTestOrderFindData = {
   include?: GassmaTestOrderInclude;
   cursor?: Partial<GassmaTestOrderUse>;
   _count?: GassmaTestOrderCountValue;
-};
+} & ({ select?: GassmaTestOrderSelect; omit?: never } | { select?: never; omit?: GassmaTestOrderOmit });
 
 declare type GassmaTestOrderItemFindData = {
   where?: GassmaTestOrderItemWhereUse;
-  select?: GassmaTestOrderItemSelect;
-  omit?: GassmaTestOrderItemOmit;
   orderBy?: GassmaTestOrderItemOrderBy;
   take?: number;
   skip?: number;
@@ -2077,7 +2041,7 @@ declare type GassmaTestOrderItemFindData = {
   include?: GassmaTestOrderItemInclude;
   cursor?: Partial<GassmaTestOrderItemUse>;
   _count?: GassmaTestOrderItemCountValue;
-};
+} & ({ select?: GassmaTestOrderItemSelect; omit?: never } | { select?: never; omit?: GassmaTestOrderItemOmit });
 
 declare type GassmaTestUserFindManyData = GassmaTestUserFindData;
 
@@ -2188,18 +2152,14 @@ declare type GassmaTestUserUpdateSingleData = {
     "comments"?: { create?: GassmaTestCommentUse | GassmaTestCommentUse[]; connect?: GassmaTestCommentWhereUse | GassmaTestCommentWhereUse[]; connectOrCreate?: { where: GassmaTestCommentWhereUse; create: GassmaTestCommentUse } | { where: GassmaTestCommentWhereUse; create: GassmaTestCommentUse }[]; update?: { where: GassmaTestCommentWhereUse; data: Partial<GassmaTestCommentUse> } | { where: GassmaTestCommentWhereUse; data: Partial<GassmaTestCommentUse> }[]; delete?: boolean | GassmaTestCommentWhereUse | GassmaTestCommentWhereUse[]; deleteMany?: GassmaTestCommentWhereUse | GassmaTestCommentWhereUse[]; disconnect?: boolean | GassmaTestCommentWhereUse | GassmaTestCommentWhereUse[]; set?: GassmaTestCommentWhereUse[] };
     "orders"?: { create?: GassmaTestOrderUse | GassmaTestOrderUse[]; connect?: GassmaTestOrderWhereUse | GassmaTestOrderWhereUse[]; connectOrCreate?: { where: GassmaTestOrderWhereUse; create: GassmaTestOrderUse } | { where: GassmaTestOrderWhereUse; create: GassmaTestOrderUse }[]; update?: { where: GassmaTestOrderWhereUse; data: Partial<GassmaTestOrderUse> } | { where: GassmaTestOrderWhereUse; data: Partial<GassmaTestOrderUse> }[]; delete?: boolean | GassmaTestOrderWhereUse | GassmaTestOrderWhereUse[]; deleteMany?: GassmaTestOrderWhereUse | GassmaTestOrderWhereUse[]; disconnect?: boolean | GassmaTestOrderWhereUse | GassmaTestOrderWhereUse[]; set?: GassmaTestOrderWhereUse[] };
   };
-  select?: GassmaTestUserSelect;
-  omit?: GassmaTestUserOmit;
-};
+} & ({ select?: GassmaTestUserSelect; omit?: never } | { select?: never; omit?: GassmaTestUserOmit });
 
 declare type GassmaTestProfileUpdateSingleData = {
   where: GassmaTestProfileWhereUse;
   data: Partial<{ [K in keyof GassmaTestProfileUse]: GassmaTestProfileUse[K] | Gassma.NumberOperation }> & {
     "user"?: { create?: GassmaTestUserUse; connect?: GassmaTestUserWhereUse; connectOrCreate?: { where: GassmaTestUserWhereUse; create: GassmaTestUserUse }; update?: Partial<GassmaTestUserUse>; delete?: true; disconnect?: true };
   };
-  select?: GassmaTestProfileSelect;
-  omit?: GassmaTestProfileOmit;
-};
+} & ({ select?: GassmaTestProfileSelect; omit?: never } | { select?: never; omit?: GassmaTestProfileOmit });
 
 declare type GassmaTestPostUpdateSingleData = {
   where: GassmaTestPostWhereUse;
@@ -2209,9 +2169,7 @@ declare type GassmaTestPostUpdateSingleData = {
     "comments"?: { create?: GassmaTestCommentUse | GassmaTestCommentUse[]; connect?: GassmaTestCommentWhereUse | GassmaTestCommentWhereUse[]; connectOrCreate?: { where: GassmaTestCommentWhereUse; create: GassmaTestCommentUse } | { where: GassmaTestCommentWhereUse; create: GassmaTestCommentUse }[]; update?: { where: GassmaTestCommentWhereUse; data: Partial<GassmaTestCommentUse> } | { where: GassmaTestCommentWhereUse; data: Partial<GassmaTestCommentUse> }[]; delete?: boolean | GassmaTestCommentWhereUse | GassmaTestCommentWhereUse[]; deleteMany?: GassmaTestCommentWhereUse | GassmaTestCommentWhereUse[]; disconnect?: boolean | GassmaTestCommentWhereUse | GassmaTestCommentWhereUse[]; set?: GassmaTestCommentWhereUse[] };
     "tags"?: { create?: GassmaTestTagUse | GassmaTestTagUse[]; connect?: GassmaTestTagWhereUse | GassmaTestTagWhereUse[]; connectOrCreate?: { where: GassmaTestTagWhereUse; create: GassmaTestTagUse } | { where: GassmaTestTagWhereUse; create: GassmaTestTagUse }[]; disconnect?: GassmaTestTagWhereUse | GassmaTestTagWhereUse[]; set?: GassmaTestTagWhereUse[] };
   };
-  select?: GassmaTestPostSelect;
-  omit?: GassmaTestPostOmit;
-};
+} & ({ select?: GassmaTestPostSelect; omit?: never } | { select?: never; omit?: GassmaTestPostOmit });
 
 declare type GassmaTestCommentUpdateSingleData = {
   where: GassmaTestCommentWhereUse;
@@ -2219,9 +2177,7 @@ declare type GassmaTestCommentUpdateSingleData = {
     "author"?: { create?: GassmaTestUserUse; connect?: GassmaTestUserWhereUse; connectOrCreate?: { where: GassmaTestUserWhereUse; create: GassmaTestUserUse } };
     "post"?: { create?: GassmaTestPostUse; connect?: GassmaTestPostWhereUse; connectOrCreate?: { where: GassmaTestPostWhereUse; create: GassmaTestPostUse } };
   };
-  select?: GassmaTestCommentSelect;
-  omit?: GassmaTestCommentOmit;
-};
+} & ({ select?: GassmaTestCommentSelect; omit?: never } | { select?: never; omit?: GassmaTestCommentOmit });
 
 declare type GassmaTestCategoryUpdateSingleData = {
   where: GassmaTestCategoryWhereUse;
@@ -2230,27 +2186,21 @@ declare type GassmaTestCategoryUpdateSingleData = {
     "parent"?: { create?: GassmaTestCategoryUse; connect?: GassmaTestCategoryWhereUse; connectOrCreate?: { where: GassmaTestCategoryWhereUse; create: GassmaTestCategoryUse } };
     "children"?: { create?: GassmaTestCategoryUse | GassmaTestCategoryUse[]; connect?: GassmaTestCategoryWhereUse | GassmaTestCategoryWhereUse[]; connectOrCreate?: { where: GassmaTestCategoryWhereUse; create: GassmaTestCategoryUse } | { where: GassmaTestCategoryWhereUse; create: GassmaTestCategoryUse }[]; update?: { where: GassmaTestCategoryWhereUse; data: Partial<GassmaTestCategoryUse> } | { where: GassmaTestCategoryWhereUse; data: Partial<GassmaTestCategoryUse> }[]; delete?: boolean | GassmaTestCategoryWhereUse | GassmaTestCategoryWhereUse[]; deleteMany?: GassmaTestCategoryWhereUse | GassmaTestCategoryWhereUse[]; disconnect?: boolean | GassmaTestCategoryWhereUse | GassmaTestCategoryWhereUse[]; set?: GassmaTestCategoryWhereUse[] };
   };
-  select?: GassmaTestCategorySelect;
-  omit?: GassmaTestCategoryOmit;
-};
+} & ({ select?: GassmaTestCategorySelect; omit?: never } | { select?: never; omit?: GassmaTestCategoryOmit });
 
 declare type GassmaTestTagUpdateSingleData = {
   where: GassmaTestTagWhereUse;
   data: Partial<{ [K in keyof GassmaTestTagUse]: GassmaTestTagUse[K] | Gassma.NumberOperation }> & {
     "posts"?: { create?: GassmaTestPostUse | GassmaTestPostUse[]; connect?: GassmaTestPostWhereUse | GassmaTestPostWhereUse[]; connectOrCreate?: { where: GassmaTestPostWhereUse; create: GassmaTestPostUse } | { where: GassmaTestPostWhereUse; create: GassmaTestPostUse }[]; disconnect?: GassmaTestPostWhereUse | GassmaTestPostWhereUse[]; set?: GassmaTestPostWhereUse[] };
   };
-  select?: GassmaTestTagSelect;
-  omit?: GassmaTestTagOmit;
-};
+} & ({ select?: GassmaTestTagSelect; omit?: never } | { select?: never; omit?: GassmaTestTagOmit });
 
 declare type GassmaTestProductUpdateSingleData = {
   where: GassmaTestProductWhereUse;
   data: Partial<{ [K in keyof GassmaTestProductUse]: GassmaTestProductUse[K] | Gassma.NumberOperation }> & {
     "orderItems"?: { create?: GassmaTestOrderItemUse | GassmaTestOrderItemUse[]; connect?: GassmaTestOrderItemWhereUse | GassmaTestOrderItemWhereUse[]; connectOrCreate?: { where: GassmaTestOrderItemWhereUse; create: GassmaTestOrderItemUse } | { where: GassmaTestOrderItemWhereUse; create: GassmaTestOrderItemUse }[]; update?: { where: GassmaTestOrderItemWhereUse; data: Partial<GassmaTestOrderItemUse> } | { where: GassmaTestOrderItemWhereUse; data: Partial<GassmaTestOrderItemUse> }[]; delete?: boolean | GassmaTestOrderItemWhereUse | GassmaTestOrderItemWhereUse[]; deleteMany?: GassmaTestOrderItemWhereUse | GassmaTestOrderItemWhereUse[]; disconnect?: boolean | GassmaTestOrderItemWhereUse | GassmaTestOrderItemWhereUse[]; set?: GassmaTestOrderItemWhereUse[] };
   };
-  select?: GassmaTestProductSelect;
-  omit?: GassmaTestProductOmit;
-};
+} & ({ select?: GassmaTestProductSelect; omit?: never } | { select?: never; omit?: GassmaTestProductOmit });
 
 declare type GassmaTestOrderUpdateSingleData = {
   where: GassmaTestOrderWhereUse;
@@ -2258,9 +2208,7 @@ declare type GassmaTestOrderUpdateSingleData = {
     "user"?: { create?: GassmaTestUserUse; connect?: GassmaTestUserWhereUse; connectOrCreate?: { where: GassmaTestUserWhereUse; create: GassmaTestUserUse } };
     "items"?: { create?: GassmaTestOrderItemUse | GassmaTestOrderItemUse[]; connect?: GassmaTestOrderItemWhereUse | GassmaTestOrderItemWhereUse[]; connectOrCreate?: { where: GassmaTestOrderItemWhereUse; create: GassmaTestOrderItemUse } | { where: GassmaTestOrderItemWhereUse; create: GassmaTestOrderItemUse }[]; update?: { where: GassmaTestOrderItemWhereUse; data: Partial<GassmaTestOrderItemUse> } | { where: GassmaTestOrderItemWhereUse; data: Partial<GassmaTestOrderItemUse> }[]; delete?: boolean | GassmaTestOrderItemWhereUse | GassmaTestOrderItemWhereUse[]; deleteMany?: GassmaTestOrderItemWhereUse | GassmaTestOrderItemWhereUse[]; disconnect?: boolean | GassmaTestOrderItemWhereUse | GassmaTestOrderItemWhereUse[]; set?: GassmaTestOrderItemWhereUse[] };
   };
-  select?: GassmaTestOrderSelect;
-  omit?: GassmaTestOrderOmit;
-};
+} & ({ select?: GassmaTestOrderSelect; omit?: never } | { select?: never; omit?: GassmaTestOrderOmit });
 
 declare type GassmaTestOrderItemUpdateSingleData = {
   where: GassmaTestOrderItemWhereUse;
@@ -2268,9 +2216,7 @@ declare type GassmaTestOrderItemUpdateSingleData = {
     "order"?: { create?: GassmaTestOrderUse; connect?: GassmaTestOrderWhereUse; connectOrCreate?: { where: GassmaTestOrderWhereUse; create: GassmaTestOrderUse } };
     "product"?: { create?: GassmaTestProductUse; connect?: GassmaTestProductWhereUse; connectOrCreate?: { where: GassmaTestProductWhereUse; create: GassmaTestProductUse } };
   };
-  select?: GassmaTestOrderItemSelect;
-  omit?: GassmaTestOrderItemOmit;
-};
+} & ({ select?: GassmaTestOrderItemSelect; omit?: never } | { select?: never; omit?: GassmaTestOrderItemOmit });
 
 declare type GassmaTestUserUpsertData = {
   where: GassmaTestUserWhereUse;
@@ -2340,10 +2286,8 @@ declare type GassmaTestUserUpsertSingleData = {
     "comments"?: { create?: GassmaTestCommentUse | GassmaTestCommentUse[]; connect?: GassmaTestCommentWhereUse | GassmaTestCommentWhereUse[]; connectOrCreate?: { where: GassmaTestCommentWhereUse; create: GassmaTestCommentUse } | { where: GassmaTestCommentWhereUse; create: GassmaTestCommentUse }[]; update?: { where: GassmaTestCommentWhereUse; data: Partial<GassmaTestCommentUse> } | { where: GassmaTestCommentWhereUse; data: Partial<GassmaTestCommentUse> }[]; delete?: boolean | GassmaTestCommentWhereUse | GassmaTestCommentWhereUse[]; deleteMany?: GassmaTestCommentWhereUse | GassmaTestCommentWhereUse[]; disconnect?: boolean | GassmaTestCommentWhereUse | GassmaTestCommentWhereUse[]; set?: GassmaTestCommentWhereUse[] };
     "orders"?: { create?: GassmaTestOrderUse | GassmaTestOrderUse[]; connect?: GassmaTestOrderWhereUse | GassmaTestOrderWhereUse[]; connectOrCreate?: { where: GassmaTestOrderWhereUse; create: GassmaTestOrderUse } | { where: GassmaTestOrderWhereUse; create: GassmaTestOrderUse }[]; update?: { where: GassmaTestOrderWhereUse; data: Partial<GassmaTestOrderUse> } | { where: GassmaTestOrderWhereUse; data: Partial<GassmaTestOrderUse> }[]; delete?: boolean | GassmaTestOrderWhereUse | GassmaTestOrderWhereUse[]; deleteMany?: GassmaTestOrderWhereUse | GassmaTestOrderWhereUse[]; disconnect?: boolean | GassmaTestOrderWhereUse | GassmaTestOrderWhereUse[]; set?: GassmaTestOrderWhereUse[] };
   };
-  select?: GassmaTestUserSelect;
   include?: GassmaTestUserInclude;
-  omit?: GassmaTestUserOmit;
-};
+} & ({ select?: GassmaTestUserSelect; omit?: never } | { select?: never; omit?: GassmaTestUserOmit });
 
 declare type GassmaTestProfileUpsertSingleData = {
   where: GassmaTestProfileWhereUse;
@@ -2353,10 +2297,8 @@ declare type GassmaTestProfileUpsertSingleData = {
   update: Partial<{ [K in keyof GassmaTestProfileUse]: GassmaTestProfileUse[K] | Gassma.NumberOperation }> & {
     "user"?: { create?: GassmaTestUserUse; connect?: GassmaTestUserWhereUse; connectOrCreate?: { where: GassmaTestUserWhereUse; create: GassmaTestUserUse }; update?: Partial<GassmaTestUserUse>; delete?: true; disconnect?: true };
   };
-  select?: GassmaTestProfileSelect;
   include?: GassmaTestProfileInclude;
-  omit?: GassmaTestProfileOmit;
-};
+} & ({ select?: GassmaTestProfileSelect; omit?: never } | { select?: never; omit?: GassmaTestProfileOmit });
 
 declare type GassmaTestPostUpsertSingleData = {
   where: GassmaTestPostWhereUse;
@@ -2372,10 +2314,8 @@ declare type GassmaTestPostUpsertSingleData = {
     "comments"?: { create?: GassmaTestCommentUse | GassmaTestCommentUse[]; connect?: GassmaTestCommentWhereUse | GassmaTestCommentWhereUse[]; connectOrCreate?: { where: GassmaTestCommentWhereUse; create: GassmaTestCommentUse } | { where: GassmaTestCommentWhereUse; create: GassmaTestCommentUse }[]; update?: { where: GassmaTestCommentWhereUse; data: Partial<GassmaTestCommentUse> } | { where: GassmaTestCommentWhereUse; data: Partial<GassmaTestCommentUse> }[]; delete?: boolean | GassmaTestCommentWhereUse | GassmaTestCommentWhereUse[]; deleteMany?: GassmaTestCommentWhereUse | GassmaTestCommentWhereUse[]; disconnect?: boolean | GassmaTestCommentWhereUse | GassmaTestCommentWhereUse[]; set?: GassmaTestCommentWhereUse[] };
     "tags"?: { create?: GassmaTestTagUse | GassmaTestTagUse[]; connect?: GassmaTestTagWhereUse | GassmaTestTagWhereUse[]; connectOrCreate?: { where: GassmaTestTagWhereUse; create: GassmaTestTagUse } | { where: GassmaTestTagWhereUse; create: GassmaTestTagUse }[]; disconnect?: GassmaTestTagWhereUse | GassmaTestTagWhereUse[]; set?: GassmaTestTagWhereUse[] };
   };
-  select?: GassmaTestPostSelect;
   include?: GassmaTestPostInclude;
-  omit?: GassmaTestPostOmit;
-};
+} & ({ select?: GassmaTestPostSelect; omit?: never } | { select?: never; omit?: GassmaTestPostOmit });
 
 declare type GassmaTestCommentUpsertSingleData = {
   where: GassmaTestCommentWhereUse;
@@ -2387,10 +2327,8 @@ declare type GassmaTestCommentUpsertSingleData = {
     "author"?: { create?: GassmaTestUserUse; connect?: GassmaTestUserWhereUse; connectOrCreate?: { where: GassmaTestUserWhereUse; create: GassmaTestUserUse } };
     "post"?: { create?: GassmaTestPostUse; connect?: GassmaTestPostWhereUse; connectOrCreate?: { where: GassmaTestPostWhereUse; create: GassmaTestPostUse } };
   };
-  select?: GassmaTestCommentSelect;
   include?: GassmaTestCommentInclude;
-  omit?: GassmaTestCommentOmit;
-};
+} & ({ select?: GassmaTestCommentSelect; omit?: never } | { select?: never; omit?: GassmaTestCommentOmit });
 
 declare type GassmaTestCategoryUpsertSingleData = {
   where: GassmaTestCategoryWhereUse;
@@ -2404,10 +2342,8 @@ declare type GassmaTestCategoryUpsertSingleData = {
     "parent"?: { create?: GassmaTestCategoryUse; connect?: GassmaTestCategoryWhereUse; connectOrCreate?: { where: GassmaTestCategoryWhereUse; create: GassmaTestCategoryUse } };
     "children"?: { create?: GassmaTestCategoryUse | GassmaTestCategoryUse[]; connect?: GassmaTestCategoryWhereUse | GassmaTestCategoryWhereUse[]; connectOrCreate?: { where: GassmaTestCategoryWhereUse; create: GassmaTestCategoryUse } | { where: GassmaTestCategoryWhereUse; create: GassmaTestCategoryUse }[]; update?: { where: GassmaTestCategoryWhereUse; data: Partial<GassmaTestCategoryUse> } | { where: GassmaTestCategoryWhereUse; data: Partial<GassmaTestCategoryUse> }[]; delete?: boolean | GassmaTestCategoryWhereUse | GassmaTestCategoryWhereUse[]; deleteMany?: GassmaTestCategoryWhereUse | GassmaTestCategoryWhereUse[]; disconnect?: boolean | GassmaTestCategoryWhereUse | GassmaTestCategoryWhereUse[]; set?: GassmaTestCategoryWhereUse[] };
   };
-  select?: GassmaTestCategorySelect;
   include?: GassmaTestCategoryInclude;
-  omit?: GassmaTestCategoryOmit;
-};
+} & ({ select?: GassmaTestCategorySelect; omit?: never } | { select?: never; omit?: GassmaTestCategoryOmit });
 
 declare type GassmaTestTagUpsertSingleData = {
   where: GassmaTestTagWhereUse;
@@ -2417,10 +2353,8 @@ declare type GassmaTestTagUpsertSingleData = {
   update: Partial<{ [K in keyof GassmaTestTagUse]: GassmaTestTagUse[K] | Gassma.NumberOperation }> & {
     "posts"?: { create?: GassmaTestPostUse | GassmaTestPostUse[]; connect?: GassmaTestPostWhereUse | GassmaTestPostWhereUse[]; connectOrCreate?: { where: GassmaTestPostWhereUse; create: GassmaTestPostUse } | { where: GassmaTestPostWhereUse; create: GassmaTestPostUse }[]; disconnect?: GassmaTestPostWhereUse | GassmaTestPostWhereUse[]; set?: GassmaTestPostWhereUse[] };
   };
-  select?: GassmaTestTagSelect;
   include?: GassmaTestTagInclude;
-  omit?: GassmaTestTagOmit;
-};
+} & ({ select?: GassmaTestTagSelect; omit?: never } | { select?: never; omit?: GassmaTestTagOmit });
 
 declare type GassmaTestProductUpsertSingleData = {
   where: GassmaTestProductWhereUse;
@@ -2430,10 +2364,8 @@ declare type GassmaTestProductUpsertSingleData = {
   update: Partial<{ [K in keyof GassmaTestProductUse]: GassmaTestProductUse[K] | Gassma.NumberOperation }> & {
     "orderItems"?: { create?: GassmaTestOrderItemUse | GassmaTestOrderItemUse[]; connect?: GassmaTestOrderItemWhereUse | GassmaTestOrderItemWhereUse[]; connectOrCreate?: { where: GassmaTestOrderItemWhereUse; create: GassmaTestOrderItemUse } | { where: GassmaTestOrderItemWhereUse; create: GassmaTestOrderItemUse }[]; update?: { where: GassmaTestOrderItemWhereUse; data: Partial<GassmaTestOrderItemUse> } | { where: GassmaTestOrderItemWhereUse; data: Partial<GassmaTestOrderItemUse> }[]; delete?: boolean | GassmaTestOrderItemWhereUse | GassmaTestOrderItemWhereUse[]; deleteMany?: GassmaTestOrderItemWhereUse | GassmaTestOrderItemWhereUse[]; disconnect?: boolean | GassmaTestOrderItemWhereUse | GassmaTestOrderItemWhereUse[]; set?: GassmaTestOrderItemWhereUse[] };
   };
-  select?: GassmaTestProductSelect;
   include?: GassmaTestProductInclude;
-  omit?: GassmaTestProductOmit;
-};
+} & ({ select?: GassmaTestProductSelect; omit?: never } | { select?: never; omit?: GassmaTestProductOmit });
 
 declare type GassmaTestOrderUpsertSingleData = {
   where: GassmaTestOrderWhereUse;
@@ -2445,10 +2377,8 @@ declare type GassmaTestOrderUpsertSingleData = {
     "user"?: { create?: GassmaTestUserUse; connect?: GassmaTestUserWhereUse; connectOrCreate?: { where: GassmaTestUserWhereUse; create: GassmaTestUserUse } };
     "items"?: { create?: GassmaTestOrderItemUse | GassmaTestOrderItemUse[]; connect?: GassmaTestOrderItemWhereUse | GassmaTestOrderItemWhereUse[]; connectOrCreate?: { where: GassmaTestOrderItemWhereUse; create: GassmaTestOrderItemUse } | { where: GassmaTestOrderItemWhereUse; create: GassmaTestOrderItemUse }[]; update?: { where: GassmaTestOrderItemWhereUse; data: Partial<GassmaTestOrderItemUse> } | { where: GassmaTestOrderItemWhereUse; data: Partial<GassmaTestOrderItemUse> }[]; delete?: boolean | GassmaTestOrderItemWhereUse | GassmaTestOrderItemWhereUse[]; deleteMany?: GassmaTestOrderItemWhereUse | GassmaTestOrderItemWhereUse[]; disconnect?: boolean | GassmaTestOrderItemWhereUse | GassmaTestOrderItemWhereUse[]; set?: GassmaTestOrderItemWhereUse[] };
   };
-  select?: GassmaTestOrderSelect;
   include?: GassmaTestOrderInclude;
-  omit?: GassmaTestOrderOmit;
-};
+} & ({ select?: GassmaTestOrderSelect; omit?: never } | { select?: never; omit?: GassmaTestOrderOmit });
 
 declare type GassmaTestOrderItemUpsertSingleData = {
   where: GassmaTestOrderItemWhereUse;
@@ -2460,10 +2390,8 @@ declare type GassmaTestOrderItemUpsertSingleData = {
     "order"?: { create?: GassmaTestOrderUse; connect?: GassmaTestOrderWhereUse; connectOrCreate?: { where: GassmaTestOrderWhereUse; create: GassmaTestOrderUse } };
     "product"?: { create?: GassmaTestProductUse; connect?: GassmaTestProductWhereUse; connectOrCreate?: { where: GassmaTestProductWhereUse; create: GassmaTestProductUse } };
   };
-  select?: GassmaTestOrderItemSelect;
   include?: GassmaTestOrderItemInclude;
-  omit?: GassmaTestOrderItemOmit;
-};
+} & ({ select?: GassmaTestOrderItemSelect; omit?: never } | { select?: never; omit?: GassmaTestOrderItemOmit });
 
 declare type GassmaTestUserDeleteData = {
   where: GassmaTestUserWhereUse;
@@ -2512,66 +2440,48 @@ declare type GassmaTestOrderItemDeleteData = {
 
 declare type GassmaTestUserDeleteSingleData = {
   where: GassmaTestUserWhereUse;
-  select?: GassmaTestUserSelect;
   include?: GassmaTestUserInclude;
-  omit?: GassmaTestUserOmit;
-};
+} & ({ select?: GassmaTestUserSelect; omit?: never } | { select?: never; omit?: GassmaTestUserOmit });
 
 declare type GassmaTestProfileDeleteSingleData = {
   where: GassmaTestProfileWhereUse;
-  select?: GassmaTestProfileSelect;
   include?: GassmaTestProfileInclude;
-  omit?: GassmaTestProfileOmit;
-};
+} & ({ select?: GassmaTestProfileSelect; omit?: never } | { select?: never; omit?: GassmaTestProfileOmit });
 
 declare type GassmaTestPostDeleteSingleData = {
   where: GassmaTestPostWhereUse;
-  select?: GassmaTestPostSelect;
   include?: GassmaTestPostInclude;
-  omit?: GassmaTestPostOmit;
-};
+} & ({ select?: GassmaTestPostSelect; omit?: never } | { select?: never; omit?: GassmaTestPostOmit });
 
 declare type GassmaTestCommentDeleteSingleData = {
   where: GassmaTestCommentWhereUse;
-  select?: GassmaTestCommentSelect;
   include?: GassmaTestCommentInclude;
-  omit?: GassmaTestCommentOmit;
-};
+} & ({ select?: GassmaTestCommentSelect; omit?: never } | { select?: never; omit?: GassmaTestCommentOmit });
 
 declare type GassmaTestCategoryDeleteSingleData = {
   where: GassmaTestCategoryWhereUse;
-  select?: GassmaTestCategorySelect;
   include?: GassmaTestCategoryInclude;
-  omit?: GassmaTestCategoryOmit;
-};
+} & ({ select?: GassmaTestCategorySelect; omit?: never } | { select?: never; omit?: GassmaTestCategoryOmit });
 
 declare type GassmaTestTagDeleteSingleData = {
   where: GassmaTestTagWhereUse;
-  select?: GassmaTestTagSelect;
   include?: GassmaTestTagInclude;
-  omit?: GassmaTestTagOmit;
-};
+} & ({ select?: GassmaTestTagSelect; omit?: never } | { select?: never; omit?: GassmaTestTagOmit });
 
 declare type GassmaTestProductDeleteSingleData = {
   where: GassmaTestProductWhereUse;
-  select?: GassmaTestProductSelect;
   include?: GassmaTestProductInclude;
-  omit?: GassmaTestProductOmit;
-};
+} & ({ select?: GassmaTestProductSelect; omit?: never } | { select?: never; omit?: GassmaTestProductOmit });
 
 declare type GassmaTestOrderDeleteSingleData = {
   where: GassmaTestOrderWhereUse;
-  select?: GassmaTestOrderSelect;
   include?: GassmaTestOrderInclude;
-  omit?: GassmaTestOrderOmit;
-};
+} & ({ select?: GassmaTestOrderSelect; omit?: never } | { select?: never; omit?: GassmaTestOrderOmit });
 
 declare type GassmaTestOrderItemDeleteSingleData = {
   where: GassmaTestOrderItemWhereUse;
-  select?: GassmaTestOrderItemSelect;
   include?: GassmaTestOrderItemInclude;
-  omit?: GassmaTestOrderItemOmit;
-};
+} & ({ select?: GassmaTestOrderItemSelect; omit?: never } | { select?: never; omit?: GassmaTestOrderItemOmit });
 
 declare type GassmaTestUserAggregateData = {
   where?: GassmaTestUserWhereUse;
