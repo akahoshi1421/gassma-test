@@ -184,9 +184,14 @@ const testDefaults = {
     }
   };
 
+const testUpdatedAt = {
+    "Post": ["updatedAt"],
+    "Product": ["updatedAt"]
+  };
+
 class GassmaClient {
   constructor(options) {
-    const mergedOptions = Object.assign({}, options, { relations: testRelations, defaults: testDefaults });
+    const mergedOptions = Object.assign({}, options, { relations: testRelations, defaults: testDefaults, updatedAt: testUpdatedAt });
     const client = new Gassma.GassmaClient(mergedOptions);
     this.sheets = client.sheets;
   }
