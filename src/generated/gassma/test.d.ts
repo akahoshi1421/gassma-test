@@ -206,12 +206,25 @@ declare type GassmaTestUpdatedAtConfig = {
   "Product"?: "id" | "name" | "price" | "stock" | "status" | "createdAt" | "updatedAt" | ("id" | "name" | "price" | "stock" | "status" | "createdAt" | "updatedAt")[];
 };
 
+declare type GassmaTestIgnoreConfig = {
+  "User"?: "id" | "email" | "name" | "age" | "isActive" | "role" | "createdAt" | ("id" | "email" | "name" | "age" | "isActive" | "role" | "createdAt")[];
+  "Profile"?: "id" | "bio" | "website" | "userId" | ("id" | "bio" | "website" | "userId")[];
+  "Post"?: "id" | "title" | "content" | "published" | "viewCount" | "rating" | "authorId" | "categoryId" | "createdAt" | "updatedAt" | ("id" | "title" | "content" | "published" | "viewCount" | "rating" | "authorId" | "categoryId" | "createdAt" | "updatedAt")[];
+  "Comment"?: "id" | "text" | "authorId" | "postId" | "createdAt" | ("id" | "text" | "authorId" | "postId" | "createdAt")[];
+  "Category"?: "id" | "name" | "parentId" | ("id" | "name" | "parentId")[];
+  "Tag"?: "id" | "name" | ("id" | "name")[];
+  "Product"?: "id" | "name" | "price" | "stock" | "status" | "createdAt" | "updatedAt" | ("id" | "name" | "price" | "stock" | "status" | "createdAt" | "updatedAt")[];
+  "Order"?: "id" | "userId" | "totalAmount" | "quantity" | "status" | "createdAt" | ("id" | "userId" | "totalAmount" | "quantity" | "status" | "createdAt")[];
+  "OrderItem"?: "id" | "orderId" | "productId" | "quantity" | "unitPrice" | ("id" | "orderId" | "productId" | "quantity" | "unitPrice")[];
+};
+
 declare type GassmaTestClientOptions<O extends GassmaTestGlobalOmitConfig = {}> = {
   id?: string;
   relations?: Gassma.RelationsConfig;
   omit?: O;
   defaults?: GassmaTestDefaultsConfig;
   updatedAt?: GassmaTestUpdatedAtConfig;
+  ignore?: GassmaTestIgnoreConfig;
 };
 
 declare type GassmaTestSheet<O extends GassmaTestGlobalOmitConfig = {}> = {
