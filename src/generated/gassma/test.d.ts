@@ -454,7 +454,7 @@ declare type GassmaTestUserUse = {
   "name": string;
   "age"?: number;
   "isActive": boolean;
-  "role": string | "admin" | "user" | "moderator";
+  "role": "admin" | "user" | "moderator";
   "createdAt": Date;
 };
 
@@ -501,7 +501,7 @@ declare type GassmaTestProductUse = {
   "name": string;
   "price": number;
   "stock": number;
-  "status": string | "available" | "soldout" | "discontinued";
+  "status": "available" | "soldout" | "discontinued";
   "createdAt": Date;
 };
 
@@ -510,7 +510,7 @@ declare type GassmaTestOrderUse = {
   "userId": number;
   "totalAmount": number;
   "quantity": number;
-  "status": string | "pending" | "shipped" | "delivered" | "cancelled";
+  "status": "pending" | "shipped" | "delivered" | "cancelled";
   "createdAt": Date;
 };
 
@@ -699,14 +699,14 @@ declare type GassmaTestUserisActiveFilterConditions = {
 };
 
 declare type GassmaTestUserroleFilterConditions = {
-  equals?: string | "admin" | "user" | "moderator" | Gassma.FieldRef;
-  not?: string | "admin" | "user" | "moderator";
-  in?: (string | "admin" | "user" | "moderator")[];
-  notIn?: (string | "admin" | "user" | "moderator")[];
-  lt?: string | "admin" | "user" | "moderator" | Gassma.FieldRef;
-  lte?: string | "admin" | "user" | "moderator" | Gassma.FieldRef;
-  gt?: string | "admin" | "user" | "moderator" | Gassma.FieldRef;
-  gte?: string | "admin" | "user" | "moderator" | Gassma.FieldRef;
+  equals?: "admin" | "user" | "moderator" | Gassma.FieldRef;
+  not?: "admin" | "user" | "moderator";
+  in?: ("admin" | "user" | "moderator")[];
+  notIn?: ("admin" | "user" | "moderator")[];
+  lt?: "admin" | "user" | "moderator" | Gassma.FieldRef;
+  lte?: "admin" | "user" | "moderator" | Gassma.FieldRef;
+  gt?: "admin" | "user" | "moderator" | Gassma.FieldRef;
+  gte?: "admin" | "user" | "moderator" | Gassma.FieldRef;
   contains?: string | Gassma.FieldRef;
   startsWith?: string | Gassma.FieldRef;
   endsWith?: string | Gassma.FieldRef;
@@ -1134,14 +1134,14 @@ declare type GassmaTestProductstockFilterConditions = {
 };
 
 declare type GassmaTestProductstatusFilterConditions = {
-  equals?: string | "available" | "soldout" | "discontinued" | Gassma.FieldRef;
-  not?: string | "available" | "soldout" | "discontinued";
-  in?: (string | "available" | "soldout" | "discontinued")[];
-  notIn?: (string | "available" | "soldout" | "discontinued")[];
-  lt?: string | "available" | "soldout" | "discontinued" | Gassma.FieldRef;
-  lte?: string | "available" | "soldout" | "discontinued" | Gassma.FieldRef;
-  gt?: string | "available" | "soldout" | "discontinued" | Gassma.FieldRef;
-  gte?: string | "available" | "soldout" | "discontinued" | Gassma.FieldRef;
+  equals?: "available" | "soldout" | "discontinued" | Gassma.FieldRef;
+  not?: "available" | "soldout" | "discontinued";
+  in?: ("available" | "soldout" | "discontinued")[];
+  notIn?: ("available" | "soldout" | "discontinued")[];
+  lt?: "available" | "soldout" | "discontinued" | Gassma.FieldRef;
+  lte?: "available" | "soldout" | "discontinued" | Gassma.FieldRef;
+  gt?: "available" | "soldout" | "discontinued" | Gassma.FieldRef;
+  gte?: "available" | "soldout" | "discontinued" | Gassma.FieldRef;
   contains?: string | Gassma.FieldRef;
   startsWith?: string | Gassma.FieldRef;
   endsWith?: string | Gassma.FieldRef;
@@ -1224,14 +1224,14 @@ declare type GassmaTestOrderquantityFilterConditions = {
 };
 
 declare type GassmaTestOrderstatusFilterConditions = {
-  equals?: string | "pending" | "shipped" | "delivered" | "cancelled" | Gassma.FieldRef;
-  not?: string | "pending" | "shipped" | "delivered" | "cancelled";
-  in?: (string | "pending" | "shipped" | "delivered" | "cancelled")[];
-  notIn?: (string | "pending" | "shipped" | "delivered" | "cancelled")[];
-  lt?: string | "pending" | "shipped" | "delivered" | "cancelled" | Gassma.FieldRef;
-  lte?: string | "pending" | "shipped" | "delivered" | "cancelled" | Gassma.FieldRef;
-  gt?: string | "pending" | "shipped" | "delivered" | "cancelled" | Gassma.FieldRef;
-  gte?: string | "pending" | "shipped" | "delivered" | "cancelled" | Gassma.FieldRef;
+  equals?: "pending" | "shipped" | "delivered" | "cancelled" | Gassma.FieldRef;
+  not?: "pending" | "shipped" | "delivered" | "cancelled";
+  in?: ("pending" | "shipped" | "delivered" | "cancelled")[];
+  notIn?: ("pending" | "shipped" | "delivered" | "cancelled")[];
+  lt?: "pending" | "shipped" | "delivered" | "cancelled" | Gassma.FieldRef;
+  lte?: "pending" | "shipped" | "delivered" | "cancelled" | Gassma.FieldRef;
+  gt?: "pending" | "shipped" | "delivered" | "cancelled" | Gassma.FieldRef;
+  gte?: "pending" | "shipped" | "delivered" | "cancelled" | Gassma.FieldRef;
   contains?: string | Gassma.FieldRef;
   startsWith?: string | Gassma.FieldRef;
   endsWith?: string | Gassma.FieldRef;
@@ -1334,7 +1334,7 @@ declare type GassmaTestUserWhereUse = {
   "name"?: string | GassmaTestUsernameFilterConditions;
   "age"?: number | null | GassmaTestUserageFilterConditions;
   "isActive"?: boolean | GassmaTestUserisActiveFilterConditions;
-  "role"?: string | "admin" | "user" | "moderator" | GassmaTestUserroleFilterConditions;
+  "role"?: "admin" | "user" | "moderator" | GassmaTestUserroleFilterConditions;
   "createdAt"?: Date | GassmaTestUsercreatedAtFilterConditions;
   "profile"?: { is?: GassmaTestProfileWhereUse; isNot?: GassmaTestProfileWhereUse };
   "posts"?: { some?: GassmaTestPostWhereUse; every?: GassmaTestPostWhereUse; none?: GassmaTestPostWhereUse };
@@ -1420,7 +1420,7 @@ declare type GassmaTestProductWhereUse = {
   "name"?: string | GassmaTestProductnameFilterConditions;
   "price"?: number | GassmaTestProductpriceFilterConditions;
   "stock"?: number | GassmaTestProductstockFilterConditions;
-  "status"?: string | "available" | "soldout" | "discontinued" | GassmaTestProductstatusFilterConditions;
+  "status"?: "available" | "soldout" | "discontinued" | GassmaTestProductstatusFilterConditions;
   "createdAt"?: Date | GassmaTestProductcreatedAtFilterConditions;
   "orderItems"?: { some?: GassmaTestOrderItemWhereUse; every?: GassmaTestOrderItemWhereUse; none?: GassmaTestOrderItemWhereUse };
 
@@ -1434,7 +1434,7 @@ declare type GassmaTestOrderWhereUse = {
   "userId"?: number | GassmaTestOrderuserIdFilterConditions;
   "totalAmount"?: number | GassmaTestOrdertotalAmountFilterConditions;
   "quantity"?: number | GassmaTestOrderquantityFilterConditions;
-  "status"?: string | "pending" | "shipped" | "delivered" | "cancelled" | GassmaTestOrderstatusFilterConditions;
+  "status"?: "pending" | "shipped" | "delivered" | "cancelled" | GassmaTestOrderstatusFilterConditions;
   "createdAt"?: Date | GassmaTestOrdercreatedAtFilterConditions;
   "user"?: { is?: GassmaTestUserWhereUse; isNot?: GassmaTestUserWhereUse };
   "items"?: { some?: GassmaTestOrderItemWhereUse; every?: GassmaTestOrderItemWhereUse; none?: GassmaTestOrderItemWhereUse };
@@ -1840,7 +1840,7 @@ declare type GassmaTestUserHavingUse = {
   "name"?: string | GassmaTestUsernameHavingCore;
   "age"?: number | null | GassmaTestUserageHavingCore;
   "isActive"?: boolean | GassmaTestUserisActiveHavingCore;
-  "role"?: string | "admin" | "user" | "moderator" | GassmaTestUserroleHavingCore;
+  "role"?: "admin" | "user" | "moderator" | GassmaTestUserroleHavingCore;
   "createdAt"?: Date | GassmaTestUsercreatedAtHavingCore;
 
   AND?: GassmaTestUserHavingUse[] | GassmaTestUserHavingUse;
@@ -1911,7 +1911,7 @@ declare type GassmaTestProductHavingUse = {
   "name"?: string | GassmaTestProductnameHavingCore;
   "price"?: number | GassmaTestProductpriceHavingCore;
   "stock"?: number | GassmaTestProductstockHavingCore;
-  "status"?: string | "available" | "soldout" | "discontinued" | GassmaTestProductstatusHavingCore;
+  "status"?: "available" | "soldout" | "discontinued" | GassmaTestProductstatusHavingCore;
   "createdAt"?: Date | GassmaTestProductcreatedAtHavingCore;
 
   AND?: GassmaTestProductHavingUse[] | GassmaTestProductHavingUse;
@@ -1924,7 +1924,7 @@ declare type GassmaTestOrderHavingUse = {
   "userId"?: number | GassmaTestOrderuserIdHavingCore;
   "totalAmount"?: number | GassmaTestOrdertotalAmountHavingCore;
   "quantity"?: number | GassmaTestOrderquantityHavingCore;
-  "status"?: string | "pending" | "shipped" | "delivered" | "cancelled" | GassmaTestOrderstatusHavingCore;
+  "status"?: "pending" | "shipped" | "delivered" | "cancelled" | GassmaTestOrderstatusHavingCore;
   "createdAt"?: Date | GassmaTestOrdercreatedAtHavingCore;
 
   AND?: GassmaTestOrderHavingUse[] | GassmaTestOrderHavingUse;
@@ -3059,7 +3059,7 @@ declare type GassmaTestUserCreateReturn = {
  "name": string;
  "age": number | null;
  "isActive": boolean;
- "role": string | "admin" | "user" | "moderator";
+ "role": "admin" | "user" | "moderator";
  "createdAt": Date;
 };
 
@@ -3106,7 +3106,7 @@ declare type GassmaTestProductCreateReturn = {
  "name": string;
  "price": number;
  "stock": number;
- "status": string | "available" | "soldout" | "discontinued";
+ "status": "available" | "soldout" | "discontinued";
  "createdAt": Date;
 };
 
@@ -3115,7 +3115,7 @@ declare type GassmaTestOrderCreateReturn = {
  "userId": number;
  "totalAmount": number;
  "quantity": number;
- "status": string | "pending" | "shipped" | "delivered" | "cancelled";
+ "status": "pending" | "shipped" | "delivered" | "cancelled";
  "createdAt": Date;
 };
 
