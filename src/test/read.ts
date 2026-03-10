@@ -13,6 +13,7 @@ import { testFilterConditions } from "./read/testFilterConditions";
 import { testOrderByAdvanced } from "./read/testOrderByAdvanced";
 import { testTakeNegative } from "./read/testTakeNegative";
 import { testFields } from "./read/testFields";
+import { testIgnore } from "./read/testIgnore";
 
 function testRead() {
   testFindMany();
@@ -30,6 +31,7 @@ function testRead() {
   testOrderByAdvanced();
   testTakeNegative();
   testFields();
+  testIgnore();
 
   Logger.log("🎉 All read tests passed!");
 }

@@ -189,9 +189,14 @@ const testUpdatedAt = {
     "Product": ["updatedAt"]
   };
 
+const testIgnore = {
+    "User": ["internalNote"],
+    "Post": ["debugInfo"]
+  };
+
 class GassmaClient {
   constructor(options) {
-    const mergedOptions = Object.assign({}, options, { relations: testRelations, defaults: testDefaults, updatedAt: testUpdatedAt });
+    const mergedOptions = Object.assign({}, options, { relations: testRelations, defaults: testDefaults, updatedAt: testUpdatedAt, ignore: testIgnore });
     const client = new Gassma.GassmaClient(mergedOptions);
     this.sheets = client.sheets;
   }

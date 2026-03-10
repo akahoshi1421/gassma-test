@@ -14,17 +14,18 @@ enum Role {
 // ===== ユーザー系 =====
 
 model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
-  name      String
-  age       Int?
-  isActive  Boolean  @default(true)
-  role      Role
-  createdAt DateTime @default(now())
-  profile   Profile?
-  posts     Post[]
-  comments  Comment[]
-  orders    Order[]
+  id           Int      @id @default(autoincrement())
+  email        String   @unique
+  name         String
+  age          Int?
+  isActive     Boolean  @default(true)
+  role         Role
+  createdAt    DateTime @default(now())
+  internalNote String   @ignore
+  profile      Profile?
+  posts        Post[]
+  comments     Comment[]
+  orders       Order[]
 }
 
 model Profile {
@@ -50,6 +51,7 @@ model Post {
   categoryId Int?
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
+  debugInfo  String    @ignore
   author     User      @relation(fields: [authorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   category   Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull, onUpdate: SetNull)
   comments   Comment[]
