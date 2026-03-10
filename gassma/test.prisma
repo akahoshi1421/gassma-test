@@ -3,6 +3,14 @@ generator client {
   output   = "./src/generated/gassma"
 }
 
+// ===== Enum =====
+
+enum Role {
+  admin
+  user
+  moderator
+}
+
 // ===== ユーザー系 =====
 
 model User {
@@ -11,8 +19,7 @@ model User {
   name      String
   age       Int?
   isActive  Boolean  @default(true)
-  /// @gassma.replaceType "admin", "user", "moderator"
-  role      String
+  role      Role
   createdAt DateTime @default(now())
   profile   Profile?
   posts     Post[]
