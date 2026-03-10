@@ -17,6 +17,12 @@ declare namespace Gassma {
   type FalseKeys<T> = { [K in keyof T]: T[K] extends false ? K : never }[keyof T];
   type ResolveOmitKeys<GO, QO> = Exclude<TrueKeys<GO>, FalseKeys<QO>> | TrueKeys<QO>;
 
+  type DefaultsConfig = {
+    [sheetName: string]: {
+      [columnName: string]: unknown | (() => unknown);
+    };
+  };
+
   type ManyReturn = {
     count: number;
   };
@@ -183,6 +189,7 @@ declare type GassmaTestClientOptions<O extends GassmaTestGlobalOmitConfig = {}> 
   id?: string;
   relations?: Gassma.RelationsConfig;
   omit?: O;
+  defaults?: Gassma.DefaultsConfig;
 };
 declare type GassmaTestSheet<O extends GassmaTestGlobalOmitConfig = {}> = {
   "User": GassmaTestUserController<O extends { "User": infer UO } ? UO extends GassmaTestUserOmit ? UO : {} : {}>;
@@ -453,9 +460,9 @@ declare type GassmaTestUserUse = {
   "email": string;
   "name": string;
   "age"?: number;
-  "isActive": boolean;
+  "isActive"?: boolean;
   "role": "admin" | "user" | "moderator";
-  "createdAt": Date;
+  "createdAt"?: Date;
 };
 
 declare type GassmaTestProfileUse = {
@@ -469,12 +476,12 @@ declare type GassmaTestPostUse = {
   "id": number;
   "title": string;
   "content"?: string | number;
-  "published": boolean;
-  "viewCount": number;
+  "published"?: boolean;
+  "viewCount"?: number;
   "rating"?: number | boolean;
   "authorId": number;
   "categoryId"?: number;
-  "createdAt": Date;
+  "createdAt"?: Date;
 };
 
 declare type GassmaTestCommentUse = {
@@ -482,7 +489,7 @@ declare type GassmaTestCommentUse = {
   "text": string;
   "authorId": number;
   "postId": number;
-  "createdAt": Date;
+  "createdAt"?: Date;
 };
 
 declare type GassmaTestCategoryUse = {
@@ -502,7 +509,7 @@ declare type GassmaTestProductUse = {
   "price": number;
   "stock": number;
   "status": "available" | "soldout" | "discontinued";
-  "createdAt": Date;
+  "createdAt"?: Date;
 };
 
 declare type GassmaTestOrderUse = {
@@ -511,7 +518,7 @@ declare type GassmaTestOrderUse = {
   "totalAmount": number;
   "quantity": number;
   "status": "pending" | "shipped" | "delivered" | "cancelled";
-  "createdAt": Date;
+  "createdAt"?: Date;
 };
 
 declare type GassmaTestOrderItemUse = {
@@ -684,8 +691,8 @@ declare type GassmaTestUserageFilterConditions = {
 };
 
 declare type GassmaTestUserisActiveFilterConditions = {
-  equals?: boolean | Gassma.FieldRef;
-  not?: boolean;
+  equals?: boolean | null | Gassma.FieldRef;
+  not?: boolean | null;
   in?: boolean[];
   notIn?: boolean[];
   lt?: boolean | Gassma.FieldRef;
@@ -714,8 +721,8 @@ declare type GassmaTestUserroleFilterConditions = {
 };
 
 declare type GassmaTestUsercreatedAtFilterConditions = {
-  equals?: Date | Gassma.FieldRef;
-  not?: Date;
+  equals?: Date | null | Gassma.FieldRef;
+  not?: Date | null;
   in?: Date[];
   notIn?: Date[];
   lt?: Date | Gassma.FieldRef;
@@ -834,8 +841,8 @@ declare type GassmaTestPostcontentFilterConditions = {
 };
 
 declare type GassmaTestPostpublishedFilterConditions = {
-  equals?: boolean | Gassma.FieldRef;
-  not?: boolean;
+  equals?: boolean | null | Gassma.FieldRef;
+  not?: boolean | null;
   in?: boolean[];
   notIn?: boolean[];
   lt?: boolean | Gassma.FieldRef;
@@ -849,8 +856,8 @@ declare type GassmaTestPostpublishedFilterConditions = {
 };
 
 declare type GassmaTestPostviewCountFilterConditions = {
-  equals?: number | Gassma.FieldRef;
-  not?: number;
+  equals?: number | null | Gassma.FieldRef;
+  not?: number | null;
   in?: number[];
   notIn?: number[];
   lt?: number | Gassma.FieldRef;
@@ -909,8 +916,8 @@ declare type GassmaTestPostcategoryIdFilterConditions = {
 };
 
 declare type GassmaTestPostcreatedAtFilterConditions = {
-  equals?: Date | Gassma.FieldRef;
-  not?: Date;
+  equals?: Date | null | Gassma.FieldRef;
+  not?: Date | null;
   in?: Date[];
   notIn?: Date[];
   lt?: Date | Gassma.FieldRef;
@@ -984,8 +991,8 @@ declare type GassmaTestCommentpostIdFilterConditions = {
 };
 
 declare type GassmaTestCommentcreatedAtFilterConditions = {
-  equals?: Date | Gassma.FieldRef;
-  not?: Date;
+  equals?: Date | null | Gassma.FieldRef;
+  not?: Date | null;
   in?: Date[];
   notIn?: Date[];
   lt?: Date | Gassma.FieldRef;
@@ -1149,8 +1156,8 @@ declare type GassmaTestProductstatusFilterConditions = {
 };
 
 declare type GassmaTestProductcreatedAtFilterConditions = {
-  equals?: Date | Gassma.FieldRef;
-  not?: Date;
+  equals?: Date | null | Gassma.FieldRef;
+  not?: Date | null;
   in?: Date[];
   notIn?: Date[];
   lt?: Date | Gassma.FieldRef;
@@ -1239,8 +1246,8 @@ declare type GassmaTestOrderstatusFilterConditions = {
 };
 
 declare type GassmaTestOrdercreatedAtFilterConditions = {
-  equals?: Date | Gassma.FieldRef;
-  not?: Date;
+  equals?: Date | null | Gassma.FieldRef;
+  not?: Date | null;
   in?: Date[];
   notIn?: Date[];
   lt?: Date | Gassma.FieldRef;
@@ -1333,9 +1340,9 @@ declare type GassmaTestUserWhereUse = {
   "email"?: string | GassmaTestUseremailFilterConditions;
   "name"?: string | GassmaTestUsernameFilterConditions;
   "age"?: number | null | GassmaTestUserageFilterConditions;
-  "isActive"?: boolean | GassmaTestUserisActiveFilterConditions;
+  "isActive"?: boolean | null | GassmaTestUserisActiveFilterConditions;
   "role"?: "admin" | "user" | "moderator" | GassmaTestUserroleFilterConditions;
-  "createdAt"?: Date | GassmaTestUsercreatedAtFilterConditions;
+  "createdAt"?: Date | null | GassmaTestUsercreatedAtFilterConditions;
   "profile"?: { is?: GassmaTestProfileWhereUse; isNot?: GassmaTestProfileWhereUse };
   "posts"?: { some?: GassmaTestPostWhereUse; every?: GassmaTestPostWhereUse; none?: GassmaTestPostWhereUse };
   "comments"?: { some?: GassmaTestCommentWhereUse; every?: GassmaTestCommentWhereUse; none?: GassmaTestCommentWhereUse };
@@ -1362,12 +1369,12 @@ declare type GassmaTestPostWhereUse = {
   "id"?: number | GassmaTestPostidFilterConditions;
   "title"?: string | GassmaTestPosttitleFilterConditions;
   "content"?: string | number | null | GassmaTestPostcontentFilterConditions;
-  "published"?: boolean | GassmaTestPostpublishedFilterConditions;
-  "viewCount"?: number | GassmaTestPostviewCountFilterConditions;
+  "published"?: boolean | null | GassmaTestPostpublishedFilterConditions;
+  "viewCount"?: number | null | GassmaTestPostviewCountFilterConditions;
   "rating"?: number | boolean | null | GassmaTestPostratingFilterConditions;
   "authorId"?: number | GassmaTestPostauthorIdFilterConditions;
   "categoryId"?: number | null | GassmaTestPostcategoryIdFilterConditions;
-  "createdAt"?: Date | GassmaTestPostcreatedAtFilterConditions;
+  "createdAt"?: Date | null | GassmaTestPostcreatedAtFilterConditions;
   "author"?: { is?: GassmaTestUserWhereUse; isNot?: GassmaTestUserWhereUse };
   "category"?: { is?: GassmaTestCategoryWhereUse; isNot?: GassmaTestCategoryWhereUse };
   "comments"?: { some?: GassmaTestCommentWhereUse; every?: GassmaTestCommentWhereUse; none?: GassmaTestCommentWhereUse };
@@ -1383,7 +1390,7 @@ declare type GassmaTestCommentWhereUse = {
   "text"?: string | GassmaTestCommenttextFilterConditions;
   "authorId"?: number | GassmaTestCommentauthorIdFilterConditions;
   "postId"?: number | GassmaTestCommentpostIdFilterConditions;
-  "createdAt"?: Date | GassmaTestCommentcreatedAtFilterConditions;
+  "createdAt"?: Date | null | GassmaTestCommentcreatedAtFilterConditions;
   "author"?: { is?: GassmaTestUserWhereUse; isNot?: GassmaTestUserWhereUse };
   "post"?: { is?: GassmaTestPostWhereUse; isNot?: GassmaTestPostWhereUse };
 
@@ -1421,7 +1428,7 @@ declare type GassmaTestProductWhereUse = {
   "price"?: number | GassmaTestProductpriceFilterConditions;
   "stock"?: number | GassmaTestProductstockFilterConditions;
   "status"?: "available" | "soldout" | "discontinued" | GassmaTestProductstatusFilterConditions;
-  "createdAt"?: Date | GassmaTestProductcreatedAtFilterConditions;
+  "createdAt"?: Date | null | GassmaTestProductcreatedAtFilterConditions;
   "orderItems"?: { some?: GassmaTestOrderItemWhereUse; every?: GassmaTestOrderItemWhereUse; none?: GassmaTestOrderItemWhereUse };
 
   AND?: GassmaTestProductWhereUse[] | GassmaTestProductWhereUse;
@@ -1435,7 +1442,7 @@ declare type GassmaTestOrderWhereUse = {
   "totalAmount"?: number | GassmaTestOrdertotalAmountFilterConditions;
   "quantity"?: number | GassmaTestOrderquantityFilterConditions;
   "status"?: "pending" | "shipped" | "delivered" | "cancelled" | GassmaTestOrderstatusFilterConditions;
-  "createdAt"?: Date | GassmaTestOrdercreatedAtFilterConditions;
+  "createdAt"?: Date | null | GassmaTestOrdercreatedAtFilterConditions;
   "user"?: { is?: GassmaTestUserWhereUse; isNot?: GassmaTestUserWhereUse };
   "items"?: { some?: GassmaTestOrderItemWhereUse; every?: GassmaTestOrderItemWhereUse; none?: GassmaTestOrderItemWhereUse };
 
@@ -1839,9 +1846,9 @@ declare type GassmaTestUserHavingUse = {
   "email"?: string | GassmaTestUseremailHavingCore;
   "name"?: string | GassmaTestUsernameHavingCore;
   "age"?: number | null | GassmaTestUserageHavingCore;
-  "isActive"?: boolean | GassmaTestUserisActiveHavingCore;
+  "isActive"?: boolean | null | GassmaTestUserisActiveHavingCore;
   "role"?: "admin" | "user" | "moderator" | GassmaTestUserroleHavingCore;
-  "createdAt"?: Date | GassmaTestUsercreatedAtHavingCore;
+  "createdAt"?: Date | null | GassmaTestUsercreatedAtHavingCore;
 
   AND?: GassmaTestUserHavingUse[] | GassmaTestUserHavingUse;
   OR?: GassmaTestUserHavingUse[];
@@ -1863,12 +1870,12 @@ declare type GassmaTestPostHavingUse = {
   "id"?: number | GassmaTestPostidHavingCore;
   "title"?: string | GassmaTestPosttitleHavingCore;
   "content"?: string | number | null | GassmaTestPostcontentHavingCore;
-  "published"?: boolean | GassmaTestPostpublishedHavingCore;
-  "viewCount"?: number | GassmaTestPostviewCountHavingCore;
+  "published"?: boolean | null | GassmaTestPostpublishedHavingCore;
+  "viewCount"?: number | null | GassmaTestPostviewCountHavingCore;
   "rating"?: number | boolean | null | GassmaTestPostratingHavingCore;
   "authorId"?: number | GassmaTestPostauthorIdHavingCore;
   "categoryId"?: number | null | GassmaTestPostcategoryIdHavingCore;
-  "createdAt"?: Date | GassmaTestPostcreatedAtHavingCore;
+  "createdAt"?: Date | null | GassmaTestPostcreatedAtHavingCore;
 
   AND?: GassmaTestPostHavingUse[] | GassmaTestPostHavingUse;
   OR?: GassmaTestPostHavingUse[];
@@ -1880,7 +1887,7 @@ declare type GassmaTestCommentHavingUse = {
   "text"?: string | GassmaTestCommenttextHavingCore;
   "authorId"?: number | GassmaTestCommentauthorIdHavingCore;
   "postId"?: number | GassmaTestCommentpostIdHavingCore;
-  "createdAt"?: Date | GassmaTestCommentcreatedAtHavingCore;
+  "createdAt"?: Date | null | GassmaTestCommentcreatedAtHavingCore;
 
   AND?: GassmaTestCommentHavingUse[] | GassmaTestCommentHavingUse;
   OR?: GassmaTestCommentHavingUse[];
@@ -1912,7 +1919,7 @@ declare type GassmaTestProductHavingUse = {
   "price"?: number | GassmaTestProductpriceHavingCore;
   "stock"?: number | GassmaTestProductstockHavingCore;
   "status"?: "available" | "soldout" | "discontinued" | GassmaTestProductstatusHavingCore;
-  "createdAt"?: Date | GassmaTestProductcreatedAtHavingCore;
+  "createdAt"?: Date | null | GassmaTestProductcreatedAtHavingCore;
 
   AND?: GassmaTestProductHavingUse[] | GassmaTestProductHavingUse;
   OR?: GassmaTestProductHavingUse[];
@@ -1925,7 +1932,7 @@ declare type GassmaTestOrderHavingUse = {
   "totalAmount"?: number | GassmaTestOrdertotalAmountHavingCore;
   "quantity"?: number | GassmaTestOrderquantityHavingCore;
   "status"?: "pending" | "shipped" | "delivered" | "cancelled" | GassmaTestOrderstatusHavingCore;
-  "createdAt"?: Date | GassmaTestOrdercreatedAtHavingCore;
+  "createdAt"?: Date | null | GassmaTestOrdercreatedAtHavingCore;
 
   AND?: GassmaTestOrderHavingUse[] | GassmaTestOrderHavingUse;
   OR?: GassmaTestOrderHavingUse[];
@@ -3058,9 +3065,9 @@ declare type GassmaTestUserCreateReturn = {
  "email": string;
  "name": string;
  "age": number | null;
- "isActive": boolean;
+ "isActive": boolean | null;
  "role": "admin" | "user" | "moderator";
- "createdAt": Date;
+ "createdAt": Date | null;
 };
 
 declare type GassmaTestProfileCreateReturn = {
@@ -3074,12 +3081,12 @@ declare type GassmaTestPostCreateReturn = {
  "id": number;
  "title": string;
  "content": string | number | null;
- "published": boolean;
- "viewCount": number;
+ "published": boolean | null;
+ "viewCount": number | null;
  "rating": number | boolean | null;
  "authorId": number;
  "categoryId": number | null;
- "createdAt": Date;
+ "createdAt": Date | null;
 };
 
 declare type GassmaTestCommentCreateReturn = {
@@ -3087,7 +3094,7 @@ declare type GassmaTestCommentCreateReturn = {
  "text": string;
  "authorId": number;
  "postId": number;
- "createdAt": Date;
+ "createdAt": Date | null;
 };
 
 declare type GassmaTestCategoryCreateReturn = {
@@ -3107,7 +3114,7 @@ declare type GassmaTestProductCreateReturn = {
  "price": number;
  "stock": number;
  "status": "available" | "soldout" | "discontinued";
- "createdAt": Date;
+ "createdAt": Date | null;
 };
 
 declare type GassmaTestOrderCreateReturn = {
@@ -3116,7 +3123,7 @@ declare type GassmaTestOrderCreateReturn = {
  "totalAmount": number;
  "quantity": number;
  "status": "pending" | "shipped" | "delivered" | "cancelled";
- "createdAt": Date;
+ "createdAt": Date | null;
 };
 
 declare type GassmaTestOrderItemCreateReturn = {

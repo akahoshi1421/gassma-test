@@ -163,9 +163,30 @@ const testRelations = {
   }
 };
 
+const testDefaults = {
+    "User": {
+      "isActive": true,
+      "createdAt": () => new Date()
+    },
+    "Post": {
+      "published": false,
+      "viewCount": 0,
+      "createdAt": () => new Date()
+    },
+    "Comment": {
+      "createdAt": () => new Date()
+    },
+    "Product": {
+      "createdAt": () => new Date()
+    },
+    "Order": {
+      "createdAt": () => new Date()
+    }
+  };
+
 class GassmaClient {
   constructor(options) {
-    const mergedOptions = Object.assign({}, options, { relations: testRelations });
+    const mergedOptions = Object.assign({}, options, { relations: testRelations, defaults: testDefaults });
     const client = new Gassma.GassmaClient(mergedOptions);
     this.sheets = client.sheets;
   }
