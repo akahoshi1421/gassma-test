@@ -17,16 +17,6 @@ declare namespace Gassma {
   type FalseKeys<T> = { [K in keyof T]: T[K] extends false ? K : never }[keyof T];
   type ResolveOmitKeys<GO, QO> = Exclude<TrueKeys<GO>, FalseKeys<QO>> | TrueKeys<QO>;
 
-  type DefaultsConfig = {
-    [sheetName: string]: {
-      [columnName: string]: unknown | (() => unknown);
-    };
-  };
-
-  type UpdatedAtConfig = {
-    [sheetName: string]: string | string[];
-  };
-
   type ManyReturn = {
     count: number;
   };
@@ -189,13 +179,41 @@ declare type GassmaTestGlobalOmitConfig = {
   "Order"?: GassmaTestOrderOmit;
   "OrderItem"?: GassmaTestOrderItemOmit;
 };
+
+declare type GassmaTestDefaultsConfig = {
+  "User"?: {
+    "isActive"?: boolean | (() => boolean);
+    "createdAt"?: Date | (() => Date);
+  };
+  "Post"?: {
+    "published"?: boolean | (() => boolean);
+    "viewCount"?: number | (() => number);
+    "createdAt"?: Date | (() => Date);
+  };
+  "Comment"?: {
+    "createdAt"?: Date | (() => Date);
+  };
+  "Product"?: {
+    "createdAt"?: Date | (() => Date);
+  };
+  "Order"?: {
+    "createdAt"?: Date | (() => Date);
+  };
+};
+
+declare type GassmaTestUpdatedAtConfig = {
+  "Post"?: "id" | "title" | "content" | "published" | "viewCount" | "rating" | "authorId" | "categoryId" | "createdAt" | "updatedAt" | ("id" | "title" | "content" | "published" | "viewCount" | "rating" | "authorId" | "categoryId" | "createdAt" | "updatedAt")[];
+  "Product"?: "id" | "name" | "price" | "stock" | "status" | "createdAt" | "updatedAt" | ("id" | "name" | "price" | "stock" | "status" | "createdAt" | "updatedAt")[];
+};
+
 declare type GassmaTestClientOptions<O extends GassmaTestGlobalOmitConfig = {}> = {
   id?: string;
   relations?: Gassma.RelationsConfig;
   omit?: O;
-  defaults?: Gassma.DefaultsConfig;
-  updatedAt?: Gassma.UpdatedAtConfig;
+  defaults?: GassmaTestDefaultsConfig;
+  updatedAt?: GassmaTestUpdatedAtConfig;
 };
+
 declare type GassmaTestSheet<O extends GassmaTestGlobalOmitConfig = {}> = {
   "User": GassmaTestUserController<O extends { "User": infer UO } ? UO extends GassmaTestUserOmit ? UO : {} : {}>;
   "Profile": GassmaTestProfileController<O extends { "Profile": infer UO } ? UO extends GassmaTestProfileOmit ? UO : {} : {}>;
