@@ -9,6 +9,8 @@ import { postToTagData } from "../consts/postToTagData";
 import { productData } from "../consts/productData";
 import { orderData } from "../consts/orderData";
 import { orderItemData } from "../consts/orderItemData";
+import { auditLogData } from "../consts/auditLogData";
+import { notificationData } from "../consts/notificationData";
 
 const sheetDataMap: [string, unknown[][]][] = [
   ["User", userData],
@@ -21,6 +23,8 @@ const sheetDataMap: [string, unknown[][]][] = [
   ["Product", productData],
   ["Order", orderData],
   ["OrderItem", orderItemData],
+  ["AuditLog", auditLogData],
+  ["notifications", notificationData],
 ];
 
 function resetAllSheets() {

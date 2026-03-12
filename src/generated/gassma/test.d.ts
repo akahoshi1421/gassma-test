@@ -178,6 +178,7 @@ declare type GassmaTestGlobalOmitConfig = {
   "Product"?: GassmaTestProductOmit;
   "Order"?: GassmaTestOrderOmit;
   "OrderItem"?: GassmaTestOrderItemOmit;
+  "Notification"?: GassmaTestNotificationOmit;
 };
 
 declare type GassmaTestDefaultsConfig = {
@@ -199,6 +200,9 @@ declare type GassmaTestDefaultsConfig = {
   "Order"?: {
     "createdAt"?: Date | (() => Date);
   };
+  "Notification"?: {
+    "isRead"?: boolean | (() => boolean);
+  };
 };
 
 declare type GassmaTestUpdatedAtConfig = {
@@ -216,7 +220,10 @@ declare type GassmaTestIgnoreConfig = {
   "Product"?: "id" | "name" | "price" | "stock" | "status" | "createdAt" | "updatedAt" | ("id" | "name" | "price" | "stock" | "status" | "createdAt" | "updatedAt")[];
   "Order"?: "id" | "userId" | "totalAmount" | "quantity" | "status" | "createdAt" | ("id" | "userId" | "totalAmount" | "quantity" | "status" | "createdAt")[];
   "OrderItem"?: "id" | "orderId" | "productId" | "quantity" | "unitPrice" | ("id" | "orderId" | "productId" | "quantity" | "unitPrice")[];
+  "Notification"?: "id" | "userId" | "message" | "isRead" | ("id" | "userId" | "message" | "isRead")[];
 };
+
+declare type GassmaTestIgnoreSheetsConfig = "User" | "Profile" | "Post" | "Comment" | "Category" | "Tag" | "Product" | "Order" | "OrderItem" | "Notification" | ("User" | "Profile" | "Post" | "Comment" | "Category" | "Tag" | "Product" | "Order" | "OrderItem" | "Notification")[];
 
 declare type GassmaTestMapConfig = {
   "User"?: {
@@ -286,6 +293,25 @@ declare type GassmaTestMapConfig = {
       "quantity"?: string;
       "unitPrice"?: string;
   };
+  "Notification"?: {
+      "id"?: string;
+      "userId"?: string;
+      "message"?: string;
+      "isRead"?: string;
+  };
+};
+
+declare type GassmaTestMapSheetsConfig = {
+  "User"?: string;
+  "Profile"?: string;
+  "Post"?: string;
+  "Comment"?: string;
+  "Category"?: string;
+  "Tag"?: string;
+  "Product"?: string;
+  "Order"?: string;
+  "OrderItem"?: string;
+  "Notification"?: string;
 };
 
 declare type GassmaTestClientOptions<O extends GassmaTestGlobalOmitConfig = {}> = {
@@ -295,7 +321,9 @@ declare type GassmaTestClientOptions<O extends GassmaTestGlobalOmitConfig = {}> 
   defaults?: GassmaTestDefaultsConfig;
   updatedAt?: GassmaTestUpdatedAtConfig;
   ignore?: GassmaTestIgnoreConfig;
+  ignoreSheets?: GassmaTestIgnoreSheetsConfig;
   map?: GassmaTestMapConfig;
+  mapSheets?: GassmaTestMapSheetsConfig;
 };
 
 declare type GassmaTestSheet<O extends GassmaTestGlobalOmitConfig = {}> = {
@@ -308,6 +336,7 @@ declare type GassmaTestSheet<O extends GassmaTestGlobalOmitConfig = {}> = {
   "Product": GassmaTestProductController<O extends { "Product": infer UO } ? UO extends GassmaTestProductOmit ? UO : {} : {}>;
   "Order": GassmaTestOrderController<O extends { "Order": infer UO } ? UO extends GassmaTestOrderOmit ? UO : {} : {}>;
   "OrderItem": GassmaTestOrderItemController<O extends { "OrderItem": infer UO } ? UO extends GassmaTestOrderItemOmit ? UO : {} : {}>;
+  "Notification": GassmaTestNotificationController<O extends { "Notification": infer UO } ? UO extends GassmaTestNotificationOmit ? UO : {} : {}>;
 };
 
 declare class GassmaTestUserController<GO extends GassmaTestUserOmit = {}> {
@@ -553,6 +582,33 @@ declare class GassmaTestOrderItemController<GO extends GassmaTestOrderItemOmit =
   groupBy<T extends GassmaTestOrderItemGroupByData>(groupByData: T): GassmaTestOrderItemGroupByResult<T>[];
 }
 
+declare class GassmaTestNotificationController<GO extends GassmaTestNotificationOmit = {}> {
+  constructor(sheetName: string, id?: string);
+
+  readonly fields: Record<string, Gassma.FieldRef>;
+  changeSettings(
+    startRowNumber: number,
+    startColumnNumber: number,
+    endColumnNumber: number
+  ): void;
+  createMany(createdData: GassmaTestNotificationCreateManyData): CreateManyReturn;
+  createManyAndReturn(createdData: GassmaTestNotificationCreateManyData): GassmaTestNotificationDefaultFindResult[];
+  create<T extends GassmaTestNotificationCreateData>(createdData: T): GassmaTestNotificationFindResult<T["select"], T["omit"], GO>;
+  findFirst<T extends GassmaTestNotificationFindData>(findData: T): GassmaTestNotificationFindResult<T["select"], T["omit"], GO> | null;
+  findFirstOrThrow<T extends GassmaTestNotificationFindData>(findData: T): GassmaTestNotificationFindResult<T["select"], T["omit"], GO>;
+  findMany<T extends GassmaTestNotificationFindManyData>(findData: T): GassmaTestNotificationFindResult<T["select"], T["omit"], GO>[];
+  update<T extends GassmaTestNotificationUpdateSingleData>(updateData: T): GassmaTestNotificationFindResult<T["select"], T["omit"], GO> | null;
+  updateMany(updateData: GassmaTestNotificationUpdateData): UpdateManyReturn;
+  updateManyAndReturn(updateData: GassmaTestNotificationUpdateData): GassmaTestNotificationDefaultFindResult[];
+  upsert<T extends GassmaTestNotificationUpsertSingleData>(upsertData: T): GassmaTestNotificationFindResult<T["select"], T["omit"], GO>;
+  upsertMany(upsertData: GassmaTestNotificationUpsertData): UpsertManyReturn;
+  delete<T extends GassmaTestNotificationDeleteSingleData>(deleteData: T): GassmaTestNotificationFindResult<T["select"], T["omit"], GO> | null;
+  deleteMany(deleteData: GassmaTestNotificationDeleteData): DeleteManyReturn;
+  aggregate<T extends GassmaTestNotificationAggregateData>(aggregateData: T): GassmaTestNotificationAggregateResult<T>;
+  count(coutData: GassmaTestNotificationCountData): number;
+  groupBy<T extends GassmaTestNotificationGroupByData>(groupByData: T): GassmaTestNotificationGroupByResult<T>[];
+}
+
 declare type ManyReturn = {
   count: number;
 };
@@ -638,6 +694,13 @@ declare type GassmaTestOrderItemUse = {
   "unitPrice": number;
 };
 
+declare type GassmaTestNotificationUse = {
+  "id": number;
+  "userId": number;
+  "message": string;
+  "isRead"?: boolean;
+};
+
 declare type GassmaTestUserCreateData = {
   data: GassmaTestUserUse & {
     "profile"?: { create?: GassmaTestProfileUse; connect?: GassmaTestProfileWhereUse; connectOrCreate?: { where: GassmaTestProfileWhereUse; create: GassmaTestProfileUse }; update?: Partial<GassmaTestProfileUse>; delete?: true; disconnect?: true };
@@ -703,6 +766,10 @@ declare type GassmaTestOrderItemCreateData = {
   };
 } & ({ select?: GassmaTestOrderItemSelect; omit?: never } | { select?: never; omit?: GassmaTestOrderItemOmit });
 
+declare type GassmaTestNotificationCreateData = {
+  data: GassmaTestNotificationUse;
+} & ({ select?: GassmaTestNotificationSelect; omit?: never } | { select?: never; omit?: GassmaTestNotificationOmit });
+
 declare type GassmaTestUserCreateManyData = {
   data: GassmaTestUserUse[];
 };
@@ -737,6 +804,10 @@ declare type GassmaTestOrderCreateManyData = {
 
 declare type GassmaTestOrderItemCreateManyData = {
   data: GassmaTestOrderItemUse[];
+};
+
+declare type GassmaTestNotificationCreateManyData = {
+  data: GassmaTestNotificationUse[];
 };
 
 declare type GassmaTestUseridFilterConditions = {
@@ -1474,6 +1545,66 @@ declare type GassmaTestOrderItemunitPriceFilterConditions = {
   mode?: "default" | "insensitive";
 };
 
+declare type GassmaTestNotificationidFilterConditions = {
+  equals?: number | Gassma.FieldRef;
+  not?: number;
+  in?: number[];
+  notIn?: number[];
+  lt?: number | Gassma.FieldRef;
+  lte?: number | Gassma.FieldRef;
+  gt?: number | Gassma.FieldRef;
+  gte?: number | Gassma.FieldRef;
+  contains?: string | Gassma.FieldRef;
+  startsWith?: string | Gassma.FieldRef;
+  endsWith?: string | Gassma.FieldRef;
+  mode?: "default" | "insensitive";
+};
+
+declare type GassmaTestNotificationuserIdFilterConditions = {
+  equals?: number | Gassma.FieldRef;
+  not?: number;
+  in?: number[];
+  notIn?: number[];
+  lt?: number | Gassma.FieldRef;
+  lte?: number | Gassma.FieldRef;
+  gt?: number | Gassma.FieldRef;
+  gte?: number | Gassma.FieldRef;
+  contains?: string | Gassma.FieldRef;
+  startsWith?: string | Gassma.FieldRef;
+  endsWith?: string | Gassma.FieldRef;
+  mode?: "default" | "insensitive";
+};
+
+declare type GassmaTestNotificationmessageFilterConditions = {
+  equals?: string | Gassma.FieldRef;
+  not?: string;
+  in?: string[];
+  notIn?: string[];
+  lt?: string | Gassma.FieldRef;
+  lte?: string | Gassma.FieldRef;
+  gt?: string | Gassma.FieldRef;
+  gte?: string | Gassma.FieldRef;
+  contains?: string | Gassma.FieldRef;
+  startsWith?: string | Gassma.FieldRef;
+  endsWith?: string | Gassma.FieldRef;
+  mode?: "default" | "insensitive";
+};
+
+declare type GassmaTestNotificationisReadFilterConditions = {
+  equals?: boolean | null | Gassma.FieldRef;
+  not?: boolean | null;
+  in?: boolean[];
+  notIn?: boolean[];
+  lt?: boolean | Gassma.FieldRef;
+  lte?: boolean | Gassma.FieldRef;
+  gt?: boolean | Gassma.FieldRef;
+  gte?: boolean | Gassma.FieldRef;
+  contains?: string | Gassma.FieldRef;
+  startsWith?: string | Gassma.FieldRef;
+  endsWith?: string | Gassma.FieldRef;
+  mode?: "default" | "insensitive";
+};
+
 declare type GassmaTestUserWhereUse = {
   "id"?: number | GassmaTestUseridFilterConditions;
   "email"?: string | GassmaTestUseremailFilterConditions;
@@ -1604,6 +1735,17 @@ declare type GassmaTestOrderItemWhereUse = {
   AND?: GassmaTestOrderItemWhereUse[] | GassmaTestOrderItemWhereUse;
   OR?: GassmaTestOrderItemWhereUse[];
   NOT?: GassmaTestOrderItemWhereUse[] | GassmaTestOrderItemWhereUse;
+};
+
+declare type GassmaTestNotificationWhereUse = {
+  "id"?: number | GassmaTestNotificationidFilterConditions;
+  "userId"?: number | GassmaTestNotificationuserIdFilterConditions;
+  "message"?: string | GassmaTestNotificationmessageFilterConditions;
+  "isRead"?: boolean | null | GassmaTestNotificationisReadFilterConditions;
+
+  AND?: GassmaTestNotificationWhereUse[] | GassmaTestNotificationWhereUse;
+  OR?: GassmaTestNotificationWhereUse[];
+  NOT?: GassmaTestNotificationWhereUse[] | GassmaTestNotificationWhereUse;
 };
 
 declare type GassmaTestUseridHavingCore = {
@@ -1998,6 +2140,38 @@ declare type GassmaTestOrderItemunitPriceHavingCore = {
   _sum?: GassmaTestOrderItemunitPriceFilterConditions;
 } & GassmaTestOrderItemunitPriceFilterConditions;
 
+declare type GassmaTestNotificationidHavingCore = {
+  _avg?: GassmaTestNotificationidFilterConditions;
+  _count?: GassmaTestNotificationidFilterConditions;
+  _max?: GassmaTestNotificationidFilterConditions;
+  _min?: GassmaTestNotificationidFilterConditions;
+  _sum?: GassmaTestNotificationidFilterConditions;
+} & GassmaTestNotificationidFilterConditions;
+
+declare type GassmaTestNotificationuserIdHavingCore = {
+  _avg?: GassmaTestNotificationuserIdFilterConditions;
+  _count?: GassmaTestNotificationuserIdFilterConditions;
+  _max?: GassmaTestNotificationuserIdFilterConditions;
+  _min?: GassmaTestNotificationuserIdFilterConditions;
+  _sum?: GassmaTestNotificationuserIdFilterConditions;
+} & GassmaTestNotificationuserIdFilterConditions;
+
+declare type GassmaTestNotificationmessageHavingCore = {
+  _avg?: GassmaTestNotificationmessageFilterConditions;
+  _count?: GassmaTestNotificationmessageFilterConditions;
+  _max?: GassmaTestNotificationmessageFilterConditions;
+  _min?: GassmaTestNotificationmessageFilterConditions;
+  _sum?: GassmaTestNotificationmessageFilterConditions;
+} & GassmaTestNotificationmessageFilterConditions;
+
+declare type GassmaTestNotificationisReadHavingCore = {
+  _avg?: GassmaTestNotificationisReadFilterConditions;
+  _count?: GassmaTestNotificationisReadFilterConditions;
+  _max?: GassmaTestNotificationisReadFilterConditions;
+  _min?: GassmaTestNotificationisReadFilterConditions;
+  _sum?: GassmaTestNotificationisReadFilterConditions;
+} & GassmaTestNotificationisReadFilterConditions;
+
 declare type GassmaTestUserHavingUse = {
   "id"?: number | GassmaTestUseridHavingCore;
   "email"?: string | GassmaTestUseremailHavingCore;
@@ -2110,6 +2284,17 @@ declare type GassmaTestOrderItemHavingUse = {
   NOT?: GassmaTestOrderItemHavingUse[] | GassmaTestOrderItemHavingUse;
 };
 
+declare type GassmaTestNotificationHavingUse = {
+  "id"?: number | GassmaTestNotificationidHavingCore;
+  "userId"?: number | GassmaTestNotificationuserIdHavingCore;
+  "message"?: string | GassmaTestNotificationmessageHavingCore;
+  "isRead"?: boolean | null | GassmaTestNotificationisReadHavingCore;
+
+  AND?: GassmaTestNotificationHavingUse[] | GassmaTestNotificationHavingUse;
+  OR?: GassmaTestNotificationHavingUse[];
+  NOT?: GassmaTestNotificationHavingUse[] | GassmaTestNotificationHavingUse;
+};
+
 declare type GassmaTestUserFindData = {
   where?: GassmaTestUserWhereUse;
   orderBy?: GassmaTestUserOrderBy;
@@ -2209,6 +2394,17 @@ declare type GassmaTestOrderItemFindData = {
   _count?: GassmaTestOrderItemCountValue;
 } & ({ select?: GassmaTestOrderItemSelect; omit?: never } | { select?: never; omit?: GassmaTestOrderItemOmit });
 
+declare type GassmaTestNotificationFindData = {
+  where?: GassmaTestNotificationWhereUse;
+  orderBy?: GassmaTestNotificationOrderBy;
+  take?: number;
+  skip?: number;
+  distinct?: "id" | "userId" | "message" | "isRead" | ("id" | "userId" | "message" | "isRead")[];
+  include?: GassmaTestNotificationInclude;
+  cursor?: Partial<GassmaTestNotificationUse>;
+  _count?: GassmaTestNotificationCountValue;
+} & ({ select?: GassmaTestNotificationSelect; omit?: never } | { select?: never; omit?: GassmaTestNotificationOmit });
+
 declare type GassmaTestUserFindManyData = GassmaTestUserFindData;
 
 declare type GassmaTestProfileFindManyData = GassmaTestProfileFindData;
@@ -2226,6 +2422,8 @@ declare type GassmaTestProductFindManyData = GassmaTestProductFindData;
 declare type GassmaTestOrderFindManyData = GassmaTestOrderFindData;
 
 declare type GassmaTestOrderItemFindManyData = GassmaTestOrderItemFindData;
+
+declare type GassmaTestNotificationFindManyData = GassmaTestNotificationFindData;
 
 declare type GassmaTestUserUpdateData = {
   where?: GassmaTestUserWhereUse;
@@ -2310,6 +2508,12 @@ declare type GassmaTestOrderItemUpdateData = {
   limit?: number;
 };
 
+declare type GassmaTestNotificationUpdateData = {
+  where?: GassmaTestNotificationWhereUse;
+  data: Partial<{ [K in keyof GassmaTestNotificationUse]: GassmaTestNotificationUse[K] | Gassma.NumberOperation }>;
+  limit?: number;
+};
+
 declare type GassmaTestUserUpdateSingleData = {
   where: GassmaTestUserWhereUse;
   data: Partial<{ [K in keyof GassmaTestUserUse]: GassmaTestUserUse[K] | Gassma.NumberOperation }> & {
@@ -2384,6 +2588,11 @@ declare type GassmaTestOrderItemUpdateSingleData = {
   };
 } & ({ select?: GassmaTestOrderItemSelect; omit?: never } | { select?: never; omit?: GassmaTestOrderItemOmit });
 
+declare type GassmaTestNotificationUpdateSingleData = {
+  where: GassmaTestNotificationWhereUse;
+  data: Partial<{ [K in keyof GassmaTestNotificationUse]: GassmaTestNotificationUse[K] | Gassma.NumberOperation }>;
+} & ({ select?: GassmaTestNotificationSelect; omit?: never } | { select?: never; omit?: GassmaTestNotificationOmit });
+
 declare type GassmaTestUserUpsertData = {
   where: GassmaTestUserWhereUse;
   update: Partial<{ [K in keyof GassmaTestUserUse]: GassmaTestUserUse[K] | Gassma.NumberOperation }>;
@@ -2436,6 +2645,12 @@ declare type GassmaTestOrderItemUpsertData = {
   where: GassmaTestOrderItemWhereUse;
   update: Partial<{ [K in keyof GassmaTestOrderItemUse]: GassmaTestOrderItemUse[K] | Gassma.NumberOperation }>;
   data: GassmaTestOrderItemUse;
+};
+
+declare type GassmaTestNotificationUpsertData = {
+  where: GassmaTestNotificationWhereUse;
+  update: Partial<{ [K in keyof GassmaTestNotificationUse]: GassmaTestNotificationUse[K] | Gassma.NumberOperation }>;
+  data: GassmaTestNotificationUse;
 };
 
 declare type GassmaTestUserUpsertSingleData = {
@@ -2559,6 +2774,13 @@ declare type GassmaTestOrderItemUpsertSingleData = {
   include?: GassmaTestOrderItemInclude;
 } & ({ select?: GassmaTestOrderItemSelect; omit?: never } | { select?: never; omit?: GassmaTestOrderItemOmit });
 
+declare type GassmaTestNotificationUpsertSingleData = {
+  where: GassmaTestNotificationWhereUse;
+  create: GassmaTestNotificationUse;
+  update: Partial<{ [K in keyof GassmaTestNotificationUse]: GassmaTestNotificationUse[K] | Gassma.NumberOperation }>;
+  include?: GassmaTestNotificationInclude;
+} & ({ select?: GassmaTestNotificationSelect; omit?: never } | { select?: never; omit?: GassmaTestNotificationOmit });
+
 declare type GassmaTestUserDeleteData = {
   where: GassmaTestUserWhereUse;
   limit?: number;
@@ -2601,6 +2823,11 @@ declare type GassmaTestOrderDeleteData = {
 
 declare type GassmaTestOrderItemDeleteData = {
   where: GassmaTestOrderItemWhereUse;
+  limit?: number;
+};
+
+declare type GassmaTestNotificationDeleteData = {
+  where: GassmaTestNotificationWhereUse;
   limit?: number;
 };
 
@@ -2648,6 +2875,11 @@ declare type GassmaTestOrderItemDeleteSingleData = {
   where: GassmaTestOrderItemWhereUse;
   include?: GassmaTestOrderItemInclude;
 } & ({ select?: GassmaTestOrderItemSelect; omit?: never } | { select?: never; omit?: GassmaTestOrderItemOmit });
+
+declare type GassmaTestNotificationDeleteSingleData = {
+  where: GassmaTestNotificationWhereUse;
+  include?: GassmaTestNotificationInclude;
+} & ({ select?: GassmaTestNotificationSelect; omit?: never } | { select?: never; omit?: GassmaTestNotificationOmit });
 
 declare type GassmaTestUserAggregateData = {
   where?: GassmaTestUserWhereUse;
@@ -2757,6 +2989,18 @@ declare type GassmaTestOrderItemAggregateData = {
   _sum?: GassmaTestOrderItemSelect;
 };
 
+declare type GassmaTestNotificationAggregateData = {
+  where?: GassmaTestNotificationWhereUse;
+  orderBy?: GassmaTestNotificationOrderBy;
+  take?: number;
+  skip?: number;
+  _avg?: GassmaTestNotificationSelect;
+  _count?: GassmaTestNotificationSelect;
+  _max?: GassmaTestNotificationSelect;
+  _min?: GassmaTestNotificationSelect;
+  _sum?: GassmaTestNotificationSelect;
+};
+
 declare type GassmaTestUserGroupByData = GassmaTestUserAggregateData & {
   by: "id" | "email" | "name" | "age" | "isActive" | "role" | "createdAt" | ("id" | "email" | "name" | "age" | "isActive" | "role" | "createdAt")[];
   having?: GassmaTestUserHavingUse;
@@ -2800,6 +3044,11 @@ declare type GassmaTestOrderGroupByData = GassmaTestOrderAggregateData & {
 declare type GassmaTestOrderItemGroupByData = GassmaTestOrderItemAggregateData & {
   by: "id" | "orderId" | "productId" | "quantity" | "unitPrice" | ("id" | "orderId" | "productId" | "quantity" | "unitPrice")[];
   having?: GassmaTestOrderItemHavingUse;
+};
+
+declare type GassmaTestNotificationGroupByData = GassmaTestNotificationAggregateData & {
+  by: "id" | "userId" | "message" | "isRead" | ("id" | "userId" | "message" | "isRead")[];
+  having?: GassmaTestNotificationHavingUse;
 };
 
 declare type GassmaTestUserInclude = {
@@ -2858,6 +3107,8 @@ declare type GassmaTestOrderItemInclude = {
   "_count"?: GassmaTestOrderItemCountValue;
 };
 
+declare type GassmaTestNotificationInclude = {};
+
 declare type GassmaTestUserCountValue = true | { select: {
     "profile"?: true | { where?: GassmaTestProfileWhereUse };
     "posts"?: true | { where?: GassmaTestPostWhereUse };
@@ -2904,6 +3155,8 @@ declare type GassmaTestOrderItemCountValue = true | { select: {
     "order"?: true | { where?: GassmaTestOrderWhereUse };
     "product"?: true | { where?: GassmaTestProductWhereUse };
   } };
+
+declare type GassmaTestNotificationCountValue = true;
 
 declare type GassmaTestUserOrderBy = {
   "id"?: "asc" | "desc" | Gassma.SortOrderInput;
@@ -3010,6 +3263,13 @@ declare type GassmaTestOrderItemOrderBy = {
   "_count"?: { "order"?: "asc" | "desc"; "product"?: "asc" | "desc" };
 };
 
+declare type GassmaTestNotificationOrderBy = {
+  "id"?: "asc" | "desc" | Gassma.SortOrderInput;
+  "userId"?: "asc" | "desc" | Gassma.SortOrderInput;
+  "message"?: "asc" | "desc" | Gassma.SortOrderInput;
+  "isRead"?: "asc" | "desc" | Gassma.SortOrderInput;
+};
+
 declare type GassmaTestUserSelect = {
   "id"?: true;
   "email"?: true;
@@ -3084,6 +3344,13 @@ declare type GassmaTestOrderItemSelect = {
   "productId"?: true;
   "quantity"?: true;
   "unitPrice"?: true;
+};
+
+declare type GassmaTestNotificationSelect = {
+  "id"?: true;
+  "userId"?: true;
+  "message"?: true;
+  "isRead"?: true;
 };
 
 declare type GassmaTestUserOmit = {
@@ -3162,6 +3429,13 @@ declare type GassmaTestOrderItemOmit = {
   "unitPrice"?: true | false;
 };
 
+declare type GassmaTestNotificationOmit = {
+  "id"?: true | false;
+  "userId"?: true | false;
+  "message"?: true | false;
+  "isRead"?: true | false;
+};
+
 declare type GassmaTestUserCountData = {
   where?: GassmaTestUserWhereUse;
   orderBy?: GassmaTestUserOrderBy;
@@ -3221,6 +3495,13 @@ declare type GassmaTestOrderCountData = {
 declare type GassmaTestOrderItemCountData = {
   where?: GassmaTestOrderItemWhereUse;
   orderBy?: GassmaTestOrderItemOrderBy;
+  take?: number;
+  skip?: number;
+};
+
+declare type GassmaTestNotificationCountData = {
+  where?: GassmaTestNotificationWhereUse;
+  orderBy?: GassmaTestNotificationOrderBy;
   take?: number;
   skip?: number;
 };
@@ -3301,6 +3582,13 @@ declare type GassmaTestOrderItemCreateReturn = {
  "unitPrice": number;
 };
 
+declare type GassmaTestNotificationCreateReturn = {
+ "id": number;
+ "userId": number;
+ "message": string;
+ "isRead": boolean | null;
+};
+
 declare type GassmaTestUserDefaultFindResult = GassmaTestUserCreateReturn;
 
 declare type GassmaTestProfileDefaultFindResult = GassmaTestProfileCreateReturn;
@@ -3318,6 +3606,8 @@ declare type GassmaTestProductDefaultFindResult = GassmaTestProductCreateReturn;
 declare type GassmaTestOrderDefaultFindResult = GassmaTestOrderCreateReturn;
 
 declare type GassmaTestOrderItemDefaultFindResult = GassmaTestOrderItemCreateReturn;
+
+declare type GassmaTestNotificationDefaultFindResult = GassmaTestNotificationCreateReturn;
 
 declare type GassmaTestUserFindResult<S, QO = undefined, GO = {}> = S extends GassmaTestUserSelect
   ? {
@@ -3427,6 +3717,18 @@ declare type GassmaTestOrderItemFindResult<S, QO = undefined, GO = {}> = S exten
       ]: GassmaTestOrderItemDefaultFindResult[K];
     };
 
+declare type GassmaTestNotificationFindResult<S, QO = undefined, GO = {}> = S extends GassmaTestNotificationSelect
+  ? {
+      [K in keyof S as S[K] extends true
+        ? K & keyof GassmaTestNotificationDefaultFindResult
+        : never]: GassmaTestNotificationDefaultFindResult[K & keyof GassmaTestNotificationDefaultFindResult];
+    }
+  : {
+      [K in keyof GassmaTestNotificationDefaultFindResult as
+        K extends Gassma.ResolveOmitKeys<GO, QO> ? never : K
+      ]: GassmaTestNotificationDefaultFindResult[K];
+    };
+
 declare type GassmaTestUserAggregateBaseReturn = {
   "id": number
   "email": string
@@ -3501,6 +3803,13 @@ declare type GassmaTestOrderItemAggregateBaseReturn = {
   "productId": number
   "quantity": number
   "unitPrice": number
+};
+
+declare type GassmaTestNotificationAggregateBaseReturn = {
+  "id": number
+  "userId": number
+  "message": string
+  "isRead": boolean
 };
 
 declare type GassmaTestUserAggregateField<T, K extends string> = T extends undefined
@@ -3593,6 +3902,16 @@ declare type GassmaTestOrderItemAggregateField<T, K extends string> = T extends 
           : never]: GassmaTestOrderItemAggregateBaseReturn[P & keyof GassmaTestOrderItemAggregateBaseReturn];
       };
 
+declare type GassmaTestNotificationAggregateField<T, K extends string> = T extends undefined
+  ? never
+  : K extends "_count"
+    ? { [P in keyof T as T[P] extends true ? P : never]: number }
+    : {
+        [P in keyof T as T[P] extends true
+          ? P & keyof GassmaTestNotificationAggregateBaseReturn
+          : never]: GassmaTestNotificationAggregateBaseReturn[P & keyof GassmaTestNotificationAggregateBaseReturn];
+      };
+
 declare type GassmaTestUserAggregateResult<T extends GassmaTestUserAggregateData> = {
   [K in keyof T as K extends "_avg" | "_count" | "_max" | "_min" | "_sum"
     ? T[K] extends undefined
@@ -3665,6 +3984,14 @@ declare type GassmaTestOrderItemAggregateResult<T extends GassmaTestOrderItemAgg
     : never]: K extends string ? GassmaTestOrderItemAggregateField<T[K], K> : never;
 };
 
+declare type GassmaTestNotificationAggregateResult<T extends GassmaTestNotificationAggregateData> = {
+  [K in keyof T as K extends "_avg" | "_count" | "_max" | "_min" | "_sum"
+    ? T[K] extends undefined
+      ? never
+      : K
+    : never]: K extends string ? GassmaTestNotificationAggregateField<T[K], K> : never;
+};
+
 declare type GassmaTestUserGroupByBaseReturn = GassmaTestUserCreateReturn;
 
 declare type GassmaTestProfileGroupByBaseReturn = GassmaTestProfileCreateReturn;
@@ -3683,6 +4010,8 @@ declare type GassmaTestOrderGroupByBaseReturn = GassmaTestOrderCreateReturn;
 
 declare type GassmaTestOrderItemGroupByBaseReturn = GassmaTestOrderItemCreateReturn;
 
+declare type GassmaTestNotificationGroupByBaseReturn = GassmaTestNotificationCreateReturn;
+
 declare type GassmaTestUserGroupByKeyOfBaseReturn = keyof GassmaTestUserGroupByBaseReturn;
 
 declare type GassmaTestProfileGroupByKeyOfBaseReturn = keyof GassmaTestProfileGroupByBaseReturn;
@@ -3700,6 +4029,8 @@ declare type GassmaTestProductGroupByKeyOfBaseReturn = keyof GassmaTestProductGr
 declare type GassmaTestOrderGroupByKeyOfBaseReturn = keyof GassmaTestOrderGroupByBaseReturn;
 
 declare type GassmaTestOrderItemGroupByKeyOfBaseReturn = keyof GassmaTestOrderItemGroupByBaseReturn;
+
+declare type GassmaTestNotificationGroupByKeyOfBaseReturn = keyof GassmaTestNotificationGroupByBaseReturn;
 
 declare type GassmaTestUserByField<T extends GassmaTestUserGroupByKeyOfBaseReturn | GassmaTestUserGroupByKeyOfBaseReturn[]> =
   T extends GassmaTestUserGroupByKeyOfBaseReturn[]
@@ -3782,6 +4113,15 @@ declare type GassmaTestOrderItemByField<T extends GassmaTestOrderItemGroupByKeyO
       ? { [K in T]: GassmaTestOrderItemGroupByBaseReturn[K] }
       : never;
 
+declare type GassmaTestNotificationByField<T extends GassmaTestNotificationGroupByKeyOfBaseReturn | GassmaTestNotificationGroupByKeyOfBaseReturn[]> =
+  T extends GassmaTestNotificationGroupByKeyOfBaseReturn[]
+    ? {
+        [K in T[number]]: GassmaTestNotificationGroupByBaseReturn[K & keyof GassmaTestNotificationGroupByBaseReturn];
+      }
+    : T extends keyof GassmaTestNotificationGroupByBaseReturn
+      ? { [K in T]: GassmaTestNotificationGroupByBaseReturn[K] }
+      : never;
+
 declare type GassmaTestUserGroupByResult<T extends GassmaTestUserGroupByData> = GassmaTestUserByField<T["by"]> & {
   [K in keyof T as K extends "_avg" | "_count" | "_max" | "_min" | "_sum"
     ? T[K] extends undefined
@@ -3852,4 +4192,12 @@ declare type GassmaTestOrderItemGroupByResult<T extends GassmaTestOrderItemGroup
       ? never
       : K
     : never]: K extends string ? GassmaTestOrderItemAggregateField<T[K], K> : never;
+};
+
+declare type GassmaTestNotificationGroupByResult<T extends GassmaTestNotificationGroupByData> = GassmaTestNotificationByField<T["by"]> & {
+  [K in keyof T as K extends "_avg" | "_count" | "_max" | "_min" | "_sum"
+    ? T[K] extends undefined
+      ? never
+      : K
+    : never]: K extends string ? GassmaTestNotificationAggregateField<T[K], K> : never;
 };

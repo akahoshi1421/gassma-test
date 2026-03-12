@@ -118,3 +118,25 @@ model OrderItem {
   order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
   product   Product @relation(fields: [productId], references: [id], onDelete: Restrict)
 }
+
+// ===== @@ignore / @@map テスト用 =====
+
+/// 内部ログ用モデル（@@ignore で型生成・クライアントから除外）
+model AuditLog {
+  id        Int      @id @default(autoincrement())
+  action    String
+  detail    String
+  createdAt DateTime @default(now())
+
+  @@ignore
+}
+
+/// シート名が "notifications" だがコード上は Notification でアクセス
+model Notification {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  message   String
+  isRead    Boolean  @default(false)
+
+  @@map("notifications")
+}

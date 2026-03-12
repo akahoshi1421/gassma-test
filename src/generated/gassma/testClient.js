@@ -181,6 +181,12 @@ const testDefaults = {
     },
     "Order": {
       "createdAt": () => new Date()
+    },
+    "AuditLog": {
+      "createdAt": () => new Date()
+    },
+    "Notification": {
+      "isRead": false
     }
   };
 
@@ -200,9 +206,15 @@ const testMap = {
     }
   };
 
+const testIgnoreSheets = ["AuditLog"];
+
+const testMapSheets = {
+    "Notification": "notifications"
+  };
+
 class GassmaClient {
   constructor(options) {
-    const mergedOptions = Object.assign({}, options, { relations: testRelations, defaults: testDefaults, updatedAt: testUpdatedAt, ignore: testIgnore, map: testMap });
+    const mergedOptions = Object.assign({}, options, { relations: testRelations, defaults: testDefaults, updatedAt: testUpdatedAt, ignore: testIgnore, map: testMap, ignoreSheets: testIgnoreSheets, mapSheets: testMapSheets });
     const client = new Gassma.GassmaClient(mergedOptions);
     this.sheets = client.sheets;
   }

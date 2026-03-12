@@ -15,6 +15,8 @@ import { testTakeNegative } from "./read/testTakeNegative";
 import { testFields } from "./read/testFields";
 import { testIgnore } from "./read/testIgnore";
 import { testMap } from "./read/testMap";
+import { testIgnoreSheets } from "./read/testIgnoreSheets";
+import { testMapSheets } from "./read/testMapSheets";
 
 function testRead() {
   testFindMany();
@@ -34,6 +36,8 @@ function testRead() {
   testFields();
   testIgnore();
   testMap();
+  testIgnoreSheets();
+  testMapSheets();
 
   Logger.log("🎉 All read tests passed!");
 }
