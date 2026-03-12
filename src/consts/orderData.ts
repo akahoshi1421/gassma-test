@@ -1,5 +1,5 @@
 const orderData = [
-  ["id", "userId", "totalAmount", "quantity", "status", "createdAt"],
+  ["id", "userId", "total_amount", "quantity", "status", "createdAt"],
   [1, 8, 39478, 3, "delivered", "2024-06-17T18:55:40"],
   [2, 46, 20296, 2, "delivered", "2024-06-28T04:10:57"],
   [3, 44, 92279, 9, "pending", "2024-03-20T19:54:01"],

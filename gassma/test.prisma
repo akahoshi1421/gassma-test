@@ -100,7 +100,7 @@ model Product {
 model Order {
   id          Int      @id @default(autoincrement())
   userId      Int
-  totalAmount Float
+  totalAmount Float    @map("total_amount")
   quantity    Int
   /// @gassma.replaceType "pending", "shipped", "delivered", "cancelled"
   status      String

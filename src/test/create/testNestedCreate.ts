@@ -40,7 +40,7 @@ function testNestedCreateOneToMany(client: GassmaClient) {
 
   const orderSnapshot = getSheetSnapshot("Order");
   orderSnapshot.assertRowExists({ id: 901 });
-  orderSnapshot.assertRowEquals({ id: 901 }, { totalAmount: 5000, status: "pending" });
+  orderSnapshot.assertRowEquals({ id: 901 }, { total_amount: 5000, status: "pending" });
 
   const itemSnapshot = getSheetSnapshot("OrderItem");
   itemSnapshot.assertRowExists({ id: 901, orderId: 901 });

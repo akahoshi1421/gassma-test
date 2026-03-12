@@ -14,6 +14,7 @@ import { testOrderByAdvanced } from "./read/testOrderByAdvanced";
 import { testTakeNegative } from "./read/testTakeNegative";
 import { testFields } from "./read/testFields";
 import { testIgnore } from "./read/testIgnore";
+import { testMap } from "./read/testMap";
 
 function testRead() {
   testFindMany();
@@ -32,6 +33,7 @@ function testRead() {
   testTakeNegative();
   testFields();
   testIgnore();
+  testMap();
 
   Logger.log("🎉 All read tests passed!");
 }

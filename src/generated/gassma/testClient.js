@@ -194,9 +194,15 @@ const testIgnore = {
     "Post": ["debugInfo"]
   };
 
+const testMap = {
+    "Order": {
+      "totalAmount": "total_amount"
+    }
+  };
+
 class GassmaClient {
   constructor(options) {
-    const mergedOptions = Object.assign({}, options, { relations: testRelations, defaults: testDefaults, updatedAt: testUpdatedAt, ignore: testIgnore });
+    const mergedOptions = Object.assign({}, options, { relations: testRelations, defaults: testDefaults, updatedAt: testUpdatedAt, ignore: testIgnore, map: testMap });
     const client = new Gassma.GassmaClient(mergedOptions);
     this.sheets = client.sheets;
   }

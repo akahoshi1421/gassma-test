@@ -218,6 +218,76 @@ declare type GassmaTestIgnoreConfig = {
   "OrderItem"?: "id" | "orderId" | "productId" | "quantity" | "unitPrice" | ("id" | "orderId" | "productId" | "quantity" | "unitPrice")[];
 };
 
+declare type GassmaTestMapConfig = {
+  "User"?: {
+      "id"?: string;
+      "email"?: string;
+      "name"?: string;
+      "age"?: string;
+      "isActive"?: string;
+      "role"?: string;
+      "createdAt"?: string;
+  };
+  "Profile"?: {
+      "id"?: string;
+      "bio"?: string;
+      "website"?: string;
+      "userId"?: string;
+  };
+  "Post"?: {
+      "id"?: string;
+      "title"?: string;
+      "content"?: string;
+      "published"?: string;
+      "viewCount"?: string;
+      "rating"?: string;
+      "authorId"?: string;
+      "categoryId"?: string;
+      "createdAt"?: string;
+      "updatedAt"?: string;
+  };
+  "Comment"?: {
+      "id"?: string;
+      "text"?: string;
+      "authorId"?: string;
+      "postId"?: string;
+      "createdAt"?: string;
+  };
+  "Category"?: {
+      "id"?: string;
+      "name"?: string;
+      "parentId"?: string;
+  };
+  "Tag"?: {
+      "id"?: string;
+      "name"?: string;
+  };
+  "Product"?: {
+      "id"?: string;
+      "name"?: string;
+      "price"?: string;
+      "stock"?: string;
+      "status"?: string;
+      "createdAt"?: string;
+      "updatedAt"?: string;
+  };
+  "Order"?: {
+      "id"?: string;
+      "userId"?: string;
+      "totalAmount"?: string;
+      "quantity"?: string;
+      "status"?: string;
+      "createdAt"?: string;
+  };
+  "OrderItem"?: {
+      "id"?: string;
+      "orderId"?: string;
+      "productId"?: string;
+      "quantity"?: string;
+      "unitPrice"?: string;
+  };
+};
+
 declare type GassmaTestClientOptions<O extends GassmaTestGlobalOmitConfig = {}> = {
   id?: string;
   relations?: Gassma.RelationsConfig;
@@ -225,6 +295,7 @@ declare type GassmaTestClientOptions<O extends GassmaTestGlobalOmitConfig = {}> 
   defaults?: GassmaTestDefaultsConfig;
   updatedAt?: GassmaTestUpdatedAtConfig;
   ignore?: GassmaTestIgnoreConfig;
+  map?: GassmaTestMapConfig;
 };
 
 declare type GassmaTestSheet<O extends GassmaTestGlobalOmitConfig = {}> = {
