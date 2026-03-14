@@ -16,10 +16,10 @@ function testFilterConditions() {
 
 function testNot(client: GassmaClient) {
   const users = client.sheets.User.findMany({
-    where: { role: { not: "admin" } },
+    where: { role: { not: "ADMIN" } },
   });
   users.forEach((user) => {
-    if (user.role === "admin") {
+    if (user.role === "ADMIN") {
       throw new Error("not filter: found admin");
     }
   });
@@ -30,10 +30,10 @@ function testNot(client: GassmaClient) {
 
 function testNotIn(client: GassmaClient) {
   const users = client.sheets.User.findMany({
-    where: { role: { notIn: ["admin", "moderator"] } },
+    where: { role: { notIn: ["ADMIN", "MODERATOR"] } },
   });
   users.forEach((user) => {
-    if (user.role === "admin" || user.role === "moderator") {
+    if (user.role === "ADMIN" || user.role === "MODERATOR") {
       throw new Error(`notIn filter: unexpected role ${user.role}`);
     }
   });

@@ -57,7 +57,7 @@ function testWhereIs(client: GassmaClient) {
   const posts = client.sheets.Post.findMany({
     where: {
       author: {
-        is: { role: "admin" },
+        is: { role: "ADMIN" },
       },
     },
   });
@@ -70,7 +70,7 @@ function testWhereIsNot(client: GassmaClient) {
   const posts = client.sheets.Post.findMany({
     where: {
       author: {
-        isNot: { role: "admin" },
+        isNot: { role: "ADMIN" },
       },
     },
   });

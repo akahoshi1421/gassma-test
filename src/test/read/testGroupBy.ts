@@ -15,10 +15,10 @@ function testGroupByBasic(client: GassmaClient) {
     by: "role",
   });
   if (result.length !== 3) {
-    throw new Error(`groupBy basic: expected 3 groups (admin/user/moderator), got ${result.length}`);
+    throw new Error(`groupBy basic: expected 3 groups (ADMIN/USER/MODERATOR), got ${result.length}`);
   }
   const roles = result.map((r) => r.role);
-  if (!roles.includes("admin") || !roles.includes("user") || !roles.includes("moderator")) {
+  if (!roles.includes("ADMIN") || !roles.includes("USER") || !roles.includes("MODERATOR")) {
     throw new Error(`groupBy basic: missing role in ${JSON.stringify(roles)}`);
   }
 }

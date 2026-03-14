@@ -6,9 +6,9 @@ generator client {
 // ===== Enum =====
 
 enum Role {
-  admin
-  user
-  moderator
+  admin     @map("ADMIN")
+  user      @map("USER")
+  moderator @map("MODERATOR")
 }
 
 // ===== ユーザー系 =====

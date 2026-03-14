@@ -31,7 +31,7 @@ function testOnDeleteCascadeUserProfile(client: GassmaClient) {
       email: "cascade-test@test.com",
       name: "CascadeTest",
       isActive: true,
-      role: "user",
+      role: "USER",
       createdAt: new Date("2025-01-01T00:00:00"),
       profile: {
         create: { id: 951, bio: "cascade test profile", userId: 951 },

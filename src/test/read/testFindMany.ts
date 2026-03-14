@@ -27,10 +27,10 @@ function testFindManyBasic(client: GassmaClient) {
 
 function testFindManyWhere(client: GassmaClient) {
   const admins = client.sheets.User.findMany({
-    where: { role: "admin" },
+    where: { role: "ADMIN" },
   });
   admins.forEach((user) => {
-    assertEquals(user.role, "admin", "findMany where role");
+    assertEquals(user.role, "ADMIN", "findMany where role");
   });
 
   const user1 = client.sheets.User.findMany({
@@ -43,11 +43,11 @@ function testFindManyWhere(client: GassmaClient) {
 function testFindManyWhereAnd(client: GassmaClient) {
   const result = client.sheets.User.findMany({
     where: {
-      AND: [{ role: "user" }, { isActive: true }],
+      AND: [{ role: "USER" }, { isActive: true }],
     },
   });
   result.forEach((user) => {
-    assertEquals(user.role, "user", "findMany AND role");
+    assertEquals(user.role, "USER", "findMany AND role");
     assertEquals(user.isActive, true, "findMany AND isActive");
   });
 }
@@ -55,11 +55,11 @@ function testFindManyWhereAnd(client: GassmaClient) {
 function testFindManyWhereOr(client: GassmaClient) {
   const result = client.sheets.User.findMany({
     where: {
-      OR: [{ role: "admin" }, { role: "moderator" }],
+      OR: [{ role: "ADMIN" }, { role: "MODERATOR" }],
     },
   });
   result.forEach((user) => {
-    if (user.role !== "admin" && user.role !== "moderator") {
+    if (user.role !== "ADMIN" && user.role !== "MODERATOR") {
       throw new Error(`findMany OR: unexpected role ${user.role}`);
     }
   });
@@ -68,11 +68,11 @@ function testFindManyWhereOr(client: GassmaClient) {
 function testFindManyWhereNot(client: GassmaClient) {
   const result = client.sheets.User.findMany({
     where: {
-      NOT: { role: "admin" },
+      NOT: { role: "ADMIN" },
     },
   });
   result.forEach((user) => {
-    if (user.role === "admin") {
+    if (user.role === "ADMIN") {
       throw new Error("findMany NOT: found admin");
     }
   });
@@ -103,11 +103,11 @@ function testFindManyWhereFilter(client: GassmaClient) {
 
   const inResult = client.sheets.User.findMany({
     where: {
-      role: { in: ["admin", "moderator"] },
+      role: { in: ["ADMIN", "MODERATOR"] },
     },
   });
   inResult.forEach((user) => {
-    if (user.role !== "admin" && user.role !== "moderator") {
+    if (user.role !== "ADMIN" && user.role !== "MODERATOR") {
       throw new Error(`findMany filter in: unexpected role ${user.role}`);
     }
   });

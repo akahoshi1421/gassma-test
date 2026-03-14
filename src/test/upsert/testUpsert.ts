@@ -141,7 +141,7 @@ function testUpsertNestedCreate(client: GassmaClient) {
       email: "upsert-new@test.com",
       name: "UpsertNewUser",
       isActive: true,
-      role: "user",
+      role: "USER",
       createdAt: new Date("2025-01-01T00:00:00"),
       profile: {
         create: { id: 951, bio: "upsert profile", userId: 951 },
@@ -170,7 +170,7 @@ function testUpsertNestedUpdate(client: GassmaClient) {
       email: "should-not@test.com",
       name: "ShouldNotCreate",
       isActive: true,
-      role: "user",
+      role: "USER",
       createdAt: new Date("2025-01-01T00:00:00"),
     },
     update: {

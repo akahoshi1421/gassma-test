@@ -30,7 +30,7 @@ function testCreateStaticDefaults(client: GassmaClient) {
       id: 801,
       email: "defaults-static@test.com",
       name: "DefaultsStaticUser",
-      role: "user",
+      role: "USER",
     },
   });
 
@@ -85,7 +85,7 @@ function testCreateDefaultsExplicitOverride(client: GassmaClient) {
       email: "defaults-override@test.com",
       name: "OverrideUser",
       isActive: false,
-      role: "admin",
+      role: "ADMIN",
       createdAt: new Date("2020-01-01T00:00:00"),
     },
   });
@@ -145,7 +145,7 @@ function testUpsertCreateDefaults(client: GassmaClient) {
       id: 821,
       email: "upsert-defaults@test.com",
       name: "UpsertDefaultsUser",
-      role: "user",
+      role: "USER",
     },
     update: { name: "ShouldNotUpdate" },
   });
@@ -171,7 +171,7 @@ function testNestedCreateInCreateDefaults(client: GassmaClient) {
       email: "nested-create-defaults@test.com",
       name: "NestedCreateDefaultsUser",
       isActive: true,
-      role: "user",
+      role: "USER",
       createdAt: new Date("2025-01-01T00:00:00"),
       posts: {
         create: {

@@ -17,6 +17,7 @@ import { testIgnore } from "./read/testIgnore";
 import { testMap } from "./read/testMap";
 import { testIgnoreSheets } from "./read/testIgnoreSheets";
 import { testMapSheets } from "./read/testMapSheets";
+import { testEnumConstants } from "./read/testEnumConstants";
 
 function testRead() {
   testFindMany();
@@ -38,6 +39,7 @@ function testRead() {
   testMap();
   testIgnoreSheets();
   testMapSheets();
+  testEnumConstants();
 
   Logger.log("🎉 All read tests passed!");
 }

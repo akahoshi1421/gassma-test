@@ -191,7 +191,7 @@ function testNestedCreateInCreateUpdatedAt(client: GassmaClient) {
       email: "nested-updatedAt@test.com",
       name: "NestedUpdatedAtUser",
       isActive: true,
-      role: "user",
+      role: "USER",
       createdAt: new Date("2025-01-01T00:00:00"),
       posts: {
         create: {

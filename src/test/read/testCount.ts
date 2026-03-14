@@ -23,7 +23,7 @@ function testCountBasic(client: GassmaClient) {
 
 function testCountWhere(client: GassmaClient) {
   const adminCount = client.sheets.User.count({
-    where: { role: "admin" },
+    where: { role: "ADMIN" },
   });
   if (adminCount <= 0) {
     throw new Error("count where: expected admin count > 0");

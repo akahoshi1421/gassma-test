@@ -37,7 +37,7 @@ function testOnUpdateCascadeUserProfile(client: GassmaClient) {
       email: "cascade-update@test.com",
       name: "CascadeUpdate",
       isActive: true,
-      role: "user",
+      role: "USER",
       createdAt: new Date("2025-01-01T00:00:00"),
       profile: {
         create: { id: 951, bio: "cascade update test", userId: 951 },
@@ -69,7 +69,7 @@ function testOnUpdateCascadeUserPosts(client: GassmaClient) {
       email: "cascade-posts@test.com",
       name: "CascadePosts",
       isActive: true,
-      role: "user",
+      role: "USER",
       createdAt: new Date("2025-01-01T00:00:00"),
       profile: {
         create: { id: 951, bio: "test", userId: 951 },
@@ -133,7 +133,7 @@ function testOnUpdateNoActionComments(client: GassmaClient) {
       email: "noaction@test.com",
       name: "NoAction",
       isActive: true,
-      role: "user",
+      role: "USER",
       createdAt: new Date("2025-01-01T00:00:00"),
       profile: {
         create: { id: 951, bio: "test", userId: 951 },

@@ -638,7 +638,7 @@ declare type GassmaTestUserUse = {
   "name": string;
   "age"?: number;
   "isActive"?: boolean;
-  "role": "admin" | "user" | "moderator";
+  "role": "ADMIN" | "USER" | "MODERATOR";
   "createdAt"?: Date;
 };
 
@@ -900,14 +900,14 @@ declare type GassmaTestUserisActiveFilterConditions = {
 };
 
 declare type GassmaTestUserroleFilterConditions = {
-  equals?: "admin" | "user" | "moderator" | Gassma.FieldRef;
-  not?: "admin" | "user" | "moderator";
-  in?: ("admin" | "user" | "moderator")[];
-  notIn?: ("admin" | "user" | "moderator")[];
-  lt?: "admin" | "user" | "moderator" | Gassma.FieldRef;
-  lte?: "admin" | "user" | "moderator" | Gassma.FieldRef;
-  gt?: "admin" | "user" | "moderator" | Gassma.FieldRef;
-  gte?: "admin" | "user" | "moderator" | Gassma.FieldRef;
+  equals?: "ADMIN" | "USER" | "MODERATOR" | Gassma.FieldRef;
+  not?: "ADMIN" | "USER" | "MODERATOR";
+  in?: ("ADMIN" | "USER" | "MODERATOR")[];
+  notIn?: ("ADMIN" | "USER" | "MODERATOR")[];
+  lt?: "ADMIN" | "USER" | "MODERATOR" | Gassma.FieldRef;
+  lte?: "ADMIN" | "USER" | "MODERATOR" | Gassma.FieldRef;
+  gt?: "ADMIN" | "USER" | "MODERATOR" | Gassma.FieldRef;
+  gte?: "ADMIN" | "USER" | "MODERATOR" | Gassma.FieldRef;
   contains?: string | Gassma.FieldRef;
   startsWith?: string | Gassma.FieldRef;
   endsWith?: string | Gassma.FieldRef;
@@ -1625,7 +1625,7 @@ declare type GassmaTestUserWhereUse = {
   "name"?: string | GassmaTestUsernameFilterConditions;
   "age"?: number | null | GassmaTestUserageFilterConditions;
   "isActive"?: boolean | null | GassmaTestUserisActiveFilterConditions;
-  "role"?: "admin" | "user" | "moderator" | GassmaTestUserroleFilterConditions;
+  "role"?: "ADMIN" | "USER" | "MODERATOR" | GassmaTestUserroleFilterConditions;
   "createdAt"?: Date | null | GassmaTestUsercreatedAtFilterConditions;
   "profile"?: { is?: GassmaTestProfileWhereUse; isNot?: GassmaTestProfileWhereUse };
   "posts"?: { some?: GassmaTestPostWhereUse; every?: GassmaTestPostWhereUse; none?: GassmaTestPostWhereUse };
@@ -2192,7 +2192,7 @@ declare type GassmaTestUserHavingUse = {
   "name"?: string | GassmaTestUsernameHavingCore;
   "age"?: number | null | GassmaTestUserageHavingCore;
   "isActive"?: boolean | null | GassmaTestUserisActiveHavingCore;
-  "role"?: "admin" | "user" | "moderator" | GassmaTestUserroleHavingCore;
+  "role"?: "ADMIN" | "USER" | "MODERATOR" | GassmaTestUserroleHavingCore;
   "createdAt"?: Date | null | GassmaTestUsercreatedAtHavingCore;
 
   AND?: GassmaTestUserHavingUse[] | GassmaTestUserHavingUse;
@@ -3526,7 +3526,7 @@ declare type GassmaTestUserCreateReturn = {
  "name": string;
  "age": number | null;
  "isActive": boolean | null;
- "role": "admin" | "user" | "moderator";
+ "role": "ADMIN" | "USER" | "MODERATOR";
  "createdAt": Date | null;
 };
 

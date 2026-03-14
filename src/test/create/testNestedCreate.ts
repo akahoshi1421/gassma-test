@@ -59,7 +59,7 @@ function testNestedCreateOneToOne(client: GassmaClient) {
       email: "nested@test.com",
       name: "NestedUser",
       isActive: true,
-      role: "user",
+      role: "USER",
       createdAt: new Date("2025-01-01T00:00:00"),
       profile: {
         create: { id: 901, bio: "テストプロフィール", userId: 901 },

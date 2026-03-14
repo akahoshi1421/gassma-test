@@ -74,7 +74,7 @@ function testIgnoreCreateStripped() {
       id: 9999,
       email: "ignore-test@example.com",
       name: "Ignore Test",
-      role: "user",
+      role: "USER",
     },
   });
 

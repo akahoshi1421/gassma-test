@@ -235,3 +235,10 @@ class GassmaClient {
 }
 
 exports.GassmaClient = GassmaClient;
+
+const Role = {
+  admin: "ADMIN",
+  user: "USER",
+  moderator: "MODERATOR"
+};
+exports.Role = Role;
