@@ -14,14 +14,14 @@ enum Role {
 // ===== ユーザー系 =====
 
 model User {
-  id           Int      @id @default(autoincrement())
-  email        String   @unique
+  id           Int       @id @default(autoincrement())
+  email        String    @unique
   name         String
   age          Int?
-  isActive     Boolean  @default(true)
+  isActive     Boolean   @default(true)
   role         Role
-  createdAt    DateTime @default(now())
-  internalNote String   @ignore
+  createdAt    DateTime  @default(now())
+  internalNote String    @ignore
   profile      Profile?
   posts        Post[]
   comments     Comment[]
@@ -86,26 +86,26 @@ model Tag {
 // ===== EC系 =====
 
 model Product {
-  id        Int      @id @default(autoincrement())
-  name      String
-  price     Float
-  stock     Int
+  id         Int         @id @default(autoincrement())
+  name       String
+  price      Float
+  stock      Int
   /// @gassma.replaceType "available", "soldout", "discontinued"
-  status    String
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  status     String
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
   orderItems OrderItem[]
 }
 
 model Order {
-  id          Int      @id @default(autoincrement())
+  id          Int         @id @default(autoincrement())
   userId      Int
-  totalAmount Float    @map("total_amount")
+  totalAmount Float       @map("total_amount")
   quantity    Int
   /// @gassma.replaceType "pending", "shipped", "delivered", "cancelled"
   status      String
-  createdAt   DateTime @default(now())
-  user        User     @relation(fields: [userId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  createdAt   DateTime    @default(now())
+  user        User        @relation(fields: [userId], references: [id], onDelete: Restrict, onUpdate: Restrict)
   items       OrderItem[]
 }
 
@@ -133,10 +133,10 @@ model AuditLog {
 
 /// シート名が "notifications" だがコード上は Notification でアクセス
 model Notification {
-  id        Int      @id @default(autoincrement())
-  userId    Int
-  message   String
-  isRead    Boolean  @default(false)
+  id      Int     @id @default(autoincrement())
+  userId  Int
+  message String
+  isRead  Boolean @default(false)
 
   @@map("notifications")
 }
