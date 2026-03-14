@@ -212,9 +212,23 @@ const testMapSheets = {
     "Notification": "notifications"
   };
 
+const testAutoincrement = {
+    "User": "id",
+    "Profile": "id",
+    "Post": "id",
+    "Comment": "id",
+    "Category": "id",
+    "Tag": "id",
+    "Product": "id",
+    "Order": "id",
+    "OrderItem": "id",
+    "AuditLog": "id",
+    "Notification": "id"
+  };
+
 class GassmaClient {
   constructor(options) {
-    const mergedOptions = Object.assign({}, options, { relations: testRelations, defaults: testDefaults, updatedAt: testUpdatedAt, ignore: testIgnore, map: testMap, ignoreSheets: testIgnoreSheets, mapSheets: testMapSheets });
+    const mergedOptions = Object.assign({}, options, { relations: testRelations, defaults: testDefaults, updatedAt: testUpdatedAt, ignore: testIgnore, map: testMap, ignoreSheets: testIgnoreSheets, mapSheets: testMapSheets, autoincrement: testAutoincrement });
     const client = new Gassma.GassmaClient(mergedOptions);
     this.sheets = client.sheets;
   }
