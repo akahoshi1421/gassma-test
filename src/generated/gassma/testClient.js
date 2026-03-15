@@ -228,7 +228,7 @@ const testAutoincrement = {
 
 class GassmaClient {
   constructor(options) {
-    const mergedOptions = Object.assign({}, options, { relations: testRelations, defaults: testDefaults, updatedAt: testUpdatedAt, ignore: testIgnore, map: testMap, ignoreSheets: testIgnoreSheets, mapSheets: testMapSheets, autoincrement: testAutoincrement });
+    const mergedOptions = Object.assign({}, options, { id: "https://docs.google.com/spreadsheets/d/14yKHbIKdclxxYKkpvB9V04Ovpe8V7I_nHBnfbPmOqyU", relations: testRelations, defaults: testDefaults, updatedAt: testUpdatedAt, ignore: testIgnore, map: testMap, ignoreSheets: testIgnoreSheets, mapSheets: testMapSheets, autoincrement: testAutoincrement });
     const client = new Gassma.GassmaClient(mergedOptions);
     this.sheets = client.sheets;
   }
