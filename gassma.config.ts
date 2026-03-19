@@ -1,8 +1,10 @@
-import { defineConfig } from "gassma/config";
+import "dotenv/config";
+import type { GassmaConfig } from "gassma";
+import { env } from "gassma/config";
 
-export default defineConfig({
+export default {
   schema: "gassma",
   datasource: {
-    url: "https://docs.google.com/spreadsheets/d/14yKHbIKdclxxYKkpvB9V04Ovpe8V7I_nHBnfbPmOqyU",
+    url: env("SPREADSHEET_URL"),
   },
-});
+} satisfies GassmaConfig;

@@ -11,6 +11,7 @@
   "author": "akahoshi1421",
   "license": "ISC",
   "dependencies": {
+    "dotenv": "^17.3.1",
     "gassma": "file:../gassma-cli"
   },
   "devDependencies": {
