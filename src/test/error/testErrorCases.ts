@@ -50,15 +50,6 @@ function testSkipNegative(client: GassmaClient) {
     "skipNegative findMany",
   );
 
-  assertThrows(
-    () => {
-      client.sheets.User.findFirst({
-        skip: -1,
-      });
-    },
-    "Invalid value for skip argument",
-    "skipNegative findFirst",
-  );
 }
 
 function testLimitNegative(client: GassmaClient) {
