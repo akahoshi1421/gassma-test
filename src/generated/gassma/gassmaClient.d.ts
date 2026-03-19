@@ -2900,6 +2900,7 @@ export type GassmaGassmaPostAggregateData = {
   orderBy?: GassmaGassmaPostOrderBy;
   take?: number;
   skip?: number;
+  cursor?: Partial<GassmaGassmaPostUse>;
   _avg?: GassmaGassmaPostSelect;
   _count?: GassmaGassmaPostSelect;
   _max?: GassmaGassmaPostSelect;
@@ -2912,6 +2913,7 @@ export type GassmaGassmaCommentAggregateData = {
   orderBy?: GassmaGassmaCommentOrderBy;
   take?: number;
   skip?: number;
+  cursor?: Partial<GassmaGassmaCommentUse>;
   _avg?: GassmaGassmaCommentSelect;
   _count?: GassmaGassmaCommentSelect;
   _max?: GassmaGassmaCommentSelect;
@@ -2924,6 +2926,7 @@ export type GassmaGassmaCategoryAggregateData = {
   orderBy?: GassmaGassmaCategoryOrderBy;
   take?: number;
   skip?: number;
+  cursor?: Partial<GassmaGassmaCategoryUse>;
   _avg?: GassmaGassmaCategorySelect;
   _count?: GassmaGassmaCategorySelect;
   _max?: GassmaGassmaCategorySelect;
@@ -2936,6 +2939,7 @@ export type GassmaGassmaTagAggregateData = {
   orderBy?: GassmaGassmaTagOrderBy;
   take?: number;
   skip?: number;
+  cursor?: Partial<GassmaGassmaTagUse>;
   _avg?: GassmaGassmaTagSelect;
   _count?: GassmaGassmaTagSelect;
   _max?: GassmaGassmaTagSelect;
@@ -2948,6 +2952,7 @@ export type GassmaGassmaProductAggregateData = {
   orderBy?: GassmaGassmaProductOrderBy;
   take?: number;
   skip?: number;
+  cursor?: Partial<GassmaGassmaProductUse>;
   _avg?: GassmaGassmaProductSelect;
   _count?: GassmaGassmaProductSelect;
   _max?: GassmaGassmaProductSelect;
@@ -2960,6 +2965,7 @@ export type GassmaGassmaOrderAggregateData = {
   orderBy?: GassmaGassmaOrderOrderBy;
   take?: number;
   skip?: number;
+  cursor?: Partial<GassmaGassmaOrderUse>;
   _avg?: GassmaGassmaOrderSelect;
   _count?: GassmaGassmaOrderSelect;
   _max?: GassmaGassmaOrderSelect;
@@ -2972,6 +2978,7 @@ export type GassmaGassmaOrderItemAggregateData = {
   orderBy?: GassmaGassmaOrderItemOrderBy;
   take?: number;
   skip?: number;
+  cursor?: Partial<GassmaGassmaOrderItemUse>;
   _avg?: GassmaGassmaOrderItemSelect;
   _count?: GassmaGassmaOrderItemSelect;
   _max?: GassmaGassmaOrderItemSelect;
@@ -2984,6 +2991,7 @@ export type GassmaGassmaNotificationAggregateData = {
   orderBy?: GassmaGassmaNotificationOrderBy;
   take?: number;
   skip?: number;
+  cursor?: Partial<GassmaGassmaNotificationUse>;
   _avg?: GassmaGassmaNotificationSelect;
   _count?: GassmaGassmaNotificationSelect;
   _max?: GassmaGassmaNotificationSelect;
@@ -2996,6 +3004,7 @@ export type GassmaGassmaUserAggregateData = {
   orderBy?: GassmaGassmaUserOrderBy;
   take?: number;
   skip?: number;
+  cursor?: Partial<GassmaGassmaUserUse>;
   _avg?: GassmaGassmaUserSelect;
   _count?: GassmaGassmaUserSelect;
   _max?: GassmaGassmaUserSelect;
@@ -3008,6 +3017,7 @@ export type GassmaGassmaProfileAggregateData = {
   orderBy?: GassmaGassmaProfileOrderBy;
   take?: number;
   skip?: number;
+  cursor?: Partial<GassmaGassmaProfileUse>;
   _avg?: GassmaGassmaProfileSelect;
   _count?: GassmaGassmaProfileSelect;
   _max?: GassmaGassmaProfileSelect;
@@ -3455,6 +3465,7 @@ export type GassmaGassmaPostCountData = {
   orderBy?: GassmaGassmaPostOrderBy;
   take?: number;
   skip?: number;
+  cursor?: Partial<GassmaGassmaPostUse>;
 };
 
 export type GassmaGassmaCommentCountData = {
@@ -3462,6 +3473,7 @@ export type GassmaGassmaCommentCountData = {
   orderBy?: GassmaGassmaCommentOrderBy;
   take?: number;
   skip?: number;
+  cursor?: Partial<GassmaGassmaCommentUse>;
 };
 
 export type GassmaGassmaCategoryCountData = {
@@ -3469,6 +3481,7 @@ export type GassmaGassmaCategoryCountData = {
   orderBy?: GassmaGassmaCategoryOrderBy;
   take?: number;
   skip?: number;
+  cursor?: Partial<GassmaGassmaCategoryUse>;
 };
 
 export type GassmaGassmaTagCountData = {
@@ -3476,6 +3489,7 @@ export type GassmaGassmaTagCountData = {
   orderBy?: GassmaGassmaTagOrderBy;
   take?: number;
   skip?: number;
+  cursor?: Partial<GassmaGassmaTagUse>;
 };
 
 export type GassmaGassmaProductCountData = {
@@ -3483,6 +3497,7 @@ export type GassmaGassmaProductCountData = {
   orderBy?: GassmaGassmaProductOrderBy;
   take?: number;
   skip?: number;
+  cursor?: Partial<GassmaGassmaProductUse>;
 };
 
 export type GassmaGassmaOrderCountData = {
@@ -3490,6 +3505,7 @@ export type GassmaGassmaOrderCountData = {
   orderBy?: GassmaGassmaOrderOrderBy;
   take?: number;
   skip?: number;
+  cursor?: Partial<GassmaGassmaOrderUse>;
 };
 
 export type GassmaGassmaOrderItemCountData = {
@@ -3497,6 +3513,7 @@ export type GassmaGassmaOrderItemCountData = {
   orderBy?: GassmaGassmaOrderItemOrderBy;
   take?: number;
   skip?: number;
+  cursor?: Partial<GassmaGassmaOrderItemUse>;
 };
 
 export type GassmaGassmaNotificationCountData = {
@@ -3504,6 +3521,7 @@ export type GassmaGassmaNotificationCountData = {
   orderBy?: GassmaGassmaNotificationOrderBy;
   take?: number;
   skip?: number;
+  cursor?: Partial<GassmaGassmaNotificationUse>;
 };
 
 export type GassmaGassmaUserCountData = {
@@ -3511,6 +3529,7 @@ export type GassmaGassmaUserCountData = {
   orderBy?: GassmaGassmaUserOrderBy;
   take?: number;
   skip?: number;
+  cursor?: Partial<GassmaGassmaUserUse>;
 };
 
 export type GassmaGassmaProfileCountData = {
@@ -3518,6 +3537,7 @@ export type GassmaGassmaProfileCountData = {
   orderBy?: GassmaGassmaProfileOrderBy;
   take?: number;
   skip?: number;
+  cursor?: Partial<GassmaGassmaProfileUse>;
 };
 
 export type GassmaGassmaPostCreateReturn = {
