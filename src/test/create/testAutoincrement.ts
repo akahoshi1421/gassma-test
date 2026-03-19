@@ -1,4 +1,4 @@
-import { GassmaClient } from "../../generated/gassma/testClient";
+import { GassmaClient } from "../../generated/gassma/gassmaClient";
 import { assertEquals } from "../../assert/assertEquals";
 import { resetSheet } from "../../reset/resetSheet";
 import { notificationData } from "../../consts/notificationData";

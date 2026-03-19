@@ -1,4 +1,4 @@
-import { GassmaClient } from "../../generated/gassma/testClient";
+import { GassmaClient } from "../../generated/gassma/gassmaClient";
 import { getSheetSnapshot } from "../../assert/getSheetSnapshot";
 import { resetSheet } from "../../reset/resetSheet";
 import { orderData } from "../../consts/orderData";

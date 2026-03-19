@@ -1,7 +1,8 @@
 import { SheetSnapshot } from "./SheetSnapshot";
+import { SPREADSHEET_ID_DB1 } from "../consts/spreadsheetIds";
 
-function getSheetSnapshot(sheetName: string): SheetSnapshot {
-  const spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+function getSheetSnapshot(sheetName: string, spreadsheetId: string = SPREADSHEET_ID_DB1): SheetSnapshot {
+  const spreadsheet = SpreadsheetApp.openById(spreadsheetId);
   const sheet = spreadsheet.getSheetByName(sheetName);
   if (!sheet) throw new Error(`Sheet "${sheetName}" not found`);
 

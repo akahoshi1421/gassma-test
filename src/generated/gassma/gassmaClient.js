@@ -1,46 +1,4 @@
-const testRelations = {
-  "Profile": {
-    "user": {
-      "type": "oneToOne",
-      "to": "User",
-      "field": "userId",
-      "reference": "id"
-    }
-  },
-  "User": {
-    "profile": {
-      "type": "oneToOne",
-      "to": "Profile",
-      "field": "id",
-      "reference": "userId",
-      "onDelete": "Cascade",
-      "onUpdate": "Cascade"
-    },
-    "posts": {
-      "type": "oneToMany",
-      "to": "Post",
-      "field": "id",
-      "reference": "authorId",
-      "onDelete": "Cascade",
-      "onUpdate": "Cascade"
-    },
-    "comments": {
-      "type": "oneToMany",
-      "to": "Comment",
-      "field": "id",
-      "reference": "authorId",
-      "onDelete": "Cascade",
-      "onUpdate": "NoAction"
-    },
-    "orders": {
-      "type": "oneToMany",
-      "to": "Order",
-      "field": "id",
-      "reference": "userId",
-      "onDelete": "Restrict",
-      "onUpdate": "Restrict"
-    }
-  },
+const gassmaRelations = {
   "Post": {
     "author": {
       "type": "manyToOne",
@@ -71,6 +29,40 @@ const testRelations = {
         "field": "postId",
         "reference": "tagId"
       }
+    }
+  },
+  "User": {
+    "posts": {
+      "type": "oneToMany",
+      "to": "Post",
+      "field": "id",
+      "reference": "authorId",
+      "onDelete": "Cascade",
+      "onUpdate": "Cascade"
+    },
+    "comments": {
+      "type": "oneToMany",
+      "to": "Comment",
+      "field": "id",
+      "reference": "authorId",
+      "onDelete": "Cascade",
+      "onUpdate": "NoAction"
+    },
+    "orders": {
+      "type": "oneToMany",
+      "to": "Order",
+      "field": "id",
+      "reference": "userId",
+      "onDelete": "Restrict",
+      "onUpdate": "Restrict"
+    },
+    "profile": {
+      "type": "oneToOne",
+      "to": "Profile",
+      "field": "id",
+      "reference": "userId",
+      "onDelete": "Cascade",
+      "onUpdate": "Cascade"
     }
   },
   "Category": {
@@ -148,6 +140,14 @@ const testRelations = {
       "onDelete": "Restrict"
     }
   },
+  "Profile": {
+    "user": {
+      "type": "oneToOne",
+      "to": "User",
+      "field": "userId",
+      "reference": "id"
+    }
+  },
   "Tag": {
     "posts": {
       "type": "manyToMany",
@@ -163,11 +163,7 @@ const testRelations = {
   }
 };
 
-const testDefaults = {
-    "User": {
-      "isActive": true,
-      "createdAt": () => new Date()
-    },
+const gassmaDefaults = {
     "Post": {
       "published": false,
       "viewCount": 0,
@@ -187,34 +183,36 @@ const testDefaults = {
     },
     "Notification": {
       "isRead": false
+    },
+    "User": {
+      "isActive": true,
+      "createdAt": () => new Date()
     }
   };
 
-const testUpdatedAt = {
+const gassmaUpdatedAt = {
     "Post": ["updatedAt"],
     "Product": ["updatedAt"]
   };
 
-const testIgnore = {
-    "User": ["internalNote"],
-    "Post": ["debugInfo"]
+const gassmaIgnore = {
+    "Post": ["debugInfo"],
+    "User": ["internalNote"]
   };
 
-const testMap = {
+const gassmaMap = {
     "Order": {
       "totalAmount": "total_amount"
     }
   };
 
-const testIgnoreSheets = ["AuditLog"];
+const gassmaIgnoreSheets = ["AuditLog"];
 
-const testMapSheets = {
+const gassmaMapSheets = {
     "Notification": "notifications"
   };
 
-const testAutoincrement = {
-    "User": "id",
-    "Profile": "id",
+const gassmaAutoincrement = {
     "Post": "id",
     "Comment": "id",
     "Category": "id",
@@ -223,12 +221,14 @@ const testAutoincrement = {
     "Order": "id",
     "OrderItem": "id",
     "AuditLog": "id",
-    "Notification": "id"
+    "Notification": "id",
+    "User": "id",
+    "Profile": "id"
   };
 
 class GassmaClient {
   constructor(options) {
-    const mergedOptions = Object.assign({}, options, { id: "https://docs.google.com/spreadsheets/d/14yKHbIKdclxxYKkpvB9V04Ovpe8V7I_nHBnfbPmOqyU", relations: testRelations, defaults: testDefaults, updatedAt: testUpdatedAt, ignore: testIgnore, map: testMap, ignoreSheets: testIgnoreSheets, mapSheets: testMapSheets, autoincrement: testAutoincrement });
+    const mergedOptions = Object.assign({}, options, { id: "14yKHbIKdclxxYKkpvB9V04Ovpe8V7I_nHBnfbPmOqyU", relations: gassmaRelations, defaults: gassmaDefaults, updatedAt: gassmaUpdatedAt, ignore: gassmaIgnore, map: gassmaMap, ignoreSheets: gassmaIgnoreSheets, mapSheets: gassmaMapSheets, autoincrement: gassmaAutoincrement });
     const client = new Gassma.GassmaClient(mergedOptions);
     this.sheets = client.sheets;
   }

@@ -1,0 +1,35 @@
+// ===== EC系 =====
+
+model Product {
+  id         Int         @id @default(autoincrement())
+  name       String
+  price      Float
+  stock      Int
+  /// @gassma.replaceType "available", "soldout", "discontinued"
+  status     String
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  orderItems OrderItem[]
+}
+
+model Order {
+  id          Int         @id @default(autoincrement())
+  userId      Int
+  totalAmount Float       @map("total_amount")
+  quantity    Int
+  /// @gassma.replaceType "pending", "shipped", "delivered", "cancelled"
+  status      String
+  createdAt   DateTime    @default(now())
+  user        User        @relation(fields: [userId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  items       OrderItem[]
+}
+
+model OrderItem {
+  id        Int     @id @default(autoincrement())
+  orderId   Int
+  productId Int
+  quantity  Int
+  unitPrice Float
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product   Product @relation(fields: [productId], references: [id], onDelete: Restrict)
+}

@@ -1,4 +1,4 @@
-import { GassmaClient } from "../../generated/gassma/testClient";
+import { GassmaClient } from "../../generated/gassma/gassmaClient";
 
 function testIgnoreSheets() {
   testIgnoreSheetsNotAccessible();

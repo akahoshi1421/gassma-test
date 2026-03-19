@@ -1,4 +1,4 @@
-import { GassmaClient } from "../../generated/gassma/testClient";
+import { GassmaClient } from "../../generated/gassma/gassmaClient";
 
 function testFields() {
   const client = new GassmaClient();
@@ -34,7 +34,7 @@ function testFieldsComparison(client: GassmaClient) {
     },
   });
   posts.forEach((post) => {
-    if (post.viewCount === null || post.viewCount <= post.id) {
+    if (post.viewCount === null || post.id === null || post.viewCount <= post.id) {
       throw new Error(`fields gt: viewCount(${post.viewCount}) should be > id(${post.id})`);
     }
   });

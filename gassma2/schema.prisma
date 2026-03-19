@@ -1,0 +1,15 @@
+datasource db {
+  provider = "google-spreadsheet"
+  url      = "https://docs.google.com/spreadsheets/d/1CiagfKt_56T3j0EcGXm45pK9dmXH-r1FsHc3mjmtBpI"
+}
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "./src/generated/gassma2"
+}
+
+model Item {
+  id    Int    @id @default(autoincrement())
+  name  String
+  price Float
+}

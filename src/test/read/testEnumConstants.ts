@@ -1,4 +1,4 @@
-import { GassmaClient, Role } from "../../generated/gassma/testClient";
+import { GassmaClient, Role } from "../../generated/gassma/gassmaClient";
 import { assertEquals } from "../../assert/assertEquals";
 
 function testEnumConstants() {

@@ -1,5 +1,7 @@
-function resetSheet(sheetName: string, data: unknown[][]) {
-  const spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+import { SPREADSHEET_ID_DB1 } from "../consts/spreadsheetIds";
+
+function resetSheet(sheetName: string, data: unknown[][], spreadsheetId: string = SPREADSHEET_ID_DB1) {
+  const spreadsheet = SpreadsheetApp.openById(spreadsheetId);
   const sheet = spreadsheet.getSheetByName(sheetName);
   if (!sheet) throw new Error(`Sheet "${sheetName}" not found`);
 
