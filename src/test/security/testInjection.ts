@@ -17,6 +17,13 @@ function testInjection() {
   testWhereStartsWithRegexMetaChars(client);
   testWhereEndsWithRegexMetaChars(client);
   testUpdateWithGasCode(client);
+  testUpdateWithFormulaInjection(client);
+  testRegexInjectionContainsDot(client);
+  testRegexInjectionContainsDotStar(client);
+  testRegexInjectionStartsWithCaret(client);
+  testPrototypePollutionCreate(client);
+  testPrototypePollutionWhere(client);
+  testPrototypePollutionUpdate(client);
 
   Logger.log("✅ testInjection: all passed");
 }
@@ -83,7 +90,7 @@ function testCreateWithFormulaInjection(client: GassmaClient) {
 
   formulas.forEach((formula, i) => {
     const id = 910 + i;
-    const result = client.sheets.Product.create({
+    client.sheets.Product.create({
       data: {
         id: id,
         name: formula,
@@ -94,14 +101,48 @@ function testCreateWithFormulaInjection(client: GassmaClient) {
       },
     });
 
-    const findResult = client.sheets.Product.findFirstOrThrow({
+    // idで検索して文字列として保存されていることを確認
+    const findById = client.sheets.Product.findFirstOrThrow({
       where: { id: id },
     });
 
-    if (typeof findResult.name !== "string") {
-      throw new Error(`formula injection id=${id}: name should be string, got ${typeof findResult.name}`);
+    if (typeof findById.name !== "string") {
+      throw new Error(`formula injection id=${id}: name should be string, got ${typeof findById.name}`);
     }
+    assertEquals(findById.name, formula, `formula injection id=${id}: value should be preserved`);
+
+    // nameで検索して元の値でヒットすることを確認（可逆性の検証）
+    const findByName = client.sheets.Product.findFirstOrThrow({
+      where: { name: formula },
+    });
+    assertEquals(findByName.id, id, `formula injection id=${id}: should be findable by name`);
   });
+
+  resetSheet("Product", productData);
+}
+
+function testUpdateWithFormulaInjection(client: GassmaClient) {
+  const formula = "=SUM(A1:A10)";
+
+  client.sheets.Product.update({
+    where: { id: 1 },
+    data: { name: formula },
+  });
+
+  const findResult = client.sheets.Product.findFirstOrThrow({
+    where: { id: 1 },
+  });
+
+  if (typeof findResult.name !== "string") {
+    throw new Error(`update formula injection: name should be string, got ${typeof findResult.name}`);
+  }
+  assertEquals(findResult.name, formula, "update formula injection: value should be preserved");
+
+  // nameで検索して元の値でヒットすることを確認
+  const findByName = client.sheets.Product.findFirstOrThrow({
+    where: { name: formula },
+  });
+  assertEquals(findByName.id, 1, "update formula injection: should be findable by name");
 
   resetSheet("Product", productData);
 }
@@ -167,9 +208,7 @@ function testWhereWithJsonString(client: GassmaClient) {
 }
 
 function testWhereContainsRegexMetaChars(client: GassmaClient) {
-  const client2 = new GassmaClient();
-
-  client2.sheets.Product.create({
+  client.sheets.Product.create({
     data: {
       id: 930,
       name: "test.product",
@@ -180,7 +219,7 @@ function testWhereContainsRegexMetaChars(client: GassmaClient) {
     },
   });
 
-  client2.sheets.Product.create({
+  client.sheets.Product.create({
     data: {
       id: 931,
       name: "testXproduct",
@@ -191,10 +230,8 @@ function testWhereContainsRegexMetaChars(client: GassmaClient) {
     },
   });
 
-  const results = client2.sheets.Product.findMany({
-    where: {
-      name: { contains: "t.p" },
-    },
+  const results = client.sheets.Product.findMany({
+    where: { name: { contains: "t.p" } },
   });
 
   const matchedIds = results.map((r) => r.id);
@@ -202,20 +239,15 @@ function testWhereContainsRegexMetaChars(client: GassmaClient) {
   if (matchedIds.indexOf(930) === -1) {
     throw new Error("contains regex: should match 'test.product' (literal dot)");
   }
-
-  // NOTE: 現状 contains は正規表現として解釈するため "testXproduct" にもマッチする可能性がある
-  // Prisma は文字列リテラルとして扱うので、これは既知の挙動差異
   if (matchedIds.indexOf(931) !== -1) {
-    Logger.log("⚠️ contains regex: 'testXproduct' matched 't.p' (dot treated as regex wildcard - known behavior difference from Prisma)");
+    throw new Error("contains regex: 'testXproduct' should NOT match 't.p' (dot must be literal, not regex wildcard)");
   }
 
   resetSheet("Product", productData);
 }
 
 function testWhereStartsWithRegexMetaChars(client: GassmaClient) {
-  const client2 = new GassmaClient();
-
-  client2.sheets.Product.create({
+  client.sheets.Product.create({
     data: {
       id: 932,
       name: ".*allMatch",
@@ -226,25 +258,18 @@ function testWhereStartsWithRegexMetaChars(client: GassmaClient) {
     },
   });
 
-  const results = client2.sheets.Product.findMany({
-    where: {
-      name: { startsWith: ".*" },
-    },
+  const results = client.sheets.Product.findMany({
+    where: { name: { startsWith: ".*" } },
   });
 
-  // ".*" が正規表現として解釈されると全件ヒットする
-  // Prisma は文字列リテラルとして扱うので ".*allMatch" のみマッチすべき
-  if (results.length > 10) {
-    Logger.log(`⚠️ startsWith regex: '.*' matched ${results.length} records (regex wildcard interpreted - known behavior difference from Prisma)`);
-  }
+  assertEquals(results.length, 1, "startsWith '.*': should match only '.*allMatch'");
+  assertEquals(results[0].id, 932, "startsWith '.*': should match id=932");
 
   resetSheet("Product", productData);
 }
 
 function testWhereEndsWithRegexMetaChars(client: GassmaClient) {
-  const client2 = new GassmaClient();
-
-  client2.sheets.Product.create({
+  client.sheets.Product.create({
     data: {
       id: 933,
       name: "product(v1)",
@@ -255,23 +280,12 @@ function testWhereEndsWithRegexMetaChars(client: GassmaClient) {
     },
   });
 
-  // 正規表現メタ文字 () を含むパターン
-  // 正規表現として解釈されるとグルーピングになりクラッシュする可能性
-  let didThrow = false;
-  try {
-    client2.sheets.Product.findMany({
-      where: {
-        name: { endsWith: "(v1)" },
-      },
-    });
-  } catch (e) {
-    didThrow = true;
-    Logger.log(`⚠️ endsWith regex: threw error with parentheses pattern - ${e}`);
-  }
+  const results = client.sheets.Product.findMany({
+    where: { name: { endsWith: "(v1)" } },
+  });
 
-  if (!didThrow) {
-    Logger.log("✓ endsWith regex: parentheses pattern did not throw");
-  }
+  assertEquals(results.length, 1, "endsWith '(v1)': should match only 'product(v1)'");
+  assertEquals(results[0].id, 933, "endsWith '(v1)': should match id=933");
 
   resetSheet("Product", productData);
 }
@@ -291,6 +305,161 @@ function testUpdateWithGasCode(client: GassmaClient) {
     where: { id: 1 },
   });
   assertEquals(findResult.name, gasCode, "update GAS code: should be stored as plain string");
+
+  resetSheet("Product", productData);
+}
+
+function testRegexInjectionContainsDot(client: GassmaClient) {
+  client.sheets.Product.create({
+    data: {
+      id: 940,
+      name: "test.product",
+      price: 100,
+      stock: 1,
+      status: "available",
+      createdAt: new Date("2025-01-01T00:00:00"),
+    },
+  });
+  client.sheets.Product.create({
+    data: {
+      id: 941,
+      name: "testXproduct",
+      price: 100,
+      stock: 1,
+      status: "available",
+      createdAt: new Date("2025-01-01T00:00:00"),
+    },
+  });
+
+  const results = client.sheets.Product.findMany({
+    where: { name: { contains: "t.p" } },
+  });
+
+  const matchedIds = results.map((r) => r.id);
+
+  if (matchedIds.indexOf(940) === -1) {
+    throw new Error("regex dot: 'test.product' should match contains 't.p'");
+  }
+  if (matchedIds.indexOf(941) !== -1) {
+    throw new Error("regex dot: 'testXproduct' should NOT match contains 't.p' (dot must be literal)");
+  }
+
+  resetSheet("Product", productData);
+}
+
+function testRegexInjectionContainsDotStar(client: GassmaClient) {
+  const results = client.sheets.Product.findMany({
+    where: { name: { contains: ".*" } },
+  });
+
+  assertEquals(results.length, 0, "contains '.*': should match 0 records (literal, not regex)");
+}
+
+function testRegexInjectionStartsWithCaret(client: GassmaClient) {
+  const results = client.sheets.Product.findMany({
+    where: { name: { startsWith: "^" } },
+  });
+
+  assertEquals(results.length, 0, "startsWith '^': should match 0 records (literal, not regex anchor)");
+}
+
+function testPrototypePollutionCreate(client: GassmaClient) {
+  const protoPayloads = ["__proto__", "constructor", "prototype"];
+
+  protoPayloads.forEach((payload, i) => {
+    const id = 950 + i;
+    client.sheets.Product.create({
+      data: {
+        id: id,
+        name: payload,
+        price: 100,
+        stock: 1,
+        status: "available",
+        createdAt: new Date("2025-01-01T00:00:00"),
+      },
+    });
+
+    const result = client.sheets.Product.findFirstOrThrow({
+      where: { id: id },
+    });
+
+    assertEquals(result.name, payload, `proto pollution create id=${id}: value should be preserved as '${payload}'`);
+  });
+
+  // Object.prototype が汚染されていないことを確認
+  const clean: Record<string, unknown> = {};
+  if ("polluted" in clean) {
+    throw new Error("prototype pollution: Object.prototype was polluted after create");
+  }
+
+  resetSheet("Product", productData);
+}
+
+function testPrototypePollutionWhere(client: GassmaClient) {
+  // __proto__ をnameとして持つレコードを作成し、whereで検索
+  client.sheets.Product.create({
+    data: {
+      id: 960,
+      name: "__proto__",
+      price: 100,
+      stock: 1,
+      status: "available",
+      createdAt: new Date("2025-01-01T00:00:00"),
+    },
+  });
+
+  const results = client.sheets.Product.findMany({
+    where: { name: "__proto__" },
+  });
+
+  assertEquals(results.length, 1, "proto pollution where: should find 1 record with name '__proto__'");
+  assertEquals(results[0].id, 960, "proto pollution where: should match id=960");
+
+  // containsでの検索
+  const containsResults = client.sheets.Product.findMany({
+    where: { name: { contains: "__proto__" } },
+  });
+  assertEquals(containsResults.length, 1, "proto pollution contains: should find 1 record");
+
+  // Object.prototype が汚染されていないことを確認
+  const clean: Record<string, unknown> = {};
+  if ("polluted" in clean) {
+    throw new Error("prototype pollution: Object.prototype was polluted after where");
+  }
+
+  resetSheet("Product", productData);
+}
+
+function testPrototypePollutionUpdate(client: GassmaClient) {
+  // レコードのnameを __proto__ に更新
+  client.sheets.Product.update({
+    where: { id: 1 },
+    data: { name: "__proto__" },
+  });
+
+  const result = client.sheets.Product.findFirstOrThrow({
+    where: { id: 1 },
+  });
+
+  assertEquals(result.name, "__proto__", "proto pollution update: value should be '__proto__'");
+
+  // constructorに更新
+  client.sheets.Product.update({
+    where: { id: 1 },
+    data: { name: "constructor" },
+  });
+
+  const result2 = client.sheets.Product.findFirstOrThrow({
+    where: { id: 1 },
+  });
+
+  assertEquals(result2.name, "constructor", "proto pollution update: value should be 'constructor'");
+
+  // Object.prototype が汚染されていないことを確認
+  const clean: Record<string, unknown> = {};
+  if ("polluted" in clean) {
+    throw new Error("prototype pollution: Object.prototype was polluted after update");
+  }
 
   resetSheet("Product", productData);
 }
