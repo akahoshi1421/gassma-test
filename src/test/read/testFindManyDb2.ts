@@ -12,12 +12,12 @@ function testFindManyDb2() {
 }
 
 function testFindManyDb2Basic(client: GassmaClient) {
-  const items = client.sheets.Item.findMany({});
+  const items = client.Item.findMany({});
   assertEquals(items.length, 3, "db2 findMany basic count");
 }
 
 function testFindManyDb2Where(client: GassmaClient) {
-  const expensive = client.sheets.Item.findMany({
+  const expensive = client.Item.findMany({
     where: { price: { gte: 100 } },
   });
   assertEquals(expensive.length, 2, "db2 findMany where gte count");
@@ -29,7 +29,7 @@ function testFindManyDb2Where(client: GassmaClient) {
 }
 
 function testFindManyDb2Select(client: GassmaClient) {
-  const items = client.sheets.Item.findMany({
+  const items = client.Item.findMany({
     where: { id: 1 },
     select: { name: true },
   });

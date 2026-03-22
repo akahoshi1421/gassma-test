@@ -14,7 +14,7 @@ function testCreateInclude() {
 }
 
 function testCreateIncludeManyToOne(client: GassmaClient) {
-  const result = client.sheets.Post.create({
+  const result = client.Post.create({
     data: {
       id: 951,
       title: "IncludeTestPost",
@@ -39,7 +39,7 @@ function testCreateIncludeManyToOne(client: GassmaClient) {
 }
 
 function testCreateIncludeOneToMany(client: GassmaClient) {
-  const result = client.sheets.Post.create({
+  const result = client.Post.create({
     data: {
       id: 952,
       title: "IncludeCommentsPost",
@@ -65,7 +65,7 @@ function testCreateIncludeOneToMany(client: GassmaClient) {
 }
 
 function testCreateIncludeWithOmit(client: GassmaClient) {
-  const result = client.sheets.Post.create({
+  const result = client.Post.create({
     data: {
       id: 953,
       title: "IncludeOmitPost",

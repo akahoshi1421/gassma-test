@@ -17,7 +17,7 @@ function testCreate() {
 }
 
 function testCreateBasic(client: GassmaClient) {
-  client.sheets.Product.create({
+  client.Product.create({
     data: {
       id: 999,
       name: "テスト商品",
@@ -37,7 +37,7 @@ function testCreateBasic(client: GassmaClient) {
 }
 
 function testCreateReturnValue(client: GassmaClient) {
-  const result = client.sheets.Product.create({
+  const result = client.Product.create({
     data: {
       id: 998,
       name: "戻り値テスト",
@@ -58,7 +58,7 @@ function testCreateReturnValue(client: GassmaClient) {
 }
 
 function testCreateSelect(client: GassmaClient) {
-  const result = client.sheets.Product.create({
+  const result = client.Product.create({
     data: {
       id: 997,
       name: "selectテスト",
@@ -78,7 +78,7 @@ function testCreateSelect(client: GassmaClient) {
 }
 
 function testCreateOmit(client: GassmaClient) {
-  const result = client.sheets.Product.create({
+  const result = client.Product.create({
     data: {
       id: 996,
       name: "omitテスト",

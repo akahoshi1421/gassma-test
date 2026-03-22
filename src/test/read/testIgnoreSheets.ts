@@ -8,12 +8,12 @@ function testIgnoreSheets() {
 }
 
 function testIgnoreSheetsNotAccessible() {
-  // @@ignore されたモデル (AuditLog) は sheets に存在しない
+  // @@ignore されたモデル (AuditLog) はクライアントに存在しない
   const client = new GassmaClient();
-  const sheets = client.sheets as Record<string, unknown>;
+  const clientRecord = client as unknown as Record<string, unknown>;
 
-  if (sheets["AuditLog"] !== undefined) {
-    throw new Error("ignoreSheets: AuditLog should not be accessible via client.sheets");
+  if (clientRecord["AuditLog"] !== undefined) {
+    throw new Error("ignoreSheets: AuditLog should not be accessible via client");
   }
 }
 
@@ -21,7 +21,7 @@ function testIgnoreSheetsOtherModelsWork() {
   // @@ignore 以外のモデルは通常通りアクセスできる
   const client = new GassmaClient();
 
-  const user = client.sheets.User.findFirst({ where: { id: 1 } });
+  const user = client.User.findFirst({ where: { id: 1 } });
   if (!user) throw new Error("ignoreSheets: User should still be accessible");
   if (user.id !== 1) throw new Error("ignoreSheets: User.id should be 1");
 }

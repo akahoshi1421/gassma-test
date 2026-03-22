@@ -14,7 +14,7 @@ function testIncludeAdvanced() {
 }
 
 function testIncludeSelect(client: GassmaClient) {
-  const user = client.sheets.User.findFirst({
+  const user = client.User.findFirst({
     where: { id: 1 },
     include: {
       posts: {
@@ -42,7 +42,7 @@ function testIncludeSelect(client: GassmaClient) {
 }
 
 function testIncludeOmit(client: GassmaClient) {
-  const user = client.sheets.User.findFirst({
+  const user = client.User.findFirst({
     where: { id: 1 },
     include: {
       posts: {
@@ -67,7 +67,7 @@ function testIncludeOmit(client: GassmaClient) {
 }
 
 function testIncludeOrderBy(client: GassmaClient) {
-  const user = client.sheets.User.findFirst({
+  const user = client.User.findFirst({
     where: { id: 1 },
     include: {
       posts: {
@@ -89,7 +89,7 @@ function testIncludeOrderBy(client: GassmaClient) {
 
 function testIncludeSkipTake(client: GassmaClient) {
   // まず全件取得して件数を確認
-  const userAll = client.sheets.User.findFirst({
+  const userAll = client.User.findFirst({
     where: { id: 1 },
     include: { posts: true },
   });
@@ -97,7 +97,7 @@ function testIncludeSkipTake(client: GassmaClient) {
   const allPosts = (userAll as Record<string, unknown>).posts as Record<string, unknown>[];
 
   // skip/take で制限
-  const user = client.sheets.User.findFirst({
+  const user = client.User.findFirst({
     where: { id: 1 },
     include: {
       posts: {
@@ -114,7 +114,7 @@ function testIncludeSkipTake(client: GassmaClient) {
 
 function testIncludeCountWithWhere(client: GassmaClient) {
   // _count で条件付きカウント
-  const user = client.sheets.User.findFirst({
+  const user = client.User.findFirst({
     where: { id: 1 },
     include: {
       _count: {
@@ -132,7 +132,7 @@ function testIncludeCountWithWhere(client: GassmaClient) {
   }
 
   // 全件カウントと比較して条件付きが <= であること
-  const userAll = client.sheets.User.findFirst({
+  const userAll = client.User.findFirst({
     where: { id: 1 },
     include: { _count: { select: { posts: true } } },
   });

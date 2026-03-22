@@ -24,13 +24,11 @@ export namespace Gassma {
   type CreateManyReturn = ManyReturn;
   type UpdateManyReturn = ManyReturn;
   type DeleteManyReturn = ManyReturn;
-  type UpsertManyReturn = ManyReturn;
 
   interface GassmaClientMap {}
 
   class GassmaClient<T extends keyof GassmaClientMap> {
     constructor(idOrOptions?: string | GassmaClientMap[T]["options"]);
-    readonly sheets: GassmaClientMap[T]["sheets"];
   }
 
   class FieldRef {
@@ -161,7 +159,6 @@ export namespace Gassma {
 export namespace Gassma {
   interface GassmaClientMap {
     "Schema": {
-      sheets: GassmaSchemaSheet;
       options: GassmaSchemaClientOptions;
       globalOmitConfig: GassmaSchemaGlobalOmitConfig;
     };
@@ -225,16 +222,15 @@ export declare class GassmaSchemaItemController<GO extends GassmaSchemaItemOmit 
     endColumnNumber: number
   ): void;
   createMany(createdData: GassmaSchemaItemCreateManyData): CreateManyReturn;
-  createManyAndReturn(createdData: GassmaSchemaItemCreateManyData): GassmaSchemaItemDefaultFindResult[];
+  createManyAndReturn<T extends GassmaSchemaItemCreateManyAndReturnData>(createdData: T): GassmaSchemaItemFindResult<T["select"], T["omit"], GO>[];
   create<T extends GassmaSchemaItemCreateData>(createdData: T): GassmaSchemaItemFindResult<T["select"], T["omit"], GO>;
-  findFirst<T extends GassmaSchemaItemFindData>(findData: T): GassmaSchemaItemFindResult<T["select"], T["omit"], GO> | null;
-  findFirstOrThrow<T extends GassmaSchemaItemFindData>(findData: T): GassmaSchemaItemFindResult<T["select"], T["omit"], GO>;
+  findFirst<T extends GassmaSchemaItemFindFirstData>(findData: T): GassmaSchemaItemFindResult<T["select"], T["omit"], GO> | null;
+  findFirstOrThrow<T extends GassmaSchemaItemFindFirstData>(findData: T): GassmaSchemaItemFindResult<T["select"], T["omit"], GO>;
   findMany<T extends GassmaSchemaItemFindManyData>(findData: T): GassmaSchemaItemFindResult<T["select"], T["omit"], GO>[];
   update<T extends GassmaSchemaItemUpdateSingleData>(updateData: T): GassmaSchemaItemFindResult<T["select"], T["omit"], GO> | null;
   updateMany(updateData: GassmaSchemaItemUpdateData): UpdateManyReturn;
   updateManyAndReturn(updateData: GassmaSchemaItemUpdateData): GassmaSchemaItemDefaultFindResult[];
   upsert<T extends GassmaSchemaItemUpsertSingleData>(upsertData: T): GassmaSchemaItemFindResult<T["select"], T["omit"], GO>;
-  upsertMany(upsertData: GassmaSchemaItemUpsertData): UpsertManyReturn;
   delete<T extends GassmaSchemaItemDeleteSingleData>(deleteData: T): GassmaSchemaItemFindResult<T["select"], T["omit"], GO> | null;
   deleteMany(deleteData: GassmaSchemaItemDeleteData): DeleteManyReturn;
   aggregate<T extends GassmaSchemaItemAggregateData>(aggregateData: T): GassmaSchemaItemAggregateResult<T>;
@@ -249,7 +245,6 @@ export type ManyReturn = {
 export type CreateManyReturn = ManyReturn;
 export type UpdateManyReturn = ManyReturn;
 export type DeleteManyReturn = ManyReturn;
-export type UpsertManyReturn = ManyReturn;
 
 export type GassmaSchemaItemUse = {
   "id"?: number;
@@ -259,11 +254,17 @@ export type GassmaSchemaItemUse = {
 
 export type GassmaSchemaItemCreateData = {
   data: GassmaSchemaItemUse;
+  include?: GassmaSchemaItemInclude;
 } & ({ select?: GassmaSchemaItemSelect; omit?: never } | { select?: never; omit?: GassmaSchemaItemOmit });
 
 export type GassmaSchemaItemCreateManyData = {
   data: GassmaSchemaItemUse[];
 };
+
+export type GassmaSchemaItemCreateManyAndReturnData = {
+  data: GassmaSchemaItemUse[];
+  include?: GassmaSchemaItemInclude;
+} & ({ select?: GassmaSchemaItemSelect; omit?: never } | { select?: never; omit?: GassmaSchemaItemOmit });
 
 export type GassmaSchemaItemidFilterConditions = {
   equals?: number | null | Gassma.FieldRef;
@@ -365,6 +366,14 @@ export type GassmaSchemaItemFindData = {
   _count?: GassmaSchemaItemCountValue;
 } & ({ select?: GassmaSchemaItemSelect; omit?: never } | { select?: never; omit?: GassmaSchemaItemOmit });
 
+export type GassmaSchemaItemFindFirstData = {
+  where?: GassmaSchemaItemWhereUse;
+  orderBy?: GassmaSchemaItemOrderBy;
+  include?: GassmaSchemaItemInclude;
+  cursor?: Partial<GassmaSchemaItemUse>;
+  _count?: GassmaSchemaItemCountValue;
+} & ({ select?: GassmaSchemaItemSelect; omit?: never } | { select?: never; omit?: GassmaSchemaItemOmit });
+
 export type GassmaSchemaItemFindManyData = GassmaSchemaItemFindData;
 
 export type GassmaSchemaItemUpdateData = {
@@ -376,13 +385,8 @@ export type GassmaSchemaItemUpdateData = {
 export type GassmaSchemaItemUpdateSingleData = {
   where: GassmaSchemaItemWhereUse;
   data: Partial<{ [K in keyof GassmaSchemaItemUse]: GassmaSchemaItemUse[K] | Gassma.NumberOperation }>;
+  include?: GassmaSchemaItemInclude;
 } & ({ select?: GassmaSchemaItemSelect; omit?: never } | { select?: never; omit?: GassmaSchemaItemOmit });
-
-export type GassmaSchemaItemUpsertData = {
-  where: GassmaSchemaItemWhereUse;
-  update: Partial<{ [K in keyof GassmaSchemaItemUse]: GassmaSchemaItemUse[K] | Gassma.NumberOperation }>;
-  data: GassmaSchemaItemUse;
-};
 
 export type GassmaSchemaItemUpsertSingleData = {
   where: GassmaSchemaItemWhereUse;
@@ -406,6 +410,7 @@ export type GassmaSchemaItemAggregateData = {
   orderBy?: GassmaSchemaItemOrderBy;
   take?: number;
   skip?: number;
+  cursor?: Partial<GassmaSchemaItemUse>;
   _avg?: GassmaSchemaItemSelect;
   _count?: GassmaSchemaItemSelect;
   _max?: GassmaSchemaItemSelect;
@@ -445,6 +450,7 @@ export type GassmaSchemaItemCountData = {
   orderBy?: GassmaSchemaItemOrderBy;
   take?: number;
   skip?: number;
+  cursor?: Partial<GassmaSchemaItemUse>;
 };
 
 export type GassmaSchemaItemCreateReturn = {
@@ -512,7 +518,7 @@ export type GassmaSchemaItemGroupByResult<T extends GassmaSchemaItemGroupByData>
     : never]: K extends string ? GassmaSchemaItemAggregateField<T[K], K> : never;
 };
 
+export interface GassmaClient<O extends GassmaSchemaGlobalOmitConfig = {}> extends GassmaSchemaSheet<O> {}
 export declare class GassmaClient<O extends GassmaSchemaGlobalOmitConfig = {}> {
   constructor(options?: GassmaSchemaClientOptions<O>);
-  readonly sheets: GassmaSchemaSheet<O>;
 }

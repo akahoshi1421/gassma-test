@@ -11,7 +11,7 @@ function testCursor() {
 }
 
 function testCursorBasic(client: GassmaClient) {
-  const result = client.sheets.User.findMany({
+  const result = client.User.findMany({
     cursor: { id: 10 },
     orderBy: { id: "asc" },
   });
@@ -20,7 +20,7 @@ function testCursorBasic(client: GassmaClient) {
 }
 
 function testCursorWithTake(client: GassmaClient) {
-  const result = client.sheets.User.findMany({
+  const result = client.User.findMany({
     cursor: { id: 10 },
     take: 5,
     orderBy: { id: "asc" },

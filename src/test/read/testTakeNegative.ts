@@ -13,7 +13,7 @@ function testTakeNegative() {
 
 function testTakeNegativeBasic(client: GassmaClient) {
   // take: -5 → 末尾から5件取得
-  const result = client.sheets.User.findMany({
+  const result = client.User.findMany({
     take: -5,
     orderBy: { id: "asc" },
   });
@@ -24,7 +24,7 @@ function testTakeNegativeBasic(client: GassmaClient) {
 
 function testTakeNegativeWithSkip(client: GassmaClient) {
   // take: -5, skip: 5 → 末尾から5件スキップして、そこから5件
-  const result = client.sheets.User.findMany({
+  const result = client.User.findMany({
     take: -5,
     skip: 5,
     orderBy: { id: "asc" },
@@ -36,7 +36,7 @@ function testTakeNegativeWithSkip(client: GassmaClient) {
 
 function testTakeNegativeWithCursor(client: GassmaClient) {
   // cursor + take 負数 → cursor から逆方向に取得
-  const result = client.sheets.User.findMany({
+  const result = client.User.findMany({
     cursor: { id: 10 },
     take: -3,
     orderBy: { id: "asc" },

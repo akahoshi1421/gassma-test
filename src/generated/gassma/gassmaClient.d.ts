@@ -29,7 +29,6 @@ export namespace Gassma {
 
   class GassmaClient<T extends keyof GassmaClientMap> {
     constructor(idOrOptions?: string | GassmaClientMap[T]["options"]);
-    readonly sheets: GassmaClientMap[T]["sheets"];
   }
 
   class FieldRef {
@@ -160,7 +159,6 @@ export namespace Gassma {
 export namespace Gassma {
   interface GassmaClientMap {
     "Gassma": {
-      sheets: GassmaGassmaSheet;
       options: GassmaGassmaClientOptions;
       globalOmitConfig: GassmaGassmaGlobalOmitConfig;
     };
@@ -4314,9 +4312,9 @@ export type GassmaGassmaProfileGroupByResult<T extends GassmaGassmaProfileGroupB
     : never]: K extends string ? GassmaGassmaProfileAggregateField<T[K], K> : never;
 };
 
+export interface GassmaClient<O extends GassmaGassmaGlobalOmitConfig = {}> extends GassmaGassmaSheet<O> {}
 export declare class GassmaClient<O extends GassmaGassmaGlobalOmitConfig = {}> {
   constructor(options?: GassmaGassmaClientOptions<O>);
-  readonly sheets: GassmaGassmaSheet<O>;
 }
 
 export declare const Role: {

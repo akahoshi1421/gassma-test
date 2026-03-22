@@ -230,7 +230,7 @@ class GassmaClient {
   constructor(options) {
     const mergedOptions = Object.assign({}, options, { id: "14yKHbIKdclxxYKkpvB9V04Ovpe8V7I_nHBnfbPmOqyU", relations: gassmaRelations, defaults: gassmaDefaults, updatedAt: gassmaUpdatedAt, ignore: gassmaIgnore, map: gassmaMap, ignoreSheets: gassmaIgnoreSheets, mapSheets: gassmaMapSheets, autoincrement: gassmaAutoincrement });
     const client = new Gassma.GassmaClient(mergedOptions);
-    this.sheets = client.sheets;
+    Object.assign(this, client);
   }
 }
 

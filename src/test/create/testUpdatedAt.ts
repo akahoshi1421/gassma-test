@@ -26,7 +26,7 @@ function testCreateUpdatedAtAutoSet(client: GassmaClient) {
   // create 時に updatedAt が自動的に Date で設定されることを確認
   const before = new Date();
 
-  client.sheets.Product.create({
+  client.Product.create({
     data: {
       id: 901,
       name: "updatedAt自動テスト",
@@ -36,7 +36,7 @@ function testCreateUpdatedAtAutoSet(client: GassmaClient) {
     },
   });
 
-  const result = client.sheets.Product.findFirst({ where: { id: 901 } });
+  const result = client.Product.findFirst({ where: { id: 901 } });
   if (!result) throw new Error("updatedAt auto: product 901 not found");
   if (!result.updatedAt || typeof result.updatedAt.getTime !== "function") {
     throw new Error(
@@ -54,7 +54,7 @@ function testCreateUpdatedAtExplicitOverride(client: GassmaClient) {
   // 明示的に updatedAt を指定した場合はその値が使われることを確認
   const explicit = new Date("2020-06-15T12:00:00");
 
-  client.sheets.Post.create({
+  client.Post.create({
     data: {
       id: 902,
       title: "updatedAt明示テスト",
@@ -63,7 +63,7 @@ function testCreateUpdatedAtExplicitOverride(client: GassmaClient) {
     },
   });
 
-  const result = client.sheets.Post.findFirst({ where: { id: 902 } });
+  const result = client.Post.findFirst({ where: { id: 902 } });
   if (!result) throw new Error("updatedAt explicit: post 902 not found");
   if (!result.updatedAt || typeof result.updatedAt.getTime !== "function") {
     throw new Error(
@@ -83,12 +83,12 @@ function testUpdateUpdatedAtAutoSet(client: GassmaClient) {
   // update 時に updatedAt が自動更新されることを確認
   const before = new Date();
 
-  client.sheets.Post.update({
+  client.Post.update({
     where: { id: 1 },
     data: { title: "updatedAt update test" },
   });
 
-  const result = client.sheets.Post.findFirst({ where: { id: 1 } });
+  const result = client.Post.findFirst({ where: { id: 1 } });
   if (!result) throw new Error("updatedAt update: post 1 not found");
   if (!result.updatedAt || typeof result.updatedAt.getTime !== "function") {
     throw new Error(
@@ -106,12 +106,12 @@ function testUpdateManyUpdatedAtAutoSet(client: GassmaClient) {
   // updateMany 時に updatedAt が自動更新されることを確認
   const before = new Date();
 
-  client.sheets.Product.updateMany({
+  client.Product.updateMany({
     where: { status: "available" },
     data: { stock: 999 },
   });
 
-  const result = client.sheets.Product.findFirst({
+  const result = client.Product.findFirst({
     where: { status: "available" },
   });
   if (!result) throw new Error("updatedAt updateMany: no available product");
@@ -131,7 +131,7 @@ function testUpsertCreateUpdatedAt(client: GassmaClient) {
   // upsert の create パスで updatedAt が自動設定されることを確認
   const before = new Date();
 
-  const result = client.sheets.Product.upsert({
+  const result = client.Product.upsert({
     where: { id: 911 },
     create: {
       id: 911,
@@ -159,7 +159,7 @@ function testUpsertUpdateUpdatedAt(client: GassmaClient) {
   // upsert の update パスで updatedAt が自動更新されることを確認
   const before = new Date();
 
-  const result = client.sheets.Post.upsert({
+  const result = client.Post.upsert({
     where: { id: 1 },
     create: {
       id: 921,
@@ -185,7 +185,7 @@ function testNestedCreateInCreateUpdatedAt(client: GassmaClient) {
   // create の nested write でも updatedAt が自動設定されることを確認
   const before = new Date();
 
-  client.sheets.User.create({
+  client.User.create({
     data: {
       id: 931,
       email: "nested-updatedAt@test.com",
@@ -203,7 +203,7 @@ function testNestedCreateInCreateUpdatedAt(client: GassmaClient) {
     },
   });
 
-  const postResult = client.sheets.Post.findFirst({ where: { id: 931 } });
+  const postResult = client.Post.findFirst({ where: { id: 931 } });
   if (!postResult) throw new Error("nested create updatedAt: post 931 not found");
   if (
     !postResult.updatedAt ||
@@ -225,7 +225,7 @@ function testNestedCreateInUpdateUpdatedAt(client: GassmaClient) {
   // update の nested create でも updatedAt が自動設定されることを確認
   const before = new Date();
 
-  client.sheets.User.update({
+  client.User.update({
     where: { id: 1 },
     data: {
       posts: {
@@ -238,7 +238,7 @@ function testNestedCreateInUpdateUpdatedAt(client: GassmaClient) {
     },
   });
 
-  const postResult = client.sheets.Post.findFirst({ where: { id: 941 } });
+  const postResult = client.Post.findFirst({ where: { id: 941 } });
   if (!postResult) throw new Error("update nested updatedAt: post 941 not found");
   if (
     !postResult.updatedAt ||

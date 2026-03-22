@@ -18,7 +18,7 @@ function testDelete() {
 }
 
 function testDeleteBasic(client: GassmaClient) {
-  client.sheets.Tag.delete({ where: { id: 1 } });
+  client.Tag.delete({ where: { id: 1 } });
 
   const snapshot = getSheetSnapshot("Tag");
   snapshot.assertRowNotExists({ id: 1 });
@@ -30,7 +30,7 @@ function testDeleteBasic(client: GassmaClient) {
 }
 
 function testDeleteReturnValue(client: GassmaClient) {
-  const result = client.sheets.Tag.delete({ where: { id: 1 } });
+  const result = client.Tag.delete({ where: { id: 1 } });
 
   assertEquals(result !== null, true, "delete return not null");
   if (result) {
@@ -42,12 +42,12 @@ function testDeleteReturnValue(client: GassmaClient) {
 }
 
 function testDeleteNotFound(client: GassmaClient) {
-  const result = client.sheets.Tag.delete({ where: { id: 9999 } });
+  const result = client.Tag.delete({ where: { id: 9999 } });
   assertEquals(result, null, "delete not found returns null");
 }
 
 function testDeleteSelect(client: GassmaClient) {
-  const result = client.sheets.Tag.delete({
+  const result = client.Tag.delete({
     where: { id: 1 },
     select: { id: true, name: true },
   });
@@ -60,9 +60,9 @@ function testDeleteSelect(client: GassmaClient) {
 }
 
 function testDeleteOmit(client: GassmaClient) {
-  client.sheets.Tag.create({ data: { id: 999, name: "OmitTest" } });
+  client.Tag.create({ data: { id: 999, name: "OmitTest" } });
 
-  const result = client.sheets.Tag.delete({
+  const result = client.Tag.delete({
     where: { id: 999 },
     omit: { name: true },
   });

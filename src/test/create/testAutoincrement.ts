@@ -17,7 +17,7 @@ function testAutoincrement() {
 
 function testAutoincrementCreate(client: GassmaClient) {
   // id を指定しなくても自動採番される
-  const result = client.sheets.Notification.create({
+  const result = client.Notification.create({
     data: {
       userId: 1,
       message: "autoincrement test",
@@ -37,7 +37,7 @@ function testAutoincrementCreate(client: GassmaClient) {
 
 function testAutoincrementCreateExplicitId(client: GassmaClient) {
   // 明示的に id を指定した場合はその値が使われる
-  const result = client.sheets.Notification.create({
+  const result = client.Notification.create({
     data: {
       id: 9999,
       userId: 1,
@@ -52,7 +52,7 @@ function testAutoincrementCreateExplicitId(client: GassmaClient) {
 
 function testAutoincrementCreateMany(client: GassmaClient) {
   // createMany でも自動採番される
-  client.sheets.Notification.createMany({
+  client.Notification.createMany({
     data: [
       { userId: 1, message: "many 1" },
       { userId: 2, message: "many 2" },
@@ -61,7 +61,7 @@ function testAutoincrementCreateMany(client: GassmaClient) {
   });
 
   // 元データ 5 件 + 3 件 = 8 件のはず
-  const all = client.sheets.Notification.findMany({});
+  const all = client.Notification.findMany({});
   assertEquals(all.length, 8, "autoincrement createMany: total count");
 
   // 新規作成された 3 件は id が採番されている
@@ -79,7 +79,7 @@ function testAutoincrementCreateMany(client: GassmaClient) {
 
 function testAutoincrementCreateManyAndReturn(client: GassmaClient) {
   // createManyAndReturn の戻り値にも採番された id が含まれる
-  const results = client.sheets.Notification.createManyAndReturn({
+  const results = client.Notification.createManyAndReturn({
     data: [
       { userId: 1, message: "return 1" },
       { userId: 2, message: "return 2" },
@@ -104,10 +104,10 @@ function testAutoincrementCreateManyAndReturn(client: GassmaClient) {
 
 function testAutoincrementSequential(client: GassmaClient) {
   // 連続 create で id が単調増加する
-  const r1 = client.sheets.Notification.create({
+  const r1 = client.Notification.create({
     data: { userId: 1, message: "seq 1" },
   });
-  const r2 = client.sheets.Notification.create({
+  const r2 = client.Notification.create({
     data: { userId: 1, message: "seq 2" },
   });
 

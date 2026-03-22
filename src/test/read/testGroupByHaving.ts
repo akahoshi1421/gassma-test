@@ -12,7 +12,7 @@ function testGroupByHaving() {
 
 function testHavingCount(client: GassmaClient) {
   // role でグループ化し、ユーザー数が10以上のグループのみ
-  const result = client.sheets.User.groupBy({
+  const result = client.User.groupBy({
     by: "role",
     _count: { id: true },
     having: {
@@ -35,7 +35,7 @@ function testHavingCount(client: GassmaClient) {
 
 function testHavingSum(client: GassmaClient) {
   // userId でグループ化し、totalAmount の合計が 100000 以上のグループのみ
-  const result = client.sheets.Order.groupBy({
+  const result = client.Order.groupBy({
     by: "userId",
     _sum: { totalAmount: true },
     having: {
@@ -58,7 +58,7 @@ function testHavingSum(client: GassmaClient) {
 
 function testHavingAvg(client: GassmaClient) {
   // status でグループ化し、平均 totalAmount が 50000 以上
-  const result = client.sheets.Order.groupBy({
+  const result = client.Order.groupBy({
     by: "status",
     _avg: { totalAmount: true },
     _count: { id: true },

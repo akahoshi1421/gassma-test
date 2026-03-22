@@ -25,7 +25,7 @@ function testDefaults() {
 
 function testCreateStaticDefaults(client: GassmaClient) {
   // User.isActive (default: true), Post.published (default: false), Post.viewCount (default: 0)
-  client.sheets.User.create({
+  client.User.create({
     data: {
       id: 801,
       email: "defaults-static@test.com",
@@ -38,7 +38,7 @@ function testCreateStaticDefaults(client: GassmaClient) {
   userSnapshot.assertRowExists({ id: 801 });
   userSnapshot.assertRowEquals({ id: 801 }, { isActive: true });
 
-  client.sheets.Post.create({
+  client.Post.create({
     data: {
       id: 801,
       title: "defaults static post",
@@ -56,7 +56,7 @@ function testCreateStaticDefaults(client: GassmaClient) {
 
 function testCreateFunctionDefaults(client: GassmaClient) {
   // createdAt (default: () => new Date()) が Date として設定されるかテスト
-  client.sheets.Product.create({
+  client.Product.create({
     data: {
       id: 802,
       name: "デフォルト日付テスト",
@@ -66,7 +66,7 @@ function testCreateFunctionDefaults(client: GassmaClient) {
     },
   });
 
-  const result = client.sheets.Product.findFirst({ where: { id: 802 } });
+  const result = client.Product.findFirst({ where: { id: 802 } });
   if (!result) throw new Error("defaults function: product 802 not found");
   if (!result.createdAt || typeof result.createdAt.getTime !== "function") {
     throw new Error(
@@ -79,7 +79,7 @@ function testCreateFunctionDefaults(client: GassmaClient) {
 
 function testCreateDefaultsExplicitOverride(client: GassmaClient) {
   // 明示的に値を指定した場合はデフォルト値が上書きされないことを確認
-  client.sheets.User.create({
+  client.User.create({
     data: {
       id: 803,
       email: "defaults-override@test.com",
@@ -93,7 +93,7 @@ function testCreateDefaultsExplicitOverride(client: GassmaClient) {
   const userSnapshot = getSheetSnapshot("User");
   userSnapshot.assertRowEquals({ id: 803 }, { isActive: false });
 
-  const result = client.sheets.User.findFirst({ where: { id: 803 } });
+  const result = client.User.findFirst({ where: { id: 803 } });
   if (!result) throw new Error("defaults override: user 803 not found");
   if (!result.createdAt) throw new Error("defaults override: createdAt is null");
   assertEquals(
@@ -107,7 +107,7 @@ function testCreateDefaultsExplicitOverride(client: GassmaClient) {
 
 function testCreateManyDefaults(client: GassmaClient) {
   // createMany でもデフォルト値が適用されるかテスト
-  client.sheets.Post.createMany({
+  client.Post.createMany({
     data: [
       { id: 811, title: "many defaults 1", authorId: 1 },
       { id: 812, title: "many defaults 2", authorId: 1 },
@@ -123,7 +123,7 @@ function testCreateManyDefaults(client: GassmaClient) {
 
 function testCreateManyAndReturnDefaults(client: GassmaClient) {
   // createManyAndReturn の戻り値にデフォルト値が含まれるかテスト
-  const results = client.sheets.Post.createManyAndReturn({
+  const results = client.Post.createManyAndReturn({
     data: [
       { id: 813, title: "return defaults 1", authorId: 1 },
       { id: 814, title: "return defaults 2", authorId: 1 },
@@ -139,7 +139,7 @@ function testCreateManyAndReturnDefaults(client: GassmaClient) {
 
 function testUpsertCreateDefaults(client: GassmaClient) {
   // upsert の create パスでデフォルト値が適用されるかテスト
-  const result = client.sheets.User.upsert({
+  const result = client.User.upsert({
     where: { id: 821 },
     create: {
       id: 821,
@@ -165,7 +165,7 @@ function testUpsertCreateDefaults(client: GassmaClient) {
 
 function testNestedCreateInCreateDefaults(client: GassmaClient) {
   // create の nested write でもデフォルト値が適用されるかテスト
-  client.sheets.User.create({
+  client.User.create({
     data: {
       id: 831,
       email: "nested-create-defaults@test.com",
@@ -187,7 +187,7 @@ function testNestedCreateInCreateDefaults(client: GassmaClient) {
   postSnapshot.assertRowExists({ id: 831 });
   postSnapshot.assertRowEquals({ id: 831 }, { published: false, viewCount: 0 });
 
-  const postResult = client.sheets.Post.findFirst({ where: { id: 831 } });
+  const postResult = client.Post.findFirst({ where: { id: 831 } });
   if (!postResult) throw new Error("nested create defaults: post 831 not found");
   if (!postResult.createdAt || typeof postResult.createdAt.getTime !== "function") {
     throw new Error(
@@ -201,7 +201,7 @@ function testNestedCreateInCreateDefaults(client: GassmaClient) {
 
 function testNestedCreateInUpdateDefaults(client: GassmaClient) {
   // update の nested create でもデフォルト値が適用されるかテスト
-  client.sheets.User.update({
+  client.User.update({
     where: { id: 1 },
     data: {
       posts: {
@@ -218,7 +218,7 @@ function testNestedCreateInUpdateDefaults(client: GassmaClient) {
   postSnapshot.assertRowExists({ id: 841 });
   postSnapshot.assertRowEquals({ id: 841 }, { published: false, viewCount: 0 });
 
-  const postResult = client.sheets.Post.findFirst({ where: { id: 841 } });
+  const postResult = client.Post.findFirst({ where: { id: 841 } });
   if (!postResult) throw new Error("update nested defaults: post 841 not found");
   if (!postResult.createdAt || typeof postResult.createdAt.getTime !== "function") {
     throw new Error(
@@ -231,7 +231,7 @@ function testNestedCreateInUpdateDefaults(client: GassmaClient) {
 
 function testNestedCreateArrayInUpdateDefaults(client: GassmaClient) {
   // update の nested create（配列）でもデフォルト値が適用されるかテスト
-  client.sheets.Post.update({
+  client.Post.update({
     where: { id: 1 },
     data: {
       comments: {
@@ -243,7 +243,7 @@ function testNestedCreateArrayInUpdateDefaults(client: GassmaClient) {
     },
   });
 
-  const comment1 = client.sheets.Comment.findFirst({ where: { id: 851 } });
+  const comment1 = client.Comment.findFirst({ where: { id: 851 } });
   if (!comment1) throw new Error("nested create array defaults: comment 851 not found");
   if (!comment1.createdAt || typeof comment1.createdAt.getTime !== "function") {
     throw new Error(
@@ -251,7 +251,7 @@ function testNestedCreateArrayInUpdateDefaults(client: GassmaClient) {
     );
   }
 
-  const comment2 = client.sheets.Comment.findFirst({ where: { id: 852 } });
+  const comment2 = client.Comment.findFirst({ where: { id: 852 } });
   if (!comment2) throw new Error("nested create array defaults: comment 852 not found");
   if (!comment2.createdAt || typeof comment2.createdAt.getTime !== "function") {
     throw new Error(

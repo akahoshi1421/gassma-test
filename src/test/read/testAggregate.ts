@@ -13,7 +13,7 @@ function testAggregate() {
 }
 
 function testAggregateCount(client: GassmaClient) {
-  const result = client.sheets.Product.aggregate({
+  const result = client.Product.aggregate({
     _count: { id: true },
   });
   if (typeof result._count?.id !== "number" || result._count.id !== 100) {
@@ -22,7 +22,7 @@ function testAggregateCount(client: GassmaClient) {
 }
 
 function testAggregateAvg(client: GassmaClient) {
-  const result = client.sheets.Product.aggregate({
+  const result = client.Product.aggregate({
     _avg: { price: true },
   });
   if (typeof result._avg?.price !== "number") {
@@ -31,7 +31,7 @@ function testAggregateAvg(client: GassmaClient) {
 }
 
 function testAggregateSum(client: GassmaClient) {
-  const result = client.sheets.Product.aggregate({
+  const result = client.Product.aggregate({
     _sum: { stock: true },
   });
   if (typeof result._sum?.stock !== "number") {
@@ -40,7 +40,7 @@ function testAggregateSum(client: GassmaClient) {
 }
 
 function testAggregateMinMax(client: GassmaClient) {
-  const result = client.sheets.Product.aggregate({
+  const result = client.Product.aggregate({
     _min: { price: true },
     _max: { price: true },
   });
@@ -56,7 +56,7 @@ function testAggregateMinMax(client: GassmaClient) {
 }
 
 function testAggregateWithWhere(client: GassmaClient) {
-  const result = client.sheets.Product.aggregate({
+  const result = client.Product.aggregate({
     where: { status: "available" },
     _count: { id: true },
   });

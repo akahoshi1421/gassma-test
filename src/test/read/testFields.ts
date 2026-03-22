@@ -12,9 +12,9 @@ function testFields() {
 
 function testFieldsEquals(client: GassmaClient) {
   // User の id と age が同じ行を検索（FieldRef で列同士比較）
-  const users = client.sheets.User.findMany({
+  const users = client.User.findMany({
     where: {
-      age: { equals: client.sheets.User.fields.id },
+      age: { equals: client.User.fields.id },
     },
   });
 
@@ -28,9 +28,9 @@ function testFieldsEquals(client: GassmaClient) {
 
 function testFieldsComparison(client: GassmaClient) {
   // Post で viewCount が id より大きい
-  const posts = client.sheets.Post.findMany({
+  const posts = client.Post.findMany({
     where: {
-      viewCount: { gt: client.sheets.Post.fields.id },
+      viewCount: { gt: client.Post.fields.id },
     },
   });
   posts.forEach((post) => {
@@ -45,9 +45,9 @@ function testFieldsComparison(client: GassmaClient) {
 
 function testFieldsContains(client: GassmaClient) {
   // OrderItem で orderId と productId が同じ（equals で FieldRef）
-  const items = client.sheets.OrderItem.findMany({
+  const items = client.OrderItem.findMany({
     where: {
-      orderId: { equals: client.sheets.OrderItem.fields.productId },
+      orderId: { equals: client.OrderItem.fields.productId },
     },
   });
 

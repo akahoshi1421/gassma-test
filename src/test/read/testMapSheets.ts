@@ -16,7 +16,7 @@ function testMapSheetsFindFirst() {
   // 実際のシート名は "notifications"
   const client = new GassmaClient();
 
-  const notification = client.sheets.Notification.findFirst({ where: { id: 1 } });
+  const notification = client.Notification.findFirst({ where: { id: 1 } });
   if (!notification) throw new Error("mapSheets findFirst: got null");
 
   assertEquals(notification.id, 1, "mapSheets findFirst: id");
@@ -28,7 +28,7 @@ function testMapSheetsFindFirst() {
 function testMapSheetsFindMany() {
   const client = new GassmaClient();
 
-  const notifications = client.sheets.Notification.findMany({
+  const notifications = client.Notification.findMany({
     where: { userId: 2 },
   });
   assertEquals(notifications.length, 2, "mapSheets findMany: count for userId=2");
@@ -40,7 +40,7 @@ function testMapSheetsWhere() {
   // isRead で検索できる
   const client = new GassmaClient();
 
-  const readNotifications = client.sheets.Notification.findMany({
+  const readNotifications = client.Notification.findMany({
     where: { isRead: true },
   });
   assertEquals(readNotifications.length, 2, "mapSheets where: isRead true count");
@@ -50,7 +50,7 @@ function testMapSheetsCreate() {
   // @@map されたモデルで create/delete ができる
   const client = new GassmaClient();
 
-  const created = client.sheets.Notification.create({
+  const created = client.Notification.create({
     data: {
       id: 9999,
       userId: 1,
@@ -63,19 +63,19 @@ function testMapSheetsCreate() {
   assertEquals(created.isRead, false, "mapSheets create: default isRead");
 
   // 後片付け
-  client.sheets.Notification.delete({ where: { id: 9999 } });
+  client.Notification.delete({ where: { id: 9999 } });
 }
 
 function testMapSheetsCodeNameAccess() {
-  // sheets 上のキーは "Notification"（コード名）であり "notifications"（シート名）ではない
+  // クライアント上のキーは "Notification"（コード名）であり "notifications"（シート名）ではない
   const client = new GassmaClient();
-  const sheets = client.sheets as Record<string, unknown>;
+  const clientRecord = client as unknown as Record<string, unknown>;
 
-  if (sheets["Notification"] === undefined) {
+  if (clientRecord["Notification"] === undefined) {
     throw new Error("mapSheets codeName: Notification should be accessible");
   }
   // "notifications" というキーではアクセスできないことを確認
-  if (sheets["notifications"] !== undefined) {
+  if (clientRecord["notifications"] !== undefined) {
     throw new Error("mapSheets codeName: raw sheet name 'notifications' should not be a key");
   }
 }

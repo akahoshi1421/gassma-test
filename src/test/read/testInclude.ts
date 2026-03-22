@@ -16,7 +16,7 @@ function testInclude() {
 }
 
 function testIncludeOneToOne(client: GassmaClient) {
-  const user = client.sheets.User.findFirst({
+  const user = client.User.findFirst({
     where: { id: 1 },
     include: { profile: true },
   });
@@ -27,7 +27,7 @@ function testIncludeOneToOne(client: GassmaClient) {
 }
 
 function testIncludeOneToMany(client: GassmaClient) {
-  const user = client.sheets.User.findFirst({
+  const user = client.User.findFirst({
     where: { id: 1 },
     include: { posts: true },
   });
@@ -41,7 +41,7 @@ function testIncludeOneToMany(client: GassmaClient) {
 }
 
 function testIncludeManyToOne(client: GassmaClient) {
-  const post = client.sheets.Post.findFirst({
+  const post = client.Post.findFirst({
     where: { id: 1 },
     include: { author: true },
   });
@@ -52,7 +52,7 @@ function testIncludeManyToOne(client: GassmaClient) {
 }
 
 function testIncludeManyToMany(client: GassmaClient) {
-  const post = client.sheets.Post.findFirst({
+  const post = client.Post.findFirst({
     where: { id: 1 },
     include: { tags: true },
   });
@@ -63,7 +63,7 @@ function testIncludeManyToMany(client: GassmaClient) {
 }
 
 function testIncludeWithWhere(client: GassmaClient) {
-  const user = client.sheets.User.findFirst({
+  const user = client.User.findFirst({
     where: { id: 1 },
     include: {
       posts: {
@@ -79,7 +79,7 @@ function testIncludeWithWhere(client: GassmaClient) {
 }
 
 function testIncludeNested(client: GassmaClient) {
-  const user = client.sheets.User.findFirst({
+  const user = client.User.findFirst({
     where: { id: 1 },
     include: {
       posts: {
@@ -98,7 +98,7 @@ function testIncludeNested(client: GassmaClient) {
 }
 
 function testIncludeCount(client: GassmaClient) {
-  const user = client.sheets.User.findFirst({
+  const user = client.User.findFirst({
     where: { id: 1 },
     include: {
       _count: {

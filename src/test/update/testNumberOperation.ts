@@ -17,10 +17,10 @@ function testNumberOperation() {
 }
 
 function testIncrement(client: GassmaClient) {
-  const before = client.sheets.Product.findFirst({ where: { id: 1 } });
+  const before = client.Product.findFirst({ where: { id: 1 } });
   if (!before) throw new Error("increment: product 1 not found");
 
-  client.sheets.Product.update({
+  client.Product.update({
     where: { id: 1 },
     data: { stock: { increment: 10 } },
   });
@@ -32,10 +32,10 @@ function testIncrement(client: GassmaClient) {
 }
 
 function testDecrement(client: GassmaClient) {
-  const before = client.sheets.Product.findFirst({ where: { id: 1 } });
+  const before = client.Product.findFirst({ where: { id: 1 } });
   if (!before) throw new Error("decrement: product 1 not found");
 
-  client.sheets.Product.update({
+  client.Product.update({
     where: { id: 1 },
     data: { stock: { decrement: 5 } },
   });
@@ -47,10 +47,10 @@ function testDecrement(client: GassmaClient) {
 }
 
 function testMultiply(client: GassmaClient) {
-  const before = client.sheets.Product.findFirst({ where: { id: 1 } });
+  const before = client.Product.findFirst({ where: { id: 1 } });
   if (!before) throw new Error("multiply: product 1 not found");
 
-  client.sheets.Product.update({
+  client.Product.update({
     where: { id: 1 },
     data: { price: { multiply: 2 } },
   });
@@ -62,10 +62,10 @@ function testMultiply(client: GassmaClient) {
 }
 
 function testDivide(client: GassmaClient) {
-  const before = client.sheets.Product.findFirst({ where: { id: 1 } });
+  const before = client.Product.findFirst({ where: { id: 1 } });
   if (!before) throw new Error("divide: product 1 not found");
 
-  client.sheets.Product.update({
+  client.Product.update({
     where: { id: 1 },
     data: { price: { divide: 2 } },
   });
@@ -77,7 +77,7 @@ function testDivide(client: GassmaClient) {
 }
 
 function testNumberOperationInUpdateMany(client: GassmaClient) {
-  client.sheets.Product.updateMany({
+  client.Product.updateMany({
     where: { id: { lte: 3 } },
     data: { stock: { increment: 100 } },
   });

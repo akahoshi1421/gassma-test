@@ -13,7 +13,7 @@ function testWhereRelation() {
 }
 
 function testWhereSome(client: GassmaClient) {
-  const users = client.sheets.User.findMany({
+  const users = client.User.findMany({
     where: {
       posts: {
         some: { published: true },
@@ -26,7 +26,7 @@ function testWhereSome(client: GassmaClient) {
 }
 
 function testWhereEvery(client: GassmaClient) {
-  const users = client.sheets.User.findMany({
+  const users = client.User.findMany({
     where: {
       posts: {
         every: { published: true },
@@ -41,7 +41,7 @@ function testWhereEvery(client: GassmaClient) {
 }
 
 function testWhereNone(client: GassmaClient) {
-  const users = client.sheets.User.findMany({
+  const users = client.User.findMany({
     where: {
       posts: {
         none: { published: true },
@@ -54,7 +54,7 @@ function testWhereNone(client: GassmaClient) {
 }
 
 function testWhereIs(client: GassmaClient) {
-  const posts = client.sheets.Post.findMany({
+  const posts = client.Post.findMany({
     where: {
       author: {
         is: { role: "ADMIN" },
@@ -67,7 +67,7 @@ function testWhereIs(client: GassmaClient) {
 }
 
 function testWhereIsNot(client: GassmaClient) {
-  const posts = client.sheets.Post.findMany({
+  const posts = client.Post.findMany({
     where: {
       author: {
         isNot: { role: "ADMIN" },

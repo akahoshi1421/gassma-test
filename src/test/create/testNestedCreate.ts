@@ -21,7 +21,7 @@ function testNestedCreate() {
 }
 
 function testNestedCreateOneToMany(client: GassmaClient) {
-  client.sheets.Order.create({
+  client.Order.create({
     data: {
       id: 901,
       userId: 1,
@@ -53,7 +53,7 @@ function testNestedCreateOneToMany(client: GassmaClient) {
 }
 
 function testNestedCreateOneToOne(client: GassmaClient) {
-  client.sheets.User.create({
+  client.User.create({
     data: {
       id: 901,
       email: "nested@test.com",
@@ -80,7 +80,7 @@ function testNestedCreateOneToOne(client: GassmaClient) {
 }
 
 function testNestedCreateConnect(client: GassmaClient) {
-  client.sheets.Order.create({
+  client.Order.create({
     data: {
       id: 902,
       userId: 1,
@@ -105,7 +105,7 @@ function testNestedCreateConnect(client: GassmaClient) {
 }
 
 function testNestedCreateConnectOrCreateNew(client: GassmaClient) {
-  client.sheets.Order.create({
+  client.Order.create({
     data: {
       id: 903,
       userId: 1,
@@ -134,7 +134,7 @@ function testNestedCreateConnectOrCreateNew(client: GassmaClient) {
 }
 
 function testNestedCreateConnectOrCreateExisting(client: GassmaClient) {
-  client.sheets.Order.create({
+  client.Order.create({
     data: {
       id: 904,
       userId: 1,
@@ -163,7 +163,7 @@ function testNestedCreateConnectOrCreateExisting(client: GassmaClient) {
 }
 
 function testNestedCreateSelfReferencing(client: GassmaClient) {
-  client.sheets.Category.create({
+  client.Category.create({
     data: {
       id: 901,
       name: "親カテゴリ",

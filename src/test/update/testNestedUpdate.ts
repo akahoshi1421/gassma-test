@@ -26,7 +26,7 @@ function testNestedUpdate() {
 
 function testNestedCreate(client: GassmaClient) {
   // User update で新しい Post を nested create
-  client.sheets.User.update({
+  client.User.update({
     where: { id: 3 },
     data: {
       name: "NestedCreateUser",
@@ -56,7 +56,7 @@ function testNestedCreate(client: GassmaClient) {
 
 function testNestedUpdate_(client: GassmaClient) {
   // User update で Post を nested update
-  client.sheets.User.update({
+  client.User.update({
     where: { id: 3 },
     data: {
       posts: {
@@ -69,7 +69,7 @@ function testNestedUpdate_(client: GassmaClient) {
   });
 
   const postSnapshot = getSheetSnapshot("Post");
-  const posts = client.sheets.Post.findMany({
+  const posts = client.Post.findMany({
     where: { authorId: 3 },
     select: { id: true, title: true },
   });
@@ -78,7 +78,7 @@ function testNestedUpdate_(client: GassmaClient) {
   });
 
   // authorId != 3 のPostが影響を受けていないことを確認
-  const otherPost = client.sheets.Post.findFirst({
+  const otherPost = client.Post.findFirst({
     where: { authorId: 1 },
     select: { id: true, title: true },
   });
@@ -93,7 +93,7 @@ function testNestedUpdate_(client: GassmaClient) {
 
 function testNestedDelete(client: GassmaClient) {
   // テスト用にコメントを作成
-  client.sheets.Comment.create({
+  client.Comment.create({
     data: {
       id: 951,
       text: "to be deleted",
@@ -104,7 +104,7 @@ function testNestedDelete(client: GassmaClient) {
   });
 
   // Post update で Comment を nested delete
-  client.sheets.Post.update({
+  client.Post.update({
     where: { id: 1 },
     data: {
       comments: {
@@ -123,14 +123,14 @@ function testNestedDelete(client: GassmaClient) {
 
 function testNestedDeleteMany(client: GassmaClient) {
   // テスト用にコメントを複数作成
-  client.sheets.Comment.create({
+  client.Comment.create({
     data: { id: 951, text: "bulk delete 1", authorId: 3, postId: 1, createdAt: new Date("2025-01-01T00:00:00") },
   });
-  client.sheets.Comment.create({
+  client.Comment.create({
     data: { id: 952, text: "bulk delete 2", authorId: 3, postId: 1, createdAt: new Date("2025-01-01T00:00:00") },
   });
 
-  client.sheets.Post.update({
+  client.Post.update({
     where: { id: 1 },
     data: {
       comments: {
@@ -152,7 +152,7 @@ function testNestedDeleteMany(client: GassmaClient) {
 function testNestedConnect(client: GassmaClient) {
   // Tag を Post に connect（manyToMany）
   // Post id=1 に Tag id=30 を connect
-  client.sheets.Post.update({
+  client.Post.update({
     where: { id: 1 },
     data: {
       tags: {
@@ -167,7 +167,7 @@ function testNestedConnect(client: GassmaClient) {
   pivotSnapshot.assertRowExists({ postId: 2 });
 
   // 元に戻す: pivot テーブルから削除
-  client.sheets.Post.update({
+  client.Post.update({
     where: { id: 1 },
     data: {
       tags: {
@@ -179,7 +179,7 @@ function testNestedConnect(client: GassmaClient) {
 
 function testNestedDisconnect(client: GassmaClient) {
   // まず connect してから disconnect
-  client.sheets.Post.update({
+  client.Post.update({
     where: { id: 1 },
     data: {
       tags: {
@@ -191,7 +191,7 @@ function testNestedDisconnect(client: GassmaClient) {
   const pivotBefore = getSheetSnapshot("_PostToTag");
   pivotBefore.assertRowExists({ postId: 1, tagId: 29 });
 
-  client.sheets.Post.update({
+  client.Post.update({
     where: { id: 1 },
     data: {
       tags: {
@@ -208,7 +208,7 @@ function testNestedDisconnect(client: GassmaClient) {
 
 function testNestedConnectOrCreate(client: GassmaClient) {
   // Comment を connectOrCreate（存在しない → create）
-  client.sheets.Post.update({
+  client.Post.update({
     where: { id: 1 },
     data: {
       comments: {
@@ -236,12 +236,12 @@ function testNestedConnectOrCreate(client: GassmaClient) {
 function testNestedSetOneToMany(client: GassmaClient) {
   // User id=3 の comments を set で入替え
   // まず現在の comments を確認
-  const beforeComments = client.sheets.Comment.findMany({
+  const beforeComments = client.Comment.findMany({
     where: { authorId: 3 },
   });
 
   // Comment id=1,2 を User id=3 に set（既存を切り離して新しく紐付け）
-  client.sheets.User.update({
+  client.User.update({
     where: { id: 3 },
     data: {
       comments: {
@@ -251,7 +251,7 @@ function testNestedSetOneToMany(client: GassmaClient) {
   });
 
   // set したレコードが紐付いているか確認
-  const afterComments = client.sheets.Comment.findMany({
+  const afterComments = client.Comment.findMany({
     where: { authorId: 3 },
   });
   assertEquals(afterComments.length, 2, "nested set oneToMany count");
@@ -264,7 +264,7 @@ function testNestedSetOneToMany(client: GassmaClient) {
   // 元の comments は authorId が null になっているはず
   beforeComments.forEach((c) => {
     if (c.id !== 1 && c.id !== 2) {
-      const updated = client.sheets.Comment.findFirst({ where: { id: c.id } });
+      const updated = client.Comment.findFirst({ where: { id: c.id } });
       if (updated && updated.authorId === 3) {
         throw new Error(`nested set oneToMany: comment ${c.id} should be disconnected`);
       }
@@ -276,7 +276,7 @@ function testNestedSetOneToMany(client: GassmaClient) {
 
 function testNestedSetManyToMany(client: GassmaClient) {
   // Post id=1 の tags を set で入替え（Tag id=1, id=2 のみに）
-  client.sheets.Post.update({
+  client.Post.update({
     where: { id: 1 },
     data: {
       tags: {

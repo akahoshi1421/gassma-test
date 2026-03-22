@@ -16,7 +16,7 @@ function testSelectOmitConflict(client: GassmaClient) {
   assertThrows(
     () => {
       // @ts-expect-error select と omit の同時指定は型レベルで禁止
-      client.sheets.User.findMany({
+      client.User.findMany({
         select: { id: true, name: true },
         omit: { age: true },
       });
@@ -28,7 +28,7 @@ function testSelectOmitConflict(client: GassmaClient) {
   assertThrows(
     () => {
       // @ts-expect-error select と omit の同時指定は型レベルで禁止
-      client.sheets.User.findFirst({
+      client.User.findFirst({
         select: { id: true },
         omit: { name: true },
       });
@@ -42,7 +42,7 @@ function testSkipNegative(client: GassmaClient) {
   // skip に負数を指定するとエラー
   assertThrows(
     () => {
-      client.sheets.User.findMany({
+      client.User.findMany({
         skip: -1,
       });
     },
@@ -56,7 +56,7 @@ function testLimitNegative(client: GassmaClient) {
   // updateMany の limit に負数を指定するとエラー
   assertThrows(
     () => {
-      client.sheets.User.updateMany({
+      client.User.updateMany({
         where: { id: 1 },
         data: { name: "test" },
         limit: -1,
@@ -69,7 +69,7 @@ function testLimitNegative(client: GassmaClient) {
   // deleteMany の limit に負数を指定するとエラー
   assertThrows(
     () => {
-      client.sheets.User.deleteMany({
+      client.User.deleteMany({
         where: { id: 999 },
         limit: -1,
       });

@@ -14,7 +14,7 @@ function testCreateMany() {
 }
 
 function testCreateManyBasic(client: GassmaClient) {
-  const result = client.sheets.Tag.createMany({
+  const result = client.Tag.createMany({
     data: [
       { id: 901, name: "TestTag1" },
       { id: 902, name: "TestTag2" },
@@ -34,7 +34,7 @@ function testCreateManyBasic(client: GassmaClient) {
 }
 
 function testCreateManyAndReturnBasic(client: GassmaClient) {
-  const result = client.sheets.Tag.createManyAndReturn({
+  const result = client.Tag.createManyAndReturn({
     data: [
       { id: 911, name: "ReturnTag1" },
       { id: 912, name: "ReturnTag2" },

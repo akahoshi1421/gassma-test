@@ -16,7 +16,7 @@ function testCreateManyAndReturnOptions() {
 }
 
 function testCreateManyAndReturnSelect(client: GassmaClient) {
-  const result = client.sheets.Tag.createManyAndReturn({
+  const result = client.Tag.createManyAndReturn({
     data: [
       { id: 921, name: "SelectTag1" },
       { id: 922, name: "SelectTag2" },
@@ -37,7 +37,7 @@ function testCreateManyAndReturnSelect(client: GassmaClient) {
 }
 
 function testCreateManyAndReturnOmit(client: GassmaClient) {
-  const result = client.sheets.Tag.createManyAndReturn({
+  const result = client.Tag.createManyAndReturn({
     data: [
       { id: 931, name: "OmitTag1" },
       { id: 932, name: "OmitTag2" },
@@ -59,7 +59,7 @@ function testCreateManyAndReturnOmit(client: GassmaClient) {
 }
 
 function testCreateManyAndReturnInclude(client: GassmaClient) {
-  const result = client.sheets.Post.createManyAndReturn({
+  const result = client.Post.createManyAndReturn({
     data: [
       {
         id: 941,

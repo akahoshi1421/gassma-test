@@ -21,19 +21,19 @@ function testFindMany() {
 }
 
 function testFindManyBasic(client: GassmaClient) {
-  const users = client.sheets.User.findMany({});
+  const users = client.User.findMany({});
   assertEquals(users.length, 50, "findMany basic count");
 }
 
 function testFindManyWhere(client: GassmaClient) {
-  const admins = client.sheets.User.findMany({
+  const admins = client.User.findMany({
     where: { role: "ADMIN" },
   });
   admins.forEach((user) => {
     assertEquals(user.role, "ADMIN", "findMany where role");
   });
 
-  const user1 = client.sheets.User.findMany({
+  const user1 = client.User.findMany({
     where: { id: 1 },
   });
   assertEquals(user1.length, 1, "findMany where id count");
@@ -41,7 +41,7 @@ function testFindManyWhere(client: GassmaClient) {
 }
 
 function testFindManyWhereAnd(client: GassmaClient) {
-  const result = client.sheets.User.findMany({
+  const result = client.User.findMany({
     where: {
       AND: [{ role: "USER" }, { isActive: true }],
     },
@@ -53,7 +53,7 @@ function testFindManyWhereAnd(client: GassmaClient) {
 }
 
 function testFindManyWhereOr(client: GassmaClient) {
-  const result = client.sheets.User.findMany({
+  const result = client.User.findMany({
     where: {
       OR: [{ role: "ADMIN" }, { role: "MODERATOR" }],
     },
@@ -66,7 +66,7 @@ function testFindManyWhereOr(client: GassmaClient) {
 }
 
 function testFindManyWhereNot(client: GassmaClient) {
-  const result = client.sheets.User.findMany({
+  const result = client.User.findMany({
     where: {
       NOT: { role: "ADMIN" },
     },
@@ -79,7 +79,7 @@ function testFindManyWhereNot(client: GassmaClient) {
 }
 
 function testFindManyWhereFilter(client: GassmaClient) {
-  const result = client.sheets.User.findMany({
+  const result = client.User.findMany({
     where: {
       age: { gte: 50 },
     },
@@ -90,7 +90,7 @@ function testFindManyWhereFilter(client: GassmaClient) {
     }
   });
 
-  const containsResult = client.sheets.User.findMany({
+  const containsResult = client.User.findMany({
     where: {
       name: { contains: "Smith" },
     },
@@ -101,7 +101,7 @@ function testFindManyWhereFilter(client: GassmaClient) {
     }
   });
 
-  const inResult = client.sheets.User.findMany({
+  const inResult = client.User.findMany({
     where: {
       role: { in: ["ADMIN", "MODERATOR"] },
     },
@@ -114,34 +114,34 @@ function testFindManyWhereFilter(client: GassmaClient) {
 }
 
 function testFindManyOrderBy(client: GassmaClient) {
-  const result = client.sheets.User.findMany({
+  const result = client.User.findMany({
     orderBy: { id: "asc" },
   });
   assertEquals(result[0].id, 1, "findMany orderBy asc first");
   assertEquals(result[result.length - 1].id, 50, "findMany orderBy asc last");
 
-  const descResult = client.sheets.User.findMany({
+  const descResult = client.User.findMany({
     orderBy: { id: "desc" },
   });
   assertEquals(descResult[0].id, 50, "findMany orderBy desc first");
 }
 
 function testFindManyTakeSkip(client: GassmaClient) {
-  const result = client.sheets.User.findMany({
+  const result = client.User.findMany({
     take: 5,
     orderBy: { id: "asc" },
   });
   assertEquals(result.length, 5, "findMany take count");
   assertEquals(result[0].id, 1, "findMany take first id");
 
-  const skipResult = client.sheets.User.findMany({
+  const skipResult = client.User.findMany({
     skip: 45,
     orderBy: { id: "asc" },
   });
   assertEquals(skipResult.length, 5, "findMany skip count");
   assertEquals(skipResult[0].id, 46, "findMany skip first id");
 
-  const takeSkipResult = client.sheets.User.findMany({
+  const takeSkipResult = client.User.findMany({
     take: 3,
     skip: 10,
     orderBy: { id: "asc" },
@@ -151,7 +151,7 @@ function testFindManyTakeSkip(client: GassmaClient) {
 }
 
 function testFindManySelect(client: GassmaClient) {
-  const result = client.sheets.User.findMany({
+  const result = client.User.findMany({
     where: { id: 1 },
     select: { id: true, name: true },
   });
@@ -160,7 +160,7 @@ function testFindManySelect(client: GassmaClient) {
 }
 
 function testFindManyOmit(client: GassmaClient) {
-  const result = client.sheets.User.findMany({
+  const result = client.User.findMany({
     where: { id: 1 },
     omit: { createdAt: true },
   });
@@ -171,7 +171,7 @@ function testFindManyOmit(client: GassmaClient) {
 }
 
 function testFindManyDistinct(client: GassmaClient) {
-  const result = client.sheets.User.findMany({
+  const result = client.User.findMany({
     distinct: "role",
   });
   const roles = result.map((u) => u.role);

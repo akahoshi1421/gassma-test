@@ -14,7 +14,7 @@ function testMapFindFirst() {
   // @map("total_amount") により、コード上は totalAmount でアクセスできる
   const client = new GassmaClient();
 
-  const order = client.sheets.Order.findFirst({ where: { id: 1 } });
+  const order = client.Order.findFirst({ where: { id: 1 } });
   if (!order) throw new Error("map findFirst: got null");
 
   const keys = Object.keys(order);
@@ -30,7 +30,7 @@ function testMapFindFirst() {
 function testMapFindMany() {
   const client = new GassmaClient();
 
-  const orders = client.sheets.Order.findMany({ where: { id: { in: [1, 2] } } });
+  const orders = client.Order.findMany({ where: { id: { in: [1, 2] } } });
   assertEquals(orders.length, 2, "map findMany: count");
 
   assertEquals(orders[0].totalAmount, 39478, "map findMany: first totalAmount");
@@ -41,7 +41,7 @@ function testMapWhere() {
   // totalAmount（コード名）で where 検索できる
   const client = new GassmaClient();
 
-  const orders = client.sheets.Order.findMany({
+  const orders = client.Order.findMany({
     where: { totalAmount: 39478 },
   });
   assertEquals(orders.length, 1, "map where: count");
@@ -52,7 +52,7 @@ function testMapSelect() {
   // select でも totalAmount（コード名）で指定できる
   const client = new GassmaClient();
 
-  const order = client.sheets.Order.findFirst({
+  const order = client.Order.findFirst({
     where: { id: 1 },
     select: { id: true, totalAmount: true },
   });

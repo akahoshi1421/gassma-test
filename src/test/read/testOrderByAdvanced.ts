@@ -13,7 +13,7 @@ function testOrderByAdvanced() {
 }
 
 function testNullsFirst(client: GassmaClient) {
-  const users = client.sheets.User.findMany({
+  const users = client.User.findMany({
     orderBy: { age: { sort: "asc", nulls: "first" } },
   });
   // null の age が先頭にくるはず
@@ -38,7 +38,7 @@ function testNullsFirst(client: GassmaClient) {
 }
 
 function testNullsLast(client: GassmaClient) {
-  const users = client.sheets.User.findMany({
+  const users = client.User.findMany({
     orderBy: { age: { sort: "asc", nulls: "last" } },
   });
   if (users.length === 0) throw new Error("nulls last: no results");
@@ -61,7 +61,7 @@ function testNullsLast(client: GassmaClient) {
 
 function testRelationOrderBy(client: GassmaClient) {
   // Post を author の name でソート（manyToOne リレーションソート）
-  const posts = client.sheets.Post.findMany({
+  const posts = client.Post.findMany({
     orderBy: { author: { name: "asc" } },
     take: 10,
   });
@@ -71,7 +71,7 @@ function testRelationOrderBy(client: GassmaClient) {
 
 function testCountOrderBy(client: GassmaClient) {
   // User を posts の _count でソート
-  const users = client.sheets.User.findMany({
+  const users = client.User.findMany({
     orderBy: { posts: { _count: "desc" } },
     take: 5,
   });

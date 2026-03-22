@@ -15,7 +15,7 @@ function testFilterConditions() {
 }
 
 function testNot(client: GassmaClient) {
-  const users = client.sheets.User.findMany({
+  const users = client.User.findMany({
     where: { role: { not: "ADMIN" } },
   });
   users.forEach((user) => {
@@ -29,7 +29,7 @@ function testNot(client: GassmaClient) {
 }
 
 function testNotIn(client: GassmaClient) {
-  const users = client.sheets.User.findMany({
+  const users = client.User.findMany({
     where: { role: { notIn: ["ADMIN", "MODERATOR"] } },
   });
   users.forEach((user) => {
@@ -43,7 +43,7 @@ function testNotIn(client: GassmaClient) {
 }
 
 function testStartsWith(client: GassmaClient) {
-  const users = client.sheets.User.findMany({
+  const users = client.User.findMany({
     where: { email: { startsWith: "user1" } },
   });
   users.forEach((user) => {
@@ -57,7 +57,7 @@ function testStartsWith(client: GassmaClient) {
 }
 
 function testEndsWith(client: GassmaClient) {
-  const users = client.sheets.User.findMany({
+  const users = client.User.findMany({
     where: { email: { endsWith: "@gmail.com" } },
   });
   users.forEach((user) => {
@@ -72,7 +72,7 @@ function testEndsWith(client: GassmaClient) {
 
 function testModeInsensitive(client: GassmaClient) {
   // "chris jackson" で検索 → "Chris Jackson" がヒットするはず
-  const users = client.sheets.User.findMany({
+  const users = client.User.findMany({
     where: {
       name: { equals: "chris jackson", mode: "insensitive" },
     },
@@ -88,7 +88,7 @@ function testModeInsensitive(client: GassmaClient) {
 }
 
 function testModeInsensitiveContains(client: GassmaClient) {
-  const users = client.sheets.User.findMany({
+  const users = client.User.findMany({
     where: {
       name: { contains: "smith", mode: "insensitive" },
     },

@@ -25,7 +25,7 @@ function testOnDelete() {
 }
 
 function testOnDeleteCascadeUserProfile(client: GassmaClient) {
-  client.sheets.User.create({
+  client.User.create({
     data: {
       id: 951,
       email: "cascade-test@test.com",
@@ -42,7 +42,7 @@ function testOnDeleteCascadeUserProfile(client: GassmaClient) {
   const profileBefore = getSheetSnapshot("Profile");
   profileBefore.assertRowExists({ userId: 951 });
 
-  client.sheets.User.delete({ where: { id: 951 } });
+  client.User.delete({ where: { id: 951 } });
 
   const userSnapshot = getSheetSnapshot("User");
   userSnapshot.assertRowNotExists({ id: 951 });
@@ -55,7 +55,7 @@ function testOnDeleteCascadeUserProfile(client: GassmaClient) {
 }
 
 function testOnDeleteCascadePostComments(client: GassmaClient) {
-  client.sheets.Post.create({
+  client.Post.create({
     data: {
       id: 951,
       title: "cascade test post",
@@ -76,7 +76,7 @@ function testOnDeleteCascadePostComments(client: GassmaClient) {
   commentBefore.assertRowExists({ id: 951 });
   commentBefore.assertRowExists({ id: 952 });
 
-  client.sheets.Post.delete({ where: { id: 951 } });
+  client.Post.delete({ where: { id: 951 } });
 
   const postSnapshot = getSheetSnapshot("Post");
   postSnapshot.assertRowNotExists({ id: 951 });
@@ -90,7 +90,7 @@ function testOnDeleteCascadePostComments(client: GassmaClient) {
 }
 
 function testOnDeleteCascadeOrderItems(client: GassmaClient) {
-  client.sheets.Order.create({
+  client.Order.create({
     data: {
       id: 951,
       userId: 1,
@@ -107,7 +107,7 @@ function testOnDeleteCascadeOrderItems(client: GassmaClient) {
     },
   });
 
-  client.sheets.Order.delete({ where: { id: 951 } });
+  client.Order.delete({ where: { id: 951 } });
 
   const orderSnapshot = getSheetSnapshot("Order");
   orderSnapshot.assertRowNotExists({ id: 951 });
@@ -120,12 +120,12 @@ function testOnDeleteCascadeOrderItems(client: GassmaClient) {
 }
 
 function testOnDeleteSetNullCategoryPost(client: GassmaClient) {
-  const postsBefore = client.sheets.Post.findMany({
+  const postsBefore = client.Post.findMany({
     where: { categoryId: 1 },
     select: { id: true },
   });
 
-  client.sheets.Category.delete({ where: { id: 1 } });
+  client.Category.delete({ where: { id: 1 } });
 
   const categorySnapshot = getSheetSnapshot("Category");
   categorySnapshot.assertRowNotExists({ id: 1 });
@@ -143,12 +143,12 @@ function testOnDeleteSetNullCategoryPost(client: GassmaClient) {
 }
 
 function testOnDeleteSetNullSelfReferencing(client: GassmaClient) {
-  const childrenBefore = client.sheets.Category.findMany({
+  const childrenBefore = client.Category.findMany({
     where: { parentId: 1 },
     select: { id: true },
   });
 
-  client.sheets.Category.delete({ where: { id: 1 } });
+  client.Category.delete({ where: { id: 1 } });
 
   const snapshot = getSheetSnapshot("Category");
   snapshot.assertRowNotExists({ id: 1 });
@@ -166,7 +166,7 @@ function testOnDeleteSetNullSelfReferencing(client: GassmaClient) {
 function testOnDeleteRestrict(client: GassmaClient) {
   let caught = false;
   try {
-    client.sheets.User.delete({ where: { id: 8 } });
+    client.User.delete({ where: { id: 8 } });
   } catch (e) {
     caught = true;
   }
@@ -180,7 +180,7 @@ function testOnDeleteRestrict(client: GassmaClient) {
 function testOnDeleteRestrictProduct(client: GassmaClient) {
   let caught = false;
   try {
-    client.sheets.Product.delete({ where: { id: 1 } });
+    client.Product.delete({ where: { id: 1 } });
   } catch (e) {
     caught = true;
   }

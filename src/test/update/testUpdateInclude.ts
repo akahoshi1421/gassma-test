@@ -13,7 +13,7 @@ function testUpdateInclude() {
 }
 
 function testUpdateIncludeManyToOne(client: GassmaClient) {
-  const result = client.sheets.Post.update({
+  const result = client.Post.update({
     where: { id: 1 },
     data: { title: "UpdatedWithInclude" },
     include: { author: true },
@@ -31,7 +31,7 @@ function testUpdateIncludeManyToOne(client: GassmaClient) {
 }
 
 function testUpdateIncludeWithOmit(client: GassmaClient) {
-  const result = client.sheets.Post.update({
+  const result = client.Post.update({
     where: { id: 1 },
     data: { title: "UpdateIncludeOmit" },
     include: { author: true },

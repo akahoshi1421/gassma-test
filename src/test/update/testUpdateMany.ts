@@ -16,7 +16,7 @@ function testUpdateMany() {
 }
 
 function testUpdateManyBasic(client: GassmaClient) {
-  const result = client.sheets.Tag.updateMany({
+  const result = client.Tag.updateMany({
     data: { name: "AllUpdated" },
   });
 
@@ -30,7 +30,7 @@ function testUpdateManyBasic(client: GassmaClient) {
 }
 
 function testUpdateManyWhere(client: GassmaClient) {
-  const result = client.sheets.Tag.updateMany({
+  const result = client.Tag.updateMany({
     where: { id: { lte: 5 } },
     data: { name: "First5" },
   });
@@ -46,7 +46,7 @@ function testUpdateManyWhere(client: GassmaClient) {
 }
 
 function testUpdateManyLimit(client: GassmaClient) {
-  const result = client.sheets.Tag.updateMany({
+  const result = client.Tag.updateMany({
     where: { id: { lte: 10 } },
     data: { name: "Limited" },
     limit: 3,
@@ -62,7 +62,7 @@ function testUpdateManyLimit(client: GassmaClient) {
 }
 
 function testUpdateManyAndReturn(client: GassmaClient) {
-  const results = client.sheets.Tag.updateManyAndReturn({
+  const results = client.Tag.updateManyAndReturn({
     where: { id: { lte: 3 } },
     data: { name: "Returned" },
   });

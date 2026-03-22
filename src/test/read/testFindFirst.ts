@@ -14,14 +14,14 @@ function testFindFirst() {
 }
 
 function testFindFirstBasic(client: GassmaClient) {
-  const user = client.sheets.User.findFirst({});
+  const user = client.User.findFirst({});
   if (user === null) {
     throw new Error("findFirst basic: expected a user but got null");
   }
 }
 
 function testFindFirstWhere(client: GassmaClient) {
-  const user = client.sheets.User.findFirst({
+  const user = client.User.findFirst({
     where: { id: 1 },
   });
   if (user === null) throw new Error("findFirst where: got null");
@@ -31,14 +31,14 @@ function testFindFirstWhere(client: GassmaClient) {
 }
 
 function testFindFirstNull(client: GassmaClient) {
-  const user = client.sheets.User.findFirst({
+  const user = client.User.findFirst({
     where: { id: 99999 },
   });
   assertEquals(user, null, "findFirst not found");
 }
 
 function testFindFirstOrThrowFound(client: GassmaClient) {
-  const user = client.sheets.User.findFirstOrThrow({
+  const user = client.User.findFirstOrThrow({
     where: { id: 1 },
   });
   assertEquals(user.id, 1, "findFirstOrThrow found id");
@@ -47,7 +47,7 @@ function testFindFirstOrThrowFound(client: GassmaClient) {
 function testFindFirstOrThrowNotFound(client: GassmaClient) {
   let threw = false;
   try {
-    client.sheets.User.findFirstOrThrow({
+    client.User.findFirstOrThrow({
       where: { id: 99999 },
     });
   } catch (_e) {

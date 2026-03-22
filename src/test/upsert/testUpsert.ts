@@ -26,7 +26,7 @@ function testUpsert() {
 
 function testUpsertCreate(client: GassmaClient) {
   // 存在しない id → create が実行される
-  const result = client.sheets.Tag.upsert({
+  const result = client.Tag.upsert({
     where: { id: 999 },
     create: { id: 999, name: "UpsertNew" },
     update: { name: "UpsertExisting" },
@@ -44,7 +44,7 @@ function testUpsertCreate(client: GassmaClient) {
 
 function testUpsertUpdate(client: GassmaClient) {
   // 存在する id → update が実行される
-  const result = client.sheets.Tag.upsert({
+  const result = client.Tag.upsert({
     where: { id: 1 },
     create: { id: 1, name: "ShouldNotCreate" },
     update: { name: "UpsertUpdated" },
@@ -61,7 +61,7 @@ function testUpsertUpdate(client: GassmaClient) {
 
 function testUpsertReturnValue(client: GassmaClient) {
   // create パス
-  const createResult = client.sheets.Tag.upsert({
+  const createResult = client.Tag.upsert({
     where: { id: 998 },
     create: { id: 998, name: "ReturnCreate" },
     update: { name: "ReturnUpdate" },
@@ -71,7 +71,7 @@ function testUpsertReturnValue(client: GassmaClient) {
   resetSheet("Tag", tagData);
 
   // update パス
-  const updateResult = client.sheets.Tag.upsert({
+  const updateResult = client.Tag.upsert({
     where: { id: 1 },
     create: { id: 1, name: "ShouldNotCreate" },
     update: { name: "ReturnUpdate" },
@@ -82,7 +82,7 @@ function testUpsertReturnValue(client: GassmaClient) {
 }
 
 function testUpsertSelect(client: GassmaClient) {
-  const result = client.sheets.Tag.upsert({
+  const result = client.Tag.upsert({
     where: { id: 1 },
     create: { id: 1, name: "SelectCreate" },
     update: { name: "SelectUpdate" },
@@ -97,7 +97,7 @@ function testUpsertSelect(client: GassmaClient) {
 }
 
 function testUpsertOmit(client: GassmaClient) {
-  const result = client.sheets.Tag.upsert({
+  const result = client.Tag.upsert({
     where: { id: 1 },
     create: { id: 1, name: "OmitCreate" },
     update: { name: "OmitUpdate" },
@@ -117,10 +117,10 @@ function testUpsertOmit(client: GassmaClient) {
 
 function testUpsertNumberOperation(client: GassmaClient) {
   // update パスで NumberOperation が使える
-  const before = client.sheets.Tag.findFirst({ where: { id: 1 } });
+  const before = client.Tag.findFirst({ where: { id: 1 } });
   if (!before) throw new Error("upsert number: tag 1 not found");
 
-  client.sheets.Tag.upsert({
+  client.Tag.upsert({
     where: { id: 1 },
     create: { id: 1, name: "ShouldNotCreate" },
     update: { id: { increment: 1000 } },
@@ -134,7 +134,7 @@ function testUpsertNumberOperation(client: GassmaClient) {
 
 function testUpsertNestedCreate(client: GassmaClient) {
   // create パスで nested write（User + Profile）
-  client.sheets.User.upsert({
+  client.User.upsert({
     where: { id: 951 },
     create: {
       id: 951,
@@ -163,7 +163,7 @@ function testUpsertNestedCreate(client: GassmaClient) {
 
 function testUpsertNestedUpdate(client: GassmaClient) {
   // update パスで nested write（User の posts を nested create）
-  client.sheets.User.upsert({
+  client.User.upsert({
     where: { id: 1 },
     create: {
       id: 1,

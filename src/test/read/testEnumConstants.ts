@@ -21,7 +21,7 @@ function testEnumConstantInWhere() {
   // enum 定数を where 条件で使用できる
   const client = new GassmaClient();
 
-  const admins = client.sheets.User.findMany({
+  const admins = client.User.findMany({
     where: { role: Role.admin },
   });
 
@@ -38,7 +38,7 @@ function testEnumConstantInCreate() {
   // enum 定数を create で使用できる
   const client = new GassmaClient();
 
-  const result = client.sheets.User.create({
+  const result = client.User.create({
     data: {
       id: 9999,
       email: "enum-test@example.com",
@@ -52,7 +52,7 @@ function testEnumConstantInCreate() {
   assertEquals(result.role, "MODERATOR", "enum create: role should be MODERATOR");
 
   // クリーンアップ
-  client.sheets.User.deleteMany({ where: { id: 9999 } });
+  client.User.deleteMany({ where: { id: 9999 } });
 }
 
 function testEnumConstantType() {

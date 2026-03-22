@@ -11,7 +11,7 @@ function testGroupBy() {
 }
 
 function testGroupByBasic(client: GassmaClient) {
-  const result = client.sheets.User.groupBy({
+  const result = client.User.groupBy({
     by: "role",
   });
   if (result.length !== 3) {
@@ -24,7 +24,7 @@ function testGroupByBasic(client: GassmaClient) {
 }
 
 function testGroupByWithAggregate(client: GassmaClient) {
-  const result = client.sheets.Order.groupBy({
+  const result = client.Order.groupBy({
     by: "status",
     _count: { id: true },
     _sum: { totalAmount: true },
@@ -40,7 +40,7 @@ function testGroupByWithAggregate(client: GassmaClient) {
 }
 
 function testGroupByMultipleFields(client: GassmaClient) {
-  const result = client.sheets.Post.groupBy({
+  const result = client.Post.groupBy({
     by: ["published", "authorId"],
     _count: { id: true },
     take: 10,

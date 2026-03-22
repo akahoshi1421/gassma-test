@@ -18,7 +18,7 @@ function testGlobalOmitFindFirst() {
     omit: { User: { createdAt: true, age: true } },
   });
 
-  const user = client.sheets.User.findFirst({ where: { id: 1 } });
+  const user = client.User.findFirst({ where: { id: 1 } });
   if (!user) throw new Error("globalOmit findFirst: got null");
 
   const keys = Object.keys(user);
@@ -41,7 +41,7 @@ function testGlobalOmitFindMany() {
     omit: { User: { email: true } },
   });
 
-  const users = client.sheets.User.findMany({ where: { id: 1 } });
+  const users = client.User.findMany({ where: { id: 1 } });
   assertEquals(users.length, 1, "globalOmit findMany count");
 
   const keys = Object.keys(users[0]);
@@ -61,13 +61,13 @@ function testGlobalOmitMultipleModels() {
     },
   });
 
-  const user = client.sheets.User.findFirst({ where: { id: 1 } });
+  const user = client.User.findFirst({ where: { id: 1 } });
   if (!user) throw new Error("globalOmit multi: user null");
   if (Object.keys(user).indexOf("createdAt") !== -1) {
     throw new Error("globalOmit multi: User.createdAt should be omitted");
   }
 
-  const post = client.sheets.Post.findFirst({ where: { id: 1 } });
+  const post = client.Post.findFirst({ where: { id: 1 } });
   if (!post) throw new Error("globalOmit multi: post null");
   const postKeys = Object.keys(post);
   if (postKeys.indexOf("content") !== -1) {
@@ -87,7 +87,7 @@ function testGlobalOmitOverrideBySelect() {
     omit: { User: { createdAt: true, age: true } },
   });
 
-  const user = client.sheets.User.findFirst({
+  const user = client.User.findFirst({
     where: { id: 1 },
     select: { id: true, createdAt: true },
   });
@@ -102,7 +102,7 @@ function testGlobalOmitOverrideByOmit() {
     omit: { User: { createdAt: true } },
   });
 
-  const user = client.sheets.User.findFirst({
+  const user = client.User.findFirst({
     where: { id: 1 },
     omit: { email: true },
   });
@@ -127,7 +127,7 @@ function testGlobalOmitFalseOverride() {
   });
 
   // createdAt を false で解除、age はグローバルomitのまま
-  const user = client.sheets.User.findFirst({
+  const user = client.User.findFirst({
     where: { id: 1 },
     omit: { createdAt: false },
   });
@@ -145,7 +145,7 @@ function testGlobalOmitFalseOverride() {
   }
 
   // findMany でも同様
-  const users = client.sheets.User.findMany({
+  const users = client.User.findMany({
     where: { id: 1 },
     omit: { createdAt: false, age: false },
   });

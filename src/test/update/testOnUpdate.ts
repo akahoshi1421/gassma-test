@@ -31,7 +31,7 @@ function resetUserRelated() {
 
 function testOnUpdateCascadeUserProfile(client: GassmaClient) {
   // テスト用 User を作成（Order なし → Restrict に引っかからない）
-  client.sheets.User.create({
+  client.User.create({
     data: {
       id: 951,
       email: "cascade-update@test.com",
@@ -45,7 +45,7 @@ function testOnUpdateCascadeUserProfile(client: GassmaClient) {
     },
   });
 
-  client.sheets.User.update({
+  client.User.update({
     where: { id: 951 },
     data: { id: 961 },
   });
@@ -63,7 +63,7 @@ function testOnUpdateCascadeUserProfile(client: GassmaClient) {
 
 function testOnUpdateCascadeUserPosts(client: GassmaClient) {
   // テスト用 User + Post を作成
-  client.sheets.User.create({
+  client.User.create({
     data: {
       id: 951,
       email: "cascade-posts@test.com",
@@ -83,7 +83,7 @@ function testOnUpdateCascadeUserPosts(client: GassmaClient) {
     },
   });
 
-  client.sheets.User.update({
+  client.User.update({
     where: { id: 951 },
     data: { id: 961 },
   });
@@ -99,12 +99,12 @@ function testOnUpdateCascadeUserPosts(client: GassmaClient) {
 
 function testOnUpdateSetNullCategoryPosts(client: GassmaClient) {
   // Category.posts は onUpdate: SetNull
-  const postsBefore = client.sheets.Post.findMany({
+  const postsBefore = client.Post.findMany({
     where: { categoryId: 1 },
     select: { id: true },
   });
 
-  client.sheets.Category.update({
+  client.Category.update({
     where: { id: 1 },
     data: { id: 901 },
   });
@@ -127,7 +127,7 @@ function testOnUpdateSetNullCategoryPosts(client: GassmaClient) {
 
 function testOnUpdateNoActionComments(client: GassmaClient) {
   // テスト用 User + Comment を作成
-  client.sheets.User.create({
+  client.User.create({
     data: {
       id: 951,
       email: "noaction@test.com",
@@ -146,7 +146,7 @@ function testOnUpdateNoActionComments(client: GassmaClient) {
     },
   });
 
-  client.sheets.User.update({
+  client.User.update({
     where: { id: 951 },
     data: { id: 961 },
   });
@@ -164,7 +164,7 @@ function testOnUpdateRestrict(client: GassmaClient) {
   // User id=8 は Order を持つ → Restrict でエラー
   let caught = false;
   try {
-    client.sheets.User.update({
+    client.User.update({
       where: { id: 8 },
       data: { id: 908 },
     });

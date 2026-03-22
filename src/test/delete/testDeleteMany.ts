@@ -16,7 +16,7 @@ function testDeleteMany() {
 }
 
 function testDeleteManyBasic(client: GassmaClient) {
-  const result = client.sheets.Tag.deleteMany({
+  const result = client.Tag.deleteMany({
     where: { id: { in: [1, 2, 3] } },
   });
 
@@ -34,11 +34,11 @@ function testDeleteManyBasic(client: GassmaClient) {
 }
 
 function testDeleteManyWhere(client: GassmaClient) {
-  const beforeCount = client.sheets.Comment.count({
+  const beforeCount = client.Comment.count({
     where: { authorId: 1 },
   });
 
-  const result = client.sheets.Comment.deleteMany({
+  const result = client.Comment.deleteMany({
     where: { authorId: 1 },
   });
 
@@ -53,7 +53,7 @@ function testDeleteManyWhere(client: GassmaClient) {
 }
 
 function testDeleteManyLimit(client: GassmaClient) {
-  const result = client.sheets.Tag.deleteMany({
+  const result = client.Tag.deleteMany({
     where: { id: { gte: 1 } },
     limit: 5,
   });

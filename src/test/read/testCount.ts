@@ -11,25 +11,25 @@ function testCount() {
 }
 
 function testCountBasic(client: GassmaClient) {
-  const count = client.sheets.User.count({});
+  const count = client.User.count({});
   assertEquals(count, 50, "count basic User");
 
-  const postCount = client.sheets.Post.count({});
+  const postCount = client.Post.count({});
   assertEquals(postCount, 200, "count basic Post");
 
-  const commentCount = client.sheets.Comment.count({});
+  const commentCount = client.Comment.count({});
   assertEquals(commentCount, 500, "count basic Comment");
 }
 
 function testCountWhere(client: GassmaClient) {
-  const adminCount = client.sheets.User.count({
+  const adminCount = client.User.count({
     where: { role: "ADMIN" },
   });
   if (adminCount <= 0) {
     throw new Error("count where: expected admin count > 0");
   }
 
-  const publishedCount = client.sheets.Post.count({
+  const publishedCount = client.Post.count({
     where: { published: true },
   });
   if (publishedCount <= 0) {

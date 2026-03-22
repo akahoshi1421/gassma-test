@@ -18,7 +18,7 @@ function testUpdate() {
 }
 
 function testUpdateBasic(client: GassmaClient) {
-  client.sheets.Tag.update({
+  client.Tag.update({
     where: { id: 1 },
     data: { name: "UpdatedJS" },
   });
@@ -30,7 +30,7 @@ function testUpdateBasic(client: GassmaClient) {
 }
 
 function testUpdateReturnValue(client: GassmaClient) {
-  const result = client.sheets.Tag.update({
+  const result = client.Tag.update({
     where: { id: 1 },
     data: { name: "ReturnTest" },
   });
@@ -45,7 +45,7 @@ function testUpdateReturnValue(client: GassmaClient) {
 }
 
 function testUpdateNotFound(client: GassmaClient) {
-  const result = client.sheets.Tag.update({
+  const result = client.Tag.update({
     where: { id: 9999 },
     data: { name: "Ghost" },
   });
@@ -53,7 +53,7 @@ function testUpdateNotFound(client: GassmaClient) {
 }
 
 function testUpdateSelect(client: GassmaClient) {
-  const result = client.sheets.Tag.update({
+  const result = client.Tag.update({
     where: { id: 1 },
     data: { name: "SelectTest" },
     select: { id: true, name: true },
@@ -68,7 +68,7 @@ function testUpdateSelect(client: GassmaClient) {
 }
 
 function testUpdateOmit(client: GassmaClient) {
-  const result = client.sheets.Tag.update({
+  const result = client.Tag.update({
     where: { id: 1 },
     data: { name: "OmitTest" },
     omit: { name: true },
