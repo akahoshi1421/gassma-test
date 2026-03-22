@@ -364,7 +364,7 @@ export type GassmaSchemaItemFindData = {
   include?: GassmaSchemaItemInclude;
   cursor?: Partial<GassmaSchemaItemUse>;
   _count?: GassmaSchemaItemCountValue;
-} & ({ select?: GassmaSchemaItemSelect; omit?: never } | { select?: never; omit?: GassmaSchemaItemOmit });
+} & ({ select?: GassmaSchemaItemFindSelect; omit?: never } | { select?: never; omit?: GassmaSchemaItemOmit });
 
 export type GassmaSchemaItemFindFirstData = {
   where?: GassmaSchemaItemWhereUse;
@@ -372,7 +372,7 @@ export type GassmaSchemaItemFindFirstData = {
   include?: GassmaSchemaItemInclude;
   cursor?: Partial<GassmaSchemaItemUse>;
   _count?: GassmaSchemaItemCountValue;
-} & ({ select?: GassmaSchemaItemSelect; omit?: never } | { select?: never; omit?: GassmaSchemaItemOmit });
+} & ({ select?: GassmaSchemaItemFindSelect; omit?: never } | { select?: never; omit?: GassmaSchemaItemOmit });
 
 export type GassmaSchemaItemFindManyData = GassmaSchemaItemFindData;
 
@@ -434,6 +434,12 @@ export type GassmaSchemaItemOrderBy = {
 };
 
 export type GassmaSchemaItemSelect = {
+  "id"?: true;
+  "name"?: true;
+  "price"?: true;
+};
+
+export type GassmaSchemaItemFindSelect = {
   "id"?: true;
   "name"?: true;
   "price"?: true;

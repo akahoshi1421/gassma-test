@@ -2364,7 +2364,7 @@ export type GassmaGassmaPostFindData = {
   include?: GassmaGassmaPostInclude;
   cursor?: Partial<GassmaGassmaPostUse>;
   _count?: GassmaGassmaPostCountValue;
-} & ({ select?: GassmaGassmaPostSelect; omit?: never } | { select?: never; omit?: GassmaGassmaPostOmit });
+} & ({ select?: GassmaGassmaPostFindSelect; omit?: never } | { select?: never; omit?: GassmaGassmaPostOmit });
 
 export type GassmaGassmaCommentFindData = {
   where?: GassmaGassmaCommentWhereUse;
@@ -2375,7 +2375,7 @@ export type GassmaGassmaCommentFindData = {
   include?: GassmaGassmaCommentInclude;
   cursor?: Partial<GassmaGassmaCommentUse>;
   _count?: GassmaGassmaCommentCountValue;
-} & ({ select?: GassmaGassmaCommentSelect; omit?: never } | { select?: never; omit?: GassmaGassmaCommentOmit });
+} & ({ select?: GassmaGassmaCommentFindSelect; omit?: never } | { select?: never; omit?: GassmaGassmaCommentOmit });
 
 export type GassmaGassmaCategoryFindData = {
   where?: GassmaGassmaCategoryWhereUse;
@@ -2386,7 +2386,7 @@ export type GassmaGassmaCategoryFindData = {
   include?: GassmaGassmaCategoryInclude;
   cursor?: Partial<GassmaGassmaCategoryUse>;
   _count?: GassmaGassmaCategoryCountValue;
-} & ({ select?: GassmaGassmaCategorySelect; omit?: never } | { select?: never; omit?: GassmaGassmaCategoryOmit });
+} & ({ select?: GassmaGassmaCategoryFindSelect; omit?: never } | { select?: never; omit?: GassmaGassmaCategoryOmit });
 
 export type GassmaGassmaTagFindData = {
   where?: GassmaGassmaTagWhereUse;
@@ -2397,7 +2397,7 @@ export type GassmaGassmaTagFindData = {
   include?: GassmaGassmaTagInclude;
   cursor?: Partial<GassmaGassmaTagUse>;
   _count?: GassmaGassmaTagCountValue;
-} & ({ select?: GassmaGassmaTagSelect; omit?: never } | { select?: never; omit?: GassmaGassmaTagOmit });
+} & ({ select?: GassmaGassmaTagFindSelect; omit?: never } | { select?: never; omit?: GassmaGassmaTagOmit });
 
 export type GassmaGassmaProductFindData = {
   where?: GassmaGassmaProductWhereUse;
@@ -2408,7 +2408,7 @@ export type GassmaGassmaProductFindData = {
   include?: GassmaGassmaProductInclude;
   cursor?: Partial<GassmaGassmaProductUse>;
   _count?: GassmaGassmaProductCountValue;
-} & ({ select?: GassmaGassmaProductSelect; omit?: never } | { select?: never; omit?: GassmaGassmaProductOmit });
+} & ({ select?: GassmaGassmaProductFindSelect; omit?: never } | { select?: never; omit?: GassmaGassmaProductOmit });
 
 export type GassmaGassmaOrderFindData = {
   where?: GassmaGassmaOrderWhereUse;
@@ -2419,7 +2419,7 @@ export type GassmaGassmaOrderFindData = {
   include?: GassmaGassmaOrderInclude;
   cursor?: Partial<GassmaGassmaOrderUse>;
   _count?: GassmaGassmaOrderCountValue;
-} & ({ select?: GassmaGassmaOrderSelect; omit?: never } | { select?: never; omit?: GassmaGassmaOrderOmit });
+} & ({ select?: GassmaGassmaOrderFindSelect; omit?: never } | { select?: never; omit?: GassmaGassmaOrderOmit });
 
 export type GassmaGassmaOrderItemFindData = {
   where?: GassmaGassmaOrderItemWhereUse;
@@ -2430,7 +2430,7 @@ export type GassmaGassmaOrderItemFindData = {
   include?: GassmaGassmaOrderItemInclude;
   cursor?: Partial<GassmaGassmaOrderItemUse>;
   _count?: GassmaGassmaOrderItemCountValue;
-} & ({ select?: GassmaGassmaOrderItemSelect; omit?: never } | { select?: never; omit?: GassmaGassmaOrderItemOmit });
+} & ({ select?: GassmaGassmaOrderItemFindSelect; omit?: never } | { select?: never; omit?: GassmaGassmaOrderItemOmit });
 
 export type GassmaGassmaNotificationFindData = {
   where?: GassmaGassmaNotificationWhereUse;
@@ -2441,7 +2441,7 @@ export type GassmaGassmaNotificationFindData = {
   include?: GassmaGassmaNotificationInclude;
   cursor?: Partial<GassmaGassmaNotificationUse>;
   _count?: GassmaGassmaNotificationCountValue;
-} & ({ select?: GassmaGassmaNotificationSelect; omit?: never } | { select?: never; omit?: GassmaGassmaNotificationOmit });
+} & ({ select?: GassmaGassmaNotificationFindSelect; omit?: never } | { select?: never; omit?: GassmaGassmaNotificationOmit });
 
 export type GassmaGassmaUserFindData = {
   where?: GassmaGassmaUserWhereUse;
@@ -2452,7 +2452,7 @@ export type GassmaGassmaUserFindData = {
   include?: GassmaGassmaUserInclude;
   cursor?: Partial<GassmaGassmaUserUse>;
   _count?: GassmaGassmaUserCountValue;
-} & ({ select?: GassmaGassmaUserSelect; omit?: never } | { select?: never; omit?: GassmaGassmaUserOmit });
+} & ({ select?: GassmaGassmaUserFindSelect; omit?: never } | { select?: never; omit?: GassmaGassmaUserOmit });
 
 export type GassmaGassmaProfileFindData = {
   where?: GassmaGassmaProfileWhereUse;
@@ -2463,7 +2463,7 @@ export type GassmaGassmaProfileFindData = {
   include?: GassmaGassmaProfileInclude;
   cursor?: Partial<GassmaGassmaProfileUse>;
   _count?: GassmaGassmaProfileCountValue;
-} & ({ select?: GassmaGassmaProfileSelect; omit?: never } | { select?: never; omit?: GassmaGassmaProfileOmit });
+} & ({ select?: GassmaGassmaProfileFindSelect; omit?: never } | { select?: never; omit?: GassmaGassmaProfileOmit });
 
 export type GassmaGassmaPostFindFirstData = {
   where?: GassmaGassmaPostWhereUse;
@@ -2471,7 +2471,7 @@ export type GassmaGassmaPostFindFirstData = {
   include?: GassmaGassmaPostInclude;
   cursor?: Partial<GassmaGassmaPostUse>;
   _count?: GassmaGassmaPostCountValue;
-} & ({ select?: GassmaGassmaPostSelect; omit?: never } | { select?: never; omit?: GassmaGassmaPostOmit });
+} & ({ select?: GassmaGassmaPostFindSelect; omit?: never } | { select?: never; omit?: GassmaGassmaPostOmit });
 
 export type GassmaGassmaCommentFindFirstData = {
   where?: GassmaGassmaCommentWhereUse;
@@ -2479,7 +2479,7 @@ export type GassmaGassmaCommentFindFirstData = {
   include?: GassmaGassmaCommentInclude;
   cursor?: Partial<GassmaGassmaCommentUse>;
   _count?: GassmaGassmaCommentCountValue;
-} & ({ select?: GassmaGassmaCommentSelect; omit?: never } | { select?: never; omit?: GassmaGassmaCommentOmit });
+} & ({ select?: GassmaGassmaCommentFindSelect; omit?: never } | { select?: never; omit?: GassmaGassmaCommentOmit });
 
 export type GassmaGassmaCategoryFindFirstData = {
   where?: GassmaGassmaCategoryWhereUse;
@@ -2487,7 +2487,7 @@ export type GassmaGassmaCategoryFindFirstData = {
   include?: GassmaGassmaCategoryInclude;
   cursor?: Partial<GassmaGassmaCategoryUse>;
   _count?: GassmaGassmaCategoryCountValue;
-} & ({ select?: GassmaGassmaCategorySelect; omit?: never } | { select?: never; omit?: GassmaGassmaCategoryOmit });
+} & ({ select?: GassmaGassmaCategoryFindSelect; omit?: never } | { select?: never; omit?: GassmaGassmaCategoryOmit });
 
 export type GassmaGassmaTagFindFirstData = {
   where?: GassmaGassmaTagWhereUse;
@@ -2495,7 +2495,7 @@ export type GassmaGassmaTagFindFirstData = {
   include?: GassmaGassmaTagInclude;
   cursor?: Partial<GassmaGassmaTagUse>;
   _count?: GassmaGassmaTagCountValue;
-} & ({ select?: GassmaGassmaTagSelect; omit?: never } | { select?: never; omit?: GassmaGassmaTagOmit });
+} & ({ select?: GassmaGassmaTagFindSelect; omit?: never } | { select?: never; omit?: GassmaGassmaTagOmit });
 
 export type GassmaGassmaProductFindFirstData = {
   where?: GassmaGassmaProductWhereUse;
@@ -2503,7 +2503,7 @@ export type GassmaGassmaProductFindFirstData = {
   include?: GassmaGassmaProductInclude;
   cursor?: Partial<GassmaGassmaProductUse>;
   _count?: GassmaGassmaProductCountValue;
-} & ({ select?: GassmaGassmaProductSelect; omit?: never } | { select?: never; omit?: GassmaGassmaProductOmit });
+} & ({ select?: GassmaGassmaProductFindSelect; omit?: never } | { select?: never; omit?: GassmaGassmaProductOmit });
 
 export type GassmaGassmaOrderFindFirstData = {
   where?: GassmaGassmaOrderWhereUse;
@@ -2511,7 +2511,7 @@ export type GassmaGassmaOrderFindFirstData = {
   include?: GassmaGassmaOrderInclude;
   cursor?: Partial<GassmaGassmaOrderUse>;
   _count?: GassmaGassmaOrderCountValue;
-} & ({ select?: GassmaGassmaOrderSelect; omit?: never } | { select?: never; omit?: GassmaGassmaOrderOmit });
+} & ({ select?: GassmaGassmaOrderFindSelect; omit?: never } | { select?: never; omit?: GassmaGassmaOrderOmit });
 
 export type GassmaGassmaOrderItemFindFirstData = {
   where?: GassmaGassmaOrderItemWhereUse;
@@ -2519,7 +2519,7 @@ export type GassmaGassmaOrderItemFindFirstData = {
   include?: GassmaGassmaOrderItemInclude;
   cursor?: Partial<GassmaGassmaOrderItemUse>;
   _count?: GassmaGassmaOrderItemCountValue;
-} & ({ select?: GassmaGassmaOrderItemSelect; omit?: never } | { select?: never; omit?: GassmaGassmaOrderItemOmit });
+} & ({ select?: GassmaGassmaOrderItemFindSelect; omit?: never } | { select?: never; omit?: GassmaGassmaOrderItemOmit });
 
 export type GassmaGassmaNotificationFindFirstData = {
   where?: GassmaGassmaNotificationWhereUse;
@@ -2527,7 +2527,7 @@ export type GassmaGassmaNotificationFindFirstData = {
   include?: GassmaGassmaNotificationInclude;
   cursor?: Partial<GassmaGassmaNotificationUse>;
   _count?: GassmaGassmaNotificationCountValue;
-} & ({ select?: GassmaGassmaNotificationSelect; omit?: never } | { select?: never; omit?: GassmaGassmaNotificationOmit });
+} & ({ select?: GassmaGassmaNotificationFindSelect; omit?: never } | { select?: never; omit?: GassmaGassmaNotificationOmit });
 
 export type GassmaGassmaUserFindFirstData = {
   where?: GassmaGassmaUserWhereUse;
@@ -2535,7 +2535,7 @@ export type GassmaGassmaUserFindFirstData = {
   include?: GassmaGassmaUserInclude;
   cursor?: Partial<GassmaGassmaUserUse>;
   _count?: GassmaGassmaUserCountValue;
-} & ({ select?: GassmaGassmaUserSelect; omit?: never } | { select?: never; omit?: GassmaGassmaUserOmit });
+} & ({ select?: GassmaGassmaUserFindSelect; omit?: never } | { select?: never; omit?: GassmaGassmaUserOmit });
 
 export type GassmaGassmaProfileFindFirstData = {
   where?: GassmaGassmaProfileWhereUse;
@@ -2543,7 +2543,7 @@ export type GassmaGassmaProfileFindFirstData = {
   include?: GassmaGassmaProfileInclude;
   cursor?: Partial<GassmaGassmaProfileUse>;
   _count?: GassmaGassmaProfileCountValue;
-} & ({ select?: GassmaGassmaProfileSelect; omit?: never } | { select?: never; omit?: GassmaGassmaProfileOmit });
+} & ({ select?: GassmaGassmaProfileFindSelect; omit?: never } | { select?: never; omit?: GassmaGassmaProfileOmit });
 
 export type GassmaGassmaPostFindManyData = GassmaGassmaPostFindData;
 
@@ -3383,6 +3383,24 @@ export type GassmaGassmaPostSelect = {
   "updatedAt"?: true;
 };
 
+export type GassmaGassmaPostFindSelect = {
+  "id"?: true;
+  "title"?: true;
+  "content"?: true;
+  "published"?: true;
+  "viewCount"?: true;
+  "rating"?: true;
+  "authorId"?: true;
+  "categoryId"?: true;
+  "createdAt"?: true;
+  "updatedAt"?: true;
+  "author"?: true | { select?: GassmaGassmaUserSelect; omit?: GassmaGassmaUserOmit; where?: GassmaGassmaUserWhereUse; orderBy?: GassmaGassmaUserOrderBy; take?: number; skip?: number; include?: GassmaGassmaUserInclude; _count?: GassmaGassmaUserCountValue };
+  "category"?: true | { select?: GassmaGassmaCategorySelect; omit?: GassmaGassmaCategoryOmit; where?: GassmaGassmaCategoryWhereUse; orderBy?: GassmaGassmaCategoryOrderBy; take?: number; skip?: number; include?: GassmaGassmaCategoryInclude; _count?: GassmaGassmaCategoryCountValue };
+  "comments"?: true | { select?: GassmaGassmaCommentSelect; omit?: GassmaGassmaCommentOmit; where?: GassmaGassmaCommentWhereUse; orderBy?: GassmaGassmaCommentOrderBy; take?: number; skip?: number; include?: GassmaGassmaCommentInclude; _count?: GassmaGassmaCommentCountValue };
+  "tags"?: true | { select?: GassmaGassmaTagSelect; omit?: GassmaGassmaTagOmit; where?: GassmaGassmaTagWhereUse; orderBy?: GassmaGassmaTagOrderBy; take?: number; skip?: number; include?: GassmaGassmaTagInclude; _count?: GassmaGassmaTagCountValue };
+  "_count"?: GassmaGassmaPostCountValue;
+};
+
 export type GassmaGassmaCommentSelect = {
   "id"?: true;
   "text"?: true;
@@ -3391,15 +3409,43 @@ export type GassmaGassmaCommentSelect = {
   "createdAt"?: true;
 };
 
+export type GassmaGassmaCommentFindSelect = {
+  "id"?: true;
+  "text"?: true;
+  "authorId"?: true;
+  "postId"?: true;
+  "createdAt"?: true;
+  "author"?: true | { select?: GassmaGassmaUserSelect; omit?: GassmaGassmaUserOmit; where?: GassmaGassmaUserWhereUse; orderBy?: GassmaGassmaUserOrderBy; take?: number; skip?: number; include?: GassmaGassmaUserInclude; _count?: GassmaGassmaUserCountValue };
+  "post"?: true | { select?: GassmaGassmaPostSelect; omit?: GassmaGassmaPostOmit; where?: GassmaGassmaPostWhereUse; orderBy?: GassmaGassmaPostOrderBy; take?: number; skip?: number; include?: GassmaGassmaPostInclude; _count?: GassmaGassmaPostCountValue };
+  "_count"?: GassmaGassmaCommentCountValue;
+};
+
 export type GassmaGassmaCategorySelect = {
   "id"?: true;
   "name"?: true;
   "parentId"?: true;
 };
 
+export type GassmaGassmaCategoryFindSelect = {
+  "id"?: true;
+  "name"?: true;
+  "parentId"?: true;
+  "posts"?: true | { select?: GassmaGassmaPostSelect; omit?: GassmaGassmaPostOmit; where?: GassmaGassmaPostWhereUse; orderBy?: GassmaGassmaPostOrderBy; take?: number; skip?: number; include?: GassmaGassmaPostInclude; _count?: GassmaGassmaPostCountValue };
+  "parent"?: true | { select?: GassmaGassmaCategorySelect; omit?: GassmaGassmaCategoryOmit; where?: GassmaGassmaCategoryWhereUse; orderBy?: GassmaGassmaCategoryOrderBy; take?: number; skip?: number; include?: GassmaGassmaCategoryInclude; _count?: GassmaGassmaCategoryCountValue };
+  "children"?: true | { select?: GassmaGassmaCategorySelect; omit?: GassmaGassmaCategoryOmit; where?: GassmaGassmaCategoryWhereUse; orderBy?: GassmaGassmaCategoryOrderBy; take?: number; skip?: number; include?: GassmaGassmaCategoryInclude; _count?: GassmaGassmaCategoryCountValue };
+  "_count"?: GassmaGassmaCategoryCountValue;
+};
+
 export type GassmaGassmaTagSelect = {
   "id"?: true;
   "name"?: true;
+};
+
+export type GassmaGassmaTagFindSelect = {
+  "id"?: true;
+  "name"?: true;
+  "posts"?: true | { select?: GassmaGassmaPostSelect; omit?: GassmaGassmaPostOmit; where?: GassmaGassmaPostWhereUse; orderBy?: GassmaGassmaPostOrderBy; take?: number; skip?: number; include?: GassmaGassmaPostInclude; _count?: GassmaGassmaPostCountValue };
+  "_count"?: GassmaGassmaTagCountValue;
 };
 
 export type GassmaGassmaProductSelect = {
@@ -3412,6 +3458,18 @@ export type GassmaGassmaProductSelect = {
   "updatedAt"?: true;
 };
 
+export type GassmaGassmaProductFindSelect = {
+  "id"?: true;
+  "name"?: true;
+  "price"?: true;
+  "stock"?: true;
+  "status"?: true;
+  "createdAt"?: true;
+  "updatedAt"?: true;
+  "orderItems"?: true | { select?: GassmaGassmaOrderItemSelect; omit?: GassmaGassmaOrderItemOmit; where?: GassmaGassmaOrderItemWhereUse; orderBy?: GassmaGassmaOrderItemOrderBy; take?: number; skip?: number; include?: GassmaGassmaOrderItemInclude; _count?: GassmaGassmaOrderItemCountValue };
+  "_count"?: GassmaGassmaProductCountValue;
+};
+
 export type GassmaGassmaOrderSelect = {
   "id"?: true;
   "userId"?: true;
@@ -3419,6 +3477,18 @@ export type GassmaGassmaOrderSelect = {
   "quantity"?: true;
   "status"?: true;
   "createdAt"?: true;
+};
+
+export type GassmaGassmaOrderFindSelect = {
+  "id"?: true;
+  "userId"?: true;
+  "totalAmount"?: true;
+  "quantity"?: true;
+  "status"?: true;
+  "createdAt"?: true;
+  "user"?: true | { select?: GassmaGassmaUserSelect; omit?: GassmaGassmaUserOmit; where?: GassmaGassmaUserWhereUse; orderBy?: GassmaGassmaUserOrderBy; take?: number; skip?: number; include?: GassmaGassmaUserInclude; _count?: GassmaGassmaUserCountValue };
+  "items"?: true | { select?: GassmaGassmaOrderItemSelect; omit?: GassmaGassmaOrderItemOmit; where?: GassmaGassmaOrderItemWhereUse; orderBy?: GassmaGassmaOrderItemOrderBy; take?: number; skip?: number; include?: GassmaGassmaOrderItemInclude; _count?: GassmaGassmaOrderItemCountValue };
+  "_count"?: GassmaGassmaOrderCountValue;
 };
 
 export type GassmaGassmaOrderItemSelect = {
@@ -3429,7 +3499,25 @@ export type GassmaGassmaOrderItemSelect = {
   "unitPrice"?: true;
 };
 
+export type GassmaGassmaOrderItemFindSelect = {
+  "id"?: true;
+  "orderId"?: true;
+  "productId"?: true;
+  "quantity"?: true;
+  "unitPrice"?: true;
+  "order"?: true | { select?: GassmaGassmaOrderSelect; omit?: GassmaGassmaOrderOmit; where?: GassmaGassmaOrderWhereUse; orderBy?: GassmaGassmaOrderOrderBy; take?: number; skip?: number; include?: GassmaGassmaOrderInclude; _count?: GassmaGassmaOrderCountValue };
+  "product"?: true | { select?: GassmaGassmaProductSelect; omit?: GassmaGassmaProductOmit; where?: GassmaGassmaProductWhereUse; orderBy?: GassmaGassmaProductOrderBy; take?: number; skip?: number; include?: GassmaGassmaProductInclude; _count?: GassmaGassmaProductCountValue };
+  "_count"?: GassmaGassmaOrderItemCountValue;
+};
+
 export type GassmaGassmaNotificationSelect = {
+  "id"?: true;
+  "userId"?: true;
+  "message"?: true;
+  "isRead"?: true;
+};
+
+export type GassmaGassmaNotificationFindSelect = {
   "id"?: true;
   "userId"?: true;
   "message"?: true;
@@ -3446,11 +3534,35 @@ export type GassmaGassmaUserSelect = {
   "createdAt"?: true;
 };
 
+export type GassmaGassmaUserFindSelect = {
+  "id"?: true;
+  "email"?: true;
+  "name"?: true;
+  "age"?: true;
+  "isActive"?: true;
+  "role"?: true;
+  "createdAt"?: true;
+  "posts"?: true | { select?: GassmaGassmaPostSelect; omit?: GassmaGassmaPostOmit; where?: GassmaGassmaPostWhereUse; orderBy?: GassmaGassmaPostOrderBy; take?: number; skip?: number; include?: GassmaGassmaPostInclude; _count?: GassmaGassmaPostCountValue };
+  "comments"?: true | { select?: GassmaGassmaCommentSelect; omit?: GassmaGassmaCommentOmit; where?: GassmaGassmaCommentWhereUse; orderBy?: GassmaGassmaCommentOrderBy; take?: number; skip?: number; include?: GassmaGassmaCommentInclude; _count?: GassmaGassmaCommentCountValue };
+  "orders"?: true | { select?: GassmaGassmaOrderSelect; omit?: GassmaGassmaOrderOmit; where?: GassmaGassmaOrderWhereUse; orderBy?: GassmaGassmaOrderOrderBy; take?: number; skip?: number; include?: GassmaGassmaOrderInclude; _count?: GassmaGassmaOrderCountValue };
+  "profile"?: true | { select?: GassmaGassmaProfileSelect; omit?: GassmaGassmaProfileOmit; where?: GassmaGassmaProfileWhereUse; orderBy?: GassmaGassmaProfileOrderBy; take?: number; skip?: number; include?: GassmaGassmaProfileInclude; _count?: GassmaGassmaProfileCountValue };
+  "_count"?: GassmaGassmaUserCountValue;
+};
+
 export type GassmaGassmaProfileSelect = {
   "id"?: true;
   "bio"?: true;
   "website"?: true;
   "userId"?: true;
+};
+
+export type GassmaGassmaProfileFindSelect = {
+  "id"?: true;
+  "bio"?: true;
+  "website"?: true;
+  "userId"?: true;
+  "user"?: true | { select?: GassmaGassmaUserSelect; omit?: GassmaGassmaUserOmit; where?: GassmaGassmaUserWhereUse; orderBy?: GassmaGassmaUserOrderBy; take?: number; skip?: number; include?: GassmaGassmaUserInclude; _count?: GassmaGassmaUserCountValue };
+  "_count"?: GassmaGassmaProfileCountValue;
 };
 
 export type GassmaGassmaPostOmit = {

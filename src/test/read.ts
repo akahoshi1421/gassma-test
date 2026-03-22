@@ -19,6 +19,7 @@ import { testIgnoreSheets } from "./read/testIgnoreSheets";
 import { testMapSheets } from "./read/testMapSheets";
 import { testEnumConstants } from "./read/testEnumConstants";
 import { testFindManyDb2 } from "./read/testFindManyDb2";
+import { testSelectRelation } from "./read/testSelectRelation";
 
 function testRead() {
   testFindMany();
@@ -42,6 +43,7 @@ function testRead() {
   testMapSheets();
   testEnumConstants();
   testFindManyDb2();
+  testSelectRelation();
 
   Logger.log("🎉 All read tests passed!");
 }
