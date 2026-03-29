@@ -24,6 +24,10 @@ function testInjection() {
   testPrototypePollutionCreate(client);
   testPrototypePollutionWhere(client);
   testPrototypePollutionUpdate(client);
+  testCreateWithArrayFormulaInjection(client);
+  testCreateWithDeepArrayFormulaInjection(client);
+  testUpdateWithArrayFormulaInjection(client);
+  testCreateManyWithArrayFormulaInjection(client);
 
   Logger.log("✅ testInjection: all passed");
 }
@@ -459,6 +463,135 @@ function testPrototypePollutionUpdate(client: GassmaClient) {
   const clean: Record<string, unknown> = {};
   if ("polluted" in clean) {
     throw new Error("prototype pollution: Object.prototype was polluted after update");
+  }
+
+  resetSheet("Product", productData);
+}
+
+function testCreateWithArrayFormulaInjection(client: GassmaClient) {
+  // 1次元配列で数式を渡す（GoogleFormのnamedValuesパターン）
+  client.Product.create({
+    data: {
+      id: 970,
+      name: ["=IMPORTRANGE(\"https://docs.google.com/spreadsheets/d/xxx\",\"A1\")"] as any,
+      price: 100,
+      stock: 1,
+      status: "available",
+      createdAt: new Date("2025-01-01T00:00:00"),
+    },
+  });
+
+  const result = client.Product.findFirstOrThrow({
+    where: { id: 970 },
+  });
+
+  if (typeof result.name !== "string") {
+    throw new Error(`array formula injection: name should be string, got ${typeof result.name}`);
+  }
+
+  // 数式として実行されていないことを確認（数値や#REFにならない）
+  const nameStr = String(result.name);
+  if (!nameStr.startsWith("'")) {
+    throw new Error(`array formula injection: name should be escaped with leading quote, got '${nameStr}'`);
+  }
+
+  resetSheet("Product", productData);
+}
+
+function testCreateWithDeepArrayFormulaInjection(client: GassmaClient) {
+  // 深いネスト配列で数式を渡す
+  const deepArrays: { id: number; value: any; label: string }[] = [
+    { id: 971, value: [["=1+1"]], label: "2次元配列" },
+    { id: 972, value: [[["=SUM(A1:A10)"]]], label: "3次元配列" },
+    { id: 973, value: [[[["=IMAGE(\"https://evil.com\")"]]]], label: "4次元配列" },
+  ];
+
+  deepArrays.forEach(({ id, value, label }) => {
+    client.Product.create({
+      data: {
+        id: id,
+        name: value,
+        price: 100,
+        stock: 1,
+        status: "available",
+        createdAt: new Date("2025-01-01T00:00:00"),
+      },
+    });
+
+    const result = client.Product.findFirstOrThrow({
+      where: { id: id },
+    });
+
+    if (typeof result.name !== "string") {
+      throw new Error(`deep array ${label}: name should be string, got ${typeof result.name}`);
+    }
+
+    const nameStr = String(result.name);
+    if (!nameStr.startsWith("'")) {
+      throw new Error(`deep array ${label}: name should be escaped with leading quote, got '${nameStr}'`);
+    }
+  });
+
+  resetSheet("Product", productData);
+}
+
+function testUpdateWithArrayFormulaInjection(client: GassmaClient) {
+  // updateで配列数式を渡す
+  client.Product.update({
+    where: { id: 1 },
+    data: { name: ["=1+1"] as any },
+  });
+
+  const result = client.Product.findFirstOrThrow({
+    where: { id: 1 },
+  });
+
+  if (typeof result.name !== "string") {
+    throw new Error(`update array formula: name should be string, got ${typeof result.name}`);
+  }
+
+  const nameStr = String(result.name);
+  if (!nameStr.startsWith("'")) {
+    throw new Error(`update array formula: name should be escaped with leading quote, got '${nameStr}'`);
+  }
+
+  resetSheet("Product", productData);
+}
+
+function testCreateManyWithArrayFormulaInjection(client: GassmaClient) {
+  // createManyで配列数式を渡す
+  client.Product.createMany({
+    data: [
+      {
+        id: 980,
+        name: ["=1+1"] as any,
+        price: 100,
+        stock: 1,
+        status: "available",
+        createdAt: new Date("2025-01-01T00:00:00"),
+      },
+      {
+        id: 981,
+        name: [["=IMPORTRANGE(\"url\",\"A1\")"]] as any,
+        price: 200,
+        stock: 2,
+        status: "available",
+        createdAt: new Date("2025-01-01T00:00:00"),
+      },
+    ],
+  });
+
+  const result1 = client.Product.findFirstOrThrow({ where: { id: 980 } });
+  const result2 = client.Product.findFirstOrThrow({ where: { id: 981 } });
+
+  const name1 = String(result1.name);
+  const name2 = String(result2.name);
+
+  if (!name1.startsWith("'")) {
+    throw new Error(`createMany array formula id=980: name should be escaped, got '${name1}'`);
+  }
+  if (!name2.startsWith("'")) {
+    throw new Error(`createMany array formula id=981: name should be escaped, got '${name2}'`);
   }
 
   resetSheet("Product", productData);

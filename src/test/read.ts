@@ -20,6 +20,7 @@ import { testMapSheets } from "./read/testMapSheets";
 import { testEnumConstants } from "./read/testEnumConstants";
 import { testFindManyDb2 } from "./read/testFindManyDb2";
 import { testSelectRelation } from "./read/testSelectRelation";
+import { testSelfRelation } from "./read/testSelfRelation";
 
 function testRead() {
   testFindMany();
@@ -44,6 +45,7 @@ function testRead() {
   testEnumConstants();
   testFindManyDb2();
   testSelectRelation();
+  testSelfRelation();
 
   Logger.log("🎉 All read tests passed!");
 }
