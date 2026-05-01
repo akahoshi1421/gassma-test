@@ -21,8 +21,10 @@ import { testEnumConstants } from "./read/testEnumConstants";
 import { testFindManyDb2 } from "./read/testFindManyDb2";
 import { testSelectRelation } from "./read/testSelectRelation";
 import { testSelfRelation } from "./read/testSelfRelation";
+import { resetAllSheets } from "../reset/resetAllSheets";
 
 function testRead() {
+  resetAllSheets();
   testFindMany();
   testFindFirst();
   testCount();

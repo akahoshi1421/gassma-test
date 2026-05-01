@@ -4,8 +4,10 @@ import { testUpdateInclude } from "./update/testUpdateInclude";
 import { testNumberOperation } from "./update/testNumberOperation";
 import { testOnUpdate } from "./update/testOnUpdate";
 import { testNestedUpdate } from "./update/testNestedUpdate";
+import { resetAllSheets } from "../reset/resetAllSheets";
 
 function testUpdateAll() {
+  resetAllSheets();
   testUpdate();
   testUpdateMany();
   testUpdateInclude();

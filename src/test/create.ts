@@ -6,8 +6,10 @@ import { testNestedCreate } from "./create/testNestedCreate";
 import { testDefaults } from "./create/testDefaults";
 import { testUpdatedAt } from "./create/testUpdatedAt";
 import { testAutoincrement } from "./create/testAutoincrement";
+import { resetAllSheets } from "../reset/resetAllSheets";
 
 function testCreateAll() {
+  resetAllSheets();
   testCreate();
   testCreateMany();
   testCreateManyAndReturnOptions();

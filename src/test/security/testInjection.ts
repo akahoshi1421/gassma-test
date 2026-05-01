@@ -470,10 +470,11 @@ function testPrototypePollutionUpdate(client: GassmaClient) {
 
 function testCreateWithArrayFormulaInjection(client: GassmaClient) {
   // 1次元配列で数式を渡す（GoogleFormのnamedValuesパターン）
+  const formula = "=IMPORTRANGE(\"https://docs.google.com/spreadsheets/d/xxx\",\"A1\")";
   client.Product.create({
     data: {
       id: 970,
-      name: ["=IMPORTRANGE(\"https://docs.google.com/spreadsheets/d/xxx\",\"A1\")"] as any,
+      name: [formula] as any,
       price: 100,
       stock: 1,
       status: "available",
@@ -485,28 +486,25 @@ function testCreateWithArrayFormulaInjection(client: GassmaClient) {
     where: { id: 970 },
   });
 
+  // 数式として実行されず、元の文字列のまま保存されていること
+  // （エスケープが効いていれば数式実行されず、getValue() で元の文字列が返る）
   if (typeof result.name !== "string") {
     throw new Error(`array formula injection: name should be string, got ${typeof result.name}`);
   }
-
-  // 数式として実行されていないことを確認（数値や#REFにならない）
-  const nameStr = String(result.name);
-  if (!nameStr.startsWith("'")) {
-    throw new Error(`array formula injection: name should be escaped with leading quote, got '${nameStr}'`);
-  }
+  assertEquals(result.name, formula, "array formula injection: should preserve formula string (not evaluated)");
 
   resetSheet("Product", productData);
 }
 
 function testCreateWithDeepArrayFormulaInjection(client: GassmaClient) {
   // 深いネスト配列で数式を渡す
-  const deepArrays: { id: number; value: any; label: string }[] = [
-    { id: 971, value: [["=1+1"]], label: "2次元配列" },
-    { id: 972, value: [[["=SUM(A1:A10)"]]], label: "3次元配列" },
-    { id: 973, value: [[[["=IMAGE(\"https://evil.com\")"]]]], label: "4次元配列" },
+  const deepArrays: { id: number; value: any; expected: string; label: string }[] = [
+    { id: 971, value: [["=1+1"]], expected: "=1+1", label: "2次元配列" },
+    { id: 972, value: [[["=SUM(A1:A10)"]]], expected: "=SUM(A1:A10)", label: "3次元配列" },
+    { id: 973, value: [[[["=IMAGE(\"https://evil.com\")"]]]], expected: "=IMAGE(\"https://evil.com\")", label: "4次元配列" },
   ];
 
-  deepArrays.forEach(({ id, value, label }) => {
+  deepArrays.forEach(({ id, value, expected, label }) => {
     client.Product.create({
       data: {
         id: id,
@@ -522,14 +520,11 @@ function testCreateWithDeepArrayFormulaInjection(client: GassmaClient) {
       where: { id: id },
     });
 
+    // 数式が実行されておらず、元の文字列のまま保存されていること
     if (typeof result.name !== "string") {
       throw new Error(`deep array ${label}: name should be string, got ${typeof result.name}`);
     }
-
-    const nameStr = String(result.name);
-    if (!nameStr.startsWith("'")) {
-      throw new Error(`deep array ${label}: name should be escaped with leading quote, got '${nameStr}'`);
-    }
+    assertEquals(result.name, expected, `deep array ${label}: should preserve formula string (not evaluated)`);
   });
 
   resetSheet("Product", productData);
@@ -546,20 +541,18 @@ function testUpdateWithArrayFormulaInjection(client: GassmaClient) {
     where: { id: 1 },
   });
 
+  // 数式が実行されず、文字列 "=1+1" のまま保存されていること（実行されたら 2 になる）
   if (typeof result.name !== "string") {
     throw new Error(`update array formula: name should be string, got ${typeof result.name}`);
   }
-
-  const nameStr = String(result.name);
-  if (!nameStr.startsWith("'")) {
-    throw new Error(`update array formula: name should be escaped with leading quote, got '${nameStr}'`);
-  }
+  assertEquals(result.name, "=1+1", "update array formula: should preserve formula string (not evaluated)");
 
   resetSheet("Product", productData);
 }
 
 function testCreateManyWithArrayFormulaInjection(client: GassmaClient) {
   // createManyで配列数式を渡す
+  const formula2 = "=IMPORTRANGE(\"url\",\"A1\")";
   client.Product.createMany({
     data: [
       {
@@ -572,7 +565,7 @@ function testCreateManyWithArrayFormulaInjection(client: GassmaClient) {
       },
       {
         id: 981,
-        name: [["=IMPORTRANGE(\"url\",\"A1\")"]] as any,
+        name: [[formula2]] as any,
         price: 200,
         stock: 2,
         status: "available",
@@ -584,15 +577,9 @@ function testCreateManyWithArrayFormulaInjection(client: GassmaClient) {
   const result1 = client.Product.findFirstOrThrow({ where: { id: 980 } });
   const result2 = client.Product.findFirstOrThrow({ where: { id: 981 } });
 
-  const name1 = String(result1.name);
-  const name2 = String(result2.name);
-
-  if (!name1.startsWith("'")) {
-    throw new Error(`createMany array formula id=980: name should be escaped, got '${name1}'`);
-  }
-  if (!name2.startsWith("'")) {
-    throw new Error(`createMany array formula id=981: name should be escaped, got '${name2}'`);
-  }
+  // 数式が実行されず文字列のまま保存されていること
+  assertEquals(result1.name, "=1+1", "createMany array formula id=980: should preserve formula string");
+  assertEquals(result2.name, formula2, "createMany array formula id=981: should preserve formula string");
 
   resetSheet("Product", productData);
 }

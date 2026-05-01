@@ -10,7 +10,6 @@ import { testErrorAll } from "./test/error";
 import { testSecurityAll } from "./test/security";
 
 function main() {
-  resetAllSheets();
   testRead();
   testCreateAll();
   testDeleteAll();
