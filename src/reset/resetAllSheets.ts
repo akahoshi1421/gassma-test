@@ -29,7 +29,7 @@ const sheetDataMap: [string, unknown[][]][] = [
 
 function resetAllSheets() {
   sheetDataMap.forEach(([sheetName, data]) => {
-    resetSheet(sheetName as string, data as unknown[][]);
+    resetSheet(sheetName, data);
   });
 }
 

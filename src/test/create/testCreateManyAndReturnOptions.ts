@@ -77,11 +77,7 @@ function testCreateManyAndReturnInclude(client: GassmaClient) {
   });
 
   assertEquals(result.length, 1, "createManyAndReturn include length");
-  if (!("author" in result[0])) {
-    throw new Error("createManyAndReturn include: author missing");
-  }
-  const author = result[0].author as Record<string, unknown>;
-  assertEquals(author.id, 1, "createManyAndReturn include author id");
+  assertEquals(result[0].author.id, 1, "createManyAndReturn include author id");
 
   resetSheet("Post", postData);
 }
