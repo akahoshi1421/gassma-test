@@ -23,22 +23,17 @@ function testIncludeSelect(client: GassmaClient) {
     },
   });
   if (!user) throw new Error("include select: user null");
-  const posts = (user as Record<string, unknown>).posts as Record<string, unknown>[];
-  if (posts.length === 0) throw new Error("include select: no posts");
+  if (user.posts.length === 0) throw new Error("include select: no posts");
 
-  const postKeys = Object.keys(posts[0]);
-  if (postKeys.indexOf("id") === -1) {
+  const postKeys = Object.keys(user.posts[0]);
+  if (postKeys.indexOf("id") === -1)
     throw new Error("include select: id should be present");
-  }
-  if (postKeys.indexOf("title") === -1) {
+  if (postKeys.indexOf("title") === -1)
     throw new Error("include select: title should be present");
-  }
-  if (postKeys.indexOf("content") !== -1) {
+  if (postKeys.indexOf("content") !== -1)
     throw new Error("include select: content should be excluded");
-  }
-  if (postKeys.indexOf("authorId") !== -1) {
+  if (postKeys.indexOf("authorId") !== -1)
     throw new Error("include select: authorId should be excluded");
-  }
 }
 
 function testIncludeOmit(client: GassmaClient) {
@@ -51,19 +46,15 @@ function testIncludeOmit(client: GassmaClient) {
     },
   });
   if (!user) throw new Error("include omit: user null");
-  const posts = (user as Record<string, unknown>).posts as Record<string, unknown>[];
-  if (posts.length === 0) throw new Error("include omit: no posts");
+  if (user.posts.length === 0) throw new Error("include omit: no posts");
 
-  const postKeys = Object.keys(posts[0]);
-  if (postKeys.indexOf("title") === -1) {
+  const postKeys = Object.keys(user.posts[0]);
+  if (postKeys.indexOf("title") === -1)
     throw new Error("include omit: title should be present");
-  }
-  if (postKeys.indexOf("content") !== -1) {
+  if (postKeys.indexOf("content") !== -1)
     throw new Error("include omit: content should be excluded");
-  }
-  if (postKeys.indexOf("rating") !== -1) {
+  if (postKeys.indexOf("rating") !== -1)
     throw new Error("include omit: rating should be excluded");
-  }
 }
 
 function testIncludeOrderBy(client: GassmaClient) {
@@ -76,27 +67,25 @@ function testIncludeOrderBy(client: GassmaClient) {
     },
   });
   if (!user) throw new Error("include orderBy: user null");
-  const posts = (user as Record<string, unknown>).posts as Record<string, unknown>[];
-  if (posts.length < 2) throw new Error("include orderBy: need at least 2 posts");
+  if (user.posts.length < 2)
+    throw new Error("include orderBy: need at least 2 posts");
 
-  // desc なので最初の id > 次の id
-  const firstId = posts[0].id as number;
-  const secondId = posts[1].id as number;
-  if (firstId <= secondId) {
+  const firstId = user.posts[0].id;
+  const secondId = user.posts[1].id;
+  if (firstId === null || secondId === null)
+    throw new Error("include orderBy: id is null");
+  if (firstId <= secondId)
     throw new Error(`include orderBy desc: ${firstId} should be > ${secondId}`);
-  }
 }
 
 function testIncludeSkipTake(client: GassmaClient) {
-  // まず全件取得して件数を確認
   const userAll = client.User.findFirst({
     where: { id: 1 },
     include: { posts: true },
   });
   if (!userAll) throw new Error("include skipTake: user null");
-  const allPosts = (userAll as Record<string, unknown>).posts as Record<string, unknown>[];
+  void userAll.posts;
 
-  // skip/take で制限
   const user = client.User.findFirst({
     where: { id: 1 },
     include: {
@@ -108,12 +97,10 @@ function testIncludeSkipTake(client: GassmaClient) {
     },
   });
   if (!user) throw new Error("include skipTake: user null");
-  const posts = (user as Record<string, unknown>).posts as Record<string, unknown>[];
-  assertEquals(posts.length, 2, "include skipTake count");
+  assertEquals(user.posts.length, 2, "include skipTake count");
 }
 
 function testIncludeCountWithWhere(client: GassmaClient) {
-  // _count で条件付きカウント
   const user = client.User.findFirst({
     where: { id: 1 },
     include: {
@@ -125,21 +112,19 @@ function testIncludeCountWithWhere(client: GassmaClient) {
     },
   });
   if (!user) throw new Error("include count where: user null");
-  if (!("_count" in user)) throw new Error("include count where: _count missing");
-  const count = (user as Record<string, unknown>)._count as Record<string, number>;
-  if (typeof count.posts !== "number") {
+  if (typeof user._count.posts !== "number")
     throw new Error("include count where: posts not number");
-  }
 
-  // 全件カウントと比較して条件付きが <= であること
   const userAll = client.User.findFirst({
     where: { id: 1 },
     include: { _count: { select: { posts: true } } },
   });
-  const allCount = ((userAll as Record<string, unknown>)._count as Record<string, number>).posts;
-  if (count.posts > allCount) {
-    throw new Error(`include count where: filtered ${count.posts} > all ${allCount}`);
-  }
+  if (!userAll) throw new Error("include count where: userAll null");
+  const allCount = userAll._count.posts;
+  if (user._count.posts > allCount)
+    throw new Error(
+      `include count where: filtered ${user._count.posts} > all ${allCount}`,
+    );
 }
 
 export { testIncludeAdvanced };

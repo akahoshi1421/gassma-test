@@ -21,9 +21,8 @@ function testIncludeOneToOne(client: GassmaClient) {
     include: { profile: true },
   });
   if (user === null) throw new Error("include 1:1: user not found");
-  if (!("profile" in user)) throw new Error("include 1:1: profile missing");
-  const profile = user.profile as Record<string, unknown>;
-  assertEquals(profile.userId, 1, "include 1:1 profile userId");
+  if (!user.profile) throw new Error("include 1:1: profile missing");
+  assertEquals(user.profile.userId, 1, "include 1:1 profile userId");
 }
 
 function testIncludeOneToMany(client: GassmaClient) {
@@ -32,10 +31,9 @@ function testIncludeOneToMany(client: GassmaClient) {
     include: { posts: true },
   });
   if (user === null) throw new Error("include 1:M: user not found");
-  if (!("posts" in user)) throw new Error("include 1:M: posts missing");
-  const posts = user.posts as Record<string, unknown>[];
-  if (!Array.isArray(posts)) throw new Error("include 1:M: posts not array");
-  posts.forEach((post) => {
+  if (!Array.isArray(user.posts))
+    throw new Error("include 1:M: posts not array");
+  user.posts.forEach((post) => {
     assertEquals(post.authorId, 1, "include 1:M post authorId");
   });
 }
@@ -46,9 +44,11 @@ function testIncludeManyToOne(client: GassmaClient) {
     include: { author: true },
   });
   if (post === null) throw new Error("include M:1: post not found");
-  if (!("author" in post)) throw new Error("include M:1: author missing");
-  const author = post.author as Record<string, unknown>;
-  assertEquals(author.id, post.authorId, "include M:1 author id matches authorId");
+  assertEquals(
+    post.author.id,
+    post.authorId,
+    "include M:1 author id matches authorId",
+  );
 }
 
 function testIncludeManyToMany(client: GassmaClient) {
@@ -57,9 +57,8 @@ function testIncludeManyToMany(client: GassmaClient) {
     include: { tags: true },
   });
   if (post === null) throw new Error("include M:M: post not found");
-  if (!("tags" in post)) throw new Error("include M:M: tags missing");
-  const tags = post.tags as Record<string, unknown>[];
-  if (!Array.isArray(tags)) throw new Error("include M:M: tags not array");
+  if (!Array.isArray(post.tags))
+    throw new Error("include M:M: tags not array");
 }
 
 function testIncludeWithWhere(client: GassmaClient) {
@@ -72,8 +71,7 @@ function testIncludeWithWhere(client: GassmaClient) {
     },
   });
   if (user === null) throw new Error("include where: user not found");
-  const posts = (user as Record<string, unknown>).posts as Record<string, unknown>[];
-  posts.forEach((post) => {
+  user.posts.forEach((post) => {
     assertEquals(post.published, true, "include where published");
   });
 }
@@ -88,10 +86,9 @@ function testIncludeNested(client: GassmaClient) {
     },
   });
   if (user === null) throw new Error("include nested: user not found");
-  const posts = (user as Record<string, unknown>).posts as Record<string, unknown>[];
-  if (posts.length > 0) {
-    const firstPost = posts[0];
-    if (!("comments" in firstPost)) {
+  if (user.posts.length > 0) {
+    const firstPost = user.posts[0];
+    if (!Array.isArray(firstPost.comments)) {
       throw new Error("include nested: comments missing in post");
     }
   }
@@ -110,10 +107,10 @@ function testIncludeCount(client: GassmaClient) {
     },
   });
   if (user === null) throw new Error("include _count: user not found");
-  if (!("_count" in user)) throw new Error("include _count: _count missing");
-  const count = (user as Record<string, unknown>)._count as Record<string, number>;
-  if (typeof count.posts !== "number") throw new Error("include _count: posts not number");
-  if (typeof count.comments !== "number") throw new Error("include _count: comments not number");
+  if (typeof user._count.posts !== "number")
+    throw new Error("include _count: posts not number");
+  if (typeof user._count.comments !== "number")
+    throw new Error("include _count: comments not number");
 }
 
 export { testInclude };

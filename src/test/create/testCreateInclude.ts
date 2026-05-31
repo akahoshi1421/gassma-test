@@ -29,11 +29,7 @@ function testCreateIncludeManyToOne(client: GassmaClient) {
     include: { author: true },
   });
 
-  if (!("author" in result)) {
-    throw new Error("create include M:1: author missing");
-  }
-  const author = result.author as Record<string, unknown>;
-  assertEquals(author.id, 1, "create include M:1 author id");
+  assertEquals(result.author.id, 1, "create include M:1 author id");
 
   resetSheet("Post", postData);
 }
@@ -53,13 +49,8 @@ function testCreateIncludeOneToMany(client: GassmaClient) {
     include: { comments: true },
   });
 
-  if (!("comments" in result)) {
-    throw new Error("create include 1:M: comments missing");
-  }
-  const comments = result.comments as unknown[];
-  if (!Array.isArray(comments)) {
+  if (!Array.isArray(result.comments))
     throw new Error("create include 1:M: comments not array");
-  }
 
   resetSheet("Post", postData);
 }
@@ -80,14 +71,12 @@ function testCreateIncludeWithOmit(client: GassmaClient) {
     omit: { content: true },
   });
 
-  if (!("author" in result)) {
-    throw new Error("create include+omit: author missing");
-  }
   const keys = Object.keys(result);
-  if (keys.indexOf("content") !== -1) {
+  if (keys.indexOf("content") !== -1)
     throw new Error("create include+omit: content should be omitted");
-  }
   assertEquals(result.title, "IncludeOmitPost", "create include+omit title");
+  // author は include したのでアクセス可能（型レベルで保証）
+  void result.author.id;
 
   resetSheet("Post", postData);
 }

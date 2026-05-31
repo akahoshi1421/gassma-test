@@ -68,7 +68,7 @@ function testUpdateManyAndReturn(client: GassmaClient) {
   });
 
   assertEquals(results.length, 3, "updateManyAndReturn length");
-  assertEquals((results[0] as { name: string }).name, "Returned", "updateManyAndReturn name");
+  assertEquals(results[0].name, "Returned", "updateManyAndReturn name");
 
   resetSheet("Tag", tagData);
 }
