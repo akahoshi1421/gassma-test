@@ -44,6 +44,7 @@ function testIncludeManyToOne(client: GassmaClient) {
     include: { author: true },
   });
   if (post === null) throw new Error("include M:1: post not found");
+  if (!post.author) throw new Error("include M:1: author missing");
   assertEquals(
     post.author.id,
     post.authorId,

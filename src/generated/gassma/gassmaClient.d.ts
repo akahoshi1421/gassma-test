@@ -3853,7 +3853,7 @@ export type GassmaGassmaPostFindResult<S, I = undefined, QO = undefined, GO = {}
     ? {}
     : {
         [K in keyof I as K extends "author" | "category" | "comments" | "tags" | "_count" ? K : never]:
-          K extends "author" ? GassmaGassmaUserFindResult<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, {}> :
+          K extends "author" ? GassmaGassmaUserFindResult<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, {}> | null :
           K extends "category" ? GassmaGassmaCategoryFindResult<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, {}> | null :
           K extends "comments" ? GassmaGassmaCommentFindResult<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, {}>[] :
           K extends "tags" ? GassmaGassmaTagFindResult<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, {}>[] :
@@ -3876,8 +3876,8 @@ export type GassmaGassmaCommentFindResult<S, I = undefined, QO = undefined, GO =
     ? {}
     : {
         [K in keyof I as K extends "author" | "post" | "_count" ? K : never]:
-          K extends "author" ? GassmaGassmaUserFindResult<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, {}> :
-          K extends "post" ? GassmaGassmaPostFindResult<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, {}> :
+          K extends "author" ? GassmaGassmaUserFindResult<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, {}> | null :
+          K extends "post" ? GassmaGassmaPostFindResult<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, {}> | null :
           K extends "_count" ? Gassma.CountResult<I[K]> :
           never;
       });
@@ -3959,7 +3959,7 @@ export type GassmaGassmaOrderFindResult<S, I = undefined, QO = undefined, GO = {
     ? {}
     : {
         [K in keyof I as K extends "user" | "items" | "_count" ? K : never]:
-          K extends "user" ? GassmaGassmaUserFindResult<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, {}> :
+          K extends "user" ? GassmaGassmaUserFindResult<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, {}> | null :
           K extends "items" ? GassmaGassmaOrderItemFindResult<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, {}>[] :
           K extends "_count" ? Gassma.CountResult<I[K]> :
           never;
@@ -3980,8 +3980,8 @@ export type GassmaGassmaOrderItemFindResult<S, I = undefined, QO = undefined, GO
     ? {}
     : {
         [K in keyof I as K extends "order" | "product" | "_count" ? K : never]:
-          K extends "order" ? GassmaGassmaOrderFindResult<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, {}> :
-          K extends "product" ? GassmaGassmaProductFindResult<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, {}> :
+          K extends "order" ? GassmaGassmaOrderFindResult<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, {}> | null :
+          K extends "product" ? GassmaGassmaProductFindResult<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, {}> | null :
           K extends "_count" ? Gassma.CountResult<I[K]> :
           never;
       });

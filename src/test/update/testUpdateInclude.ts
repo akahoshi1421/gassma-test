@@ -20,6 +20,8 @@ function testUpdateIncludeManyToOne(client: GassmaClient) {
   });
 
   if (!result) throw new Error("update include: expected result");
+  if (!result.author)
+    throw new Error("update include M:1: author missing");
   assertEquals(
     typeof result.author.id,
     "number",
@@ -43,6 +45,8 @@ function testUpdateIncludeWithOmit(client: GassmaClient) {
   if (keys.indexOf("content") !== -1)
     throw new Error("update include+omit: content should be omitted");
   assertEquals(result.title, "UpdateIncludeOmit", "update include+omit title");
+  if (!result.author)
+    throw new Error("update include+omit: author missing");
   void result.author.id;
 
   resetSheet("Post", postData);

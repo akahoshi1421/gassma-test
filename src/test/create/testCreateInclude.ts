@@ -29,6 +29,8 @@ function testCreateIncludeManyToOne(client: GassmaClient) {
     include: { author: true },
   });
 
+  if (!result.author)
+    throw new Error("create include M:1: author missing");
   assertEquals(result.author.id, 1, "create include M:1 author id");
 
   resetSheet("Post", postData);
@@ -75,7 +77,8 @@ function testCreateIncludeWithOmit(client: GassmaClient) {
   if (keys.indexOf("content") !== -1)
     throw new Error("create include+omit: content should be omitted");
   assertEquals(result.title, "IncludeOmitPost", "create include+omit title");
-  // author は include したのでアクセス可能（型レベルで保証）
+  if (!result.author)
+    throw new Error("create include+omit: author missing");
   void result.author.id;
 
   resetSheet("Post", postData);

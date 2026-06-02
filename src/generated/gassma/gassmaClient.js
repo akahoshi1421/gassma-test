@@ -10,8 +10,7 @@ const gassmaRelations = {
       "type": "manyToOne",
       "to": "Category",
       "field": "categoryId",
-      "reference": "id",
-      "optional": true
+      "reference": "id"
     },
     "comments": {
       "type": "oneToMany",
@@ -79,8 +78,7 @@ const gassmaRelations = {
       "type": "manyToOne",
       "to": "Category",
       "field": "parentId",
-      "reference": "id",
-      "optional": true
+      "reference": "id"
     },
     "children": {
       "type": "oneToMany",
