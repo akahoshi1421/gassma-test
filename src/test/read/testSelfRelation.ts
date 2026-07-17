@@ -102,8 +102,7 @@ function testSelectSelfRelation(client: GassmaClient) {
   });
   if (category === null) throw new Error("self select: not found");
   assertEquals(category.name, "テクノロジー", "self select: name");
-  const children = (category as Record<string, unknown>)
-    .children as Record<string, unknown>[];
+  const children = category.children;
   if (!Array.isArray(children))
     throw new Error("self select: children not array");
   children.forEach((child) => {
@@ -131,15 +130,13 @@ function testSelectNestedSelfRelation(client: GassmaClient) {
   });
   if (category === null) throw new Error("self nested select: not found");
   assertEquals(category.name, "テクノロジー", "self nested select: name");
-  const children = (category as Record<string, unknown>)
-    .children as Record<string, unknown>[];
+  const children = category.children;
   if (!Array.isArray(children))
     throw new Error("self nested select: children not array");
   children.forEach((child) => {
     if (typeof child.name !== "string")
       throw new Error("self nested select: child should have name");
-    const grandchildren = (child as Record<string, unknown>)
-      .children as Record<string, unknown>[];
+    const grandchildren = child.children;
     if (!Array.isArray(grandchildren))
       throw new Error("self nested select: grandchildren not array");
     grandchildren.forEach((gc) => {
