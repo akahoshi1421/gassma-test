@@ -21,6 +21,7 @@ import { testEnumConstants } from "./read/testEnumConstants";
 import { testFindManyDb2 } from "./read/testFindManyDb2";
 import { testSelectRelation } from "./read/testSelectRelation";
 import { testSelfRelation } from "./read/testSelfRelation";
+import { testRelationOmitFalse } from "./read/testRelationOmitFalse";
 import { resetAllSheets } from "../reset/resetAllSheets";
 
 function testRead() {
@@ -48,6 +49,7 @@ function testRead() {
   testFindManyDb2();
   testSelectRelation();
   testSelfRelation();
+  testRelationOmitFalse();
 
   Logger.log("🎉 All read tests passed!");
 }

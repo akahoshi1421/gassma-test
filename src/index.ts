@@ -8,6 +8,7 @@ import { testUpdateAll } from "./test/update";
 import { testUpsertAll } from "./test/upsert";
 import { testErrorAll } from "./test/error";
 import { testSecurityAll } from "./test/security";
+import { testGlobalOmitWriteAll } from "./test/globalOmitWrite";
 
 function main() {
   testRead();
@@ -17,6 +18,7 @@ function main() {
   testUpsertAll();
   testErrorAll();
   testSecurityAll();
+  testGlobalOmitWriteAll();
 }
 
-export { main, getSheetSnapshot, resetAllSheets, resetSheet, testRead, testCreateAll, testDeleteAll, testUpdateAll, testUpsertAll, testErrorAll, testSecurityAll };
+export { main, getSheetSnapshot, resetAllSheets, resetSheet, testRead, testCreateAll, testDeleteAll, testUpdateAll, testUpsertAll, testErrorAll, testSecurityAll, testGlobalOmitWriteAll };
