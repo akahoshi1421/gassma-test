@@ -35,12 +35,8 @@ function testSelectWithRelationTrue(client: GassmaClient) {
   assertEquals("age" in user, false, "selectRelTrue: no age");
 
   // posts が配列で存在する
-  const posts = (user as Record<string, unknown>).posts as Record<
-    string,
-    unknown
-  >[];
-  if (!Array.isArray(posts))
-    throw new Error("selectRelTrue: posts not array");
+  const posts = user.posts;
+  if (!Array.isArray(posts)) throw new Error("selectRelTrue: posts not array");
   posts.forEach((post) => {
     assertEquals(post.authorId, 1, "selectRelTrue: post authorId");
   });
@@ -59,12 +55,8 @@ function testSelectWithRelationWhere(client: GassmaClient) {
   assertEquals("id" in user, true, "selectRelWhere: has id");
   assertEquals("email" in user, false, "selectRelWhere: no email");
 
-  const posts = (user as Record<string, unknown>).posts as Record<
-    string,
-    unknown
-  >[];
-  if (!Array.isArray(posts))
-    throw new Error("selectRelWhere: posts not array");
+  const posts = user.posts;
+  if (!Array.isArray(posts)) throw new Error("selectRelWhere: posts not array");
   posts.forEach((post) => {
     assertEquals(post.published, true, "selectRelWhere: published");
     assertEquals(post.authorId, 1, "selectRelWhere: authorId");
@@ -82,15 +74,11 @@ function testSelectWithRelationOrderBy(client: GassmaClient) {
   });
   if (user === null) throw new Error("selectRelOrder: user not found");
 
-  const posts = (user as Record<string, unknown>).posts as Record<
-    string,
-    unknown
-  >[];
+  const posts = user.posts;
   if (posts.length >= 2) {
-    const ids = posts.map((p) => p.id as number);
+    const ids = posts.map((p) => p.id);
     ids.reduce((prev, curr) => {
-      if (curr < prev)
-        throw new Error("selectRelOrder: not ascending");
+      if (curr < prev) throw new Error("selectRelOrder: not ascending");
       return curr;
     });
   }
@@ -106,12 +94,8 @@ function testSelectOnlyRelation(client: GassmaClient) {
   assertEquals("id" in user, false, "selectOnlyRel: no id");
   assertEquals("name" in user, false, "selectOnlyRel: no name");
 
-  const posts = (user as Record<string, unknown>).posts as Record<
-    string,
-    unknown
-  >[];
-  if (!Array.isArray(posts))
-    throw new Error("selectOnlyRel: posts not array");
+  const posts = user.posts;
+  if (!Array.isArray(posts)) throw new Error("selectOnlyRel: posts not array");
 }
 
 // select 内でリレーション + _count の組み合わせ
@@ -124,22 +108,14 @@ function testSelectRelationWithCount(client: GassmaClient) {
       _count: { select: { comments: true } },
     },
   });
-  if (user === null)
-    throw new Error("selectRelCount: user not found");
+  if (user === null) throw new Error("selectRelCount: user not found");
   assertEquals("id" in user, true, "selectRelCount: has id");
   assertEquals("email" in user, false, "selectRelCount: no email");
 
-  const posts = (user as Record<string, unknown>).posts as Record<
-    string,
-    unknown
-  >[];
-  if (!Array.isArray(posts))
-    throw new Error("selectRelCount: posts not array");
+  const posts = user.posts;
+  if (!Array.isArray(posts)) throw new Error("selectRelCount: posts not array");
 
-  const count = (user as Record<string, unknown>)._count as Record<
-    string,
-    number
-  >;
+  const count = user._count;
   if (typeof count.comments !== "number")
     throw new Error("selectRelCount: comments count not number");
 }
@@ -159,10 +135,8 @@ function testSelectRelationManyToOne(client: GassmaClient) {
   assertEquals("title" in post, true, "selectRelM2O: has title");
   assertEquals("content" in post, false, "selectRelM2O: no content");
 
-  const author = (post as Record<string, unknown>).author as Record<
-    string,
-    unknown
-  >;
+  const author = post.author;
+  if (author === null) throw new Error("selectRelM2O: author is null");
   if (typeof author.id !== "number")
     throw new Error("selectRelM2O: author id not number");
 }
@@ -181,35 +155,18 @@ function testSelectNestedSelect(client: GassmaClient) {
       },
     },
   });
-  if (user === null)
-    throw new Error("selectNested: user not found");
+  if (user === null) throw new Error("selectNested: user not found");
   assertEquals("id" in user, true, "selectNested: has id");
   assertEquals("name" in user, true, "selectNested: has name");
   assertEquals("email" in user, false, "selectNested: no email");
 
-  const posts = (user as Record<string, unknown>).posts as Record<
-    string,
-    unknown
-  >[];
-  if (!Array.isArray(posts))
-    throw new Error("selectNested: posts not array");
+  const posts = user.posts;
+  if (!Array.isArray(posts)) throw new Error("selectNested: posts not array");
   posts.forEach((post) => {
     assertEquals("id" in post, true, "selectNested: post has id");
-    assertEquals(
-      "title" in post,
-      true,
-      "selectNested: post has title",
-    );
-    assertEquals(
-      "content" in post,
-      false,
-      "selectNested: post no content",
-    );
-    assertEquals(
-      "authorId" in post,
-      false,
-      "selectNested: post no authorId",
-    );
+    assertEquals("title" in post, true, "selectNested: post has title");
+    assertEquals("content" in post, false, "selectNested: post no content");
+    assertEquals("authorId" in post, false, "selectNested: post no authorId");
   });
 }
 
@@ -231,54 +188,29 @@ function testSelectDeeplyNested(client: GassmaClient) {
       },
     },
   });
-  if (user === null)
-    throw new Error("selectDeep: user not found");
+  if (user === null) throw new Error("selectDeep: user not found");
   assertEquals("id" in user, true, "selectDeep: has id");
   assertEquals("name" in user, false, "selectDeep: no name");
 
-  const posts = (user as Record<string, unknown>).posts as Record<
-    string,
-    unknown
-  >[];
-  if (!Array.isArray(posts))
-    throw new Error("selectDeep: posts not array");
+  const posts = user.posts;
+  if (!Array.isArray(posts)) throw new Error("selectDeep: posts not array");
   posts.forEach((post) => {
     assertEquals("id" in post, true, "selectDeep: post has id");
-    assertEquals(
-      "title" in post,
-      true,
-      "selectDeep: post has title",
-    );
-    assertEquals(
-      "content" in post,
-      false,
-      "selectDeep: post no content",
-    );
+    assertEquals("title" in post, true, "selectDeep: post has title");
+    assertEquals("content" in post, false, "selectDeep: post no content");
 
-    const comments = post.comments as Record<string, unknown>[];
+    const comments = post.comments;
     if (!Array.isArray(comments))
       throw new Error("selectDeep: comments not array");
     comments.forEach((comment) => {
-      assertEquals(
-        "id" in comment,
-        true,
-        "selectDeep: comment has id",
-      );
-      assertEquals(
-        "text" in comment,
-        true,
-        "selectDeep: comment has text",
-      );
+      assertEquals("id" in comment, true, "selectDeep: comment has id");
+      assertEquals("text" in comment, true, "selectDeep: comment has text");
       assertEquals(
         "authorId" in comment,
         false,
         "selectDeep: comment no authorId",
       );
-      assertEquals(
-        "postId" in comment,
-        false,
-        "selectDeep: comment no postId",
-      );
+      assertEquals("postId" in comment, false, "selectDeep: comment no postId");
     });
   });
 }
@@ -299,39 +231,23 @@ function testSelectNestedRelationTrue(client: GassmaClient) {
       },
     },
   });
-  if (user === null)
-    throw new Error("selectNestedTrue: user not found");
+  if (user === null) throw new Error("selectNestedTrue: user not found");
   assertEquals("id" in user, true, "selectNestedTrue: has id");
   assertEquals("name" in user, false, "selectNestedTrue: no name");
 
-  const posts = (user as Record<string, unknown>).posts as Record<
-    string,
-    unknown
-  >[];
+  const posts = user.posts;
   if (!Array.isArray(posts))
     throw new Error("selectNestedTrue: posts not array");
   posts.forEach((post) => {
-    assertEquals(
-      "title" in post,
-      true,
-      "selectNestedTrue: post has title",
-    );
-    assertEquals(
-      "content" in post,
-      false,
-      "selectNestedTrue: post no content",
-    );
+    assertEquals("title" in post, true, "selectNestedTrue: post has title");
+    assertEquals("content" in post, false, "selectNestedTrue: post no content");
 
-    const comments = post.comments as Record<string, unknown>[];
+    const comments = post.comments;
     if (!Array.isArray(comments))
       throw new Error("selectNestedTrue: comments not array");
     // true 形式は全スカラー列を取得する（object 形式で列を絞る場合と異なる）
     comments.forEach((comment) => {
-      assertEquals(
-        "id" in comment,
-        true,
-        "selectNestedTrue: comment has id",
-      );
+      assertEquals("id" in comment, true, "selectNestedTrue: comment has id");
       assertEquals(
         "text" in comment,
         true,
@@ -361,31 +277,19 @@ function testSelectNestedManyToOneTrue(client: GassmaClient) {
       },
     },
   });
-  if (user === null)
-    throw new Error("selectNestedM2OTrue: user not found");
+  if (user === null) throw new Error("selectNestedM2OTrue: user not found");
 
-  const posts = (user as Record<string, unknown>).posts as Record<
-    string,
-    unknown
-  >[];
+  const posts = user.posts;
   if (!Array.isArray(posts))
     throw new Error("selectNestedM2OTrue: posts not array");
   posts.forEach((post) => {
-    assertEquals(
-      "title" in post,
-      true,
-      "selectNestedM2OTrue: post has title",
-    );
+    assertEquals("title" in post, true, "selectNestedM2OTrue: post has title");
 
-    const author = post.author as Record<string, unknown> | null;
-    if (author === null || author === undefined)
+    const author = post.author;
+    if (author === null)
       throw new Error("selectNestedM2OTrue: author not resolved");
     // author は全スカラー列を持つ
-    assertEquals(
-      "id" in author,
-      true,
-      "selectNestedM2OTrue: author has id",
-    );
+    assertEquals("id" in author, true, "selectNestedM2OTrue: author has id");
     assertEquals(
       "email" in author,
       true,
@@ -409,12 +313,8 @@ function testSelectFindMany(client: GassmaClient) {
     assertEquals("name" in user, true, "selectFM: has name");
     assertEquals("email" in user, false, "selectFM: no email");
 
-    const posts = (user as Record<string, unknown>).posts as Record<
-      string,
-      unknown
-    >[];
-    if (!Array.isArray(posts))
-      throw new Error("selectFM: posts not array");
+    const posts = user.posts;
+    if (!Array.isArray(posts)) throw new Error("selectFM: posts not array");
     posts.forEach((post) => {
       assertEquals(post.published, true, "selectFM: published");
     });
@@ -441,53 +341,21 @@ function testSelectFindManyNested(client: GassmaClient) {
   });
   orders.forEach((order) => {
     assertEquals("id" in order, true, "selectFMN: has id");
-    assertEquals(
-      "userId" in order,
-      false,
-      "selectFMN: no userId",
-    );
-    assertEquals(
-      "totalAmount" in order,
-      false,
-      "selectFMN: no totalAmount",
-    );
+    assertEquals("userId" in order, false, "selectFMN: no userId");
+    assertEquals("totalAmount" in order, false, "selectFMN: no totalAmount");
 
-    const items = (order as Record<string, unknown>).items as Record<
-      string,
-      unknown
-    >[];
-    if (!Array.isArray(items))
-      throw new Error("selectFMN: items not array");
+    const items = order.items;
+    if (!Array.isArray(items)) throw new Error("selectFMN: items not array");
     items.forEach((item) => {
       assertEquals("id" in item, true, "selectFMN: item has id");
-      assertEquals(
-        "quantity" in item,
-        true,
-        "selectFMN: item has quantity",
-      );
-      assertEquals(
-        "orderId" in item,
-        false,
-        "selectFMN: item no orderId",
-      );
+      assertEquals("quantity" in item, true, "selectFMN: item has quantity");
+      assertEquals("orderId" in item, false, "selectFMN: item no orderId");
 
-      const product = item.product as Record<string, unknown>;
+      const product = item.product;
       if (product !== null && product !== undefined) {
-        assertEquals(
-          "id" in product,
-          true,
-          "selectFMN: product has id",
-        );
-        assertEquals(
-          "name" in product,
-          true,
-          "selectFMN: product has name",
-        );
-        assertEquals(
-          "price" in product,
-          false,
-          "selectFMN: product no price",
-        );
+        assertEquals("id" in product, true, "selectFMN: product has id");
+        assertEquals("name" in product, true, "selectFMN: product has name");
+        assertEquals("price" in product, false, "selectFMN: product no price");
       }
     });
   });

@@ -4,19 +4,22 @@ const gassmaRelations = {
       "type": "manyToOne",
       "to": "User",
       "field": "authorId",
-      "reference": "id"
+      "reference": "id",
+      "ownsFk": true
     },
     "category": {
       "type": "manyToOne",
       "to": "Category",
       "field": "categoryId",
-      "reference": "id"
+      "reference": "id",
+      "ownsFk": true
     },
     "comments": {
       "type": "oneToMany",
       "to": "Comment",
       "field": "id",
       "reference": "postId",
+      "ownsFk": false,
       "onDelete": "Cascade"
     },
     "tags": {
@@ -24,6 +27,7 @@ const gassmaRelations = {
       "to": "Tag",
       "field": "id",
       "reference": "id",
+      "ownsFk": false,
       "through": {
         "sheet": "_PostToTag",
         "field": "postId",
@@ -37,6 +41,7 @@ const gassmaRelations = {
       "to": "Post",
       "field": "id",
       "reference": "authorId",
+      "ownsFk": false,
       "onDelete": "Cascade",
       "onUpdate": "Cascade"
     },
@@ -45,6 +50,7 @@ const gassmaRelations = {
       "to": "Comment",
       "field": "id",
       "reference": "authorId",
+      "ownsFk": false,
       "onDelete": "Cascade",
       "onUpdate": "NoAction"
     },
@@ -53,6 +59,7 @@ const gassmaRelations = {
       "to": "Order",
       "field": "id",
       "reference": "userId",
+      "ownsFk": false,
       "onDelete": "Restrict",
       "onUpdate": "Restrict"
     },
@@ -61,6 +68,7 @@ const gassmaRelations = {
       "to": "Profile",
       "field": "id",
       "reference": "userId",
+      "ownsFk": false,
       "onDelete": "Cascade",
       "onUpdate": "Cascade"
     }
@@ -71,6 +79,7 @@ const gassmaRelations = {
       "to": "Post",
       "field": "id",
       "reference": "categoryId",
+      "ownsFk": false,
       "onDelete": "SetNull",
       "onUpdate": "SetNull"
     },
@@ -78,13 +87,15 @@ const gassmaRelations = {
       "type": "manyToOne",
       "to": "Category",
       "field": "parentId",
-      "reference": "id"
+      "reference": "id",
+      "ownsFk": true
     },
     "children": {
       "type": "oneToMany",
       "to": "Category",
       "field": "id",
       "reference": "parentId",
+      "ownsFk": false,
       "onDelete": "SetNull"
     }
   },
@@ -93,13 +104,15 @@ const gassmaRelations = {
       "type": "manyToOne",
       "to": "User",
       "field": "authorId",
-      "reference": "id"
+      "reference": "id",
+      "ownsFk": true
     },
     "post": {
       "type": "manyToOne",
       "to": "Post",
       "field": "postId",
-      "reference": "id"
+      "reference": "id",
+      "ownsFk": true
     }
   },
   "Order": {
@@ -107,13 +120,15 @@ const gassmaRelations = {
       "type": "manyToOne",
       "to": "User",
       "field": "userId",
-      "reference": "id"
+      "reference": "id",
+      "ownsFk": true
     },
     "items": {
       "type": "oneToMany",
       "to": "OrderItem",
       "field": "id",
       "reference": "orderId",
+      "ownsFk": false,
       "onDelete": "Cascade"
     }
   },
@@ -122,13 +137,15 @@ const gassmaRelations = {
       "type": "manyToOne",
       "to": "Order",
       "field": "orderId",
-      "reference": "id"
+      "reference": "id",
+      "ownsFk": true
     },
     "product": {
       "type": "manyToOne",
       "to": "Product",
       "field": "productId",
-      "reference": "id"
+      "reference": "id",
+      "ownsFk": true
     }
   },
   "Product": {
@@ -137,6 +154,7 @@ const gassmaRelations = {
       "to": "OrderItem",
       "field": "id",
       "reference": "productId",
+      "ownsFk": false,
       "onDelete": "Restrict"
     }
   },
@@ -145,7 +163,8 @@ const gassmaRelations = {
       "type": "oneToOne",
       "to": "User",
       "field": "userId",
-      "reference": "id"
+      "reference": "id",
+      "ownsFk": true
     }
   },
   "Tag": {
@@ -154,6 +173,7 @@ const gassmaRelations = {
       "to": "Post",
       "field": "id",
       "reference": "id",
+      "ownsFk": false,
       "through": {
         "sheet": "_PostToTag",
         "field": "tagId",
