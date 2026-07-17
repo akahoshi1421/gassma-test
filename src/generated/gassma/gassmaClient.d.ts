@@ -4189,103 +4189,123 @@ export type GassmaGassmaProfileAggregateBaseReturn = {
 
 export type GassmaGassmaPostAggregateField<T, K extends string> = T extends undefined
   ? never
-  : K extends "_count" | "_avg" | "_sum"
-    ? { [P in keyof T as T[P] extends true ? P : never]: number | null }
-    : {
-        [P in keyof T as T[P] extends true
-          ? P & keyof GassmaGassmaPostAggregateBaseReturn
-          : never]: GassmaGassmaPostAggregateBaseReturn[P & keyof GassmaGassmaPostAggregateBaseReturn] | null;
-      };
+  : K extends "_count"
+    ? { [P in keyof T as T[P] extends true ? P : never]: number }
+    : K extends "_avg" | "_sum"
+      ? { [P in keyof T as T[P] extends true ? P : never]: number | null }
+      : {
+          [P in keyof T as T[P] extends true
+            ? P & keyof GassmaGassmaPostAggregateBaseReturn
+            : never]: GassmaGassmaPostAggregateBaseReturn[P & keyof GassmaGassmaPostAggregateBaseReturn] | null;
+        };
 
 export type GassmaGassmaCommentAggregateField<T, K extends string> = T extends undefined
   ? never
-  : K extends "_count" | "_avg" | "_sum"
-    ? { [P in keyof T as T[P] extends true ? P : never]: number | null }
-    : {
-        [P in keyof T as T[P] extends true
-          ? P & keyof GassmaGassmaCommentAggregateBaseReturn
-          : never]: GassmaGassmaCommentAggregateBaseReturn[P & keyof GassmaGassmaCommentAggregateBaseReturn] | null;
-      };
+  : K extends "_count"
+    ? { [P in keyof T as T[P] extends true ? P : never]: number }
+    : K extends "_avg" | "_sum"
+      ? { [P in keyof T as T[P] extends true ? P : never]: number | null }
+      : {
+          [P in keyof T as T[P] extends true
+            ? P & keyof GassmaGassmaCommentAggregateBaseReturn
+            : never]: GassmaGassmaCommentAggregateBaseReturn[P & keyof GassmaGassmaCommentAggregateBaseReturn] | null;
+        };
 
 export type GassmaGassmaCategoryAggregateField<T, K extends string> = T extends undefined
   ? never
-  : K extends "_count" | "_avg" | "_sum"
-    ? { [P in keyof T as T[P] extends true ? P : never]: number | null }
-    : {
-        [P in keyof T as T[P] extends true
-          ? P & keyof GassmaGassmaCategoryAggregateBaseReturn
-          : never]: GassmaGassmaCategoryAggregateBaseReturn[P & keyof GassmaGassmaCategoryAggregateBaseReturn] | null;
-      };
+  : K extends "_count"
+    ? { [P in keyof T as T[P] extends true ? P : never]: number }
+    : K extends "_avg" | "_sum"
+      ? { [P in keyof T as T[P] extends true ? P : never]: number | null }
+      : {
+          [P in keyof T as T[P] extends true
+            ? P & keyof GassmaGassmaCategoryAggregateBaseReturn
+            : never]: GassmaGassmaCategoryAggregateBaseReturn[P & keyof GassmaGassmaCategoryAggregateBaseReturn] | null;
+        };
 
 export type GassmaGassmaTagAggregateField<T, K extends string> = T extends undefined
   ? never
-  : K extends "_count" | "_avg" | "_sum"
-    ? { [P in keyof T as T[P] extends true ? P : never]: number | null }
-    : {
-        [P in keyof T as T[P] extends true
-          ? P & keyof GassmaGassmaTagAggregateBaseReturn
-          : never]: GassmaGassmaTagAggregateBaseReturn[P & keyof GassmaGassmaTagAggregateBaseReturn] | null;
-      };
+  : K extends "_count"
+    ? { [P in keyof T as T[P] extends true ? P : never]: number }
+    : K extends "_avg" | "_sum"
+      ? { [P in keyof T as T[P] extends true ? P : never]: number | null }
+      : {
+          [P in keyof T as T[P] extends true
+            ? P & keyof GassmaGassmaTagAggregateBaseReturn
+            : never]: GassmaGassmaTagAggregateBaseReturn[P & keyof GassmaGassmaTagAggregateBaseReturn] | null;
+        };
 
 export type GassmaGassmaProductAggregateField<T, K extends string> = T extends undefined
   ? never
-  : K extends "_count" | "_avg" | "_sum"
-    ? { [P in keyof T as T[P] extends true ? P : never]: number | null }
-    : {
-        [P in keyof T as T[P] extends true
-          ? P & keyof GassmaGassmaProductAggregateBaseReturn
-          : never]: GassmaGassmaProductAggregateBaseReturn[P & keyof GassmaGassmaProductAggregateBaseReturn] | null;
-      };
+  : K extends "_count"
+    ? { [P in keyof T as T[P] extends true ? P : never]: number }
+    : K extends "_avg" | "_sum"
+      ? { [P in keyof T as T[P] extends true ? P : never]: number | null }
+      : {
+          [P in keyof T as T[P] extends true
+            ? P & keyof GassmaGassmaProductAggregateBaseReturn
+            : never]: GassmaGassmaProductAggregateBaseReturn[P & keyof GassmaGassmaProductAggregateBaseReturn] | null;
+        };
 
 export type GassmaGassmaOrderAggregateField<T, K extends string> = T extends undefined
   ? never
-  : K extends "_count" | "_avg" | "_sum"
-    ? { [P in keyof T as T[P] extends true ? P : never]: number | null }
-    : {
-        [P in keyof T as T[P] extends true
-          ? P & keyof GassmaGassmaOrderAggregateBaseReturn
-          : never]: GassmaGassmaOrderAggregateBaseReturn[P & keyof GassmaGassmaOrderAggregateBaseReturn] | null;
-      };
+  : K extends "_count"
+    ? { [P in keyof T as T[P] extends true ? P : never]: number }
+    : K extends "_avg" | "_sum"
+      ? { [P in keyof T as T[P] extends true ? P : never]: number | null }
+      : {
+          [P in keyof T as T[P] extends true
+            ? P & keyof GassmaGassmaOrderAggregateBaseReturn
+            : never]: GassmaGassmaOrderAggregateBaseReturn[P & keyof GassmaGassmaOrderAggregateBaseReturn] | null;
+        };
 
 export type GassmaGassmaOrderItemAggregateField<T, K extends string> = T extends undefined
   ? never
-  : K extends "_count" | "_avg" | "_sum"
-    ? { [P in keyof T as T[P] extends true ? P : never]: number | null }
-    : {
-        [P in keyof T as T[P] extends true
-          ? P & keyof GassmaGassmaOrderItemAggregateBaseReturn
-          : never]: GassmaGassmaOrderItemAggregateBaseReturn[P & keyof GassmaGassmaOrderItemAggregateBaseReturn] | null;
-      };
+  : K extends "_count"
+    ? { [P in keyof T as T[P] extends true ? P : never]: number }
+    : K extends "_avg" | "_sum"
+      ? { [P in keyof T as T[P] extends true ? P : never]: number | null }
+      : {
+          [P in keyof T as T[P] extends true
+            ? P & keyof GassmaGassmaOrderItemAggregateBaseReturn
+            : never]: GassmaGassmaOrderItemAggregateBaseReturn[P & keyof GassmaGassmaOrderItemAggregateBaseReturn] | null;
+        };
 
 export type GassmaGassmaNotificationAggregateField<T, K extends string> = T extends undefined
   ? never
-  : K extends "_count" | "_avg" | "_sum"
-    ? { [P in keyof T as T[P] extends true ? P : never]: number | null }
-    : {
-        [P in keyof T as T[P] extends true
-          ? P & keyof GassmaGassmaNotificationAggregateBaseReturn
-          : never]: GassmaGassmaNotificationAggregateBaseReturn[P & keyof GassmaGassmaNotificationAggregateBaseReturn] | null;
-      };
+  : K extends "_count"
+    ? { [P in keyof T as T[P] extends true ? P : never]: number }
+    : K extends "_avg" | "_sum"
+      ? { [P in keyof T as T[P] extends true ? P : never]: number | null }
+      : {
+          [P in keyof T as T[P] extends true
+            ? P & keyof GassmaGassmaNotificationAggregateBaseReturn
+            : never]: GassmaGassmaNotificationAggregateBaseReturn[P & keyof GassmaGassmaNotificationAggregateBaseReturn] | null;
+        };
 
 export type GassmaGassmaUserAggregateField<T, K extends string> = T extends undefined
   ? never
-  : K extends "_count" | "_avg" | "_sum"
-    ? { [P in keyof T as T[P] extends true ? P : never]: number | null }
-    : {
-        [P in keyof T as T[P] extends true
-          ? P & keyof GassmaGassmaUserAggregateBaseReturn
-          : never]: GassmaGassmaUserAggregateBaseReturn[P & keyof GassmaGassmaUserAggregateBaseReturn] | null;
-      };
+  : K extends "_count"
+    ? { [P in keyof T as T[P] extends true ? P : never]: number }
+    : K extends "_avg" | "_sum"
+      ? { [P in keyof T as T[P] extends true ? P : never]: number | null }
+      : {
+          [P in keyof T as T[P] extends true
+            ? P & keyof GassmaGassmaUserAggregateBaseReturn
+            : never]: GassmaGassmaUserAggregateBaseReturn[P & keyof GassmaGassmaUserAggregateBaseReturn] | null;
+        };
 
 export type GassmaGassmaProfileAggregateField<T, K extends string> = T extends undefined
   ? never
-  : K extends "_count" | "_avg" | "_sum"
-    ? { [P in keyof T as T[P] extends true ? P : never]: number | null }
-    : {
-        [P in keyof T as T[P] extends true
-          ? P & keyof GassmaGassmaProfileAggregateBaseReturn
-          : never]: GassmaGassmaProfileAggregateBaseReturn[P & keyof GassmaGassmaProfileAggregateBaseReturn] | null;
-      };
+  : K extends "_count"
+    ? { [P in keyof T as T[P] extends true ? P : never]: number }
+    : K extends "_avg" | "_sum"
+      ? { [P in keyof T as T[P] extends true ? P : never]: number | null }
+      : {
+          [P in keyof T as T[P] extends true
+            ? P & keyof GassmaGassmaProfileAggregateBaseReturn
+            : never]: GassmaGassmaProfileAggregateBaseReturn[P & keyof GassmaGassmaProfileAggregateBaseReturn] | null;
+        };
 
 export type GassmaGassmaPostAggregateResult<T extends GassmaGassmaPostAggregateData> = {
   [K in keyof T as K extends "_avg" | "_count" | "_max" | "_min" | "_sum"
