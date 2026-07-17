@@ -12,6 +12,8 @@ function testSelectRelation() {
   testSelectRelationManyToOne(client);
   testSelectNestedSelect(client);
   testSelectDeeplyNested(client);
+  testSelectNestedRelationTrue(client);
+  testSelectNestedManyToOneTrue(client);
   testSelectFindMany(client);
   testSelectFindManyNested(client);
 
@@ -278,6 +280,117 @@ function testSelectDeeplyNested(client: GassmaClient) {
         "selectDeep: comment no postId",
       );
     });
+  });
+}
+
+// ネスト select 内でリレーションを true 形式で取得（深いネストの true）
+// User → posts(Post) → comments(Comment) を true で取得
+// true 形式なので comments はリレーション先の全スカラー列を持つ
+function testSelectNestedRelationTrue(client: GassmaClient) {
+  const user = client.User.findFirst({
+    where: { id: 1 },
+    select: {
+      id: true,
+      posts: {
+        select: {
+          title: true,
+          comments: true,
+        },
+      },
+    },
+  });
+  if (user === null)
+    throw new Error("selectNestedTrue: user not found");
+  assertEquals("id" in user, true, "selectNestedTrue: has id");
+  assertEquals("name" in user, false, "selectNestedTrue: no name");
+
+  const posts = (user as Record<string, unknown>).posts as Record<
+    string,
+    unknown
+  >[];
+  if (!Array.isArray(posts))
+    throw new Error("selectNestedTrue: posts not array");
+  posts.forEach((post) => {
+    assertEquals(
+      "title" in post,
+      true,
+      "selectNestedTrue: post has title",
+    );
+    assertEquals(
+      "content" in post,
+      false,
+      "selectNestedTrue: post no content",
+    );
+
+    const comments = post.comments as Record<string, unknown>[];
+    if (!Array.isArray(comments))
+      throw new Error("selectNestedTrue: comments not array");
+    // true 形式は全スカラー列を取得する（object 形式で列を絞る場合と異なる）
+    comments.forEach((comment) => {
+      assertEquals(
+        "id" in comment,
+        true,
+        "selectNestedTrue: comment has id",
+      );
+      assertEquals(
+        "text" in comment,
+        true,
+        "selectNestedTrue: comment has text",
+      );
+      assertEquals(
+        "postId" in comment,
+        true,
+        "selectNestedTrue: comment has postId",
+      );
+    });
+  });
+}
+
+// ネスト select 内で manyToOne リレーションを true 形式で取得
+// User → posts(Post) → author(User) を true で取得
+function testSelectNestedManyToOneTrue(client: GassmaClient) {
+  const user = client.User.findFirst({
+    where: { id: 1 },
+    select: {
+      id: true,
+      posts: {
+        select: {
+          title: true,
+          author: true,
+        },
+      },
+    },
+  });
+  if (user === null)
+    throw new Error("selectNestedM2OTrue: user not found");
+
+  const posts = (user as Record<string, unknown>).posts as Record<
+    string,
+    unknown
+  >[];
+  if (!Array.isArray(posts))
+    throw new Error("selectNestedM2OTrue: posts not array");
+  posts.forEach((post) => {
+    assertEquals(
+      "title" in post,
+      true,
+      "selectNestedM2OTrue: post has title",
+    );
+
+    const author = post.author as Record<string, unknown> | null;
+    if (author === null || author === undefined)
+      throw new Error("selectNestedM2OTrue: author not resolved");
+    // author は全スカラー列を持つ
+    assertEquals(
+      "id" in author,
+      true,
+      "selectNestedM2OTrue: author has id",
+    );
+    assertEquals(
+      "email" in author,
+      true,
+      "selectNestedM2OTrue: author has email",
+    );
   });
 }
 
