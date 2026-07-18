@@ -23,6 +23,10 @@ import { testSelectRelation } from "./read/testSelectRelation";
 import { testSelfRelation } from "./read/testSelfRelation";
 import { testRelationOmitFalse } from "./read/testRelationOmitFalse";
 import { testGetColumnHeaders } from "./read/testGetColumnHeaders";
+import { testZeroMatch } from "./read/testZeroMatch";
+import { testDistinctOrderByMulti } from "./read/testDistinctOrderByMulti";
+import { testCountZeroRelation } from "./read/testCountZeroRelation";
+import { testIncludeNull } from "./read/testIncludeNull";
 import { resetAllSheets } from "../reset/resetAllSheets";
 
 function testRead() {
@@ -52,6 +56,10 @@ function testRead() {
   testSelfRelation();
   testRelationOmitFalse();
   testGetColumnHeaders();
+  testZeroMatch();
+  testDistinctOrderByMulti();
+  testCountZeroRelation();
+  testIncludeNull();
 
   Logger.log("🎉 All read tests passed!");
 }

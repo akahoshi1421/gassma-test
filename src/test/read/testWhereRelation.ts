@@ -1,5 +1,6 @@
 import { GassmaClient } from "../../generated/gassma/gassmaClient";
 import { assertEquals } from "../../assert/assertEquals";
+import { assertDeepEquals } from "../../assert/assertDeepEquals";
 
 function testWhereRelation() {
   const client = new GassmaClient();
@@ -38,11 +39,9 @@ function testWhereEvery(client: GassmaClient) {
       },
     },
   });
-  // every は全ての投稿が published の場合のみマッチ
-  // 投稿がないユーザーも含まれる
-  if (!Array.isArray(users)) {
-    throw new Error("where every: expected array");
-  }
+  // every は全ての投稿が published の場合のみマッチ (投稿がないユーザーも含まれる)
+  // consts では全投稿が published の User は id 3,5,8,14,18,32,44 の 7 人
+  assertDeepEquals(users.map((user) => user.id), [3, 5, 8, 14, 18, 32, 44], "where every: ids");
 }
 
 function testWhereNone(client: GassmaClient) {
@@ -53,9 +52,8 @@ function testWhereNone(client: GassmaClient) {
       },
     },
   });
-  if (!Array.isArray(users)) {
-    throw new Error("where none: expected array");
-  }
+  // consts で published な投稿を 1 件も持たない User は id 21 のみ
+  assertDeepEquals(users.map((user) => user.id), [21], "where none: ids");
 }
 
 function testWhereIs(client: GassmaClient) {
