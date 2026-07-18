@@ -4,22 +4,19 @@ const gassmaRelations = {
       "type": "manyToOne",
       "to": "User",
       "field": "authorId",
-      "reference": "id",
-      "ownsFk": true
+      "reference": "id"
     },
     "category": {
       "type": "manyToOne",
       "to": "Category",
       "field": "categoryId",
-      "reference": "id",
-      "ownsFk": true
+      "reference": "id"
     },
     "comments": {
       "type": "oneToMany",
       "to": "Comment",
       "field": "id",
       "reference": "postId",
-      "ownsFk": false,
       "onDelete": "Cascade"
     },
     "tags": {
@@ -27,7 +24,6 @@ const gassmaRelations = {
       "to": "Tag",
       "field": "id",
       "reference": "id",
-      "ownsFk": false,
       "through": {
         "sheet": "_PostToTag",
         "field": "postId",
@@ -41,7 +37,6 @@ const gassmaRelations = {
       "to": "Post",
       "field": "id",
       "reference": "authorId",
-      "ownsFk": false,
       "onDelete": "Cascade",
       "onUpdate": "Cascade"
     },
@@ -50,7 +45,6 @@ const gassmaRelations = {
       "to": "Comment",
       "field": "id",
       "reference": "authorId",
-      "ownsFk": false,
       "onDelete": "Cascade",
       "onUpdate": "NoAction"
     },
@@ -59,7 +53,6 @@ const gassmaRelations = {
       "to": "Order",
       "field": "id",
       "reference": "userId",
-      "ownsFk": false,
       "onDelete": "Restrict",
       "onUpdate": "Restrict"
     },
@@ -68,7 +61,6 @@ const gassmaRelations = {
       "to": "Profile",
       "field": "id",
       "reference": "userId",
-      "ownsFk": false,
       "onDelete": "Cascade",
       "onUpdate": "Cascade"
     }
@@ -79,7 +71,6 @@ const gassmaRelations = {
       "to": "Post",
       "field": "id",
       "reference": "categoryId",
-      "ownsFk": false,
       "onDelete": "SetNull",
       "onUpdate": "SetNull"
     },
@@ -87,15 +78,13 @@ const gassmaRelations = {
       "type": "manyToOne",
       "to": "Category",
       "field": "parentId",
-      "reference": "id",
-      "ownsFk": true
+      "reference": "id"
     },
     "children": {
       "type": "oneToMany",
       "to": "Category",
       "field": "id",
       "reference": "parentId",
-      "ownsFk": false,
       "onDelete": "SetNull"
     }
   },
@@ -104,15 +93,13 @@ const gassmaRelations = {
       "type": "manyToOne",
       "to": "User",
       "field": "authorId",
-      "reference": "id",
-      "ownsFk": true
+      "reference": "id"
     },
     "post": {
       "type": "manyToOne",
       "to": "Post",
       "field": "postId",
-      "reference": "id",
-      "ownsFk": true
+      "reference": "id"
     }
   },
   "Order": {
@@ -120,15 +107,13 @@ const gassmaRelations = {
       "type": "manyToOne",
       "to": "User",
       "field": "userId",
-      "reference": "id",
-      "ownsFk": true
+      "reference": "id"
     },
     "items": {
       "type": "oneToMany",
       "to": "OrderItem",
       "field": "id",
       "reference": "orderId",
-      "ownsFk": false,
       "onDelete": "Cascade"
     }
   },
@@ -137,15 +122,13 @@ const gassmaRelations = {
       "type": "manyToOne",
       "to": "Order",
       "field": "orderId",
-      "reference": "id",
-      "ownsFk": true
+      "reference": "id"
     },
     "product": {
       "type": "manyToOne",
       "to": "Product",
       "field": "productId",
-      "reference": "id",
-      "ownsFk": true
+      "reference": "id"
     }
   },
   "Product": {
@@ -154,17 +137,15 @@ const gassmaRelations = {
       "to": "OrderItem",
       "field": "id",
       "reference": "productId",
-      "ownsFk": false,
       "onDelete": "Restrict"
     }
   },
   "Profile": {
     "user": {
-      "type": "oneToOne",
+      "type": "manyToOne",
       "to": "User",
       "field": "userId",
-      "reference": "id",
-      "ownsFk": true
+      "reference": "id"
     }
   },
   "Tag": {
@@ -173,7 +154,6 @@ const gassmaRelations = {
       "to": "Post",
       "field": "id",
       "reference": "id",
-      "ownsFk": false,
       "through": {
         "sheet": "_PostToTag",
         "field": "tagId",

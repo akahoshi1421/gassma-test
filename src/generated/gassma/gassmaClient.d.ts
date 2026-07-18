@@ -13,6 +13,21 @@ export namespace Gassma {
     nulls?: "first" | "last";
   };
 
+  type FilterConditions<T> = {
+    equals?: T | FieldRef;
+    not?: T;
+    in?: T[];
+    notIn?: T[];
+    lt?: T | FieldRef;
+    lte?: T | FieldRef;
+    gt?: T | FieldRef;
+    gte?: T | FieldRef;
+    contains?: string | FieldRef;
+    startsWith?: string | FieldRef;
+    endsWith?: string | FieldRef;
+    mode?: "default" | "insensitive";
+  };
+
   type TrueKeys<T> = { [K in keyof T]: T[K] extends true ? K : never }[keyof T];
   type FalseKeys<T> = { [K in keyof T]: T[K] extends false ? K : never }[keyof T];
   type ResolveOmitKeys<GO, QO> = Exclude<TrueKeys<GO>, FalseKeys<QO>> | TrueKeys<QO>;
@@ -146,6 +161,9 @@ export namespace Gassma {
   }
   class NestedWriteWithoutRelationsError extends Error {
     constructor();
+  }
+  class NestedWriteTargetNotFoundError extends Error {
+    constructor(sheetName: string, operation: string);
   }
   class RelationOrderByUnsupportedTypeError extends Error {
     constructor(relationName: string, relationType: string);
@@ -866,7 +884,7 @@ export type GassmaGassmaUserCreateData = {
     "posts"?: { create?: Omit<GassmaGassmaPostUse, "authorId"> | Omit<GassmaGassmaPostUse, "authorId">[]; createMany?: { data: Omit<GassmaGassmaPostUse, "authorId">[] }; connect?: GassmaGassmaPostWhereUse | GassmaGassmaPostWhereUse[]; connectOrCreate?: { where: GassmaGassmaPostWhereUse; create: Omit<GassmaGassmaPostUse, "authorId"> } | { where: GassmaGassmaPostWhereUse; create: Omit<GassmaGassmaPostUse, "authorId"> }[] };
     "comments"?: { create?: Omit<GassmaGassmaCommentUse, "authorId"> | Omit<GassmaGassmaCommentUse, "authorId">[]; createMany?: { data: Omit<GassmaGassmaCommentUse, "authorId">[] }; connect?: GassmaGassmaCommentWhereUse | GassmaGassmaCommentWhereUse[]; connectOrCreate?: { where: GassmaGassmaCommentWhereUse; create: Omit<GassmaGassmaCommentUse, "authorId"> } | { where: GassmaGassmaCommentWhereUse; create: Omit<GassmaGassmaCommentUse, "authorId"> }[] };
     "orders"?: { create?: Omit<GassmaGassmaOrderUse, "userId"> | Omit<GassmaGassmaOrderUse, "userId">[]; createMany?: { data: Omit<GassmaGassmaOrderUse, "userId">[] }; connect?: GassmaGassmaOrderWhereUse | GassmaGassmaOrderWhereUse[]; connectOrCreate?: { where: GassmaGassmaOrderWhereUse; create: Omit<GassmaGassmaOrderUse, "userId"> } | { where: GassmaGassmaOrderWhereUse; create: Omit<GassmaGassmaOrderUse, "userId"> }[] };
-    "profile"?: { create?: GassmaGassmaProfileUse; connect?: GassmaGassmaProfileWhereUse; connectOrCreate?: { where: GassmaGassmaProfileWhereUse; create: GassmaGassmaProfileUse } };
+    "profile"?: { create?: Omit<GassmaGassmaProfileUse, "userId">; connect?: GassmaGassmaProfileWhereUse; connectOrCreate?: { where: GassmaGassmaProfileWhereUse; create: Omit<GassmaGassmaProfileUse, "userId"> } };
   };
   include?: GassmaGassmaUserInclude;
 } & ({ select?: GassmaGassmaUserSelect; omit?: never } | { select?: never; omit?: GassmaGassmaUserOmit });
@@ -2049,483 +2067,433 @@ export type GassmaGassmaProfileWhereUse = {
 };
 
 export type GassmaGassmaPostidHavingCore = {
-  _avg?: GassmaGassmaPostidFilterConditions;
-  _count?: GassmaGassmaPostidFilterConditions;
+  _avg?: Gassma.FilterConditions<number>;
+  _count?: Gassma.FilterConditions<number>;
   _max?: GassmaGassmaPostidFilterConditions;
   _min?: GassmaGassmaPostidFilterConditions;
-  _sum?: GassmaGassmaPostidFilterConditions;
+  _sum?: Gassma.FilterConditions<number>;
 } & GassmaGassmaPostidFilterConditions;
 
 export type GassmaGassmaPosttitleHavingCore = {
-  _avg?: GassmaGassmaPosttitleFilterConditions;
-  _count?: GassmaGassmaPosttitleFilterConditions;
+  _count?: Gassma.FilterConditions<number>;
   _max?: GassmaGassmaPosttitleFilterConditions;
   _min?: GassmaGassmaPosttitleFilterConditions;
-  _sum?: GassmaGassmaPosttitleFilterConditions;
 } & GassmaGassmaPosttitleFilterConditions;
 
 export type GassmaGassmaPostcontentHavingCore = {
-  _avg?: GassmaGassmaPostcontentFilterConditions;
-  _count?: GassmaGassmaPostcontentFilterConditions;
+  _avg?: Gassma.FilterConditions<number>;
+  _count?: Gassma.FilterConditions<number>;
   _max?: GassmaGassmaPostcontentFilterConditions;
   _min?: GassmaGassmaPostcontentFilterConditions;
-  _sum?: GassmaGassmaPostcontentFilterConditions;
+  _sum?: Gassma.FilterConditions<number>;
 } & GassmaGassmaPostcontentFilterConditions;
 
 export type GassmaGassmaPostpublishedHavingCore = {
-  _avg?: GassmaGassmaPostpublishedFilterConditions;
-  _count?: GassmaGassmaPostpublishedFilterConditions;
+  _count?: Gassma.FilterConditions<number>;
   _max?: GassmaGassmaPostpublishedFilterConditions;
   _min?: GassmaGassmaPostpublishedFilterConditions;
-  _sum?: GassmaGassmaPostpublishedFilterConditions;
 } & GassmaGassmaPostpublishedFilterConditions;
 
 export type GassmaGassmaPostviewCountHavingCore = {
-  _avg?: GassmaGassmaPostviewCountFilterConditions;
-  _count?: GassmaGassmaPostviewCountFilterConditions;
+  _avg?: Gassma.FilterConditions<number>;
+  _count?: Gassma.FilterConditions<number>;
   _max?: GassmaGassmaPostviewCountFilterConditions;
   _min?: GassmaGassmaPostviewCountFilterConditions;
-  _sum?: GassmaGassmaPostviewCountFilterConditions;
+  _sum?: Gassma.FilterConditions<number>;
 } & GassmaGassmaPostviewCountFilterConditions;
 
 export type GassmaGassmaPostratingHavingCore = {
-  _avg?: GassmaGassmaPostratingFilterConditions;
-  _count?: GassmaGassmaPostratingFilterConditions;
+  _avg?: Gassma.FilterConditions<number>;
+  _count?: Gassma.FilterConditions<number>;
   _max?: GassmaGassmaPostratingFilterConditions;
   _min?: GassmaGassmaPostratingFilterConditions;
-  _sum?: GassmaGassmaPostratingFilterConditions;
+  _sum?: Gassma.FilterConditions<number>;
 } & GassmaGassmaPostratingFilterConditions;
 
 export type GassmaGassmaPostauthorIdHavingCore = {
-  _avg?: GassmaGassmaPostauthorIdFilterConditions;
-  _count?: GassmaGassmaPostauthorIdFilterConditions;
+  _avg?: Gassma.FilterConditions<number>;
+  _count?: Gassma.FilterConditions<number>;
   _max?: GassmaGassmaPostauthorIdFilterConditions;
   _min?: GassmaGassmaPostauthorIdFilterConditions;
-  _sum?: GassmaGassmaPostauthorIdFilterConditions;
+  _sum?: Gassma.FilterConditions<number>;
 } & GassmaGassmaPostauthorIdFilterConditions;
 
 export type GassmaGassmaPostcategoryIdHavingCore = {
-  _avg?: GassmaGassmaPostcategoryIdFilterConditions;
-  _count?: GassmaGassmaPostcategoryIdFilterConditions;
+  _avg?: Gassma.FilterConditions<number>;
+  _count?: Gassma.FilterConditions<number>;
   _max?: GassmaGassmaPostcategoryIdFilterConditions;
   _min?: GassmaGassmaPostcategoryIdFilterConditions;
-  _sum?: GassmaGassmaPostcategoryIdFilterConditions;
+  _sum?: Gassma.FilterConditions<number>;
 } & GassmaGassmaPostcategoryIdFilterConditions;
 
 export type GassmaGassmaPostcreatedAtHavingCore = {
-  _avg?: GassmaGassmaPostcreatedAtFilterConditions;
-  _count?: GassmaGassmaPostcreatedAtFilterConditions;
+  _count?: Gassma.FilterConditions<number>;
   _max?: GassmaGassmaPostcreatedAtFilterConditions;
   _min?: GassmaGassmaPostcreatedAtFilterConditions;
-  _sum?: GassmaGassmaPostcreatedAtFilterConditions;
 } & GassmaGassmaPostcreatedAtFilterConditions;
 
 export type GassmaGassmaPostupdatedAtHavingCore = {
-  _avg?: GassmaGassmaPostupdatedAtFilterConditions;
-  _count?: GassmaGassmaPostupdatedAtFilterConditions;
+  _count?: Gassma.FilterConditions<number>;
   _max?: GassmaGassmaPostupdatedAtFilterConditions;
   _min?: GassmaGassmaPostupdatedAtFilterConditions;
-  _sum?: GassmaGassmaPostupdatedAtFilterConditions;
 } & GassmaGassmaPostupdatedAtFilterConditions;
 
 export type GassmaGassmaCommentidHavingCore = {
-  _avg?: GassmaGassmaCommentidFilterConditions;
-  _count?: GassmaGassmaCommentidFilterConditions;
+  _avg?: Gassma.FilterConditions<number>;
+  _count?: Gassma.FilterConditions<number>;
   _max?: GassmaGassmaCommentidFilterConditions;
   _min?: GassmaGassmaCommentidFilterConditions;
-  _sum?: GassmaGassmaCommentidFilterConditions;
+  _sum?: Gassma.FilterConditions<number>;
 } & GassmaGassmaCommentidFilterConditions;
 
 export type GassmaGassmaCommenttextHavingCore = {
-  _avg?: GassmaGassmaCommenttextFilterConditions;
-  _count?: GassmaGassmaCommenttextFilterConditions;
+  _count?: Gassma.FilterConditions<number>;
   _max?: GassmaGassmaCommenttextFilterConditions;
   _min?: GassmaGassmaCommenttextFilterConditions;
-  _sum?: GassmaGassmaCommenttextFilterConditions;
 } & GassmaGassmaCommenttextFilterConditions;
 
 export type GassmaGassmaCommentauthorIdHavingCore = {
-  _avg?: GassmaGassmaCommentauthorIdFilterConditions;
-  _count?: GassmaGassmaCommentauthorIdFilterConditions;
+  _avg?: Gassma.FilterConditions<number>;
+  _count?: Gassma.FilterConditions<number>;
   _max?: GassmaGassmaCommentauthorIdFilterConditions;
   _min?: GassmaGassmaCommentauthorIdFilterConditions;
-  _sum?: GassmaGassmaCommentauthorIdFilterConditions;
+  _sum?: Gassma.FilterConditions<number>;
 } & GassmaGassmaCommentauthorIdFilterConditions;
 
 export type GassmaGassmaCommentpostIdHavingCore = {
-  _avg?: GassmaGassmaCommentpostIdFilterConditions;
-  _count?: GassmaGassmaCommentpostIdFilterConditions;
+  _avg?: Gassma.FilterConditions<number>;
+  _count?: Gassma.FilterConditions<number>;
   _max?: GassmaGassmaCommentpostIdFilterConditions;
   _min?: GassmaGassmaCommentpostIdFilterConditions;
-  _sum?: GassmaGassmaCommentpostIdFilterConditions;
+  _sum?: Gassma.FilterConditions<number>;
 } & GassmaGassmaCommentpostIdFilterConditions;
 
 export type GassmaGassmaCommentcreatedAtHavingCore = {
-  _avg?: GassmaGassmaCommentcreatedAtFilterConditions;
-  _count?: GassmaGassmaCommentcreatedAtFilterConditions;
+  _count?: Gassma.FilterConditions<number>;
   _max?: GassmaGassmaCommentcreatedAtFilterConditions;
   _min?: GassmaGassmaCommentcreatedAtFilterConditions;
-  _sum?: GassmaGassmaCommentcreatedAtFilterConditions;
 } & GassmaGassmaCommentcreatedAtFilterConditions;
 
 export type GassmaGassmaCategoryidHavingCore = {
-  _avg?: GassmaGassmaCategoryidFilterConditions;
-  _count?: GassmaGassmaCategoryidFilterConditions;
+  _avg?: Gassma.FilterConditions<number>;
+  _count?: Gassma.FilterConditions<number>;
   _max?: GassmaGassmaCategoryidFilterConditions;
   _min?: GassmaGassmaCategoryidFilterConditions;
-  _sum?: GassmaGassmaCategoryidFilterConditions;
+  _sum?: Gassma.FilterConditions<number>;
 } & GassmaGassmaCategoryidFilterConditions;
 
 export type GassmaGassmaCategorynameHavingCore = {
-  _avg?: GassmaGassmaCategorynameFilterConditions;
-  _count?: GassmaGassmaCategorynameFilterConditions;
+  _count?: Gassma.FilterConditions<number>;
   _max?: GassmaGassmaCategorynameFilterConditions;
   _min?: GassmaGassmaCategorynameFilterConditions;
-  _sum?: GassmaGassmaCategorynameFilterConditions;
 } & GassmaGassmaCategorynameFilterConditions;
 
 export type GassmaGassmaCategoryparentIdHavingCore = {
-  _avg?: GassmaGassmaCategoryparentIdFilterConditions;
-  _count?: GassmaGassmaCategoryparentIdFilterConditions;
+  _avg?: Gassma.FilterConditions<number>;
+  _count?: Gassma.FilterConditions<number>;
   _max?: GassmaGassmaCategoryparentIdFilterConditions;
   _min?: GassmaGassmaCategoryparentIdFilterConditions;
-  _sum?: GassmaGassmaCategoryparentIdFilterConditions;
+  _sum?: Gassma.FilterConditions<number>;
 } & GassmaGassmaCategoryparentIdFilterConditions;
 
 export type GassmaGassmaTagidHavingCore = {
-  _avg?: GassmaGassmaTagidFilterConditions;
-  _count?: GassmaGassmaTagidFilterConditions;
+  _avg?: Gassma.FilterConditions<number>;
+  _count?: Gassma.FilterConditions<number>;
   _max?: GassmaGassmaTagidFilterConditions;
   _min?: GassmaGassmaTagidFilterConditions;
-  _sum?: GassmaGassmaTagidFilterConditions;
+  _sum?: Gassma.FilterConditions<number>;
 } & GassmaGassmaTagidFilterConditions;
 
 export type GassmaGassmaTagnameHavingCore = {
-  _avg?: GassmaGassmaTagnameFilterConditions;
-  _count?: GassmaGassmaTagnameFilterConditions;
+  _count?: Gassma.FilterConditions<number>;
   _max?: GassmaGassmaTagnameFilterConditions;
   _min?: GassmaGassmaTagnameFilterConditions;
-  _sum?: GassmaGassmaTagnameFilterConditions;
 } & GassmaGassmaTagnameFilterConditions;
 
 export type GassmaGassmaProductidHavingCore = {
-  _avg?: GassmaGassmaProductidFilterConditions;
-  _count?: GassmaGassmaProductidFilterConditions;
+  _avg?: Gassma.FilterConditions<number>;
+  _count?: Gassma.FilterConditions<number>;
   _max?: GassmaGassmaProductidFilterConditions;
   _min?: GassmaGassmaProductidFilterConditions;
-  _sum?: GassmaGassmaProductidFilterConditions;
+  _sum?: Gassma.FilterConditions<number>;
 } & GassmaGassmaProductidFilterConditions;
 
 export type GassmaGassmaProductnameHavingCore = {
-  _avg?: GassmaGassmaProductnameFilterConditions;
-  _count?: GassmaGassmaProductnameFilterConditions;
+  _count?: Gassma.FilterConditions<number>;
   _max?: GassmaGassmaProductnameFilterConditions;
   _min?: GassmaGassmaProductnameFilterConditions;
-  _sum?: GassmaGassmaProductnameFilterConditions;
 } & GassmaGassmaProductnameFilterConditions;
 
 export type GassmaGassmaProductpriceHavingCore = {
-  _avg?: GassmaGassmaProductpriceFilterConditions;
-  _count?: GassmaGassmaProductpriceFilterConditions;
+  _avg?: Gassma.FilterConditions<number>;
+  _count?: Gassma.FilterConditions<number>;
   _max?: GassmaGassmaProductpriceFilterConditions;
   _min?: GassmaGassmaProductpriceFilterConditions;
-  _sum?: GassmaGassmaProductpriceFilterConditions;
+  _sum?: Gassma.FilterConditions<number>;
 } & GassmaGassmaProductpriceFilterConditions;
 
 export type GassmaGassmaProductstockHavingCore = {
-  _avg?: GassmaGassmaProductstockFilterConditions;
-  _count?: GassmaGassmaProductstockFilterConditions;
+  _avg?: Gassma.FilterConditions<number>;
+  _count?: Gassma.FilterConditions<number>;
   _max?: GassmaGassmaProductstockFilterConditions;
   _min?: GassmaGassmaProductstockFilterConditions;
-  _sum?: GassmaGassmaProductstockFilterConditions;
+  _sum?: Gassma.FilterConditions<number>;
 } & GassmaGassmaProductstockFilterConditions;
 
 export type GassmaGassmaProductstatusHavingCore = {
-  _avg?: GassmaGassmaProductstatusFilterConditions;
-  _count?: GassmaGassmaProductstatusFilterConditions;
+  _count?: Gassma.FilterConditions<number>;
   _max?: GassmaGassmaProductstatusFilterConditions;
   _min?: GassmaGassmaProductstatusFilterConditions;
-  _sum?: GassmaGassmaProductstatusFilterConditions;
 } & GassmaGassmaProductstatusFilterConditions;
 
 export type GassmaGassmaProductcreatedAtHavingCore = {
-  _avg?: GassmaGassmaProductcreatedAtFilterConditions;
-  _count?: GassmaGassmaProductcreatedAtFilterConditions;
+  _count?: Gassma.FilterConditions<number>;
   _max?: GassmaGassmaProductcreatedAtFilterConditions;
   _min?: GassmaGassmaProductcreatedAtFilterConditions;
-  _sum?: GassmaGassmaProductcreatedAtFilterConditions;
 } & GassmaGassmaProductcreatedAtFilterConditions;
 
 export type GassmaGassmaProductupdatedAtHavingCore = {
-  _avg?: GassmaGassmaProductupdatedAtFilterConditions;
-  _count?: GassmaGassmaProductupdatedAtFilterConditions;
+  _count?: Gassma.FilterConditions<number>;
   _max?: GassmaGassmaProductupdatedAtFilterConditions;
   _min?: GassmaGassmaProductupdatedAtFilterConditions;
-  _sum?: GassmaGassmaProductupdatedAtFilterConditions;
 } & GassmaGassmaProductupdatedAtFilterConditions;
 
 export type GassmaGassmaOrderidHavingCore = {
-  _avg?: GassmaGassmaOrderidFilterConditions;
-  _count?: GassmaGassmaOrderidFilterConditions;
+  _avg?: Gassma.FilterConditions<number>;
+  _count?: Gassma.FilterConditions<number>;
   _max?: GassmaGassmaOrderidFilterConditions;
   _min?: GassmaGassmaOrderidFilterConditions;
-  _sum?: GassmaGassmaOrderidFilterConditions;
+  _sum?: Gassma.FilterConditions<number>;
 } & GassmaGassmaOrderidFilterConditions;
 
 export type GassmaGassmaOrderuserIdHavingCore = {
-  _avg?: GassmaGassmaOrderuserIdFilterConditions;
-  _count?: GassmaGassmaOrderuserIdFilterConditions;
+  _avg?: Gassma.FilterConditions<number>;
+  _count?: Gassma.FilterConditions<number>;
   _max?: GassmaGassmaOrderuserIdFilterConditions;
   _min?: GassmaGassmaOrderuserIdFilterConditions;
-  _sum?: GassmaGassmaOrderuserIdFilterConditions;
+  _sum?: Gassma.FilterConditions<number>;
 } & GassmaGassmaOrderuserIdFilterConditions;
 
 export type GassmaGassmaOrdertotalAmountHavingCore = {
-  _avg?: GassmaGassmaOrdertotalAmountFilterConditions;
-  _count?: GassmaGassmaOrdertotalAmountFilterConditions;
+  _avg?: Gassma.FilterConditions<number>;
+  _count?: Gassma.FilterConditions<number>;
   _max?: GassmaGassmaOrdertotalAmountFilterConditions;
   _min?: GassmaGassmaOrdertotalAmountFilterConditions;
-  _sum?: GassmaGassmaOrdertotalAmountFilterConditions;
+  _sum?: Gassma.FilterConditions<number>;
 } & GassmaGassmaOrdertotalAmountFilterConditions;
 
 export type GassmaGassmaOrderquantityHavingCore = {
-  _avg?: GassmaGassmaOrderquantityFilterConditions;
-  _count?: GassmaGassmaOrderquantityFilterConditions;
+  _avg?: Gassma.FilterConditions<number>;
+  _count?: Gassma.FilterConditions<number>;
   _max?: GassmaGassmaOrderquantityFilterConditions;
   _min?: GassmaGassmaOrderquantityFilterConditions;
-  _sum?: GassmaGassmaOrderquantityFilterConditions;
+  _sum?: Gassma.FilterConditions<number>;
 } & GassmaGassmaOrderquantityFilterConditions;
 
 export type GassmaGassmaOrderstatusHavingCore = {
-  _avg?: GassmaGassmaOrderstatusFilterConditions;
-  _count?: GassmaGassmaOrderstatusFilterConditions;
+  _count?: Gassma.FilterConditions<number>;
   _max?: GassmaGassmaOrderstatusFilterConditions;
   _min?: GassmaGassmaOrderstatusFilterConditions;
-  _sum?: GassmaGassmaOrderstatusFilterConditions;
 } & GassmaGassmaOrderstatusFilterConditions;
 
 export type GassmaGassmaOrdercreatedAtHavingCore = {
-  _avg?: GassmaGassmaOrdercreatedAtFilterConditions;
-  _count?: GassmaGassmaOrdercreatedAtFilterConditions;
+  _count?: Gassma.FilterConditions<number>;
   _max?: GassmaGassmaOrdercreatedAtFilterConditions;
   _min?: GassmaGassmaOrdercreatedAtFilterConditions;
-  _sum?: GassmaGassmaOrdercreatedAtFilterConditions;
 } & GassmaGassmaOrdercreatedAtFilterConditions;
 
 export type GassmaGassmaOrderItemidHavingCore = {
-  _avg?: GassmaGassmaOrderItemidFilterConditions;
-  _count?: GassmaGassmaOrderItemidFilterConditions;
+  _avg?: Gassma.FilterConditions<number>;
+  _count?: Gassma.FilterConditions<number>;
   _max?: GassmaGassmaOrderItemidFilterConditions;
   _min?: GassmaGassmaOrderItemidFilterConditions;
-  _sum?: GassmaGassmaOrderItemidFilterConditions;
+  _sum?: Gassma.FilterConditions<number>;
 } & GassmaGassmaOrderItemidFilterConditions;
 
 export type GassmaGassmaOrderItemorderIdHavingCore = {
-  _avg?: GassmaGassmaOrderItemorderIdFilterConditions;
-  _count?: GassmaGassmaOrderItemorderIdFilterConditions;
+  _avg?: Gassma.FilterConditions<number>;
+  _count?: Gassma.FilterConditions<number>;
   _max?: GassmaGassmaOrderItemorderIdFilterConditions;
   _min?: GassmaGassmaOrderItemorderIdFilterConditions;
-  _sum?: GassmaGassmaOrderItemorderIdFilterConditions;
+  _sum?: Gassma.FilterConditions<number>;
 } & GassmaGassmaOrderItemorderIdFilterConditions;
 
 export type GassmaGassmaOrderItemproductIdHavingCore = {
-  _avg?: GassmaGassmaOrderItemproductIdFilterConditions;
-  _count?: GassmaGassmaOrderItemproductIdFilterConditions;
+  _avg?: Gassma.FilterConditions<number>;
+  _count?: Gassma.FilterConditions<number>;
   _max?: GassmaGassmaOrderItemproductIdFilterConditions;
   _min?: GassmaGassmaOrderItemproductIdFilterConditions;
-  _sum?: GassmaGassmaOrderItemproductIdFilterConditions;
+  _sum?: Gassma.FilterConditions<number>;
 } & GassmaGassmaOrderItemproductIdFilterConditions;
 
 export type GassmaGassmaOrderItemquantityHavingCore = {
-  _avg?: GassmaGassmaOrderItemquantityFilterConditions;
-  _count?: GassmaGassmaOrderItemquantityFilterConditions;
+  _avg?: Gassma.FilterConditions<number>;
+  _count?: Gassma.FilterConditions<number>;
   _max?: GassmaGassmaOrderItemquantityFilterConditions;
   _min?: GassmaGassmaOrderItemquantityFilterConditions;
-  _sum?: GassmaGassmaOrderItemquantityFilterConditions;
+  _sum?: Gassma.FilterConditions<number>;
 } & GassmaGassmaOrderItemquantityFilterConditions;
 
 export type GassmaGassmaOrderItemunitPriceHavingCore = {
-  _avg?: GassmaGassmaOrderItemunitPriceFilterConditions;
-  _count?: GassmaGassmaOrderItemunitPriceFilterConditions;
+  _avg?: Gassma.FilterConditions<number>;
+  _count?: Gassma.FilterConditions<number>;
   _max?: GassmaGassmaOrderItemunitPriceFilterConditions;
   _min?: GassmaGassmaOrderItemunitPriceFilterConditions;
-  _sum?: GassmaGassmaOrderItemunitPriceFilterConditions;
+  _sum?: Gassma.FilterConditions<number>;
 } & GassmaGassmaOrderItemunitPriceFilterConditions;
 
 export type GassmaGassmaFormulaCellidHavingCore = {
-  _avg?: GassmaGassmaFormulaCellidFilterConditions;
-  _count?: GassmaGassmaFormulaCellidFilterConditions;
+  _avg?: Gassma.FilterConditions<number>;
+  _count?: Gassma.FilterConditions<number>;
   _max?: GassmaGassmaFormulaCellidFilterConditions;
   _min?: GassmaGassmaFormulaCellidFilterConditions;
-  _sum?: GassmaGassmaFormulaCellidFilterConditions;
+  _sum?: Gassma.FilterConditions<number>;
 } & GassmaGassmaFormulaCellidFilterConditions;
 
 export type GassmaGassmaFormulaCelllabelHavingCore = {
-  _avg?: GassmaGassmaFormulaCelllabelFilterConditions;
-  _count?: GassmaGassmaFormulaCelllabelFilterConditions;
+  _count?: Gassma.FilterConditions<number>;
   _max?: GassmaGassmaFormulaCelllabelFilterConditions;
   _min?: GassmaGassmaFormulaCelllabelFilterConditions;
-  _sum?: GassmaGassmaFormulaCelllabelFilterConditions;
 } & GassmaGassmaFormulaCelllabelFilterConditions;
 
 export type GassmaGassmaFormulaCellamountHavingCore = {
-  _avg?: GassmaGassmaFormulaCellamountFilterConditions;
-  _count?: GassmaGassmaFormulaCellamountFilterConditions;
+  _avg?: Gassma.FilterConditions<number>;
+  _count?: Gassma.FilterConditions<number>;
   _max?: GassmaGassmaFormulaCellamountFilterConditions;
   _min?: GassmaGassmaFormulaCellamountFilterConditions;
-  _sum?: GassmaGassmaFormulaCellamountFilterConditions;
+  _sum?: Gassma.FilterConditions<number>;
 } & GassmaGassmaFormulaCellamountFilterConditions;
 
 export type GassmaGassmaFormulaCelltotalHavingCore = {
-  _avg?: GassmaGassmaFormulaCelltotalFilterConditions;
-  _count?: GassmaGassmaFormulaCelltotalFilterConditions;
+  _avg?: Gassma.FilterConditions<number>;
+  _count?: Gassma.FilterConditions<number>;
   _max?: GassmaGassmaFormulaCelltotalFilterConditions;
   _min?: GassmaGassmaFormulaCelltotalFilterConditions;
-  _sum?: GassmaGassmaFormulaCelltotalFilterConditions;
+  _sum?: Gassma.FilterConditions<number>;
 } & GassmaGassmaFormulaCelltotalFilterConditions;
 
 export type GassmaGassmaNotificationidHavingCore = {
-  _avg?: GassmaGassmaNotificationidFilterConditions;
-  _count?: GassmaGassmaNotificationidFilterConditions;
+  _avg?: Gassma.FilterConditions<number>;
+  _count?: Gassma.FilterConditions<number>;
   _max?: GassmaGassmaNotificationidFilterConditions;
   _min?: GassmaGassmaNotificationidFilterConditions;
-  _sum?: GassmaGassmaNotificationidFilterConditions;
+  _sum?: Gassma.FilterConditions<number>;
 } & GassmaGassmaNotificationidFilterConditions;
 
 export type GassmaGassmaNotificationuserIdHavingCore = {
-  _avg?: GassmaGassmaNotificationuserIdFilterConditions;
-  _count?: GassmaGassmaNotificationuserIdFilterConditions;
+  _avg?: Gassma.FilterConditions<number>;
+  _count?: Gassma.FilterConditions<number>;
   _max?: GassmaGassmaNotificationuserIdFilterConditions;
   _min?: GassmaGassmaNotificationuserIdFilterConditions;
-  _sum?: GassmaGassmaNotificationuserIdFilterConditions;
+  _sum?: Gassma.FilterConditions<number>;
 } & GassmaGassmaNotificationuserIdFilterConditions;
 
 export type GassmaGassmaNotificationmessageHavingCore = {
-  _avg?: GassmaGassmaNotificationmessageFilterConditions;
-  _count?: GassmaGassmaNotificationmessageFilterConditions;
+  _count?: Gassma.FilterConditions<number>;
   _max?: GassmaGassmaNotificationmessageFilterConditions;
   _min?: GassmaGassmaNotificationmessageFilterConditions;
-  _sum?: GassmaGassmaNotificationmessageFilterConditions;
 } & GassmaGassmaNotificationmessageFilterConditions;
 
 export type GassmaGassmaNotificationisReadHavingCore = {
-  _avg?: GassmaGassmaNotificationisReadFilterConditions;
-  _count?: GassmaGassmaNotificationisReadFilterConditions;
+  _count?: Gassma.FilterConditions<number>;
   _max?: GassmaGassmaNotificationisReadFilterConditions;
   _min?: GassmaGassmaNotificationisReadFilterConditions;
-  _sum?: GassmaGassmaNotificationisReadFilterConditions;
 } & GassmaGassmaNotificationisReadFilterConditions;
 
 export type GassmaGassmaOffsetNoteidHavingCore = {
-  _avg?: GassmaGassmaOffsetNoteidFilterConditions;
-  _count?: GassmaGassmaOffsetNoteidFilterConditions;
+  _avg?: Gassma.FilterConditions<number>;
+  _count?: Gassma.FilterConditions<number>;
   _max?: GassmaGassmaOffsetNoteidFilterConditions;
   _min?: GassmaGassmaOffsetNoteidFilterConditions;
-  _sum?: GassmaGassmaOffsetNoteidFilterConditions;
+  _sum?: Gassma.FilterConditions<number>;
 } & GassmaGassmaOffsetNoteidFilterConditions;
 
 export type GassmaGassmaOffsetNotetitleHavingCore = {
-  _avg?: GassmaGassmaOffsetNotetitleFilterConditions;
-  _count?: GassmaGassmaOffsetNotetitleFilterConditions;
+  _count?: Gassma.FilterConditions<number>;
   _max?: GassmaGassmaOffsetNotetitleFilterConditions;
   _min?: GassmaGassmaOffsetNotetitleFilterConditions;
-  _sum?: GassmaGassmaOffsetNotetitleFilterConditions;
 } & GassmaGassmaOffsetNotetitleFilterConditions;
 
 export type GassmaGassmaOffsetNotevalueHavingCore = {
-  _avg?: GassmaGassmaOffsetNotevalueFilterConditions;
-  _count?: GassmaGassmaOffsetNotevalueFilterConditions;
+  _avg?: Gassma.FilterConditions<number>;
+  _count?: Gassma.FilterConditions<number>;
   _max?: GassmaGassmaOffsetNotevalueFilterConditions;
   _min?: GassmaGassmaOffsetNotevalueFilterConditions;
-  _sum?: GassmaGassmaOffsetNotevalueFilterConditions;
+  _sum?: Gassma.FilterConditions<number>;
 } & GassmaGassmaOffsetNotevalueFilterConditions;
 
 export type GassmaGassmaUseridHavingCore = {
-  _avg?: GassmaGassmaUseridFilterConditions;
-  _count?: GassmaGassmaUseridFilterConditions;
+  _avg?: Gassma.FilterConditions<number>;
+  _count?: Gassma.FilterConditions<number>;
   _max?: GassmaGassmaUseridFilterConditions;
   _min?: GassmaGassmaUseridFilterConditions;
-  _sum?: GassmaGassmaUseridFilterConditions;
+  _sum?: Gassma.FilterConditions<number>;
 } & GassmaGassmaUseridFilterConditions;
 
 export type GassmaGassmaUseremailHavingCore = {
-  _avg?: GassmaGassmaUseremailFilterConditions;
-  _count?: GassmaGassmaUseremailFilterConditions;
+  _count?: Gassma.FilterConditions<number>;
   _max?: GassmaGassmaUseremailFilterConditions;
   _min?: GassmaGassmaUseremailFilterConditions;
-  _sum?: GassmaGassmaUseremailFilterConditions;
 } & GassmaGassmaUseremailFilterConditions;
 
 export type GassmaGassmaUsernameHavingCore = {
-  _avg?: GassmaGassmaUsernameFilterConditions;
-  _count?: GassmaGassmaUsernameFilterConditions;
+  _count?: Gassma.FilterConditions<number>;
   _max?: GassmaGassmaUsernameFilterConditions;
   _min?: GassmaGassmaUsernameFilterConditions;
-  _sum?: GassmaGassmaUsernameFilterConditions;
 } & GassmaGassmaUsernameFilterConditions;
 
 export type GassmaGassmaUserageHavingCore = {
-  _avg?: GassmaGassmaUserageFilterConditions;
-  _count?: GassmaGassmaUserageFilterConditions;
+  _avg?: Gassma.FilterConditions<number>;
+  _count?: Gassma.FilterConditions<number>;
   _max?: GassmaGassmaUserageFilterConditions;
   _min?: GassmaGassmaUserageFilterConditions;
-  _sum?: GassmaGassmaUserageFilterConditions;
+  _sum?: Gassma.FilterConditions<number>;
 } & GassmaGassmaUserageFilterConditions;
 
 export type GassmaGassmaUserisActiveHavingCore = {
-  _avg?: GassmaGassmaUserisActiveFilterConditions;
-  _count?: GassmaGassmaUserisActiveFilterConditions;
+  _count?: Gassma.FilterConditions<number>;
   _max?: GassmaGassmaUserisActiveFilterConditions;
   _min?: GassmaGassmaUserisActiveFilterConditions;
-  _sum?: GassmaGassmaUserisActiveFilterConditions;
 } & GassmaGassmaUserisActiveFilterConditions;
 
 export type GassmaGassmaUserroleHavingCore = {
-  _avg?: GassmaGassmaUserroleFilterConditions;
-  _count?: GassmaGassmaUserroleFilterConditions;
+  _count?: Gassma.FilterConditions<number>;
   _max?: GassmaGassmaUserroleFilterConditions;
   _min?: GassmaGassmaUserroleFilterConditions;
-  _sum?: GassmaGassmaUserroleFilterConditions;
 } & GassmaGassmaUserroleFilterConditions;
 
 export type GassmaGassmaUsercreatedAtHavingCore = {
-  _avg?: GassmaGassmaUsercreatedAtFilterConditions;
-  _count?: GassmaGassmaUsercreatedAtFilterConditions;
+  _count?: Gassma.FilterConditions<number>;
   _max?: GassmaGassmaUsercreatedAtFilterConditions;
   _min?: GassmaGassmaUsercreatedAtFilterConditions;
-  _sum?: GassmaGassmaUsercreatedAtFilterConditions;
 } & GassmaGassmaUsercreatedAtFilterConditions;
 
 export type GassmaGassmaProfileidHavingCore = {
-  _avg?: GassmaGassmaProfileidFilterConditions;
-  _count?: GassmaGassmaProfileidFilterConditions;
+  _avg?: Gassma.FilterConditions<number>;
+  _count?: Gassma.FilterConditions<number>;
   _max?: GassmaGassmaProfileidFilterConditions;
   _min?: GassmaGassmaProfileidFilterConditions;
-  _sum?: GassmaGassmaProfileidFilterConditions;
+  _sum?: Gassma.FilterConditions<number>;
 } & GassmaGassmaProfileidFilterConditions;
 
 export type GassmaGassmaProfilebioHavingCore = {
-  _avg?: GassmaGassmaProfilebioFilterConditions;
-  _count?: GassmaGassmaProfilebioFilterConditions;
+  _count?: Gassma.FilterConditions<number>;
   _max?: GassmaGassmaProfilebioFilterConditions;
   _min?: GassmaGassmaProfilebioFilterConditions;
-  _sum?: GassmaGassmaProfilebioFilterConditions;
 } & GassmaGassmaProfilebioFilterConditions;
 
 export type GassmaGassmaProfilewebsiteHavingCore = {
-  _avg?: GassmaGassmaProfilewebsiteFilterConditions;
-  _count?: GassmaGassmaProfilewebsiteFilterConditions;
+  _count?: Gassma.FilterConditions<number>;
   _max?: GassmaGassmaProfilewebsiteFilterConditions;
   _min?: GassmaGassmaProfilewebsiteFilterConditions;
-  _sum?: GassmaGassmaProfilewebsiteFilterConditions;
 } & GassmaGassmaProfilewebsiteFilterConditions;
 
 export type GassmaGassmaProfileuserIdHavingCore = {
-  _avg?: GassmaGassmaProfileuserIdFilterConditions;
-  _count?: GassmaGassmaProfileuserIdFilterConditions;
+  _avg?: Gassma.FilterConditions<number>;
+  _count?: Gassma.FilterConditions<number>;
   _max?: GassmaGassmaProfileuserIdFilterConditions;
   _min?: GassmaGassmaProfileuserIdFilterConditions;
-  _sum?: GassmaGassmaProfileuserIdFilterConditions;
+  _sum?: Gassma.FilterConditions<number>;
 } & GassmaGassmaProfileuserIdFilterConditions;
 
 export type GassmaGassmaPostHavingUse = {
@@ -3084,7 +3052,7 @@ export type GassmaGassmaUserUpdateSingleData = {
     "posts"?: { create?: Omit<GassmaGassmaPostUse, "authorId"> | Omit<GassmaGassmaPostUse, "authorId">[]; createMany?: { data: Omit<GassmaGassmaPostUse, "authorId">[] }; connect?: GassmaGassmaPostWhereUse | GassmaGassmaPostWhereUse[]; connectOrCreate?: { where: GassmaGassmaPostWhereUse; create: Omit<GassmaGassmaPostUse, "authorId"> } | { where: GassmaGassmaPostWhereUse; create: Omit<GassmaGassmaPostUse, "authorId"> }[]; update?: { where: GassmaGassmaPostWhereUse; data: Partial<GassmaGassmaPostUse> } | { where: GassmaGassmaPostWhereUse; data: Partial<GassmaGassmaPostUse> }[]; delete?: GassmaGassmaPostWhereUse | GassmaGassmaPostWhereUse[]; deleteMany?: GassmaGassmaPostWhereUse | GassmaGassmaPostWhereUse[]; disconnect?: GassmaGassmaPostWhereUse | GassmaGassmaPostWhereUse[]; set?: GassmaGassmaPostWhereUse[] };
     "comments"?: { create?: Omit<GassmaGassmaCommentUse, "authorId"> | Omit<GassmaGassmaCommentUse, "authorId">[]; createMany?: { data: Omit<GassmaGassmaCommentUse, "authorId">[] }; connect?: GassmaGassmaCommentWhereUse | GassmaGassmaCommentWhereUse[]; connectOrCreate?: { where: GassmaGassmaCommentWhereUse; create: Omit<GassmaGassmaCommentUse, "authorId"> } | { where: GassmaGassmaCommentWhereUse; create: Omit<GassmaGassmaCommentUse, "authorId"> }[]; update?: { where: GassmaGassmaCommentWhereUse; data: Partial<GassmaGassmaCommentUse> } | { where: GassmaGassmaCommentWhereUse; data: Partial<GassmaGassmaCommentUse> }[]; delete?: GassmaGassmaCommentWhereUse | GassmaGassmaCommentWhereUse[]; deleteMany?: GassmaGassmaCommentWhereUse | GassmaGassmaCommentWhereUse[]; disconnect?: GassmaGassmaCommentWhereUse | GassmaGassmaCommentWhereUse[]; set?: GassmaGassmaCommentWhereUse[] };
     "orders"?: { create?: Omit<GassmaGassmaOrderUse, "userId"> | Omit<GassmaGassmaOrderUse, "userId">[]; createMany?: { data: Omit<GassmaGassmaOrderUse, "userId">[] }; connect?: GassmaGassmaOrderWhereUse | GassmaGassmaOrderWhereUse[]; connectOrCreate?: { where: GassmaGassmaOrderWhereUse; create: Omit<GassmaGassmaOrderUse, "userId"> } | { where: GassmaGassmaOrderWhereUse; create: Omit<GassmaGassmaOrderUse, "userId"> }[]; update?: { where: GassmaGassmaOrderWhereUse; data: Partial<GassmaGassmaOrderUse> } | { where: GassmaGassmaOrderWhereUse; data: Partial<GassmaGassmaOrderUse> }[]; delete?: GassmaGassmaOrderWhereUse | GassmaGassmaOrderWhereUse[]; deleteMany?: GassmaGassmaOrderWhereUse | GassmaGassmaOrderWhereUse[]; disconnect?: GassmaGassmaOrderWhereUse | GassmaGassmaOrderWhereUse[]; set?: GassmaGassmaOrderWhereUse[] };
-    "profile"?: { create?: GassmaGassmaProfileUse; connect?: GassmaGassmaProfileWhereUse; connectOrCreate?: { where: GassmaGassmaProfileWhereUse; create: GassmaGassmaProfileUse }; update?: Partial<GassmaGassmaProfileUse>; delete?: true; disconnect?: true };
+    "profile"?: { create?: Omit<GassmaGassmaProfileUse, "userId">; connect?: GassmaGassmaProfileWhereUse; connectOrCreate?: { where: GassmaGassmaProfileWhereUse; create: Omit<GassmaGassmaProfileUse, "userId"> }; update?: Partial<GassmaGassmaProfileUse>; delete?: true; disconnect?: true };
   };
   include?: GassmaGassmaUserInclude;
 } & ({ select?: GassmaGassmaUserSelect; omit?: never } | { select?: never; omit?: GassmaGassmaUserOmit });
@@ -3207,13 +3175,13 @@ export type GassmaGassmaUserUpsertSingleData = {
     "posts"?: { create?: Omit<GassmaGassmaPostUse, "authorId"> | Omit<GassmaGassmaPostUse, "authorId">[]; createMany?: { data: Omit<GassmaGassmaPostUse, "authorId">[] }; connect?: GassmaGassmaPostWhereUse | GassmaGassmaPostWhereUse[]; connectOrCreate?: { where: GassmaGassmaPostWhereUse; create: Omit<GassmaGassmaPostUse, "authorId"> } | { where: GassmaGassmaPostWhereUse; create: Omit<GassmaGassmaPostUse, "authorId"> }[] };
     "comments"?: { create?: Omit<GassmaGassmaCommentUse, "authorId"> | Omit<GassmaGassmaCommentUse, "authorId">[]; createMany?: { data: Omit<GassmaGassmaCommentUse, "authorId">[] }; connect?: GassmaGassmaCommentWhereUse | GassmaGassmaCommentWhereUse[]; connectOrCreate?: { where: GassmaGassmaCommentWhereUse; create: Omit<GassmaGassmaCommentUse, "authorId"> } | { where: GassmaGassmaCommentWhereUse; create: Omit<GassmaGassmaCommentUse, "authorId"> }[] };
     "orders"?: { create?: Omit<GassmaGassmaOrderUse, "userId"> | Omit<GassmaGassmaOrderUse, "userId">[]; createMany?: { data: Omit<GassmaGassmaOrderUse, "userId">[] }; connect?: GassmaGassmaOrderWhereUse | GassmaGassmaOrderWhereUse[]; connectOrCreate?: { where: GassmaGassmaOrderWhereUse; create: Omit<GassmaGassmaOrderUse, "userId"> } | { where: GassmaGassmaOrderWhereUse; create: Omit<GassmaGassmaOrderUse, "userId"> }[] };
-    "profile"?: { create?: GassmaGassmaProfileUse; connect?: GassmaGassmaProfileWhereUse; connectOrCreate?: { where: GassmaGassmaProfileWhereUse; create: GassmaGassmaProfileUse } };
+    "profile"?: { create?: Omit<GassmaGassmaProfileUse, "userId">; connect?: GassmaGassmaProfileWhereUse; connectOrCreate?: { where: GassmaGassmaProfileWhereUse; create: Omit<GassmaGassmaProfileUse, "userId"> } };
   };
   update: Partial<{ [K in keyof GassmaGassmaUserUse]: GassmaGassmaUserUse[K] | Gassma.NumberOperation }> & {
     "posts"?: { create?: Omit<GassmaGassmaPostUse, "authorId"> | Omit<GassmaGassmaPostUse, "authorId">[]; createMany?: { data: Omit<GassmaGassmaPostUse, "authorId">[] }; connect?: GassmaGassmaPostWhereUse | GassmaGassmaPostWhereUse[]; connectOrCreate?: { where: GassmaGassmaPostWhereUse; create: Omit<GassmaGassmaPostUse, "authorId"> } | { where: GassmaGassmaPostWhereUse; create: Omit<GassmaGassmaPostUse, "authorId"> }[]; update?: { where: GassmaGassmaPostWhereUse; data: Partial<GassmaGassmaPostUse> } | { where: GassmaGassmaPostWhereUse; data: Partial<GassmaGassmaPostUse> }[]; delete?: GassmaGassmaPostWhereUse | GassmaGassmaPostWhereUse[]; deleteMany?: GassmaGassmaPostWhereUse | GassmaGassmaPostWhereUse[]; disconnect?: GassmaGassmaPostWhereUse | GassmaGassmaPostWhereUse[]; set?: GassmaGassmaPostWhereUse[] };
     "comments"?: { create?: Omit<GassmaGassmaCommentUse, "authorId"> | Omit<GassmaGassmaCommentUse, "authorId">[]; createMany?: { data: Omit<GassmaGassmaCommentUse, "authorId">[] }; connect?: GassmaGassmaCommentWhereUse | GassmaGassmaCommentWhereUse[]; connectOrCreate?: { where: GassmaGassmaCommentWhereUse; create: Omit<GassmaGassmaCommentUse, "authorId"> } | { where: GassmaGassmaCommentWhereUse; create: Omit<GassmaGassmaCommentUse, "authorId"> }[]; update?: { where: GassmaGassmaCommentWhereUse; data: Partial<GassmaGassmaCommentUse> } | { where: GassmaGassmaCommentWhereUse; data: Partial<GassmaGassmaCommentUse> }[]; delete?: GassmaGassmaCommentWhereUse | GassmaGassmaCommentWhereUse[]; deleteMany?: GassmaGassmaCommentWhereUse | GassmaGassmaCommentWhereUse[]; disconnect?: GassmaGassmaCommentWhereUse | GassmaGassmaCommentWhereUse[]; set?: GassmaGassmaCommentWhereUse[] };
     "orders"?: { create?: Omit<GassmaGassmaOrderUse, "userId"> | Omit<GassmaGassmaOrderUse, "userId">[]; createMany?: { data: Omit<GassmaGassmaOrderUse, "userId">[] }; connect?: GassmaGassmaOrderWhereUse | GassmaGassmaOrderWhereUse[]; connectOrCreate?: { where: GassmaGassmaOrderWhereUse; create: Omit<GassmaGassmaOrderUse, "userId"> } | { where: GassmaGassmaOrderWhereUse; create: Omit<GassmaGassmaOrderUse, "userId"> }[]; update?: { where: GassmaGassmaOrderWhereUse; data: Partial<GassmaGassmaOrderUse> } | { where: GassmaGassmaOrderWhereUse; data: Partial<GassmaGassmaOrderUse> }[]; delete?: GassmaGassmaOrderWhereUse | GassmaGassmaOrderWhereUse[]; deleteMany?: GassmaGassmaOrderWhereUse | GassmaGassmaOrderWhereUse[]; disconnect?: GassmaGassmaOrderWhereUse | GassmaGassmaOrderWhereUse[]; set?: GassmaGassmaOrderWhereUse[] };
-    "profile"?: { create?: GassmaGassmaProfileUse; connect?: GassmaGassmaProfileWhereUse; connectOrCreate?: { where: GassmaGassmaProfileWhereUse; create: GassmaGassmaProfileUse }; update?: Partial<GassmaGassmaProfileUse>; delete?: true; disconnect?: true };
+    "profile"?: { create?: Omit<GassmaGassmaProfileUse, "userId">; connect?: GassmaGassmaProfileWhereUse; connectOrCreate?: { where: GassmaGassmaProfileWhereUse; create: Omit<GassmaGassmaProfileUse, "userId"> }; update?: Partial<GassmaGassmaProfileUse>; delete?: true; disconnect?: true };
   };
   include?: GassmaGassmaUserInclude;
 } & ({ select?: GassmaGassmaUserSelect; omit?: never } | { select?: never; omit?: GassmaGassmaUserOmit });
