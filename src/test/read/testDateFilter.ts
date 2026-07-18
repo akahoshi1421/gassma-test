@@ -14,8 +14,10 @@ function testDateFilter() {
   testDateLt(client);
   testDateLte(client);
   testDateRangePinpoint(client);
-  testDateEqualsNeverMatches(client);
+  testDateEqualsMatchesByInstant(client);
+  testDateNotExcludesByInstant(client);
   testDateInNotIn(client);
+  testDateIsoStringNeverMatches(client);
 
   Logger.log("✅ testDateFilter: all passed");
 }
@@ -96,30 +98,72 @@ function testDateRangePinpoint(client: GassmaClient) {
   );
 }
 
-function testDateEqualsNeverMatches(client: GassmaClient) {
-  // equals / 直値は === の参照比較のため、同時刻セルが存在しても Date は 0 件（仕様固定）
+function testDateEqualsMatchesByInstant(client: GassmaClient) {
+  // equals / 直値は getTime の時刻一致で判定される（別インスタンスでも一致）
   const byEquals = client.Order.findMany({
     where: { createdAt: { equals: BOUNDARY } },
   });
-  assertEquals(byEquals.length, 0, "date equals: reference comparison matches nothing");
+  assertDeepEquals(
+    byEquals.map((order) => order.id),
+    [6],
+    "date equals: same instant matches boundary row",
+  );
 
   const byDirect = client.Order.findMany({
     where: { createdAt: BOUNDARY },
   });
-  assertEquals(byDirect.length, 0, "date direct value: reference comparison matches nothing");
+  assertDeepEquals(
+    byDirect.map((order) => order.id),
+    [6],
+    "date direct value: same instant matches boundary row",
+  );
+
+  const byPlus1ms = client.Order.findMany({
+    where: { createdAt: { equals: new Date(BOUNDARY.getTime() + 1) } },
+  });
+  assertEquals(byPlus1ms.length, 0, "date equals: +1ms matches nothing");
+}
+
+function testDateNotExcludesByInstant(client: GassmaClient) {
+  const orders = client.Order.findMany({
+    where: { createdAt: { not: BOUNDARY } },
+  });
+  assertEquals(orders.length, 299, "date not: count");
+  assertEquals(
+    orders.some((order) => order.id === 6),
+    false,
+    "date not: boundary row excluded",
+  );
 }
 
 function testDateInNotIn(client: GassmaClient) {
-  // in / notIn も includes の参照比較（仕様固定）: in は 0 件、notIn は非 null 全件
   const byIn = client.Order.findMany({
     where: { createdAt: { in: [BOUNDARY] } },
   });
-  assertEquals(byIn.length, 0, "date in: reference comparison matches nothing");
+  assertDeepEquals(
+    byIn.map((order) => order.id),
+    [6],
+    "date in: same instant matches boundary row",
+  );
 
   const byNotIn = client.Order.findMany({
     where: { createdAt: { notIn: [BOUNDARY] } },
   });
-  assertEquals(byNotIn.length, 300, "date notIn: matches all non-null rows");
+  assertEquals(byNotIn.length, 299, "date notIn: count");
+  assertEquals(
+    byNotIn.some((order) => order.id === 6),
+    false,
+    "date notIn: boundary row excluded",
+  );
+}
+
+function testDateIsoStringNeverMatches(client: GassmaClient) {
+  // ISO 文字列直値は Date セルと不一致（暗黙変換しない仕様固定）
+  const orders = client.Order.findMany({
+    // @ts-expect-error Date カラムへの文字列直値は型レベルで禁止
+    where: { createdAt: "2025-05-19T06:51:24" },
+  });
+  assertEquals(orders.length, 0, "date ISO string direct value: matches nothing");
 }
 
 export { testDateFilter };
