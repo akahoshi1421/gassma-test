@@ -9,6 +9,7 @@ function testIncludeAdvanced() {
   testIncludeOrderBy(client);
   testIncludeSkipTake(client);
   testIncludeCountWithWhere(client);
+  testIncludeCountTrueAllRelations(client);
 
   Logger.log("✅ testIncludeAdvanced: all passed");
 }
@@ -125,6 +126,29 @@ function testIncludeCountWithWhere(client: GassmaClient) {
     throw new Error(
       `include count where: filtered ${user._count.posts} > all ${allCount}`,
     );
+}
+
+function testIncludeCountTrueAllRelations(client: GassmaClient) {
+  // _count: true で User の全リレーション (posts/comments/orders/profile) が数えられる
+  const user = client.User.findFirst({
+    where: { id: 1 },
+    include: { _count: true },
+  });
+  if (!user) throw new Error("include _count true: user null");
+
+  const countKeys = Object.keys(user._count);
+  assertEquals(countKeys.length, 4, "include _count true: relation key count");
+  ["posts", "comments", "orders", "profile"].forEach((key) => {
+    if (countKeys.indexOf(key) === -1) {
+      throw new Error(`include _count true: missing key ${key}`);
+    }
+  });
+
+  // consts 実データ: authorId=1 の Post 7 件 / Comment 7 件 / userId=1 の Order 9 件 / Profile 1 件
+  assertEquals(user._count.posts, 7, "include _count true: posts");
+  assertEquals(user._count.comments, 7, "include _count true: comments");
+  assertEquals(user._count.orders, 9, "include _count true: orders");
+  assertEquals(user._count.profile, 1, "include _count true: profile");
 }
 
 export { testIncludeAdvanced };

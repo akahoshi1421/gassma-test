@@ -6,6 +6,7 @@ function testCount() {
 
   testCountBasic(client);
   testCountWhere(client);
+  testCountTakeSkip(client);
 
   Logger.log("✅ testCount: all passed");
 }
@@ -35,6 +36,19 @@ function testCountWhere(client: GassmaClient) {
   if (publishedCount <= 0) {
     throw new Error("count where: expected published count > 0");
   }
+}
+
+function testCountTakeSkip(client: GassmaClient) {
+  // GASsma 固有仕様: take/skip はカウント前の行絞り込みに適用される
+  const takeCount = client.User.count({ take: 10 });
+  assertEquals(takeCount, 10, "count take");
+
+  const skipCount = client.User.count({ skip: 45 });
+  assertEquals(skipCount, 5, "count skip");
+
+  // skip 45 → 残 5 行なので take 10 でも 5
+  const skipTakeCount = client.User.count({ skip: 45, take: 10 });
+  assertEquals(skipTakeCount, 5, "count skip + take");
 }
 
 export { testCount };

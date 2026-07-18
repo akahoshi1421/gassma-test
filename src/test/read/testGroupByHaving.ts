@@ -1,4 +1,5 @@
 import { GassmaClient } from "../../generated/gassma/gassmaClient";
+import { assertEquals } from "../../assert/assertEquals";
 
 function testGroupByHaving() {
   const client = new GassmaClient();
@@ -6,6 +7,9 @@ function testGroupByHaving() {
   testHavingCount(client);
   testHavingSum(client);
   testHavingAvg(client);
+  testHavingAnd(client);
+  testHavingOr(client);
+  testHavingNot(client);
 
   Logger.log("✅ testGroupByHaving: all passed");
 }
@@ -75,6 +79,64 @@ function testHavingAvg(client: GassmaClient) {
       throw new Error(`having avg: status ${group.status} avg ${group._avg.totalAmount} < 50000`);
     }
   });
+}
+
+// role ごとの User 数は ADMIN=6, USER=32, MODERATOR=12 (consts userData より)
+
+function testHavingAnd(client: GassmaClient) {
+  const result = client.User.groupBy({
+    by: "role",
+    _count: { id: true },
+    having: {
+      AND: [
+        { id: { _count: { gte: 10 } } },
+        { id: { _count: { lte: 15 } } },
+      ],
+    },
+  });
+
+  assertEquals(result.length, 1, "having AND: group count");
+  assertEquals(result[0].role, "MODERATOR", "having AND: role");
+  assertEquals(result[0]._count.id, 12, "having AND: count");
+}
+
+function testHavingOr(client: GassmaClient) {
+  const result = client.User.groupBy({
+    by: "role",
+    _count: { id: true },
+    having: {
+      OR: [
+        { id: { _count: { lte: 6 } } },
+        { id: { _count: { gte: 30 } } },
+      ],
+    },
+  });
+
+  assertEquals(result.length, 2, "having OR: group count");
+  const roles = result.map((g) => g.role);
+  if (roles.indexOf("ADMIN") === -1 || roles.indexOf("USER") === -1) {
+    throw new Error(`having OR: unexpected roles ${JSON.stringify(roles)}`);
+  }
+  const admin = result.filter((g) => g.role === "ADMIN")[0];
+  const user = result.filter((g) => g.role === "USER")[0];
+  assertEquals(admin._count.id, 6, "having OR: ADMIN count");
+  assertEquals(user._count.id, 32, "having OR: USER count");
+}
+
+function testHavingNot(client: GassmaClient) {
+  const result = client.User.groupBy({
+    by: "role",
+    _count: { id: true },
+    having: {
+      NOT: {
+        id: { _count: { gte: 10 } },
+      },
+    },
+  });
+
+  assertEquals(result.length, 1, "having NOT: group count");
+  assertEquals(result[0].role, "ADMIN", "having NOT: role");
+  assertEquals(result[0]._count.id, 6, "having NOT: count");
 }
 
 export { testGroupByHaving };

@@ -11,6 +11,7 @@ function testGlobalOmitWrite() {
   testGlobalOmitUpsertInclude();
   testGlobalOmitDeleteInclude();
   testGlobalOmitWriteNonRegression();
+  testGlobalOmitUpdateManyAndReturn();
 
   Logger.log("✅ testGlobalOmitWrite: all passed");
 }
@@ -263,6 +264,37 @@ function testGlobalOmitWriteNonRegression() {
   assertEquals(result.content, "visible content", "plain create include+omit content value");
   if (!result.author)
     throw new Error("plain create include+omit: author missing");
+
+  resetSheet("Post", postData);
+}
+
+function testGlobalOmitUpdateManyAndReturn() {
+  const client = new GassmaClient({ omit: { Post: { content: true } } });
+
+  const results = client.Post.updateManyAndReturn({
+    where: { id: { lte: 3 } },
+    data: { title: "GlobalOmitUmar" },
+  });
+
+  assertEquals(results.length, 3, "globalOmit updateManyAndReturn length");
+  results.forEach((result, index) => {
+    const keys = Object.keys(result);
+    if (keys.indexOf("content") !== -1)
+      throw new Error(`globalOmit updateManyAndReturn[${index}]: content should be omitted`);
+    if (keys.indexOf("debugInfo") !== -1)
+      throw new Error(`globalOmit updateManyAndReturn[${index}]: debugInfo should be omitted (ignore)`);
+    assertEquals(result.title, "GlobalOmitUmar", `globalOmit updateManyAndReturn[${index}] title`);
+  });
+
+  // シート上の content は omit の影響を受けない
+  const snapshot = getSheetSnapshot("Post");
+  snapshot.assertRowEquals(
+    { id: 1 },
+    {
+      title: "GlobalOmitUmar",
+      content: "This article covers topic 1 in depth. We explore various aspects and provide practical examples.",
+    },
+  );
 
   resetSheet("Post", postData);
 }

@@ -7,6 +7,7 @@ import { profileData } from "../../consts/profileData";
 import { postData } from "../../consts/postData";
 import { commentData } from "../../consts/commentData";
 import { postToTagData } from "../../consts/postToTagData";
+import { categoryData } from "../../consts/categoryData";
 
 function testNestedUpdate() {
   const client = new GassmaClient();
@@ -20,6 +21,10 @@ function testNestedUpdate() {
   testNestedConnectOrCreate(client);
   testNestedSetOneToMany(client);
   testNestedSetManyToMany(client);
+  testNestedUpdateToOneBareData(client);
+  testNestedUpdateToOneDelete(client);
+  testNestedUpdateToOneDisconnect(client);
+  testNestedUpdateOneToManyDisconnect(client);
 
   Logger.log("✅ testNestedUpdate: all passed");
 }
@@ -296,6 +301,124 @@ function testNestedSetManyToMany(client: GassmaClient) {
 
   // 元に戻す
   resetSheet("_PostToTag", postToTagData);
+}
+
+function testNestedUpdateToOneBareData(client: GassmaClient) {
+  // manyToOne: Post id=1 (authorId=36) の author を裸 data 形で update
+  client.Post.update({
+    where: { id: 1 },
+    data: {
+      author: {
+        update: { name: "NestedAuthorUpdated" },
+      },
+    },
+  });
+
+  const userSnapshot = getSheetSnapshot("User");
+  userSnapshot.assertRowEquals({ id: 36 }, { name: "NestedAuthorUpdated" });
+  // 他の User は影響を受けない
+  userSnapshot.assertRowEquals({ id: 2 }, { name: "佐藤 浩二" });
+
+  resetSheet("User", userData);
+  resetSheet("Post", postData);
+
+  // oneToOne: User id=5 の profile (Profile id=5) を裸 data 形で update
+  client.User.update({
+    where: { id: 5 },
+    data: {
+      profile: {
+        update: { bio: "NestedBioUpdated" },
+      },
+    },
+  });
+
+  const profileSnapshot = getSheetSnapshot("Profile");
+  profileSnapshot.assertRowEquals({ id: 5 }, { bio: "NestedBioUpdated", userId: 5 });
+  profileSnapshot.assertRowEquals({ id: 4 }, { bio: "Full-stack developer" });
+
+  resetSheet("Profile", profileData);
+  resetSheet("User", userData);
+}
+
+function testNestedUpdateToOneDelete(client: GassmaClient) {
+  // FK 保有側 (Post.category) で delete: true → 相手行が削除され FK が null になる
+  client.Category.create({ data: { id: 975, name: "NestedDeleteCat" } });
+  client.Post.create({
+    data: {
+      id: 975,
+      title: "NestedDeleteTarget",
+      authorId: 1,
+      categoryId: 975,
+      createdAt: new Date("2025-01-01T00:00:00"),
+      updatedAt: new Date("2025-01-01T00:00:00"),
+    },
+  });
+
+  client.Post.update({
+    where: { id: 975 },
+    data: {
+      category: { delete: true },
+    },
+  });
+
+  const categorySnapshot = getSheetSnapshot("Category");
+  categorySnapshot.assertRowNotExists({ id: 975 });
+  categorySnapshot.assertRowEquals({ id: 1 }, { name: "テクノロジー" });
+
+  const post = client.Post.findFirst({ where: { id: 975 } });
+  if (!post) throw new Error("nested to-one delete: post 975 not found");
+  assertEquals(post.categoryId, null, "nested to-one delete: categoryId should be null");
+
+  resetSheet("Post", postData);
+  resetSheet("Category", categoryData);
+}
+
+function testNestedUpdateToOneDisconnect(client: GassmaClient) {
+  // FK 保有側 (Post.category) で disconnect: true → FK のみ null、相手行は残る
+  client.Post.update({
+    where: { id: 1 },
+    data: {
+      category: { disconnect: true },
+    },
+  });
+
+  const post = client.Post.findFirst({ where: { id: 1 } });
+  if (!post) throw new Error("nested to-one disconnect: post 1 not found");
+  assertEquals(post.categoryId, null, "nested to-one disconnect: categoryId should be null");
+
+  // 相手行 (Category id=14) は削除されない
+  const categorySnapshot = getSheetSnapshot("Category");
+  categorySnapshot.assertRowEquals({ id: 14 }, { name: "映画" });
+
+  resetSheet("Post", postData);
+}
+
+function testNestedUpdateOneToManyDisconnect(client: GassmaClient) {
+  // oneToMany の disconnect (where 形): Post id=8 (authorId=3) の FK が null になる
+  client.User.update({
+    where: { id: 3 },
+    data: {
+      posts: {
+        disconnect: { id: 8 },
+      },
+    },
+  });
+
+  const disconnected = client.Post.findFirst({ where: { id: 8 } });
+  if (!disconnected) throw new Error("nested oneToMany disconnect: post 8 not found");
+  const disconnectedAuthorId: unknown = disconnected.authorId;
+  if (disconnectedAuthorId !== null) {
+    throw new Error(
+      `nested oneToMany disconnect: authorId should be null but got ${JSON.stringify(disconnectedAuthorId)}`,
+    );
+  }
+
+  // 同じ author の他 Post (id=172) は影響を受けない
+  const other = client.Post.findFirst({ where: { id: 172 } });
+  if (!other) throw new Error("nested oneToMany disconnect: post 172 not found");
+  assertEquals(other.authorId, 3, "nested oneToMany disconnect: other post untouched");
+
+  resetSheet("Post", postData);
 }
 
 export { testNestedUpdate };

@@ -3,6 +3,8 @@ import { assertEquals } from "../../assert/assertEquals";
 import { getSheetSnapshot } from "../../assert/getSheetSnapshot";
 import { resetSheet } from "../../reset/resetSheet";
 import { tagData } from "../../consts/tagData";
+import { postData } from "../../consts/postData";
+import { orderItemData } from "../../consts/orderItemData";
 
 function testUpdateMany() {
   const client = new GassmaClient();
@@ -11,6 +13,8 @@ function testUpdateMany() {
   testUpdateManyWhere(client);
   testUpdateManyLimit(client);
   testUpdateManyAndReturn(client);
+  testUpdateManyRelationFilter(client);
+  testUpdateManyFieldsWhere(client);
 
   Logger.log("✅ testUpdateMany: all passed");
 }
@@ -71,6 +75,46 @@ function testUpdateManyAndReturn(client: GassmaClient) {
   assertEquals(results[0].name, "Returned", "updateManyAndReturn name");
 
   resetSheet("Tag", tagData);
+}
+
+function testUpdateManyRelationFilter(client: GassmaClient) {
+  // ADMIN (id: 1,4,18,34,35,45) の未公開 Post は 9 件
+  const result = client.Post.updateMany({
+    where: {
+      author: { is: { role: "ADMIN" } },
+      published: false,
+    },
+    data: { published: true },
+  });
+
+  assertEquals(result.count, 9, "updateMany relation filter count");
+
+  const snapshot = getSheetSnapshot("Post");
+  // id=54 は ADMIN(authorId=1) の未公開 Post → 更新される
+  snapshot.assertRowEquals({ id: 54 }, { published: true });
+  // id=3 は USER(authorId=9) の未公開 Post → 更新されない
+  snapshot.assertRowEquals({ id: 3 }, { published: false });
+
+  resetSheet("Post", postData);
+}
+
+function testUpdateManyFieldsWhere(client: GassmaClient) {
+  // orderId === productId の OrderItem は 2 件 (id 335, 366)
+  const result = client.OrderItem.updateMany({
+    where: {
+      orderId: { equals: client.OrderItem.fields.productId },
+    },
+    data: { quantity: 999 },
+  });
+
+  assertEquals(result.count, 2, "updateMany fields where count");
+
+  const snapshot = getSheetSnapshot("OrderItem");
+  snapshot.assertRowEquals({ id: 335 }, { quantity: 999 });
+  snapshot.assertRowEquals({ id: 366 }, { quantity: 999 });
+  snapshot.assertRowEquals({ id: 1 }, { quantity: 5 });
+
+  resetSheet("OrderItem", orderItemData);
 }
 
 export { testUpdateMany };

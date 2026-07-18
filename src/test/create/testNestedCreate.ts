@@ -1,4 +1,5 @@
 import { GassmaClient } from "../../generated/gassma/gassmaClient";
+import { assertEquals } from "../../assert/assertEquals";
 import { getSheetSnapshot } from "../../assert/getSheetSnapshot";
 import { resetSheet } from "../../reset/resetSheet";
 import { orderData } from "../../consts/orderData";
@@ -6,6 +7,9 @@ import { orderItemData } from "../../consts/orderItemData";
 import { categoryData } from "../../consts/categoryData";
 import { profileData } from "../../consts/profileData";
 import { userData } from "../../consts/userData";
+import { postData } from "../../consts/postData";
+import { tagData } from "../../consts/tagData";
+import { postToTagData } from "../../consts/postToTagData";
 
 function testNestedCreate() {
   const client = new GassmaClient();
@@ -16,6 +20,10 @@ function testNestedCreate() {
   testNestedCreateConnectOrCreateNew(client);
   testNestedCreateConnectOrCreateExisting(client);
   testNestedCreateSelfReferencing(client);
+  testNestedCreateOneToManyCreateMany(client);
+  testNestedCreateManyToManyCreate(client);
+  testNestedCreateManyToOneCreate(client);
+  testNestedCreateDeepNest(client);
 
   Logger.log("✅ testNestedCreate: all passed");
 }
@@ -183,6 +191,147 @@ function testNestedCreateSelfReferencing(client: GassmaClient) {
   snapshot.assertRowExists({ id: 903, parentId: 901 });
 
   resetSheet("Category", categoryData);
+}
+
+function testNestedCreateOneToManyCreateMany(client: GassmaClient) {
+  client.User.create({
+    data: {
+      id: 976,
+      email: "nestedcm@test.com",
+      name: "NestedCreateManyUser",
+      role: "USER",
+      createdAt: new Date("2025-01-01T00:00:00"),
+      posts: {
+        createMany: {
+          data: [
+            { id: 976, title: "CreateManyPost1" },
+            { id: 977, title: "CreateManyPost2" },
+          ],
+        },
+      },
+    },
+  });
+
+  const userSnapshot = getSheetSnapshot("User");
+  userSnapshot.assertRowExists({ id: 976 });
+
+  // authorId は親の id が自動セットされ、Post の defaults も適用される
+  const postSnapshot = getSheetSnapshot("Post");
+  postSnapshot.assertRowEquals(
+    { id: 976 },
+    { authorId: 976, title: "CreateManyPost1", published: false, viewCount: 0 },
+  );
+  postSnapshot.assertRowEquals(
+    { id: 977 },
+    { authorId: 976, title: "CreateManyPost2" },
+  );
+
+  resetSheet("User", userData);
+  resetSheet("Post", postData);
+}
+
+function testNestedCreateManyToManyCreate(client: GassmaClient) {
+  client.Post.create({
+    data: {
+      id: 976,
+      title: "ManyToManyNestedPost",
+      authorId: 1,
+      createdAt: new Date("2025-01-01T00:00:00"),
+      updatedAt: new Date("2025-01-01T00:00:00"),
+      tags: {
+        create: [
+          { id: 976, name: "NestedTagA" },
+          { id: 977, name: "NestedTagB" },
+        ],
+      },
+    },
+  });
+
+  const postSnapshot = getSheetSnapshot("Post");
+  postSnapshot.assertRowExists({ id: 976 });
+
+  const tagSnapshot = getSheetSnapshot("Tag");
+  tagSnapshot.assertRowEquals({ id: 976 }, { name: "NestedTagA" });
+  tagSnapshot.assertRowEquals({ id: 977 }, { name: "NestedTagB" });
+
+  const pivotSnapshot = getSheetSnapshot("_PostToTag");
+  pivotSnapshot.assertRowExists({ postId: 976, tagId: 976 });
+  pivotSnapshot.assertRowExists({ postId: 976, tagId: 977 });
+
+  resetSheet("Post", postData);
+  resetSheet("Tag", tagData);
+  resetSheet("_PostToTag", postToTagData);
+}
+
+function testNestedCreateManyToOneCreate(client: GassmaClient) {
+  const result = client.Post.create({
+    data: {
+      id: 977,
+      title: "ManyToOneNestedPost",
+      createdAt: new Date("2025-01-01T00:00:00"),
+      updatedAt: new Date("2025-01-01T00:00:00"),
+      author: {
+        create: {
+          id: 977,
+          email: "nestedauthor@test.com",
+          name: "NestedAuthor",
+          role: "USER",
+          createdAt: new Date("2025-01-01T00:00:00"),
+        },
+      },
+    },
+  });
+
+  // 先に User が作成され、その id が Post の authorId にセットされる
+  assertEquals(result.authorId, 977, "manyToOne nested create: returned authorId");
+
+  const userSnapshot = getSheetSnapshot("User");
+  userSnapshot.assertRowEquals({ id: 977 }, { name: "NestedAuthor" });
+
+  const postSnapshot = getSheetSnapshot("Post");
+  postSnapshot.assertRowEquals({ id: 977 }, { authorId: 977, title: "ManyToOneNestedPost" });
+
+  resetSheet("User", userData);
+  resetSheet("Post", postData);
+}
+
+function testNestedCreateDeepNest(client: GassmaClient) {
+  // User → posts → tags を 1 回の create で作成（reference nestedWrite.md 深いネスト）
+  client.User.create({
+    data: {
+      id: 978,
+      email: "deepnest@test.com",
+      name: "DeepNestUser",
+      role: "USER",
+      createdAt: new Date("2025-01-01T00:00:00"),
+      posts: {
+        create: {
+          id: 978,
+          title: "DeepNestPost",
+          tags: {
+            create: { id: 978, name: "DeepNestTag" },
+          },
+        },
+      },
+    },
+  });
+
+  const userSnapshot = getSheetSnapshot("User");
+  userSnapshot.assertRowExists({ id: 978 });
+
+  const postSnapshot = getSheetSnapshot("Post");
+  postSnapshot.assertRowEquals({ id: 978 }, { authorId: 978, title: "DeepNestPost" });
+
+  const tagSnapshot = getSheetSnapshot("Tag");
+  tagSnapshot.assertRowEquals({ id: 978 }, { name: "DeepNestTag" });
+
+  const pivotSnapshot = getSheetSnapshot("_PostToTag");
+  pivotSnapshot.assertRowExists({ postId: 978, tagId: 978 });
+
+  resetSheet("User", userData);
+  resetSheet("Post", postData);
+  resetSheet("Tag", tagData);
+  resetSheet("_PostToTag", postToTagData);
 }
 
 export { testNestedCreate };
