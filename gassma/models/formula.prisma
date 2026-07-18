@@ -1,0 +1,8 @@
+// ===== 数式セルテスト用（total 列は =C{row}*2 の数式。CSV import 時に数式として取り込む） =====
+
+model FormulaCell {
+  id     Int    @id
+  label  String
+  amount Int
+  total  Int
+}

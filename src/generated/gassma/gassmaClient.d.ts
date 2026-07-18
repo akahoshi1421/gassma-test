@@ -187,6 +187,7 @@ export type GassmaGassmaGlobalOmitConfig = {
   "Product"?: GassmaGassmaProductOmit;
   "Order"?: GassmaGassmaOrderOmit;
   "OrderItem"?: GassmaGassmaOrderItemOmit;
+  "FormulaCell"?: GassmaGassmaFormulaCellOmit;
   "Notification"?: GassmaGassmaNotificationOmit;
   "OffsetNote"?: GassmaGassmaOffsetNoteOmit;
   "User"?: GassmaGassmaUserOmit;
@@ -230,13 +231,14 @@ export type GassmaGassmaIgnoreConfig = {
   "Product"?: "id" | "name" | "price" | "stock" | "status" | "createdAt" | "updatedAt" | ("id" | "name" | "price" | "stock" | "status" | "createdAt" | "updatedAt")[];
   "Order"?: "id" | "userId" | "totalAmount" | "quantity" | "status" | "createdAt" | ("id" | "userId" | "totalAmount" | "quantity" | "status" | "createdAt")[];
   "OrderItem"?: "id" | "orderId" | "productId" | "quantity" | "unitPrice" | ("id" | "orderId" | "productId" | "quantity" | "unitPrice")[];
+  "FormulaCell"?: "id" | "label" | "amount" | "total" | ("id" | "label" | "amount" | "total")[];
   "Notification"?: "id" | "userId" | "message" | "isRead" | ("id" | "userId" | "message" | "isRead")[];
   "OffsetNote"?: "id" | "title" | "value" | ("id" | "title" | "value")[];
   "User"?: "id" | "email" | "name" | "age" | "isActive" | "role" | "createdAt" | ("id" | "email" | "name" | "age" | "isActive" | "role" | "createdAt")[];
   "Profile"?: "id" | "bio" | "website" | "userId" | ("id" | "bio" | "website" | "userId")[];
 };
 
-export type GassmaGassmaIgnoreSheetsConfig = "Post" | "Comment" | "Category" | "Tag" | "Product" | "Order" | "OrderItem" | "Notification" | "OffsetNote" | "User" | "Profile" | ("Post" | "Comment" | "Category" | "Tag" | "Product" | "Order" | "OrderItem" | "Notification" | "OffsetNote" | "User" | "Profile")[];
+export type GassmaGassmaIgnoreSheetsConfig = "Post" | "Comment" | "Category" | "Tag" | "Product" | "Order" | "OrderItem" | "FormulaCell" | "Notification" | "OffsetNote" | "User" | "Profile" | ("Post" | "Comment" | "Category" | "Tag" | "Product" | "Order" | "OrderItem" | "FormulaCell" | "Notification" | "OffsetNote" | "User" | "Profile")[];
 
 export type GassmaGassmaMapConfig = {
   "Post"?: {
@@ -291,6 +293,12 @@ export type GassmaGassmaMapConfig = {
       "quantity"?: string;
       "unitPrice"?: string;
   };
+  "FormulaCell"?: {
+      "id"?: string;
+      "label"?: string;
+      "amount"?: string;
+      "total"?: string;
+  };
   "Notification"?: {
       "id"?: string;
       "userId"?: string;
@@ -327,6 +335,7 @@ export type GassmaGassmaMapSheetsConfig = {
   "Product"?: string;
   "Order"?: string;
   "OrderItem"?: string;
+  "FormulaCell"?: string;
   "Notification"?: string;
   "OffsetNote"?: string;
   "User"?: string;
@@ -367,6 +376,7 @@ export type GassmaGassmaSheet<O extends GassmaGassmaGlobalOmitConfig = {}> = {
   "Product": GassmaGassmaProductController<O extends { "Product": infer UO } ? UO extends GassmaGassmaProductOmit ? UO : {} : {}, O>;
   "Order": GassmaGassmaOrderController<O extends { "Order": infer UO } ? UO extends GassmaGassmaOrderOmit ? UO : {} : {}, O>;
   "OrderItem": GassmaGassmaOrderItemController<O extends { "OrderItem": infer UO } ? UO extends GassmaGassmaOrderItemOmit ? UO : {} : {}, O>;
+  "FormulaCell": GassmaGassmaFormulaCellController<O extends { "FormulaCell": infer UO } ? UO extends GassmaGassmaFormulaCellOmit ? UO : {} : {}, O>;
   "Notification": GassmaGassmaNotificationController<O extends { "Notification": infer UO } ? UO extends GassmaGassmaNotificationOmit ? UO : {} : {}, O>;
   "OffsetNote": GassmaGassmaOffsetNoteController<O extends { "OffsetNote": infer UO } ? UO extends GassmaGassmaOffsetNoteOmit ? UO : {} : {}, O>;
   "User": GassmaGassmaUserController<O extends { "User": infer UO } ? UO extends GassmaGassmaUserOmit ? UO : {} : {}, O>;
@@ -555,6 +565,32 @@ export declare class GassmaGassmaOrderItemController<GO extends GassmaGassmaOrde
   groupBy<T extends GassmaGassmaOrderItemGroupByData>(groupByData: T): GassmaGassmaOrderItemGroupByResult<T>[];
 }
 
+export declare class GassmaGassmaFormulaCellController<GO extends GassmaGassmaFormulaCellOmit = {}, O = {}> {
+  constructor(sheetName: string, id?: string);
+
+  readonly fields: Record<string, Gassma.FieldRef>;
+  changeSettings(
+    startRowNumber: number,
+    startColumnNumber: number,
+    endColumnNumber: number
+  ): void;
+  createMany(createdData: GassmaGassmaFormulaCellCreateManyData): CreateManyReturn;
+  createManyAndReturn<T extends GassmaGassmaFormulaCellCreateManyAndReturnData>(createdData: T): GassmaGassmaFormulaCellFindResult<T["select"], T["include"], T["omit"], GO, O>[];
+  create<T extends GassmaGassmaFormulaCellCreateData>(createdData: T): GassmaGassmaFormulaCellFindResult<T["select"], T["include"], T["omit"], GO, O>;
+  findFirst<T extends GassmaGassmaFormulaCellFindFirstData>(findData: T): GassmaGassmaFormulaCellFindResult<T["select"], T["include"], T["omit"], GO, O> | null;
+  findFirstOrThrow<T extends GassmaGassmaFormulaCellFindFirstData>(findData: T): GassmaGassmaFormulaCellFindResult<T["select"], T["include"], T["omit"], GO, O>;
+  findMany<T extends GassmaGassmaFormulaCellFindManyData>(findData: T): GassmaGassmaFormulaCellFindResult<T["select"], T["include"], T["omit"], GO, O>[];
+  update<T extends GassmaGassmaFormulaCellUpdateSingleData>(updateData: T): GassmaGassmaFormulaCellFindResult<T["select"], T["include"], T["omit"], GO, O> | null;
+  updateMany(updateData: GassmaGassmaFormulaCellUpdateData): UpdateManyReturn;
+  updateManyAndReturn(updateData: GassmaGassmaFormulaCellUpdateData): GassmaGassmaFormulaCellFindResult<undefined, undefined, undefined, GO, O>[];
+  upsert<T extends GassmaGassmaFormulaCellUpsertSingleData>(upsertData: T): GassmaGassmaFormulaCellFindResult<T["select"], T["include"], T["omit"], GO, O>;
+  delete<T extends GassmaGassmaFormulaCellDeleteSingleData>(deleteData: T): GassmaGassmaFormulaCellFindResult<T["select"], T["include"], T["omit"], GO, O> | null;
+  deleteMany(deleteData: GassmaGassmaFormulaCellDeleteData): DeleteManyReturn;
+  aggregate<T extends GassmaGassmaFormulaCellAggregateData>(aggregateData: T): GassmaGassmaFormulaCellAggregateResult<T>;
+  count(coutData: GassmaGassmaFormulaCellCountData): number;
+  groupBy<T extends GassmaGassmaFormulaCellGroupByData>(groupByData: T): GassmaGassmaFormulaCellGroupByResult<T>[];
+}
+
 export declare class GassmaGassmaNotificationController<GO extends GassmaGassmaNotificationOmit = {}, O = {}> {
   constructor(sheetName: string, id?: string);
 
@@ -726,6 +762,13 @@ export type GassmaGassmaOrderItemUse = {
   "unitPrice": number;
 };
 
+export type GassmaGassmaFormulaCellUse = {
+  "id": number;
+  "label": string;
+  "amount": number;
+  "total": number;
+};
+
 export type GassmaGassmaNotificationUse = {
   "id"?: number;
   "userId": number;
@@ -803,6 +846,11 @@ export type GassmaGassmaOrderItemCreateData = {
   include?: GassmaGassmaOrderItemInclude;
 } & ({ select?: GassmaGassmaOrderItemSelect; omit?: never } | { select?: never; omit?: GassmaGassmaOrderItemOmit });
 
+export type GassmaGassmaFormulaCellCreateData = {
+  data: GassmaGassmaFormulaCellUse;
+  include?: GassmaGassmaFormulaCellInclude;
+} & ({ select?: GassmaGassmaFormulaCellSelect; omit?: never } | { select?: never; omit?: GassmaGassmaFormulaCellOmit });
+
 export type GassmaGassmaNotificationCreateData = {
   data: GassmaGassmaNotificationUse;
   include?: GassmaGassmaNotificationInclude;
@@ -856,6 +904,10 @@ export type GassmaGassmaOrderItemCreateManyData = {
   data: GassmaGassmaOrderItemUse[];
 };
 
+export type GassmaGassmaFormulaCellCreateManyData = {
+  data: GassmaGassmaFormulaCellUse[];
+};
+
 export type GassmaGassmaNotificationCreateManyData = {
   data: GassmaGassmaNotificationUse[];
 };
@@ -906,6 +958,11 @@ export type GassmaGassmaOrderItemCreateManyAndReturnData = {
   data: GassmaGassmaOrderItemUse[];
   include?: GassmaGassmaOrderItemInclude;
 } & ({ select?: GassmaGassmaOrderItemSelect; omit?: never } | { select?: never; omit?: GassmaGassmaOrderItemOmit });
+
+export type GassmaGassmaFormulaCellCreateManyAndReturnData = {
+  data: GassmaGassmaFormulaCellUse[];
+  include?: GassmaGassmaFormulaCellInclude;
+} & ({ select?: GassmaGassmaFormulaCellSelect; omit?: never } | { select?: never; omit?: GassmaGassmaFormulaCellOmit });
 
 export type GassmaGassmaNotificationCreateManyAndReturnData = {
   data: GassmaGassmaNotificationUse[];
@@ -1497,6 +1554,66 @@ export type GassmaGassmaOrderItemunitPriceFilterConditions = {
   mode?: "default" | "insensitive";
 };
 
+export type GassmaGassmaFormulaCellidFilterConditions = {
+  equals?: number | Gassma.FieldRef;
+  not?: number;
+  in?: number[];
+  notIn?: number[];
+  lt?: number | Gassma.FieldRef;
+  lte?: number | Gassma.FieldRef;
+  gt?: number | Gassma.FieldRef;
+  gte?: number | Gassma.FieldRef;
+  contains?: string | Gassma.FieldRef;
+  startsWith?: string | Gassma.FieldRef;
+  endsWith?: string | Gassma.FieldRef;
+  mode?: "default" | "insensitive";
+};
+
+export type GassmaGassmaFormulaCelllabelFilterConditions = {
+  equals?: string | Gassma.FieldRef;
+  not?: string;
+  in?: string[];
+  notIn?: string[];
+  lt?: string | Gassma.FieldRef;
+  lte?: string | Gassma.FieldRef;
+  gt?: string | Gassma.FieldRef;
+  gte?: string | Gassma.FieldRef;
+  contains?: string | Gassma.FieldRef;
+  startsWith?: string | Gassma.FieldRef;
+  endsWith?: string | Gassma.FieldRef;
+  mode?: "default" | "insensitive";
+};
+
+export type GassmaGassmaFormulaCellamountFilterConditions = {
+  equals?: number | Gassma.FieldRef;
+  not?: number;
+  in?: number[];
+  notIn?: number[];
+  lt?: number | Gassma.FieldRef;
+  lte?: number | Gassma.FieldRef;
+  gt?: number | Gassma.FieldRef;
+  gte?: number | Gassma.FieldRef;
+  contains?: string | Gassma.FieldRef;
+  startsWith?: string | Gassma.FieldRef;
+  endsWith?: string | Gassma.FieldRef;
+  mode?: "default" | "insensitive";
+};
+
+export type GassmaGassmaFormulaCelltotalFilterConditions = {
+  equals?: number | Gassma.FieldRef;
+  not?: number;
+  in?: number[];
+  notIn?: number[];
+  lt?: number | Gassma.FieldRef;
+  lte?: number | Gassma.FieldRef;
+  gt?: number | Gassma.FieldRef;
+  gte?: number | Gassma.FieldRef;
+  contains?: string | Gassma.FieldRef;
+  startsWith?: string | Gassma.FieldRef;
+  endsWith?: string | Gassma.FieldRef;
+  mode?: "default" | "insensitive";
+};
+
 export type GassmaGassmaNotificationidFilterConditions = {
   equals?: number | Gassma.FieldRef;
   not?: number;
@@ -1869,6 +1986,17 @@ export type GassmaGassmaOrderItemWhereUse = {
   NOT?: GassmaGassmaOrderItemWhereUse[] | GassmaGassmaOrderItemWhereUse;
 };
 
+export type GassmaGassmaFormulaCellWhereUse = {
+  "id"?: number | GassmaGassmaFormulaCellidFilterConditions;
+  "label"?: string | GassmaGassmaFormulaCelllabelFilterConditions;
+  "amount"?: number | GassmaGassmaFormulaCellamountFilterConditions;
+  "total"?: number | GassmaGassmaFormulaCelltotalFilterConditions;
+
+  AND?: GassmaGassmaFormulaCellWhereUse[] | GassmaGassmaFormulaCellWhereUse;
+  OR?: GassmaGassmaFormulaCellWhereUse[];
+  NOT?: GassmaGassmaFormulaCellWhereUse[] | GassmaGassmaFormulaCellWhereUse;
+};
+
 export type GassmaGassmaNotificationWhereUse = {
   "id"?: number | GassmaGassmaNotificationidFilterConditions;
   "userId"?: number | GassmaGassmaNotificationuserIdFilterConditions;
@@ -2224,6 +2352,38 @@ export type GassmaGassmaOrderItemunitPriceHavingCore = {
   _sum?: GassmaGassmaOrderItemunitPriceFilterConditions;
 } & GassmaGassmaOrderItemunitPriceFilterConditions;
 
+export type GassmaGassmaFormulaCellidHavingCore = {
+  _avg?: GassmaGassmaFormulaCellidFilterConditions;
+  _count?: GassmaGassmaFormulaCellidFilterConditions;
+  _max?: GassmaGassmaFormulaCellidFilterConditions;
+  _min?: GassmaGassmaFormulaCellidFilterConditions;
+  _sum?: GassmaGassmaFormulaCellidFilterConditions;
+} & GassmaGassmaFormulaCellidFilterConditions;
+
+export type GassmaGassmaFormulaCelllabelHavingCore = {
+  _avg?: GassmaGassmaFormulaCelllabelFilterConditions;
+  _count?: GassmaGassmaFormulaCelllabelFilterConditions;
+  _max?: GassmaGassmaFormulaCelllabelFilterConditions;
+  _min?: GassmaGassmaFormulaCelllabelFilterConditions;
+  _sum?: GassmaGassmaFormulaCelllabelFilterConditions;
+} & GassmaGassmaFormulaCelllabelFilterConditions;
+
+export type GassmaGassmaFormulaCellamountHavingCore = {
+  _avg?: GassmaGassmaFormulaCellamountFilterConditions;
+  _count?: GassmaGassmaFormulaCellamountFilterConditions;
+  _max?: GassmaGassmaFormulaCellamountFilterConditions;
+  _min?: GassmaGassmaFormulaCellamountFilterConditions;
+  _sum?: GassmaGassmaFormulaCellamountFilterConditions;
+} & GassmaGassmaFormulaCellamountFilterConditions;
+
+export type GassmaGassmaFormulaCelltotalHavingCore = {
+  _avg?: GassmaGassmaFormulaCelltotalFilterConditions;
+  _count?: GassmaGassmaFormulaCelltotalFilterConditions;
+  _max?: GassmaGassmaFormulaCelltotalFilterConditions;
+  _min?: GassmaGassmaFormulaCelltotalFilterConditions;
+  _sum?: GassmaGassmaFormulaCelltotalFilterConditions;
+} & GassmaGassmaFormulaCelltotalFilterConditions;
+
 export type GassmaGassmaNotificationidHavingCore = {
   _avg?: GassmaGassmaNotificationidFilterConditions;
   _count?: GassmaGassmaNotificationidFilterConditions;
@@ -2455,6 +2615,17 @@ export type GassmaGassmaOrderItemHavingUse = {
   NOT?: GassmaGassmaOrderItemHavingUse[] | GassmaGassmaOrderItemHavingUse;
 };
 
+export type GassmaGassmaFormulaCellHavingUse = {
+  "id"?: number | GassmaGassmaFormulaCellidHavingCore;
+  "label"?: string | GassmaGassmaFormulaCelllabelHavingCore;
+  "amount"?: number | GassmaGassmaFormulaCellamountHavingCore;
+  "total"?: number | GassmaGassmaFormulaCelltotalHavingCore;
+
+  AND?: GassmaGassmaFormulaCellHavingUse[] | GassmaGassmaFormulaCellHavingUse;
+  OR?: GassmaGassmaFormulaCellHavingUse[];
+  NOT?: GassmaGassmaFormulaCellHavingUse[] | GassmaGassmaFormulaCellHavingUse;
+};
+
 export type GassmaGassmaNotificationHavingUse = {
   "id"?: number | GassmaGassmaNotificationidHavingCore;
   "userId"?: number | GassmaGassmaNotificationuserIdHavingCore;
@@ -2578,6 +2749,17 @@ export type GassmaGassmaOrderItemFindData = {
   _count?: GassmaGassmaOrderItemCountValue;
 } & ({ select?: GassmaGassmaOrderItemFindSelect; omit?: never } | { select?: never; omit?: GassmaGassmaOrderItemOmit });
 
+export type GassmaGassmaFormulaCellFindData = {
+  where?: GassmaGassmaFormulaCellWhereUse;
+  orderBy?: GassmaGassmaFormulaCellOrderBy | GassmaGassmaFormulaCellOrderBy[];
+  take?: number;
+  skip?: number;
+  distinct?: "id" | "label" | "amount" | "total" | ("id" | "label" | "amount" | "total")[];
+  include?: GassmaGassmaFormulaCellInclude;
+  cursor?: Partial<GassmaGassmaFormulaCellUse>;
+  _count?: GassmaGassmaFormulaCellCountValue;
+} & ({ select?: GassmaGassmaFormulaCellFindSelect; omit?: never } | { select?: never; omit?: GassmaGassmaFormulaCellOmit });
+
 export type GassmaGassmaNotificationFindData = {
   where?: GassmaGassmaNotificationWhereUse;
   orderBy?: GassmaGassmaNotificationOrderBy | GassmaGassmaNotificationOrderBy[];
@@ -2678,6 +2860,14 @@ export type GassmaGassmaOrderItemFindFirstData = {
   _count?: GassmaGassmaOrderItemCountValue;
 } & ({ select?: GassmaGassmaOrderItemFindSelect; omit?: never } | { select?: never; omit?: GassmaGassmaOrderItemOmit });
 
+export type GassmaGassmaFormulaCellFindFirstData = {
+  where?: GassmaGassmaFormulaCellWhereUse;
+  orderBy?: GassmaGassmaFormulaCellOrderBy | GassmaGassmaFormulaCellOrderBy[];
+  include?: GassmaGassmaFormulaCellInclude;
+  cursor?: Partial<GassmaGassmaFormulaCellUse>;
+  _count?: GassmaGassmaFormulaCellCountValue;
+} & ({ select?: GassmaGassmaFormulaCellFindSelect; omit?: never } | { select?: never; omit?: GassmaGassmaFormulaCellOmit });
+
 export type GassmaGassmaNotificationFindFirstData = {
   where?: GassmaGassmaNotificationWhereUse;
   orderBy?: GassmaGassmaNotificationOrderBy | GassmaGassmaNotificationOrderBy[];
@@ -2723,6 +2913,8 @@ export type GassmaGassmaProductFindManyData = GassmaGassmaProductFindData;
 export type GassmaGassmaOrderFindManyData = GassmaGassmaOrderFindData;
 
 export type GassmaGassmaOrderItemFindManyData = GassmaGassmaOrderItemFindData;
+
+export type GassmaGassmaFormulaCellFindManyData = GassmaGassmaFormulaCellFindData;
 
 export type GassmaGassmaNotificationFindManyData = GassmaGassmaNotificationFindData;
 
@@ -2771,6 +2963,12 @@ export type GassmaGassmaOrderUpdateData = {
 export type GassmaGassmaOrderItemUpdateData = {
   where?: GassmaGassmaOrderItemWhereUse;
   data: Partial<{ [K in keyof GassmaGassmaOrderItemUse]: GassmaGassmaOrderItemUse[K] | Gassma.NumberOperation }>;
+  limit?: number;
+};
+
+export type GassmaGassmaFormulaCellUpdateData = {
+  where?: GassmaGassmaFormulaCellWhereUse;
+  data: Partial<{ [K in keyof GassmaGassmaFormulaCellUse]: GassmaGassmaFormulaCellUse[K] | Gassma.NumberOperation }>;
   limit?: number;
 };
 
@@ -2861,6 +3059,12 @@ export type GassmaGassmaOrderItemUpdateSingleData = {
   };
   include?: GassmaGassmaOrderItemInclude;
 } & ({ select?: GassmaGassmaOrderItemSelect; omit?: never } | { select?: never; omit?: GassmaGassmaOrderItemOmit });
+
+export type GassmaGassmaFormulaCellUpdateSingleData = {
+  where: GassmaGassmaFormulaCellWhereUse;
+  data: Partial<{ [K in keyof GassmaGassmaFormulaCellUse]: GassmaGassmaFormulaCellUse[K] | Gassma.NumberOperation }>;
+  include?: GassmaGassmaFormulaCellInclude;
+} & ({ select?: GassmaGassmaFormulaCellSelect; omit?: never } | { select?: never; omit?: GassmaGassmaFormulaCellOmit });
 
 export type GassmaGassmaNotificationUpdateSingleData = {
   where: GassmaGassmaNotificationWhereUse;
@@ -2976,6 +3180,13 @@ export type GassmaGassmaOrderItemUpsertSingleData = {
   include?: GassmaGassmaOrderItemInclude;
 } & ({ select?: GassmaGassmaOrderItemSelect; omit?: never } | { select?: never; omit?: GassmaGassmaOrderItemOmit });
 
+export type GassmaGassmaFormulaCellUpsertSingleData = {
+  where: GassmaGassmaFormulaCellWhereUse;
+  create: GassmaGassmaFormulaCellUse;
+  update: Partial<{ [K in keyof GassmaGassmaFormulaCellUse]: GassmaGassmaFormulaCellUse[K] | Gassma.NumberOperation }>;
+  include?: GassmaGassmaFormulaCellInclude;
+} & ({ select?: GassmaGassmaFormulaCellSelect; omit?: never } | { select?: never; omit?: GassmaGassmaFormulaCellOmit });
+
 export type GassmaGassmaNotificationUpsertSingleData = {
   where: GassmaGassmaNotificationWhereUse;
   create: GassmaGassmaNotificationUse;
@@ -3051,6 +3262,11 @@ export type GassmaGassmaOrderItemDeleteData = {
   limit?: number;
 };
 
+export type GassmaGassmaFormulaCellDeleteData = {
+  where?: GassmaGassmaFormulaCellWhereUse;
+  limit?: number;
+};
+
 export type GassmaGassmaNotificationDeleteData = {
   where?: GassmaGassmaNotificationWhereUse;
   limit?: number;
@@ -3105,6 +3321,11 @@ export type GassmaGassmaOrderItemDeleteSingleData = {
   where: GassmaGassmaOrderItemWhereUse;
   include?: GassmaGassmaOrderItemInclude;
 } & ({ select?: GassmaGassmaOrderItemSelect; omit?: never } | { select?: never; omit?: GassmaGassmaOrderItemOmit });
+
+export type GassmaGassmaFormulaCellDeleteSingleData = {
+  where: GassmaGassmaFormulaCellWhereUse;
+  include?: GassmaGassmaFormulaCellInclude;
+} & ({ select?: GassmaGassmaFormulaCellSelect; omit?: never } | { select?: never; omit?: GassmaGassmaFormulaCellOmit });
 
 export type GassmaGassmaNotificationDeleteSingleData = {
   where: GassmaGassmaNotificationWhereUse;
@@ -3217,6 +3438,19 @@ export type GassmaGassmaOrderItemAggregateData = {
   _sum?: GassmaGassmaOrderItemNumberSelect;
 };
 
+export type GassmaGassmaFormulaCellAggregateData = {
+  where?: GassmaGassmaFormulaCellWhereUse;
+  orderBy?: GassmaGassmaFormulaCellOrderBy | GassmaGassmaFormulaCellOrderBy[];
+  take?: number;
+  skip?: number;
+  cursor?: Partial<GassmaGassmaFormulaCellUse>;
+  _avg?: GassmaGassmaFormulaCellNumberSelect;
+  _count?: GassmaGassmaFormulaCellSelect;
+  _max?: GassmaGassmaFormulaCellSelect;
+  _min?: GassmaGassmaFormulaCellSelect;
+  _sum?: GassmaGassmaFormulaCellNumberSelect;
+};
+
 export type GassmaGassmaNotificationAggregateData = {
   where?: GassmaGassmaNotificationWhereUse;
   orderBy?: GassmaGassmaNotificationOrderBy | GassmaGassmaNotificationOrderBy[];
@@ -3304,6 +3538,11 @@ export type GassmaGassmaOrderItemGroupByData = GassmaGassmaOrderItemAggregateDat
   having?: GassmaGassmaOrderItemHavingUse;
 };
 
+export type GassmaGassmaFormulaCellGroupByData = GassmaGassmaFormulaCellAggregateData & {
+  by: "id" | "label" | "amount" | "total" | ("id" | "label" | "amount" | "total")[];
+  having?: GassmaGassmaFormulaCellHavingUse;
+};
+
 export type GassmaGassmaNotificationGroupByData = GassmaGassmaNotificationAggregateData & {
   by: "id" | "userId" | "message" | "isRead" | ("id" | "userId" | "message" | "isRead")[];
   having?: GassmaGassmaNotificationHavingUse;
@@ -3367,6 +3606,8 @@ export type GassmaGassmaOrderItemInclude = {
   "_count"?: GassmaGassmaOrderItemCountValue;
 };
 
+export type GassmaGassmaFormulaCellInclude = {};
+
 export type GassmaGassmaNotificationInclude = {};
 
 export type GassmaGassmaOffsetNoteInclude = {};
@@ -3419,6 +3660,8 @@ export type GassmaGassmaOrderItemCountValue = true | { select: {
     "order"?: true | { where?: GassmaGassmaOrderWhereUse };
     "product"?: true | { where?: GassmaGassmaProductWhereUse };
   } };
+
+export type GassmaGassmaFormulaCellCountValue = true;
 
 export type GassmaGassmaNotificationCountValue = true;
 
@@ -3514,6 +3757,13 @@ export type GassmaGassmaOrderItemOrderBy = {
   "order"?: GassmaGassmaOrderOrderBy | { _count: "asc" | "desc" };
   "product"?: GassmaGassmaProductOrderBy | { _count: "asc" | "desc" };
   "_count"?: { "order"?: "asc" | "desc"; "product"?: "asc" | "desc" };
+};
+
+export type GassmaGassmaFormulaCellOrderBy = {
+  "id"?: "asc" | "desc" | Gassma.SortOrderInput;
+  "label"?: "asc" | "desc" | Gassma.SortOrderInput;
+  "amount"?: "asc" | "desc" | Gassma.SortOrderInput;
+  "total"?: "asc" | "desc" | Gassma.SortOrderInput;
 };
 
 export type GassmaGassmaNotificationOrderBy = {
@@ -3738,6 +3988,26 @@ export type GassmaGassmaOrderItemFindSelect = {
   "_count"?: GassmaGassmaOrderItemCountValue;
 };
 
+export type GassmaGassmaFormulaCellSelect = {
+  "id"?: true;
+  "label"?: true;
+  "amount"?: true;
+  "total"?: true;
+};
+
+export type GassmaGassmaFormulaCellNumberSelect = {
+  "id"?: true;
+  "amount"?: true;
+  "total"?: true;
+};
+
+export type GassmaGassmaFormulaCellFindSelect = {
+  "id"?: true;
+  "label"?: true;
+  "amount"?: true;
+  "total"?: true;
+};
+
 export type GassmaGassmaNotificationSelect = {
   "id"?: true;
   "userId"?: true;
@@ -3884,6 +4154,13 @@ export type GassmaGassmaOrderItemOmit = {
   "unitPrice"?: true | false;
 };
 
+export type GassmaGassmaFormulaCellOmit = {
+  "id"?: true | false;
+  "label"?: true | false;
+  "amount"?: true | false;
+  "total"?: true | false;
+};
+
 export type GassmaGassmaNotificationOmit = {
   "id"?: true | false;
   "userId"?: true | false;
@@ -3968,6 +4245,14 @@ export type GassmaGassmaOrderItemCountData = {
   take?: number;
   skip?: number;
   cursor?: Partial<GassmaGassmaOrderItemUse>;
+};
+
+export type GassmaGassmaFormulaCellCountData = {
+  where?: GassmaGassmaFormulaCellWhereUse;
+  orderBy?: GassmaGassmaFormulaCellOrderBy | GassmaGassmaFormulaCellOrderBy[];
+  take?: number;
+  skip?: number;
+  cursor?: Partial<GassmaGassmaFormulaCellUse>;
 };
 
 export type GassmaGassmaNotificationCountData = {
@@ -4061,6 +4346,13 @@ export type GassmaGassmaOrderItemCreateReturn = {
  "unitPrice": number;
 };
 
+export type GassmaGassmaFormulaCellCreateReturn = {
+ "id": number;
+ "label": string;
+ "amount": number;
+ "total": number;
+};
+
 export type GassmaGassmaNotificationCreateReturn = {
  "id": number;
  "userId": number;
@@ -4104,6 +4396,8 @@ export type GassmaGassmaProductDefaultFindResult = GassmaGassmaProductCreateRetu
 export type GassmaGassmaOrderDefaultFindResult = GassmaGassmaOrderCreateReturn;
 
 export type GassmaGassmaOrderItemDefaultFindResult = GassmaGassmaOrderItemCreateReturn;
+
+export type GassmaGassmaFormulaCellDefaultFindResult = GassmaGassmaFormulaCellCreateReturn;
 
 export type GassmaGassmaNotificationDefaultFindResult = GassmaGassmaNotificationCreateReturn;
 
@@ -4290,6 +4584,29 @@ export type GassmaGassmaOrderItemFindResult<S, I = undefined, QO = undefined, GO
           never;
       });
 
+export type GassmaGassmaFormulaCellFindResult<S, I = undefined, QO = undefined, GO = {}, O = {}> = (S extends GassmaGassmaFormulaCellFindSelect
+  ? {
+      [K in keyof S as S[K] extends false | undefined
+        ? never
+        : K & (keyof GassmaGassmaFormulaCellDefaultFindResult | "_count")]:
+
+          K extends "_count" ? Gassma.CountResult<S[K]> :
+          GassmaGassmaFormulaCellDefaultFindResult[K & keyof GassmaGassmaFormulaCellDefaultFindResult];
+    }
+  : {
+      [K in keyof GassmaGassmaFormulaCellDefaultFindResult as K extends Gassma.ResolveOmitKeys<GO, QO>
+        ? never
+        : K]: GassmaGassmaFormulaCellDefaultFindResult[K];
+    }) &
+  (I extends undefined
+    ? {}
+    : {
+        [K in keyof I as K extends "_count" ? K : never]:
+
+          K extends "_count" ? Gassma.CountResult<I[K]> :
+          never;
+      });
+
 export type GassmaGassmaNotificationFindResult<S, I = undefined, QO = undefined, GO = {}, O = {}> = (S extends GassmaGassmaNotificationFindSelect
   ? {
       [K in keyof S as S[K] extends false | undefined
@@ -4447,6 +4764,13 @@ export type GassmaGassmaOrderItemAggregateBaseReturn = {
   "unitPrice": number
 };
 
+export type GassmaGassmaFormulaCellAggregateBaseReturn = {
+  "id": number
+  "label": string
+  "amount": number
+  "total": number
+};
+
 export type GassmaGassmaNotificationAggregateBaseReturn = {
   "id": number
   "userId": number
@@ -4561,6 +4885,18 @@ export type GassmaGassmaOrderItemAggregateField<T, K extends string> = T extends
             : never]: GassmaGassmaOrderItemAggregateBaseReturn[P & keyof GassmaGassmaOrderItemAggregateBaseReturn] | null;
         };
 
+export type GassmaGassmaFormulaCellAggregateField<T, K extends string> = T extends undefined
+  ? never
+  : K extends "_count"
+    ? { [P in keyof T as T[P] extends true ? P : never]: number }
+    : K extends "_avg" | "_sum"
+      ? { [P in keyof T as T[P] extends true ? P : never]: number | null }
+      : {
+          [P in keyof T as T[P] extends true
+            ? P & keyof GassmaGassmaFormulaCellAggregateBaseReturn
+            : never]: GassmaGassmaFormulaCellAggregateBaseReturn[P & keyof GassmaGassmaFormulaCellAggregateBaseReturn] | null;
+        };
+
 export type GassmaGassmaNotificationAggregateField<T, K extends string> = T extends undefined
   ? never
   : K extends "_count"
@@ -4665,6 +5001,14 @@ export type GassmaGassmaOrderItemAggregateResult<T extends GassmaGassmaOrderItem
     : never]: K extends string ? GassmaGassmaOrderItemAggregateField<T[K], K> : never;
 };
 
+export type GassmaGassmaFormulaCellAggregateResult<T extends GassmaGassmaFormulaCellAggregateData> = {
+  [K in keyof T as K extends "_avg" | "_count" | "_max" | "_min" | "_sum"
+    ? T[K] extends undefined
+      ? never
+      : K
+    : never]: K extends string ? GassmaGassmaFormulaCellAggregateField<T[K], K> : never;
+};
+
 export type GassmaGassmaNotificationAggregateResult<T extends GassmaGassmaNotificationAggregateData> = {
   [K in keyof T as K extends "_avg" | "_count" | "_max" | "_min" | "_sum"
     ? T[K] extends undefined
@@ -4711,6 +5055,8 @@ export type GassmaGassmaOrderGroupByBaseReturn = GassmaGassmaOrderCreateReturn;
 
 export type GassmaGassmaOrderItemGroupByBaseReturn = GassmaGassmaOrderItemCreateReturn;
 
+export type GassmaGassmaFormulaCellGroupByBaseReturn = GassmaGassmaFormulaCellCreateReturn;
+
 export type GassmaGassmaNotificationGroupByBaseReturn = GassmaGassmaNotificationCreateReturn;
 
 export type GassmaGassmaOffsetNoteGroupByBaseReturn = GassmaGassmaOffsetNoteCreateReturn;
@@ -4732,6 +5078,8 @@ export type GassmaGassmaProductGroupByKeyOfBaseReturn = keyof GassmaGassmaProduc
 export type GassmaGassmaOrderGroupByKeyOfBaseReturn = keyof GassmaGassmaOrderGroupByBaseReturn;
 
 export type GassmaGassmaOrderItemGroupByKeyOfBaseReturn = keyof GassmaGassmaOrderItemGroupByBaseReturn;
+
+export type GassmaGassmaFormulaCellGroupByKeyOfBaseReturn = keyof GassmaGassmaFormulaCellGroupByBaseReturn;
 
 export type GassmaGassmaNotificationGroupByKeyOfBaseReturn = keyof GassmaGassmaNotificationGroupByBaseReturn;
 
@@ -4802,6 +5150,15 @@ export type GassmaGassmaOrderItemByField<T extends GassmaGassmaOrderItemGroupByK
       }
     : T extends keyof GassmaGassmaOrderItemGroupByBaseReturn
       ? { [K in T]: GassmaGassmaOrderItemGroupByBaseReturn[K] }
+      : never;
+
+export type GassmaGassmaFormulaCellByField<T extends GassmaGassmaFormulaCellGroupByKeyOfBaseReturn | GassmaGassmaFormulaCellGroupByKeyOfBaseReturn[]> =
+  T extends GassmaGassmaFormulaCellGroupByKeyOfBaseReturn[]
+    ? {
+        [K in T[number]]: GassmaGassmaFormulaCellGroupByBaseReturn[K & keyof GassmaGassmaFormulaCellGroupByBaseReturn];
+      }
+    : T extends keyof GassmaGassmaFormulaCellGroupByBaseReturn
+      ? { [K in T]: GassmaGassmaFormulaCellGroupByBaseReturn[K] }
       : never;
 
 export type GassmaGassmaNotificationByField<T extends GassmaGassmaNotificationGroupByKeyOfBaseReturn | GassmaGassmaNotificationGroupByKeyOfBaseReturn[]> =
@@ -4894,6 +5251,14 @@ export type GassmaGassmaOrderItemGroupByResult<T extends GassmaGassmaOrderItemGr
       ? never
       : K
     : never]: K extends string ? GassmaGassmaOrderItemAggregateField<T[K], K> : never;
+};
+
+export type GassmaGassmaFormulaCellGroupByResult<T extends GassmaGassmaFormulaCellGroupByData> = GassmaGassmaFormulaCellByField<T["by"]> & {
+  [K in keyof T as K extends "_avg" | "_count" | "_max" | "_min" | "_sum"
+    ? T[K] extends undefined
+      ? never
+      : K
+    : never]: K extends string ? GassmaGassmaFormulaCellAggregateField<T[K], K> : never;
 };
 
 export type GassmaGassmaNotificationGroupByResult<T extends GassmaGassmaNotificationGroupByData> = GassmaGassmaNotificationByField<T["by"]> & {

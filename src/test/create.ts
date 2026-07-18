@@ -6,6 +6,8 @@ import { testNestedCreate } from "./create/testNestedCreate";
 import { testDefaults } from "./create/testDefaults";
 import { testUpdatedAt } from "./create/testUpdatedAt";
 import { testAutoincrement } from "./create/testAutoincrement";
+import { testCustomTypeValues } from "./create/testCustomTypeValues";
+import { testDb2Write } from "./create/testDb2Write";
 import { resetAllSheets } from "../reset/resetAllSheets";
 
 function testCreateAll() {
@@ -18,6 +20,8 @@ function testCreateAll() {
   testDefaults();
   testUpdatedAt();
   testAutoincrement();
+  testCustomTypeValues();
+  testDb2Write();
 
   Logger.log("🎉 All create tests passed!");
 }

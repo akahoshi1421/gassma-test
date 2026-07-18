@@ -10,6 +10,7 @@ import { testErrorAll } from "./test/error";
 import { testSecurityAll } from "./test/security";
 import { testGlobalOmitWriteAll } from "./test/globalOmitWrite";
 import { testSettingsAll } from "./test/settings";
+import { testFormulaAll } from "./test/formula";
 
 function main() {
   testRead();
@@ -21,6 +22,7 @@ function main() {
   testSecurityAll();
   testGlobalOmitWriteAll();
   testSettingsAll();
+  testFormulaAll();
 }
 
-export { main, getSheetSnapshot, resetAllSheets, resetSheet, testRead, testCreateAll, testDeleteAll, testUpdateAll, testUpsertAll, testErrorAll, testSecurityAll, testGlobalOmitWriteAll, testSettingsAll };
+export { main, getSheetSnapshot, resetAllSheets, resetSheet, testRead, testCreateAll, testDeleteAll, testUpdateAll, testUpsertAll, testErrorAll, testSecurityAll, testGlobalOmitWriteAll, testSettingsAll, testFormulaAll };

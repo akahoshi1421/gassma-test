@@ -27,6 +27,7 @@ import { testZeroMatch } from "./read/testZeroMatch";
 import { testDistinctOrderByMulti } from "./read/testDistinctOrderByMulti";
 import { testCountZeroRelation } from "./read/testCountZeroRelation";
 import { testIncludeNull } from "./read/testIncludeNull";
+import { testDateFilter } from "./read/testDateFilter";
 import { resetAllSheets } from "../reset/resetAllSheets";
 
 function testRead() {
@@ -60,6 +61,7 @@ function testRead() {
   testDistinctOrderByMulti();
   testCountZeroRelation();
   testIncludeNull();
+  testDateFilter();
 
   Logger.log("🎉 All read tests passed!");
 }
