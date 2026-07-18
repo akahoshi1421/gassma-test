@@ -188,6 +188,7 @@ export type GassmaGassmaGlobalOmitConfig = {
   "Order"?: GassmaGassmaOrderOmit;
   "OrderItem"?: GassmaGassmaOrderItemOmit;
   "Notification"?: GassmaGassmaNotificationOmit;
+  "OffsetNote"?: GassmaGassmaOffsetNoteOmit;
   "User"?: GassmaGassmaUserOmit;
   "Profile"?: GassmaGassmaProfileOmit;
 };
@@ -230,11 +231,12 @@ export type GassmaGassmaIgnoreConfig = {
   "Order"?: "id" | "userId" | "totalAmount" | "quantity" | "status" | "createdAt" | ("id" | "userId" | "totalAmount" | "quantity" | "status" | "createdAt")[];
   "OrderItem"?: "id" | "orderId" | "productId" | "quantity" | "unitPrice" | ("id" | "orderId" | "productId" | "quantity" | "unitPrice")[];
   "Notification"?: "id" | "userId" | "message" | "isRead" | ("id" | "userId" | "message" | "isRead")[];
+  "OffsetNote"?: "id" | "title" | "value" | ("id" | "title" | "value")[];
   "User"?: "id" | "email" | "name" | "age" | "isActive" | "role" | "createdAt" | ("id" | "email" | "name" | "age" | "isActive" | "role" | "createdAt")[];
   "Profile"?: "id" | "bio" | "website" | "userId" | ("id" | "bio" | "website" | "userId")[];
 };
 
-export type GassmaGassmaIgnoreSheetsConfig = "Post" | "Comment" | "Category" | "Tag" | "Product" | "Order" | "OrderItem" | "Notification" | "User" | "Profile" | ("Post" | "Comment" | "Category" | "Tag" | "Product" | "Order" | "OrderItem" | "Notification" | "User" | "Profile")[];
+export type GassmaGassmaIgnoreSheetsConfig = "Post" | "Comment" | "Category" | "Tag" | "Product" | "Order" | "OrderItem" | "Notification" | "OffsetNote" | "User" | "Profile" | ("Post" | "Comment" | "Category" | "Tag" | "Product" | "Order" | "OrderItem" | "Notification" | "OffsetNote" | "User" | "Profile")[];
 
 export type GassmaGassmaMapConfig = {
   "Post"?: {
@@ -295,6 +297,11 @@ export type GassmaGassmaMapConfig = {
       "message"?: string;
       "isRead"?: string;
   };
+  "OffsetNote"?: {
+      "id"?: string;
+      "title"?: string;
+      "value"?: string;
+  };
   "User"?: {
       "id"?: string;
       "email"?: string;
@@ -321,6 +328,7 @@ export type GassmaGassmaMapSheetsConfig = {
   "Order"?: string;
   "OrderItem"?: string;
   "Notification"?: string;
+  "OffsetNote"?: string;
   "User"?: string;
   "Profile"?: string;
 };
@@ -360,6 +368,7 @@ export type GassmaGassmaSheet<O extends GassmaGassmaGlobalOmitConfig = {}> = {
   "Order": GassmaGassmaOrderController<O extends { "Order": infer UO } ? UO extends GassmaGassmaOrderOmit ? UO : {} : {}, O>;
   "OrderItem": GassmaGassmaOrderItemController<O extends { "OrderItem": infer UO } ? UO extends GassmaGassmaOrderItemOmit ? UO : {} : {}, O>;
   "Notification": GassmaGassmaNotificationController<O extends { "Notification": infer UO } ? UO extends GassmaGassmaNotificationOmit ? UO : {} : {}, O>;
+  "OffsetNote": GassmaGassmaOffsetNoteController<O extends { "OffsetNote": infer UO } ? UO extends GassmaGassmaOffsetNoteOmit ? UO : {} : {}, O>;
   "User": GassmaGassmaUserController<O extends { "User": infer UO } ? UO extends GassmaGassmaUserOmit ? UO : {} : {}, O>;
   "Profile": GassmaGassmaProfileController<O extends { "Profile": infer UO } ? UO extends GassmaGassmaProfileOmit ? UO : {} : {}, O>;
 };
@@ -572,6 +581,32 @@ export declare class GassmaGassmaNotificationController<GO extends GassmaGassmaN
   groupBy<T extends GassmaGassmaNotificationGroupByData>(groupByData: T): GassmaGassmaNotificationGroupByResult<T>[];
 }
 
+export declare class GassmaGassmaOffsetNoteController<GO extends GassmaGassmaOffsetNoteOmit = {}, O = {}> {
+  constructor(sheetName: string, id?: string);
+
+  readonly fields: Record<string, Gassma.FieldRef>;
+  changeSettings(
+    startRowNumber: number,
+    startColumnNumber: number,
+    endColumnNumber: number
+  ): void;
+  createMany(createdData: GassmaGassmaOffsetNoteCreateManyData): CreateManyReturn;
+  createManyAndReturn<T extends GassmaGassmaOffsetNoteCreateManyAndReturnData>(createdData: T): GassmaGassmaOffsetNoteFindResult<T["select"], T["include"], T["omit"], GO, O>[];
+  create<T extends GassmaGassmaOffsetNoteCreateData>(createdData: T): GassmaGassmaOffsetNoteFindResult<T["select"], T["include"], T["omit"], GO, O>;
+  findFirst<T extends GassmaGassmaOffsetNoteFindFirstData>(findData: T): GassmaGassmaOffsetNoteFindResult<T["select"], T["include"], T["omit"], GO, O> | null;
+  findFirstOrThrow<T extends GassmaGassmaOffsetNoteFindFirstData>(findData: T): GassmaGassmaOffsetNoteFindResult<T["select"], T["include"], T["omit"], GO, O>;
+  findMany<T extends GassmaGassmaOffsetNoteFindManyData>(findData: T): GassmaGassmaOffsetNoteFindResult<T["select"], T["include"], T["omit"], GO, O>[];
+  update<T extends GassmaGassmaOffsetNoteUpdateSingleData>(updateData: T): GassmaGassmaOffsetNoteFindResult<T["select"], T["include"], T["omit"], GO, O> | null;
+  updateMany(updateData: GassmaGassmaOffsetNoteUpdateData): UpdateManyReturn;
+  updateManyAndReturn(updateData: GassmaGassmaOffsetNoteUpdateData): GassmaGassmaOffsetNoteFindResult<undefined, undefined, undefined, GO, O>[];
+  upsert<T extends GassmaGassmaOffsetNoteUpsertSingleData>(upsertData: T): GassmaGassmaOffsetNoteFindResult<T["select"], T["include"], T["omit"], GO, O>;
+  delete<T extends GassmaGassmaOffsetNoteDeleteSingleData>(deleteData: T): GassmaGassmaOffsetNoteFindResult<T["select"], T["include"], T["omit"], GO, O> | null;
+  deleteMany(deleteData: GassmaGassmaOffsetNoteDeleteData): DeleteManyReturn;
+  aggregate<T extends GassmaGassmaOffsetNoteAggregateData>(aggregateData: T): GassmaGassmaOffsetNoteAggregateResult<T>;
+  count(coutData: GassmaGassmaOffsetNoteCountData): number;
+  groupBy<T extends GassmaGassmaOffsetNoteGroupByData>(groupByData: T): GassmaGassmaOffsetNoteGroupByResult<T>[];
+}
+
 export declare class GassmaGassmaUserController<GO extends GassmaGassmaUserOmit = {}, O = {}> {
   constructor(sheetName: string, id?: string);
 
@@ -698,6 +733,12 @@ export type GassmaGassmaNotificationUse = {
   "isRead"?: boolean;
 };
 
+export type GassmaGassmaOffsetNoteUse = {
+  "id": number;
+  "title": string;
+  "value": number;
+};
+
 export type GassmaGassmaUserUse = {
   "id"?: number;
   "email": string;
@@ -767,6 +808,11 @@ export type GassmaGassmaNotificationCreateData = {
   include?: GassmaGassmaNotificationInclude;
 } & ({ select?: GassmaGassmaNotificationSelect; omit?: never } | { select?: never; omit?: GassmaGassmaNotificationOmit });
 
+export type GassmaGassmaOffsetNoteCreateData = {
+  data: GassmaGassmaOffsetNoteUse;
+  include?: GassmaGassmaOffsetNoteInclude;
+} & ({ select?: GassmaGassmaOffsetNoteSelect; omit?: never } | { select?: never; omit?: GassmaGassmaOffsetNoteOmit });
+
 export type GassmaGassmaUserCreateData = {
   data: GassmaGassmaUserUse & {
     "posts"?: { create?: Omit<GassmaGassmaPostUse, "authorId"> | Omit<GassmaGassmaPostUse, "authorId">[]; createMany?: { data: Omit<GassmaGassmaPostUse, "authorId">[] }; connect?: GassmaGassmaPostWhereUse | GassmaGassmaPostWhereUse[]; connectOrCreate?: { where: GassmaGassmaPostWhereUse; create: Omit<GassmaGassmaPostUse, "authorId"> } | { where: GassmaGassmaPostWhereUse; create: Omit<GassmaGassmaPostUse, "authorId"> }[] };
@@ -812,6 +858,10 @@ export type GassmaGassmaOrderItemCreateManyData = {
 
 export type GassmaGassmaNotificationCreateManyData = {
   data: GassmaGassmaNotificationUse[];
+};
+
+export type GassmaGassmaOffsetNoteCreateManyData = {
+  data: GassmaGassmaOffsetNoteUse[];
 };
 
 export type GassmaGassmaUserCreateManyData = {
@@ -861,6 +911,11 @@ export type GassmaGassmaNotificationCreateManyAndReturnData = {
   data: GassmaGassmaNotificationUse[];
   include?: GassmaGassmaNotificationInclude;
 } & ({ select?: GassmaGassmaNotificationSelect; omit?: never } | { select?: never; omit?: GassmaGassmaNotificationOmit });
+
+export type GassmaGassmaOffsetNoteCreateManyAndReturnData = {
+  data: GassmaGassmaOffsetNoteUse[];
+  include?: GassmaGassmaOffsetNoteInclude;
+} & ({ select?: GassmaGassmaOffsetNoteSelect; omit?: never } | { select?: never; omit?: GassmaGassmaOffsetNoteOmit });
 
 export type GassmaGassmaUserCreateManyAndReturnData = {
   data: GassmaGassmaUserUse[];
@@ -1502,6 +1557,51 @@ export type GassmaGassmaNotificationisReadFilterConditions = {
   mode?: "default" | "insensitive";
 };
 
+export type GassmaGassmaOffsetNoteidFilterConditions = {
+  equals?: number | Gassma.FieldRef;
+  not?: number;
+  in?: number[];
+  notIn?: number[];
+  lt?: number | Gassma.FieldRef;
+  lte?: number | Gassma.FieldRef;
+  gt?: number | Gassma.FieldRef;
+  gte?: number | Gassma.FieldRef;
+  contains?: string | Gassma.FieldRef;
+  startsWith?: string | Gassma.FieldRef;
+  endsWith?: string | Gassma.FieldRef;
+  mode?: "default" | "insensitive";
+};
+
+export type GassmaGassmaOffsetNotetitleFilterConditions = {
+  equals?: string | Gassma.FieldRef;
+  not?: string;
+  in?: string[];
+  notIn?: string[];
+  lt?: string | Gassma.FieldRef;
+  lte?: string | Gassma.FieldRef;
+  gt?: string | Gassma.FieldRef;
+  gte?: string | Gassma.FieldRef;
+  contains?: string | Gassma.FieldRef;
+  startsWith?: string | Gassma.FieldRef;
+  endsWith?: string | Gassma.FieldRef;
+  mode?: "default" | "insensitive";
+};
+
+export type GassmaGassmaOffsetNotevalueFilterConditions = {
+  equals?: number | Gassma.FieldRef;
+  not?: number;
+  in?: number[];
+  notIn?: number[];
+  lt?: number | Gassma.FieldRef;
+  lte?: number | Gassma.FieldRef;
+  gt?: number | Gassma.FieldRef;
+  gte?: number | Gassma.FieldRef;
+  contains?: string | Gassma.FieldRef;
+  startsWith?: string | Gassma.FieldRef;
+  endsWith?: string | Gassma.FieldRef;
+  mode?: "default" | "insensitive";
+};
+
 export type GassmaGassmaUseridFilterConditions = {
   equals?: number | Gassma.FieldRef;
   not?: number;
@@ -1778,6 +1878,16 @@ export type GassmaGassmaNotificationWhereUse = {
   AND?: GassmaGassmaNotificationWhereUse[] | GassmaGassmaNotificationWhereUse;
   OR?: GassmaGassmaNotificationWhereUse[];
   NOT?: GassmaGassmaNotificationWhereUse[] | GassmaGassmaNotificationWhereUse;
+};
+
+export type GassmaGassmaOffsetNoteWhereUse = {
+  "id"?: number | GassmaGassmaOffsetNoteidFilterConditions;
+  "title"?: string | GassmaGassmaOffsetNotetitleFilterConditions;
+  "value"?: number | GassmaGassmaOffsetNotevalueFilterConditions;
+
+  AND?: GassmaGassmaOffsetNoteWhereUse[] | GassmaGassmaOffsetNoteWhereUse;
+  OR?: GassmaGassmaOffsetNoteWhereUse[];
+  NOT?: GassmaGassmaOffsetNoteWhereUse[] | GassmaGassmaOffsetNoteWhereUse;
 };
 
 export type GassmaGassmaUserWhereUse = {
@@ -2146,6 +2256,30 @@ export type GassmaGassmaNotificationisReadHavingCore = {
   _sum?: GassmaGassmaNotificationisReadFilterConditions;
 } & GassmaGassmaNotificationisReadFilterConditions;
 
+export type GassmaGassmaOffsetNoteidHavingCore = {
+  _avg?: GassmaGassmaOffsetNoteidFilterConditions;
+  _count?: GassmaGassmaOffsetNoteidFilterConditions;
+  _max?: GassmaGassmaOffsetNoteidFilterConditions;
+  _min?: GassmaGassmaOffsetNoteidFilterConditions;
+  _sum?: GassmaGassmaOffsetNoteidFilterConditions;
+} & GassmaGassmaOffsetNoteidFilterConditions;
+
+export type GassmaGassmaOffsetNotetitleHavingCore = {
+  _avg?: GassmaGassmaOffsetNotetitleFilterConditions;
+  _count?: GassmaGassmaOffsetNotetitleFilterConditions;
+  _max?: GassmaGassmaOffsetNotetitleFilterConditions;
+  _min?: GassmaGassmaOffsetNotetitleFilterConditions;
+  _sum?: GassmaGassmaOffsetNotetitleFilterConditions;
+} & GassmaGassmaOffsetNotetitleFilterConditions;
+
+export type GassmaGassmaOffsetNotevalueHavingCore = {
+  _avg?: GassmaGassmaOffsetNotevalueFilterConditions;
+  _count?: GassmaGassmaOffsetNotevalueFilterConditions;
+  _max?: GassmaGassmaOffsetNotevalueFilterConditions;
+  _min?: GassmaGassmaOffsetNotevalueFilterConditions;
+  _sum?: GassmaGassmaOffsetNotevalueFilterConditions;
+} & GassmaGassmaOffsetNotevalueFilterConditions;
+
 export type GassmaGassmaUseridHavingCore = {
   _avg?: GassmaGassmaUseridFilterConditions;
   _count?: GassmaGassmaUseridFilterConditions;
@@ -2332,6 +2466,16 @@ export type GassmaGassmaNotificationHavingUse = {
   NOT?: GassmaGassmaNotificationHavingUse[] | GassmaGassmaNotificationHavingUse;
 };
 
+export type GassmaGassmaOffsetNoteHavingUse = {
+  "id"?: number | GassmaGassmaOffsetNoteidHavingCore;
+  "title"?: string | GassmaGassmaOffsetNotetitleHavingCore;
+  "value"?: number | GassmaGassmaOffsetNotevalueHavingCore;
+
+  AND?: GassmaGassmaOffsetNoteHavingUse[] | GassmaGassmaOffsetNoteHavingUse;
+  OR?: GassmaGassmaOffsetNoteHavingUse[];
+  NOT?: GassmaGassmaOffsetNoteHavingUse[] | GassmaGassmaOffsetNoteHavingUse;
+};
+
 export type GassmaGassmaUserHavingUse = {
   "id"?: number | GassmaGassmaUseridHavingCore;
   "email"?: string | GassmaGassmaUseremailHavingCore;
@@ -2445,6 +2589,17 @@ export type GassmaGassmaNotificationFindData = {
   _count?: GassmaGassmaNotificationCountValue;
 } & ({ select?: GassmaGassmaNotificationFindSelect; omit?: never } | { select?: never; omit?: GassmaGassmaNotificationOmit });
 
+export type GassmaGassmaOffsetNoteFindData = {
+  where?: GassmaGassmaOffsetNoteWhereUse;
+  orderBy?: GassmaGassmaOffsetNoteOrderBy | GassmaGassmaOffsetNoteOrderBy[];
+  take?: number;
+  skip?: number;
+  distinct?: "id" | "title" | "value" | ("id" | "title" | "value")[];
+  include?: GassmaGassmaOffsetNoteInclude;
+  cursor?: Partial<GassmaGassmaOffsetNoteUse>;
+  _count?: GassmaGassmaOffsetNoteCountValue;
+} & ({ select?: GassmaGassmaOffsetNoteFindSelect; omit?: never } | { select?: never; omit?: GassmaGassmaOffsetNoteOmit });
+
 export type GassmaGassmaUserFindData = {
   where?: GassmaGassmaUserWhereUse;
   orderBy?: GassmaGassmaUserOrderBy | GassmaGassmaUserOrderBy[];
@@ -2531,6 +2686,14 @@ export type GassmaGassmaNotificationFindFirstData = {
   _count?: GassmaGassmaNotificationCountValue;
 } & ({ select?: GassmaGassmaNotificationFindSelect; omit?: never } | { select?: never; omit?: GassmaGassmaNotificationOmit });
 
+export type GassmaGassmaOffsetNoteFindFirstData = {
+  where?: GassmaGassmaOffsetNoteWhereUse;
+  orderBy?: GassmaGassmaOffsetNoteOrderBy | GassmaGassmaOffsetNoteOrderBy[];
+  include?: GassmaGassmaOffsetNoteInclude;
+  cursor?: Partial<GassmaGassmaOffsetNoteUse>;
+  _count?: GassmaGassmaOffsetNoteCountValue;
+} & ({ select?: GassmaGassmaOffsetNoteFindSelect; omit?: never } | { select?: never; omit?: GassmaGassmaOffsetNoteOmit });
+
 export type GassmaGassmaUserFindFirstData = {
   where?: GassmaGassmaUserWhereUse;
   orderBy?: GassmaGassmaUserOrderBy | GassmaGassmaUserOrderBy[];
@@ -2562,6 +2725,8 @@ export type GassmaGassmaOrderFindManyData = GassmaGassmaOrderFindData;
 export type GassmaGassmaOrderItemFindManyData = GassmaGassmaOrderItemFindData;
 
 export type GassmaGassmaNotificationFindManyData = GassmaGassmaNotificationFindData;
+
+export type GassmaGassmaOffsetNoteFindManyData = GassmaGassmaOffsetNoteFindData;
 
 export type GassmaGassmaUserFindManyData = GassmaGassmaUserFindData;
 
@@ -2612,6 +2777,12 @@ export type GassmaGassmaOrderItemUpdateData = {
 export type GassmaGassmaNotificationUpdateData = {
   where?: GassmaGassmaNotificationWhereUse;
   data: Partial<{ [K in keyof GassmaGassmaNotificationUse]: GassmaGassmaNotificationUse[K] | Gassma.NumberOperation }>;
+  limit?: number;
+};
+
+export type GassmaGassmaOffsetNoteUpdateData = {
+  where?: GassmaGassmaOffsetNoteWhereUse;
+  data: Partial<{ [K in keyof GassmaGassmaOffsetNoteUse]: GassmaGassmaOffsetNoteUse[K] | Gassma.NumberOperation }>;
   limit?: number;
 };
 
@@ -2696,6 +2867,12 @@ export type GassmaGassmaNotificationUpdateSingleData = {
   data: Partial<{ [K in keyof GassmaGassmaNotificationUse]: GassmaGassmaNotificationUse[K] | Gassma.NumberOperation }>;
   include?: GassmaGassmaNotificationInclude;
 } & ({ select?: GassmaGassmaNotificationSelect; omit?: never } | { select?: never; omit?: GassmaGassmaNotificationOmit });
+
+export type GassmaGassmaOffsetNoteUpdateSingleData = {
+  where: GassmaGassmaOffsetNoteWhereUse;
+  data: Partial<{ [K in keyof GassmaGassmaOffsetNoteUse]: GassmaGassmaOffsetNoteUse[K] | Gassma.NumberOperation }>;
+  include?: GassmaGassmaOffsetNoteInclude;
+} & ({ select?: GassmaGassmaOffsetNoteSelect; omit?: never } | { select?: never; omit?: GassmaGassmaOffsetNoteOmit });
 
 export type GassmaGassmaUserUpdateSingleData = {
   where: GassmaGassmaUserWhereUse;
@@ -2806,6 +2983,13 @@ export type GassmaGassmaNotificationUpsertSingleData = {
   include?: GassmaGassmaNotificationInclude;
 } & ({ select?: GassmaGassmaNotificationSelect; omit?: never } | { select?: never; omit?: GassmaGassmaNotificationOmit });
 
+export type GassmaGassmaOffsetNoteUpsertSingleData = {
+  where: GassmaGassmaOffsetNoteWhereUse;
+  create: GassmaGassmaOffsetNoteUse;
+  update: Partial<{ [K in keyof GassmaGassmaOffsetNoteUse]: GassmaGassmaOffsetNoteUse[K] | Gassma.NumberOperation }>;
+  include?: GassmaGassmaOffsetNoteInclude;
+} & ({ select?: GassmaGassmaOffsetNoteSelect; omit?: never } | { select?: never; omit?: GassmaGassmaOffsetNoteOmit });
+
 export type GassmaGassmaUserUpsertSingleData = {
   where: GassmaGassmaUserWhereUse;
   create: GassmaGassmaUserUse & {
@@ -2872,6 +3056,11 @@ export type GassmaGassmaNotificationDeleteData = {
   limit?: number;
 };
 
+export type GassmaGassmaOffsetNoteDeleteData = {
+  where?: GassmaGassmaOffsetNoteWhereUse;
+  limit?: number;
+};
+
 export type GassmaGassmaUserDeleteData = {
   where?: GassmaGassmaUserWhereUse;
   limit?: number;
@@ -2921,6 +3110,11 @@ export type GassmaGassmaNotificationDeleteSingleData = {
   where: GassmaGassmaNotificationWhereUse;
   include?: GassmaGassmaNotificationInclude;
 } & ({ select?: GassmaGassmaNotificationSelect; omit?: never } | { select?: never; omit?: GassmaGassmaNotificationOmit });
+
+export type GassmaGassmaOffsetNoteDeleteSingleData = {
+  where: GassmaGassmaOffsetNoteWhereUse;
+  include?: GassmaGassmaOffsetNoteInclude;
+} & ({ select?: GassmaGassmaOffsetNoteSelect; omit?: never } | { select?: never; omit?: GassmaGassmaOffsetNoteOmit });
 
 export type GassmaGassmaUserDeleteSingleData = {
   where: GassmaGassmaUserWhereUse;
@@ -3036,6 +3230,19 @@ export type GassmaGassmaNotificationAggregateData = {
   _sum?: GassmaGassmaNotificationNumberSelect;
 };
 
+export type GassmaGassmaOffsetNoteAggregateData = {
+  where?: GassmaGassmaOffsetNoteWhereUse;
+  orderBy?: GassmaGassmaOffsetNoteOrderBy | GassmaGassmaOffsetNoteOrderBy[];
+  take?: number;
+  skip?: number;
+  cursor?: Partial<GassmaGassmaOffsetNoteUse>;
+  _avg?: GassmaGassmaOffsetNoteNumberSelect;
+  _count?: GassmaGassmaOffsetNoteSelect;
+  _max?: GassmaGassmaOffsetNoteSelect;
+  _min?: GassmaGassmaOffsetNoteSelect;
+  _sum?: GassmaGassmaOffsetNoteNumberSelect;
+};
+
 export type GassmaGassmaUserAggregateData = {
   where?: GassmaGassmaUserWhereUse;
   orderBy?: GassmaGassmaUserOrderBy | GassmaGassmaUserOrderBy[];
@@ -3102,6 +3309,11 @@ export type GassmaGassmaNotificationGroupByData = GassmaGassmaNotificationAggreg
   having?: GassmaGassmaNotificationHavingUse;
 };
 
+export type GassmaGassmaOffsetNoteGroupByData = GassmaGassmaOffsetNoteAggregateData & {
+  by: "id" | "title" | "value" | ("id" | "title" | "value")[];
+  having?: GassmaGassmaOffsetNoteHavingUse;
+};
+
 export type GassmaGassmaUserGroupByData = GassmaGassmaUserAggregateData & {
   by: "id" | "email" | "name" | "age" | "isActive" | "role" | "createdAt" | ("id" | "email" | "name" | "age" | "isActive" | "role" | "createdAt")[];
   having?: GassmaGassmaUserHavingUse;
@@ -3157,6 +3369,8 @@ export type GassmaGassmaOrderItemInclude = {
 
 export type GassmaGassmaNotificationInclude = {};
 
+export type GassmaGassmaOffsetNoteInclude = {};
+
 export type GassmaGassmaUserInclude = {
   "posts"?: true | { select?: GassmaGassmaPostFindSelect; omit?: GassmaGassmaPostOmit; where?: GassmaGassmaPostWhereUse; orderBy?: GassmaGassmaPostOrderBy; take?: number; skip?: number; include?: GassmaGassmaPostInclude; _count?: GassmaGassmaPostCountValue };
   "comments"?: true | { select?: GassmaGassmaCommentFindSelect; omit?: GassmaGassmaCommentOmit; where?: GassmaGassmaCommentWhereUse; orderBy?: GassmaGassmaCommentOrderBy; take?: number; skip?: number; include?: GassmaGassmaCommentInclude; _count?: GassmaGassmaCommentCountValue };
@@ -3207,6 +3421,8 @@ export type GassmaGassmaOrderItemCountValue = true | { select: {
   } };
 
 export type GassmaGassmaNotificationCountValue = true;
+
+export type GassmaGassmaOffsetNoteCountValue = true;
 
 export type GassmaGassmaUserCountValue = true | { select: {
     "posts"?: true | { where?: GassmaGassmaPostWhereUse };
@@ -3305,6 +3521,12 @@ export type GassmaGassmaNotificationOrderBy = {
   "userId"?: "asc" | "desc" | Gassma.SortOrderInput;
   "message"?: "asc" | "desc" | Gassma.SortOrderInput;
   "isRead"?: "asc" | "desc" | Gassma.SortOrderInput;
+};
+
+export type GassmaGassmaOffsetNoteOrderBy = {
+  "id"?: "asc" | "desc" | Gassma.SortOrderInput;
+  "title"?: "asc" | "desc" | Gassma.SortOrderInput;
+  "value"?: "asc" | "desc" | Gassma.SortOrderInput;
 };
 
 export type GassmaGassmaUserOrderBy = {
@@ -3535,6 +3757,23 @@ export type GassmaGassmaNotificationFindSelect = {
   "isRead"?: true;
 };
 
+export type GassmaGassmaOffsetNoteSelect = {
+  "id"?: true;
+  "title"?: true;
+  "value"?: true;
+};
+
+export type GassmaGassmaOffsetNoteNumberSelect = {
+  "id"?: true;
+  "value"?: true;
+};
+
+export type GassmaGassmaOffsetNoteFindSelect = {
+  "id"?: true;
+  "title"?: true;
+  "value"?: true;
+};
+
 export type GassmaGassmaUserSelect = {
   "id"?: true;
   "email"?: true;
@@ -3652,6 +3891,12 @@ export type GassmaGassmaNotificationOmit = {
   "isRead"?: true | false;
 };
 
+export type GassmaGassmaOffsetNoteOmit = {
+  "id"?: true | false;
+  "title"?: true | false;
+  "value"?: true | false;
+};
+
 export type GassmaGassmaUserOmit = {
   "id"?: true | false;
   "email"?: true | false;
@@ -3731,6 +3976,14 @@ export type GassmaGassmaNotificationCountData = {
   take?: number;
   skip?: number;
   cursor?: Partial<GassmaGassmaNotificationUse>;
+};
+
+export type GassmaGassmaOffsetNoteCountData = {
+  where?: GassmaGassmaOffsetNoteWhereUse;
+  orderBy?: GassmaGassmaOffsetNoteOrderBy | GassmaGassmaOffsetNoteOrderBy[];
+  take?: number;
+  skip?: number;
+  cursor?: Partial<GassmaGassmaOffsetNoteUse>;
 };
 
 export type GassmaGassmaUserCountData = {
@@ -3815,6 +4068,12 @@ export type GassmaGassmaNotificationCreateReturn = {
  "isRead": boolean;
 };
 
+export type GassmaGassmaOffsetNoteCreateReturn = {
+ "id": number;
+ "title": string;
+ "value": number;
+};
+
 export type GassmaGassmaUserCreateReturn = {
  "id": number;
  "email": string;
@@ -3847,6 +4106,8 @@ export type GassmaGassmaOrderDefaultFindResult = GassmaGassmaOrderCreateReturn;
 export type GassmaGassmaOrderItemDefaultFindResult = GassmaGassmaOrderItemCreateReturn;
 
 export type GassmaGassmaNotificationDefaultFindResult = GassmaGassmaNotificationCreateReturn;
+
+export type GassmaGassmaOffsetNoteDefaultFindResult = GassmaGassmaOffsetNoteCreateReturn;
 
 export type GassmaGassmaUserDefaultFindResult = GassmaGassmaUserCreateReturn;
 
@@ -4052,6 +4313,29 @@ export type GassmaGassmaNotificationFindResult<S, I = undefined, QO = undefined,
           never;
       });
 
+export type GassmaGassmaOffsetNoteFindResult<S, I = undefined, QO = undefined, GO = {}, O = {}> = (S extends GassmaGassmaOffsetNoteFindSelect
+  ? {
+      [K in keyof S as S[K] extends false | undefined
+        ? never
+        : K & (keyof GassmaGassmaOffsetNoteDefaultFindResult | "_count")]:
+
+          K extends "_count" ? Gassma.CountResult<S[K]> :
+          GassmaGassmaOffsetNoteDefaultFindResult[K & keyof GassmaGassmaOffsetNoteDefaultFindResult];
+    }
+  : {
+      [K in keyof GassmaGassmaOffsetNoteDefaultFindResult as K extends Gassma.ResolveOmitKeys<GO, QO>
+        ? never
+        : K]: GassmaGassmaOffsetNoteDefaultFindResult[K];
+    }) &
+  (I extends undefined
+    ? {}
+    : {
+        [K in keyof I as K extends "_count" ? K : never]:
+
+          K extends "_count" ? Gassma.CountResult<I[K]> :
+          never;
+      });
+
 export type GassmaGassmaUserFindResult<S, I = undefined, QO = undefined, GO = {}, O = {}> = (S extends GassmaGassmaUserFindSelect
   ? {
       [K in keyof S as S[K] extends false | undefined
@@ -4170,6 +4454,12 @@ export type GassmaGassmaNotificationAggregateBaseReturn = {
   "isRead": boolean
 };
 
+export type GassmaGassmaOffsetNoteAggregateBaseReturn = {
+  "id": number
+  "title": string
+  "value": number
+};
+
 export type GassmaGassmaUserAggregateBaseReturn = {
   "id": number
   "email": string
@@ -4283,6 +4573,18 @@ export type GassmaGassmaNotificationAggregateField<T, K extends string> = T exte
             : never]: GassmaGassmaNotificationAggregateBaseReturn[P & keyof GassmaGassmaNotificationAggregateBaseReturn] | null;
         };
 
+export type GassmaGassmaOffsetNoteAggregateField<T, K extends string> = T extends undefined
+  ? never
+  : K extends "_count"
+    ? { [P in keyof T as T[P] extends true ? P : never]: number }
+    : K extends "_avg" | "_sum"
+      ? { [P in keyof T as T[P] extends true ? P : never]: number | null }
+      : {
+          [P in keyof T as T[P] extends true
+            ? P & keyof GassmaGassmaOffsetNoteAggregateBaseReturn
+            : never]: GassmaGassmaOffsetNoteAggregateBaseReturn[P & keyof GassmaGassmaOffsetNoteAggregateBaseReturn] | null;
+        };
+
 export type GassmaGassmaUserAggregateField<T, K extends string> = T extends undefined
   ? never
   : K extends "_count"
@@ -4371,6 +4673,14 @@ export type GassmaGassmaNotificationAggregateResult<T extends GassmaGassmaNotifi
     : never]: K extends string ? GassmaGassmaNotificationAggregateField<T[K], K> : never;
 };
 
+export type GassmaGassmaOffsetNoteAggregateResult<T extends GassmaGassmaOffsetNoteAggregateData> = {
+  [K in keyof T as K extends "_avg" | "_count" | "_max" | "_min" | "_sum"
+    ? T[K] extends undefined
+      ? never
+      : K
+    : never]: K extends string ? GassmaGassmaOffsetNoteAggregateField<T[K], K> : never;
+};
+
 export type GassmaGassmaUserAggregateResult<T extends GassmaGassmaUserAggregateData> = {
   [K in keyof T as K extends "_avg" | "_count" | "_max" | "_min" | "_sum"
     ? T[K] extends undefined
@@ -4403,6 +4713,8 @@ export type GassmaGassmaOrderItemGroupByBaseReturn = GassmaGassmaOrderItemCreate
 
 export type GassmaGassmaNotificationGroupByBaseReturn = GassmaGassmaNotificationCreateReturn;
 
+export type GassmaGassmaOffsetNoteGroupByBaseReturn = GassmaGassmaOffsetNoteCreateReturn;
+
 export type GassmaGassmaUserGroupByBaseReturn = GassmaGassmaUserCreateReturn;
 
 export type GassmaGassmaProfileGroupByBaseReturn = GassmaGassmaProfileCreateReturn;
@@ -4422,6 +4734,8 @@ export type GassmaGassmaOrderGroupByKeyOfBaseReturn = keyof GassmaGassmaOrderGro
 export type GassmaGassmaOrderItemGroupByKeyOfBaseReturn = keyof GassmaGassmaOrderItemGroupByBaseReturn;
 
 export type GassmaGassmaNotificationGroupByKeyOfBaseReturn = keyof GassmaGassmaNotificationGroupByBaseReturn;
+
+export type GassmaGassmaOffsetNoteGroupByKeyOfBaseReturn = keyof GassmaGassmaOffsetNoteGroupByBaseReturn;
 
 export type GassmaGassmaUserGroupByKeyOfBaseReturn = keyof GassmaGassmaUserGroupByBaseReturn;
 
@@ -4497,6 +4811,15 @@ export type GassmaGassmaNotificationByField<T extends GassmaGassmaNotificationGr
       }
     : T extends keyof GassmaGassmaNotificationGroupByBaseReturn
       ? { [K in T]: GassmaGassmaNotificationGroupByBaseReturn[K] }
+      : never;
+
+export type GassmaGassmaOffsetNoteByField<T extends GassmaGassmaOffsetNoteGroupByKeyOfBaseReturn | GassmaGassmaOffsetNoteGroupByKeyOfBaseReturn[]> =
+  T extends GassmaGassmaOffsetNoteGroupByKeyOfBaseReturn[]
+    ? {
+        [K in T[number]]: GassmaGassmaOffsetNoteGroupByBaseReturn[K & keyof GassmaGassmaOffsetNoteGroupByBaseReturn];
+      }
+    : T extends keyof GassmaGassmaOffsetNoteGroupByBaseReturn
+      ? { [K in T]: GassmaGassmaOffsetNoteGroupByBaseReturn[K] }
       : never;
 
 export type GassmaGassmaUserByField<T extends GassmaGassmaUserGroupByKeyOfBaseReturn | GassmaGassmaUserGroupByKeyOfBaseReturn[]> =
@@ -4579,6 +4902,14 @@ export type GassmaGassmaNotificationGroupByResult<T extends GassmaGassmaNotifica
       ? never
       : K
     : never]: K extends string ? GassmaGassmaNotificationAggregateField<T[K], K> : never;
+};
+
+export type GassmaGassmaOffsetNoteGroupByResult<T extends GassmaGassmaOffsetNoteGroupByData> = GassmaGassmaOffsetNoteByField<T["by"]> & {
+  [K in keyof T as K extends "_avg" | "_count" | "_max" | "_min" | "_sum"
+    ? T[K] extends undefined
+      ? never
+      : K
+    : never]: K extends string ? GassmaGassmaOffsetNoteAggregateField<T[K], K> : never;
 };
 
 export type GassmaGassmaUserGroupByResult<T extends GassmaGassmaUserGroupByData> = GassmaGassmaUserByField<T["by"]> & {

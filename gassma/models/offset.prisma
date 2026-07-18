@@ -1,0 +1,7 @@
+// ===== changeSettings テスト用（ヘッダー4行目・B〜D列のオフセット配置シート） =====
+
+model OffsetNote {
+  id    Int    @id
+  title String
+  value Int
+}
