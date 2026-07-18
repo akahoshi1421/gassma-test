@@ -5,6 +5,14 @@ import { assertDeepEquals } from "../../assert/assertDeepEquals";
 // Order id 6 の createdAt と同時刻（シート上に実在するセル時刻）を境界にする
 const BOUNDARY = new Date("2025-05-19T06:51:24");
 
+// ライブラリ realm 由来の Date は instanceof Date に落ちるため toString で判定する
+function isDateValue(value: unknown): value is Date {
+  return (
+    value instanceof Date ||
+    Object.prototype.toString.call(value) === "[object Date]"
+  );
+}
+
 function testDateFilter() {
   const client = new GassmaClient();
 
@@ -25,9 +33,9 @@ function testDateFilter() {
 // 前提: createdAt が datetime セルで、スクリプトとシートのタイムゾーンが一致していること
 function testDateCellPrecondition(client: GassmaClient) {
   const order = client.Order.findFirstOrThrow({ where: { id: 6 } });
-  if (!(order.createdAt instanceof Date)) {
+  if (!isDateValue(order.createdAt)) {
     throw new Error(
-      `date precondition: createdAt cell must be a datetime cell, got ${typeof order.createdAt}`,
+      `date precondition: createdAt cell must be a datetime cell, got ${Object.prototype.toString.call(order.createdAt)}`,
     );
   }
   assertEquals(
