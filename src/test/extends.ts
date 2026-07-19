@@ -6,6 +6,12 @@ import { testExtendsAllModelsAllOperations } from "./extends/testExtendsAllModel
 import { testExtendsChaining } from "./extends/testExtendsChaining";
 import { testExtendsShortCircuit } from "./extends/testExtendsShortCircuit";
 import { testExtendsWriteCreate } from "./extends/testExtendsWriteCreate";
+import { testExtendsResultBasic } from "./extends/testExtendsResultBasic";
+import { testExtendsResultAllModels } from "./extends/testExtendsResultAllModels";
+import { testExtendsResultSelectOmit } from "./extends/testExtendsResultSelectOmit";
+import { testExtendsResultOverrideDependency } from "./extends/testExtendsResultOverrideDependency";
+import { testExtendsResultNestedBoundary } from "./extends/testExtendsResultNestedBoundary";
+import { testExtendsResultWrite } from "./extends/testExtendsResultWrite";
 import { resetAllSheets } from "../reset/resetAllSheets";
 
 function testExtendsAll() {
@@ -17,7 +23,13 @@ function testExtendsAll() {
   testExtendsAllModelsAllOperations();
   testExtendsChaining();
   testExtendsShortCircuit();
+  testExtendsResultBasic();
+  testExtendsResultAllModels();
+  testExtendsResultSelectOmit();
+  testExtendsResultOverrideDependency();
+  testExtendsResultNestedBoundary();
   testExtendsWriteCreate();
+  testExtendsResultWrite();
 
   Logger.log("🎉 All extends tests passed!");
 }
