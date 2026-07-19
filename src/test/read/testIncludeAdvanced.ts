@@ -1,5 +1,6 @@
 import { GassmaClient } from "../../generated/gassma/gassmaClient";
 import { assertEquals } from "../../assert/assertEquals";
+import { assertDeepEquals } from "../../assert/assertDeepEquals";
 
 function testIncludeAdvanced() {
   const client = new GassmaClient();
@@ -7,6 +8,8 @@ function testIncludeAdvanced() {
   testIncludeSelect(client);
   testIncludeOmit(client);
   testIncludeOrderBy(client);
+  testIncludeOrderByArray(client);
+  testSelectRelationOrderByArray(client);
   testIncludeSkipTake(client);
   testIncludeCountWithWhere(client);
   testIncludeCountTrueAllRelations(client);
@@ -77,6 +80,48 @@ function testIncludeOrderBy(client: GassmaClient) {
     throw new Error("include orderBy: id is null");
   if (firstId <= secondId)
     throw new Error(`include orderBy desc: ${firstId} should be > ${secondId}`);
+}
+
+function testIncludeOrderByArray(client: GassmaClient) {
+  // authorId 1 の posts の published は {54,138}=false / {56,94,115,157,182}=true。
+  // 第1キー published asc の同値内で第2キー id desc がタイブレークとして効く
+  const user = client.User.findFirst({
+    where: { id: 1 },
+    include: {
+      posts: {
+        orderBy: [{ published: "asc" }, { id: "desc" }],
+        select: { id: true },
+      },
+    },
+  });
+  if (!user) throw new Error("include orderBy array: user null");
+
+  const ids = user.posts.map((post) => post.id);
+  assertDeepEquals(
+    ids,
+    [138, 54, 182, 157, 115, 94, 56],
+    "include orderBy array ids",
+  );
+}
+
+function testSelectRelationOrderByArray(client: GassmaClient) {
+  const user = client.User.findFirst({
+    where: { id: 1 },
+    select: {
+      posts: {
+        orderBy: [{ published: "asc" }, { id: "desc" }],
+        select: { id: true },
+      },
+    },
+  });
+  if (!user) throw new Error("select relation orderBy array: user null");
+
+  const ids = user.posts.map((post) => post.id);
+  assertDeepEquals(
+    ids,
+    [138, 54, 182, 157, 115, 94, 56],
+    "select relation orderBy array ids",
+  );
 }
 
 function testIncludeSkipTake(client: GassmaClient) {

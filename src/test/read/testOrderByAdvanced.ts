@@ -8,6 +8,7 @@ function testOrderByAdvanced() {
   testNullsLast(client);
   testRelationOrderBy(client);
   testCountOrderBy(client);
+  testOrderByEmptyArray(client);
 
   Logger.log("✅ testOrderByAdvanced: all passed");
 }
@@ -77,6 +78,12 @@ function testCountOrderBy(client: GassmaClient) {
   });
   if (users.length === 0) throw new Error("count orderBy: no results");
   assertEquals(users.length, 5, "count orderBy count");
+}
+
+function testOrderByEmptyArray(client: GassmaClient) {
+  // orderBy: [] は no-op（クラッシュせず全件返る）
+  const users = client.User.findMany({ orderBy: [] });
+  assertEquals(users.length, 50, "orderBy empty array count");
 }
 
 export { testOrderByAdvanced };
