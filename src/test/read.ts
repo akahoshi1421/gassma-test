@@ -27,6 +27,7 @@ import { testRelationOmitFalse } from "./read/testRelationOmitFalse";
 import { testGetColumnHeaders } from "./read/testGetColumnHeaders";
 import { testZeroMatch } from "./read/testZeroMatch";
 import { testDistinctOrderByMulti } from "./read/testDistinctOrderByMulti";
+import { testDistinctPipeline } from "./read/testDistinctPipeline";
 import { testCountZeroRelation } from "./read/testCountZeroRelation";
 import { testIncludeNull } from "./read/testIncludeNull";
 import { testDateFilter } from "./read/testDateFilter";
@@ -63,6 +64,7 @@ function testRead() {
   testGetColumnHeaders();
   testZeroMatch();
   testDistinctOrderByMulti();
+  testDistinctPipeline();
   testCountZeroRelation();
   testIncludeNull();
   testDateFilter();
