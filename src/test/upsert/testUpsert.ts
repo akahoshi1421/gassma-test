@@ -8,6 +8,7 @@ import { userData } from "../../consts/userData";
 import { profileData } from "../../consts/profileData";
 import { postData } from "../../consts/postData";
 import { commentData } from "../../consts/commentData";
+import { productData } from "../../consts/productData";
 
 function testUpsert() {
   const client = new GassmaClient();
@@ -18,6 +19,7 @@ function testUpsert() {
   testUpsertSelect(client);
   testUpsertOmit(client);
   testUpsertNumberOperation(client);
+  testUpsertUpdateIncrement(client);
   testUpsertNestedCreate(client);
   testUpsertNestedUpdate(client);
 
@@ -130,6 +132,35 @@ function testUpsertNumberOperation(client: GassmaClient) {
   snapshot.assertRowEquals({ id: 1001 }, { name: "JavaScript" });
 
   resetSheet("Tag", tagData);
+}
+
+function testUpsertUpdateIncrement(client: GassmaClient) {
+  // where ヒット時の update 経路で id 以外の数値カラムにも increment が効く (core #153)
+  const before = client.Product.findFirst({ where: { id: 1 } });
+  if (!before) throw new Error("upsert update increment: product 1 not found");
+
+  const result = client.Product.upsert({
+    where: { id: 1 },
+    create: {
+      id: 1,
+      name: "ShouldNotCreate",
+      price: 1,
+      stock: 1,
+      status: "available",
+    },
+    update: { stock: { increment: 25 } },
+  });
+
+  assertEquals(result.stock, before.stock + 25, "upsert update increment: returned stock");
+
+  const snapshot = getSheetSnapshot("Product");
+  // create が走っていないこと (name/price は元のまま) も同時に確認
+  snapshot.assertRowEquals(
+    { id: 1 },
+    { stock: before.stock + 25, name: before.name, price: before.price },
+  );
+
+  resetSheet("Product", productData);
 }
 
 function testUpsertNestedCreate(client: GassmaClient) {

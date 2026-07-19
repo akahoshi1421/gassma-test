@@ -2930,82 +2930,82 @@ export type GassmaGassmaProfileFindManyData = GassmaGassmaProfileFindData;
 
 export type GassmaGassmaPostUpdateData = {
   where?: GassmaGassmaPostWhereUse;
-  data: Partial<{ [K in keyof GassmaGassmaPostUse]: GassmaGassmaPostUse[K] | Gassma.NumberOperation }>;
+  data: Partial<{ [K in keyof GassmaGassmaPostUse]: GassmaGassmaPostUse[K] | (K extends "id" | "content" | "viewCount" | "rating" | "authorId" | "categoryId" ? Gassma.NumberOperation : never) }>;
   limit?: number;
 };
 
 export type GassmaGassmaCommentUpdateData = {
   where?: GassmaGassmaCommentWhereUse;
-  data: Partial<{ [K in keyof GassmaGassmaCommentUse]: GassmaGassmaCommentUse[K] | Gassma.NumberOperation }>;
+  data: Partial<{ [K in keyof GassmaGassmaCommentUse]: GassmaGassmaCommentUse[K] | (K extends "id" | "authorId" | "postId" ? Gassma.NumberOperation : never) }>;
   limit?: number;
 };
 
 export type GassmaGassmaCategoryUpdateData = {
   where?: GassmaGassmaCategoryWhereUse;
-  data: Partial<{ [K in keyof GassmaGassmaCategoryUse]: GassmaGassmaCategoryUse[K] | Gassma.NumberOperation }>;
+  data: Partial<{ [K in keyof GassmaGassmaCategoryUse]: GassmaGassmaCategoryUse[K] | (K extends "id" | "parentId" ? Gassma.NumberOperation : never) }>;
   limit?: number;
 };
 
 export type GassmaGassmaTagUpdateData = {
   where?: GassmaGassmaTagWhereUse;
-  data: Partial<{ [K in keyof GassmaGassmaTagUse]: GassmaGassmaTagUse[K] | Gassma.NumberOperation }>;
+  data: Partial<{ [K in keyof GassmaGassmaTagUse]: GassmaGassmaTagUse[K] | (K extends "id" ? Gassma.NumberOperation : never) }>;
   limit?: number;
 };
 
 export type GassmaGassmaProductUpdateData = {
   where?: GassmaGassmaProductWhereUse;
-  data: Partial<{ [K in keyof GassmaGassmaProductUse]: GassmaGassmaProductUse[K] | Gassma.NumberOperation }>;
+  data: Partial<{ [K in keyof GassmaGassmaProductUse]: GassmaGassmaProductUse[K] | (K extends "id" | "price" | "stock" ? Gassma.NumberOperation : never) }>;
   limit?: number;
 };
 
 export type GassmaGassmaOrderUpdateData = {
   where?: GassmaGassmaOrderWhereUse;
-  data: Partial<{ [K in keyof GassmaGassmaOrderUse]: GassmaGassmaOrderUse[K] | Gassma.NumberOperation }>;
+  data: Partial<{ [K in keyof GassmaGassmaOrderUse]: GassmaGassmaOrderUse[K] | (K extends "id" | "userId" | "totalAmount" | "quantity" ? Gassma.NumberOperation : never) }>;
   limit?: number;
 };
 
 export type GassmaGassmaOrderItemUpdateData = {
   where?: GassmaGassmaOrderItemWhereUse;
-  data: Partial<{ [K in keyof GassmaGassmaOrderItemUse]: GassmaGassmaOrderItemUse[K] | Gassma.NumberOperation }>;
+  data: Partial<{ [K in keyof GassmaGassmaOrderItemUse]: GassmaGassmaOrderItemUse[K] | (K extends "id" | "orderId" | "productId" | "quantity" | "unitPrice" ? Gassma.NumberOperation : never) }>;
   limit?: number;
 };
 
 export type GassmaGassmaFormulaCellUpdateData = {
   where?: GassmaGassmaFormulaCellWhereUse;
-  data: Partial<{ [K in keyof GassmaGassmaFormulaCellUse]: GassmaGassmaFormulaCellUse[K] | Gassma.NumberOperation }>;
+  data: Partial<{ [K in keyof GassmaGassmaFormulaCellUse]: GassmaGassmaFormulaCellUse[K] | (K extends "id" | "amount" | "total" ? Gassma.NumberOperation : never) }>;
   limit?: number;
 };
 
 export type GassmaGassmaNotificationUpdateData = {
   where?: GassmaGassmaNotificationWhereUse;
-  data: Partial<{ [K in keyof GassmaGassmaNotificationUse]: GassmaGassmaNotificationUse[K] | Gassma.NumberOperation }>;
+  data: Partial<{ [K in keyof GassmaGassmaNotificationUse]: GassmaGassmaNotificationUse[K] | (K extends "id" | "userId" ? Gassma.NumberOperation : never) }>;
   limit?: number;
 };
 
 export type GassmaGassmaOffsetNoteUpdateData = {
   where?: GassmaGassmaOffsetNoteWhereUse;
-  data: Partial<{ [K in keyof GassmaGassmaOffsetNoteUse]: GassmaGassmaOffsetNoteUse[K] | Gassma.NumberOperation }>;
+  data: Partial<{ [K in keyof GassmaGassmaOffsetNoteUse]: GassmaGassmaOffsetNoteUse[K] | (K extends "id" | "value" ? Gassma.NumberOperation : never) }>;
   limit?: number;
 };
 
 export type GassmaGassmaUserUpdateData = {
   where?: GassmaGassmaUserWhereUse;
-  data: Partial<{ [K in keyof GassmaGassmaUserUse]: GassmaGassmaUserUse[K] | Gassma.NumberOperation }>;
+  data: Partial<{ [K in keyof GassmaGassmaUserUse]: GassmaGassmaUserUse[K] | (K extends "id" | "age" ? Gassma.NumberOperation : never) }>;
   limit?: number;
 };
 
 export type GassmaGassmaProfileUpdateData = {
   where?: GassmaGassmaProfileWhereUse;
-  data: Partial<{ [K in keyof GassmaGassmaProfileUse]: GassmaGassmaProfileUse[K] | Gassma.NumberOperation }>;
+  data: Partial<{ [K in keyof GassmaGassmaProfileUse]: GassmaGassmaProfileUse[K] | (K extends "id" | "userId" ? Gassma.NumberOperation : never) }>;
   limit?: number;
 };
 
 export type GassmaGassmaPostUpdateSingleData = {
   where: GassmaGassmaPostWhereUse;
-  data: Partial<{ [K in keyof GassmaGassmaPostUse]: GassmaGassmaPostUse[K] | Gassma.NumberOperation }> & {
-    "author"?: { create?: GassmaGassmaUserUse; connect?: GassmaGassmaUserWhereUse; connectOrCreate?: { where: GassmaGassmaUserWhereUse; create: GassmaGassmaUserUse }; update?: Partial<GassmaGassmaUserUse>; delete?: true; disconnect?: true };
-    "category"?: { create?: GassmaGassmaCategoryUse; connect?: GassmaGassmaCategoryWhereUse; connectOrCreate?: { where: GassmaGassmaCategoryWhereUse; create: GassmaGassmaCategoryUse }; update?: Partial<GassmaGassmaCategoryUse>; delete?: true; disconnect?: true };
-    "comments"?: { create?: Omit<GassmaGassmaCommentUse, "postId"> | Omit<GassmaGassmaCommentUse, "postId">[]; createMany?: { data: Omit<GassmaGassmaCommentUse, "postId">[] }; connect?: GassmaGassmaCommentWhereUse | GassmaGassmaCommentWhereUse[]; connectOrCreate?: { where: GassmaGassmaCommentWhereUse; create: Omit<GassmaGassmaCommentUse, "postId"> } | { where: GassmaGassmaCommentWhereUse; create: Omit<GassmaGassmaCommentUse, "postId"> }[]; update?: { where: GassmaGassmaCommentWhereUse; data: Partial<GassmaGassmaCommentUse> } | { where: GassmaGassmaCommentWhereUse; data: Partial<GassmaGassmaCommentUse> }[]; delete?: GassmaGassmaCommentWhereUse | GassmaGassmaCommentWhereUse[]; deleteMany?: GassmaGassmaCommentWhereUse | GassmaGassmaCommentWhereUse[]; disconnect?: GassmaGassmaCommentWhereUse | GassmaGassmaCommentWhereUse[]; set?: GassmaGassmaCommentWhereUse[] };
+  data: Partial<{ [K in keyof GassmaGassmaPostUse]: GassmaGassmaPostUse[K] | (K extends "id" | "content" | "viewCount" | "rating" | "authorId" | "categoryId" ? Gassma.NumberOperation : never) }> & {
+    "author"?: { create?: GassmaGassmaUserUse; connect?: GassmaGassmaUserWhereUse; connectOrCreate?: { where: GassmaGassmaUserWhereUse; create: GassmaGassmaUserUse }; update?: Partial<{ [K in keyof GassmaGassmaUserUse]: GassmaGassmaUserUse[K] | (K extends "id" | "age" ? Gassma.NumberOperation : never) }>; delete?: true; disconnect?: true };
+    "category"?: { create?: GassmaGassmaCategoryUse; connect?: GassmaGassmaCategoryWhereUse; connectOrCreate?: { where: GassmaGassmaCategoryWhereUse; create: GassmaGassmaCategoryUse }; update?: Partial<{ [K in keyof GassmaGassmaCategoryUse]: GassmaGassmaCategoryUse[K] | (K extends "id" | "parentId" ? Gassma.NumberOperation : never) }>; delete?: true; disconnect?: true };
+    "comments"?: { create?: Omit<GassmaGassmaCommentUse, "postId"> | Omit<GassmaGassmaCommentUse, "postId">[]; createMany?: { data: Omit<GassmaGassmaCommentUse, "postId">[] }; connect?: GassmaGassmaCommentWhereUse | GassmaGassmaCommentWhereUse[]; connectOrCreate?: { where: GassmaGassmaCommentWhereUse; create: Omit<GassmaGassmaCommentUse, "postId"> } | { where: GassmaGassmaCommentWhereUse; create: Omit<GassmaGassmaCommentUse, "postId"> }[]; update?: { where: GassmaGassmaCommentWhereUse; data: Partial<{ [K in keyof GassmaGassmaCommentUse]: GassmaGassmaCommentUse[K] | (K extends "id" | "authorId" | "postId" ? Gassma.NumberOperation : never) }> } | { where: GassmaGassmaCommentWhereUse; data: Partial<{ [K in keyof GassmaGassmaCommentUse]: GassmaGassmaCommentUse[K] | (K extends "id" | "authorId" | "postId" ? Gassma.NumberOperation : never) }> }[]; delete?: GassmaGassmaCommentWhereUse | GassmaGassmaCommentWhereUse[]; deleteMany?: GassmaGassmaCommentWhereUse | GassmaGassmaCommentWhereUse[]; disconnect?: GassmaGassmaCommentWhereUse | GassmaGassmaCommentWhereUse[]; set?: GassmaGassmaCommentWhereUse[] };
     "tags"?: { create?: GassmaGassmaTagUse | GassmaGassmaTagUse[]; connect?: GassmaGassmaTagWhereUse | GassmaGassmaTagWhereUse[]; connectOrCreate?: { where: GassmaGassmaTagWhereUse; create: GassmaGassmaTagUse } | { where: GassmaGassmaTagWhereUse; create: GassmaGassmaTagUse }[]; disconnect?: GassmaGassmaTagWhereUse | GassmaGassmaTagWhereUse[]; set?: GassmaGassmaTagWhereUse[] };
   };
   include?: GassmaGassmaPostInclude;
@@ -3013,26 +3013,26 @@ export type GassmaGassmaPostUpdateSingleData = {
 
 export type GassmaGassmaCommentUpdateSingleData = {
   where: GassmaGassmaCommentWhereUse;
-  data: Partial<{ [K in keyof GassmaGassmaCommentUse]: GassmaGassmaCommentUse[K] | Gassma.NumberOperation }> & {
-    "author"?: { create?: GassmaGassmaUserUse; connect?: GassmaGassmaUserWhereUse; connectOrCreate?: { where: GassmaGassmaUserWhereUse; create: GassmaGassmaUserUse }; update?: Partial<GassmaGassmaUserUse>; delete?: true; disconnect?: true };
-    "post"?: { create?: GassmaGassmaPostUse; connect?: GassmaGassmaPostWhereUse; connectOrCreate?: { where: GassmaGassmaPostWhereUse; create: GassmaGassmaPostUse }; update?: Partial<GassmaGassmaPostUse>; delete?: true; disconnect?: true };
+  data: Partial<{ [K in keyof GassmaGassmaCommentUse]: GassmaGassmaCommentUse[K] | (K extends "id" | "authorId" | "postId" ? Gassma.NumberOperation : never) }> & {
+    "author"?: { create?: GassmaGassmaUserUse; connect?: GassmaGassmaUserWhereUse; connectOrCreate?: { where: GassmaGassmaUserWhereUse; create: GassmaGassmaUserUse }; update?: Partial<{ [K in keyof GassmaGassmaUserUse]: GassmaGassmaUserUse[K] | (K extends "id" | "age" ? Gassma.NumberOperation : never) }>; delete?: true; disconnect?: true };
+    "post"?: { create?: GassmaGassmaPostUse; connect?: GassmaGassmaPostWhereUse; connectOrCreate?: { where: GassmaGassmaPostWhereUse; create: GassmaGassmaPostUse }; update?: Partial<{ [K in keyof GassmaGassmaPostUse]: GassmaGassmaPostUse[K] | (K extends "id" | "content" | "viewCount" | "rating" | "authorId" | "categoryId" ? Gassma.NumberOperation : never) }>; delete?: true; disconnect?: true };
   };
   include?: GassmaGassmaCommentInclude;
 } & ({ select?: GassmaGassmaCommentSelect; omit?: never } | { select?: never; omit?: GassmaGassmaCommentOmit });
 
 export type GassmaGassmaCategoryUpdateSingleData = {
   where: GassmaGassmaCategoryWhereUse;
-  data: Partial<{ [K in keyof GassmaGassmaCategoryUse]: GassmaGassmaCategoryUse[K] | Gassma.NumberOperation }> & {
-    "posts"?: { create?: Omit<GassmaGassmaPostUse, "categoryId"> | Omit<GassmaGassmaPostUse, "categoryId">[]; createMany?: { data: Omit<GassmaGassmaPostUse, "categoryId">[] }; connect?: GassmaGassmaPostWhereUse | GassmaGassmaPostWhereUse[]; connectOrCreate?: { where: GassmaGassmaPostWhereUse; create: Omit<GassmaGassmaPostUse, "categoryId"> } | { where: GassmaGassmaPostWhereUse; create: Omit<GassmaGassmaPostUse, "categoryId"> }[]; update?: { where: GassmaGassmaPostWhereUse; data: Partial<GassmaGassmaPostUse> } | { where: GassmaGassmaPostWhereUse; data: Partial<GassmaGassmaPostUse> }[]; delete?: GassmaGassmaPostWhereUse | GassmaGassmaPostWhereUse[]; deleteMany?: GassmaGassmaPostWhereUse | GassmaGassmaPostWhereUse[]; disconnect?: GassmaGassmaPostWhereUse | GassmaGassmaPostWhereUse[]; set?: GassmaGassmaPostWhereUse[] };
-    "parent"?: { create?: GassmaGassmaCategoryUse; connect?: GassmaGassmaCategoryWhereUse; connectOrCreate?: { where: GassmaGassmaCategoryWhereUse; create: GassmaGassmaCategoryUse }; update?: Partial<GassmaGassmaCategoryUse>; delete?: true; disconnect?: true };
-    "children"?: { create?: Omit<GassmaGassmaCategoryUse, "parentId"> | Omit<GassmaGassmaCategoryUse, "parentId">[]; createMany?: { data: Omit<GassmaGassmaCategoryUse, "parentId">[] }; connect?: GassmaGassmaCategoryWhereUse | GassmaGassmaCategoryWhereUse[]; connectOrCreate?: { where: GassmaGassmaCategoryWhereUse; create: Omit<GassmaGassmaCategoryUse, "parentId"> } | { where: GassmaGassmaCategoryWhereUse; create: Omit<GassmaGassmaCategoryUse, "parentId"> }[]; update?: { where: GassmaGassmaCategoryWhereUse; data: Partial<GassmaGassmaCategoryUse> } | { where: GassmaGassmaCategoryWhereUse; data: Partial<GassmaGassmaCategoryUse> }[]; delete?: GassmaGassmaCategoryWhereUse | GassmaGassmaCategoryWhereUse[]; deleteMany?: GassmaGassmaCategoryWhereUse | GassmaGassmaCategoryWhereUse[]; disconnect?: GassmaGassmaCategoryWhereUse | GassmaGassmaCategoryWhereUse[]; set?: GassmaGassmaCategoryWhereUse[] };
+  data: Partial<{ [K in keyof GassmaGassmaCategoryUse]: GassmaGassmaCategoryUse[K] | (K extends "id" | "parentId" ? Gassma.NumberOperation : never) }> & {
+    "posts"?: { create?: Omit<GassmaGassmaPostUse, "categoryId"> | Omit<GassmaGassmaPostUse, "categoryId">[]; createMany?: { data: Omit<GassmaGassmaPostUse, "categoryId">[] }; connect?: GassmaGassmaPostWhereUse | GassmaGassmaPostWhereUse[]; connectOrCreate?: { where: GassmaGassmaPostWhereUse; create: Omit<GassmaGassmaPostUse, "categoryId"> } | { where: GassmaGassmaPostWhereUse; create: Omit<GassmaGassmaPostUse, "categoryId"> }[]; update?: { where: GassmaGassmaPostWhereUse; data: Partial<{ [K in keyof GassmaGassmaPostUse]: GassmaGassmaPostUse[K] | (K extends "id" | "content" | "viewCount" | "rating" | "authorId" | "categoryId" ? Gassma.NumberOperation : never) }> } | { where: GassmaGassmaPostWhereUse; data: Partial<{ [K in keyof GassmaGassmaPostUse]: GassmaGassmaPostUse[K] | (K extends "id" | "content" | "viewCount" | "rating" | "authorId" | "categoryId" ? Gassma.NumberOperation : never) }> }[]; delete?: GassmaGassmaPostWhereUse | GassmaGassmaPostWhereUse[]; deleteMany?: GassmaGassmaPostWhereUse | GassmaGassmaPostWhereUse[]; disconnect?: GassmaGassmaPostWhereUse | GassmaGassmaPostWhereUse[]; set?: GassmaGassmaPostWhereUse[] };
+    "parent"?: { create?: GassmaGassmaCategoryUse; connect?: GassmaGassmaCategoryWhereUse; connectOrCreate?: { where: GassmaGassmaCategoryWhereUse; create: GassmaGassmaCategoryUse }; update?: Partial<{ [K in keyof GassmaGassmaCategoryUse]: GassmaGassmaCategoryUse[K] | (K extends "id" | "parentId" ? Gassma.NumberOperation : never) }>; delete?: true; disconnect?: true };
+    "children"?: { create?: Omit<GassmaGassmaCategoryUse, "parentId"> | Omit<GassmaGassmaCategoryUse, "parentId">[]; createMany?: { data: Omit<GassmaGassmaCategoryUse, "parentId">[] }; connect?: GassmaGassmaCategoryWhereUse | GassmaGassmaCategoryWhereUse[]; connectOrCreate?: { where: GassmaGassmaCategoryWhereUse; create: Omit<GassmaGassmaCategoryUse, "parentId"> } | { where: GassmaGassmaCategoryWhereUse; create: Omit<GassmaGassmaCategoryUse, "parentId"> }[]; update?: { where: GassmaGassmaCategoryWhereUse; data: Partial<{ [K in keyof GassmaGassmaCategoryUse]: GassmaGassmaCategoryUse[K] | (K extends "id" | "parentId" ? Gassma.NumberOperation : never) }> } | { where: GassmaGassmaCategoryWhereUse; data: Partial<{ [K in keyof GassmaGassmaCategoryUse]: GassmaGassmaCategoryUse[K] | (K extends "id" | "parentId" ? Gassma.NumberOperation : never) }> }[]; delete?: GassmaGassmaCategoryWhereUse | GassmaGassmaCategoryWhereUse[]; deleteMany?: GassmaGassmaCategoryWhereUse | GassmaGassmaCategoryWhereUse[]; disconnect?: GassmaGassmaCategoryWhereUse | GassmaGassmaCategoryWhereUse[]; set?: GassmaGassmaCategoryWhereUse[] };
   };
   include?: GassmaGassmaCategoryInclude;
 } & ({ select?: GassmaGassmaCategorySelect; omit?: never } | { select?: never; omit?: GassmaGassmaCategoryOmit });
 
 export type GassmaGassmaTagUpdateSingleData = {
   where: GassmaGassmaTagWhereUse;
-  data: Partial<{ [K in keyof GassmaGassmaTagUse]: GassmaGassmaTagUse[K] | Gassma.NumberOperation }> & {
+  data: Partial<{ [K in keyof GassmaGassmaTagUse]: GassmaGassmaTagUse[K] | (K extends "id" ? Gassma.NumberOperation : never) }> & {
     "posts"?: { create?: GassmaGassmaPostUse | GassmaGassmaPostUse[]; connect?: GassmaGassmaPostWhereUse | GassmaGassmaPostWhereUse[]; connectOrCreate?: { where: GassmaGassmaPostWhereUse; create: GassmaGassmaPostUse } | { where: GassmaGassmaPostWhereUse; create: GassmaGassmaPostUse }[]; disconnect?: GassmaGassmaPostWhereUse | GassmaGassmaPostWhereUse[]; set?: GassmaGassmaPostWhereUse[] };
   };
   include?: GassmaGassmaTagInclude;
@@ -3040,63 +3040,63 @@ export type GassmaGassmaTagUpdateSingleData = {
 
 export type GassmaGassmaProductUpdateSingleData = {
   where: GassmaGassmaProductWhereUse;
-  data: Partial<{ [K in keyof GassmaGassmaProductUse]: GassmaGassmaProductUse[K] | Gassma.NumberOperation }> & {
-    "orderItems"?: { create?: Omit<GassmaGassmaOrderItemUse, "productId"> | Omit<GassmaGassmaOrderItemUse, "productId">[]; createMany?: { data: Omit<GassmaGassmaOrderItemUse, "productId">[] }; connect?: GassmaGassmaOrderItemWhereUse | GassmaGassmaOrderItemWhereUse[]; connectOrCreate?: { where: GassmaGassmaOrderItemWhereUse; create: Omit<GassmaGassmaOrderItemUse, "productId"> } | { where: GassmaGassmaOrderItemWhereUse; create: Omit<GassmaGassmaOrderItemUse, "productId"> }[]; update?: { where: GassmaGassmaOrderItemWhereUse; data: Partial<GassmaGassmaOrderItemUse> } | { where: GassmaGassmaOrderItemWhereUse; data: Partial<GassmaGassmaOrderItemUse> }[]; delete?: GassmaGassmaOrderItemWhereUse | GassmaGassmaOrderItemWhereUse[]; deleteMany?: GassmaGassmaOrderItemWhereUse | GassmaGassmaOrderItemWhereUse[]; disconnect?: GassmaGassmaOrderItemWhereUse | GassmaGassmaOrderItemWhereUse[]; set?: GassmaGassmaOrderItemWhereUse[] };
+  data: Partial<{ [K in keyof GassmaGassmaProductUse]: GassmaGassmaProductUse[K] | (K extends "id" | "price" | "stock" ? Gassma.NumberOperation : never) }> & {
+    "orderItems"?: { create?: Omit<GassmaGassmaOrderItemUse, "productId"> | Omit<GassmaGassmaOrderItemUse, "productId">[]; createMany?: { data: Omit<GassmaGassmaOrderItemUse, "productId">[] }; connect?: GassmaGassmaOrderItemWhereUse | GassmaGassmaOrderItemWhereUse[]; connectOrCreate?: { where: GassmaGassmaOrderItemWhereUse; create: Omit<GassmaGassmaOrderItemUse, "productId"> } | { where: GassmaGassmaOrderItemWhereUse; create: Omit<GassmaGassmaOrderItemUse, "productId"> }[]; update?: { where: GassmaGassmaOrderItemWhereUse; data: Partial<{ [K in keyof GassmaGassmaOrderItemUse]: GassmaGassmaOrderItemUse[K] | (K extends "id" | "orderId" | "productId" | "quantity" | "unitPrice" ? Gassma.NumberOperation : never) }> } | { where: GassmaGassmaOrderItemWhereUse; data: Partial<{ [K in keyof GassmaGassmaOrderItemUse]: GassmaGassmaOrderItemUse[K] | (K extends "id" | "orderId" | "productId" | "quantity" | "unitPrice" ? Gassma.NumberOperation : never) }> }[]; delete?: GassmaGassmaOrderItemWhereUse | GassmaGassmaOrderItemWhereUse[]; deleteMany?: GassmaGassmaOrderItemWhereUse | GassmaGassmaOrderItemWhereUse[]; disconnect?: GassmaGassmaOrderItemWhereUse | GassmaGassmaOrderItemWhereUse[]; set?: GassmaGassmaOrderItemWhereUse[] };
   };
   include?: GassmaGassmaProductInclude;
 } & ({ select?: GassmaGassmaProductSelect; omit?: never } | { select?: never; omit?: GassmaGassmaProductOmit });
 
 export type GassmaGassmaOrderUpdateSingleData = {
   where: GassmaGassmaOrderWhereUse;
-  data: Partial<{ [K in keyof GassmaGassmaOrderUse]: GassmaGassmaOrderUse[K] | Gassma.NumberOperation }> & {
-    "user"?: { create?: GassmaGassmaUserUse; connect?: GassmaGassmaUserWhereUse; connectOrCreate?: { where: GassmaGassmaUserWhereUse; create: GassmaGassmaUserUse }; update?: Partial<GassmaGassmaUserUse>; delete?: true; disconnect?: true };
-    "items"?: { create?: Omit<GassmaGassmaOrderItemUse, "orderId"> | Omit<GassmaGassmaOrderItemUse, "orderId">[]; createMany?: { data: Omit<GassmaGassmaOrderItemUse, "orderId">[] }; connect?: GassmaGassmaOrderItemWhereUse | GassmaGassmaOrderItemWhereUse[]; connectOrCreate?: { where: GassmaGassmaOrderItemWhereUse; create: Omit<GassmaGassmaOrderItemUse, "orderId"> } | { where: GassmaGassmaOrderItemWhereUse; create: Omit<GassmaGassmaOrderItemUse, "orderId"> }[]; update?: { where: GassmaGassmaOrderItemWhereUse; data: Partial<GassmaGassmaOrderItemUse> } | { where: GassmaGassmaOrderItemWhereUse; data: Partial<GassmaGassmaOrderItemUse> }[]; delete?: GassmaGassmaOrderItemWhereUse | GassmaGassmaOrderItemWhereUse[]; deleteMany?: GassmaGassmaOrderItemWhereUse | GassmaGassmaOrderItemWhereUse[]; disconnect?: GassmaGassmaOrderItemWhereUse | GassmaGassmaOrderItemWhereUse[]; set?: GassmaGassmaOrderItemWhereUse[] };
+  data: Partial<{ [K in keyof GassmaGassmaOrderUse]: GassmaGassmaOrderUse[K] | (K extends "id" | "userId" | "totalAmount" | "quantity" ? Gassma.NumberOperation : never) }> & {
+    "user"?: { create?: GassmaGassmaUserUse; connect?: GassmaGassmaUserWhereUse; connectOrCreate?: { where: GassmaGassmaUserWhereUse; create: GassmaGassmaUserUse }; update?: Partial<{ [K in keyof GassmaGassmaUserUse]: GassmaGassmaUserUse[K] | (K extends "id" | "age" ? Gassma.NumberOperation : never) }>; delete?: true; disconnect?: true };
+    "items"?: { create?: Omit<GassmaGassmaOrderItemUse, "orderId"> | Omit<GassmaGassmaOrderItemUse, "orderId">[]; createMany?: { data: Omit<GassmaGassmaOrderItemUse, "orderId">[] }; connect?: GassmaGassmaOrderItemWhereUse | GassmaGassmaOrderItemWhereUse[]; connectOrCreate?: { where: GassmaGassmaOrderItemWhereUse; create: Omit<GassmaGassmaOrderItemUse, "orderId"> } | { where: GassmaGassmaOrderItemWhereUse; create: Omit<GassmaGassmaOrderItemUse, "orderId"> }[]; update?: { where: GassmaGassmaOrderItemWhereUse; data: Partial<{ [K in keyof GassmaGassmaOrderItemUse]: GassmaGassmaOrderItemUse[K] | (K extends "id" | "orderId" | "productId" | "quantity" | "unitPrice" ? Gassma.NumberOperation : never) }> } | { where: GassmaGassmaOrderItemWhereUse; data: Partial<{ [K in keyof GassmaGassmaOrderItemUse]: GassmaGassmaOrderItemUse[K] | (K extends "id" | "orderId" | "productId" | "quantity" | "unitPrice" ? Gassma.NumberOperation : never) }> }[]; delete?: GassmaGassmaOrderItemWhereUse | GassmaGassmaOrderItemWhereUse[]; deleteMany?: GassmaGassmaOrderItemWhereUse | GassmaGassmaOrderItemWhereUse[]; disconnect?: GassmaGassmaOrderItemWhereUse | GassmaGassmaOrderItemWhereUse[]; set?: GassmaGassmaOrderItemWhereUse[] };
   };
   include?: GassmaGassmaOrderInclude;
 } & ({ select?: GassmaGassmaOrderSelect; omit?: never } | { select?: never; omit?: GassmaGassmaOrderOmit });
 
 export type GassmaGassmaOrderItemUpdateSingleData = {
   where: GassmaGassmaOrderItemWhereUse;
-  data: Partial<{ [K in keyof GassmaGassmaOrderItemUse]: GassmaGassmaOrderItemUse[K] | Gassma.NumberOperation }> & {
-    "order"?: { create?: GassmaGassmaOrderUse; connect?: GassmaGassmaOrderWhereUse; connectOrCreate?: { where: GassmaGassmaOrderWhereUse; create: GassmaGassmaOrderUse }; update?: Partial<GassmaGassmaOrderUse>; delete?: true; disconnect?: true };
-    "product"?: { create?: GassmaGassmaProductUse; connect?: GassmaGassmaProductWhereUse; connectOrCreate?: { where: GassmaGassmaProductWhereUse; create: GassmaGassmaProductUse }; update?: Partial<GassmaGassmaProductUse>; delete?: true; disconnect?: true };
+  data: Partial<{ [K in keyof GassmaGassmaOrderItemUse]: GassmaGassmaOrderItemUse[K] | (K extends "id" | "orderId" | "productId" | "quantity" | "unitPrice" ? Gassma.NumberOperation : never) }> & {
+    "order"?: { create?: GassmaGassmaOrderUse; connect?: GassmaGassmaOrderWhereUse; connectOrCreate?: { where: GassmaGassmaOrderWhereUse; create: GassmaGassmaOrderUse }; update?: Partial<{ [K in keyof GassmaGassmaOrderUse]: GassmaGassmaOrderUse[K] | (K extends "id" | "userId" | "totalAmount" | "quantity" ? Gassma.NumberOperation : never) }>; delete?: true; disconnect?: true };
+    "product"?: { create?: GassmaGassmaProductUse; connect?: GassmaGassmaProductWhereUse; connectOrCreate?: { where: GassmaGassmaProductWhereUse; create: GassmaGassmaProductUse }; update?: Partial<{ [K in keyof GassmaGassmaProductUse]: GassmaGassmaProductUse[K] | (K extends "id" | "price" | "stock" ? Gassma.NumberOperation : never) }>; delete?: true; disconnect?: true };
   };
   include?: GassmaGassmaOrderItemInclude;
 } & ({ select?: GassmaGassmaOrderItemSelect; omit?: never } | { select?: never; omit?: GassmaGassmaOrderItemOmit });
 
 export type GassmaGassmaFormulaCellUpdateSingleData = {
   where: GassmaGassmaFormulaCellWhereUse;
-  data: Partial<{ [K in keyof GassmaGassmaFormulaCellUse]: GassmaGassmaFormulaCellUse[K] | Gassma.NumberOperation }>;
+  data: Partial<{ [K in keyof GassmaGassmaFormulaCellUse]: GassmaGassmaFormulaCellUse[K] | (K extends "id" | "amount" | "total" ? Gassma.NumberOperation : never) }>;
   include?: GassmaGassmaFormulaCellInclude;
 } & ({ select?: GassmaGassmaFormulaCellSelect; omit?: never } | { select?: never; omit?: GassmaGassmaFormulaCellOmit });
 
 export type GassmaGassmaNotificationUpdateSingleData = {
   where: GassmaGassmaNotificationWhereUse;
-  data: Partial<{ [K in keyof GassmaGassmaNotificationUse]: GassmaGassmaNotificationUse[K] | Gassma.NumberOperation }>;
+  data: Partial<{ [K in keyof GassmaGassmaNotificationUse]: GassmaGassmaNotificationUse[K] | (K extends "id" | "userId" ? Gassma.NumberOperation : never) }>;
   include?: GassmaGassmaNotificationInclude;
 } & ({ select?: GassmaGassmaNotificationSelect; omit?: never } | { select?: never; omit?: GassmaGassmaNotificationOmit });
 
 export type GassmaGassmaOffsetNoteUpdateSingleData = {
   where: GassmaGassmaOffsetNoteWhereUse;
-  data: Partial<{ [K in keyof GassmaGassmaOffsetNoteUse]: GassmaGassmaOffsetNoteUse[K] | Gassma.NumberOperation }>;
+  data: Partial<{ [K in keyof GassmaGassmaOffsetNoteUse]: GassmaGassmaOffsetNoteUse[K] | (K extends "id" | "value" ? Gassma.NumberOperation : never) }>;
   include?: GassmaGassmaOffsetNoteInclude;
 } & ({ select?: GassmaGassmaOffsetNoteSelect; omit?: never } | { select?: never; omit?: GassmaGassmaOffsetNoteOmit });
 
 export type GassmaGassmaUserUpdateSingleData = {
   where: GassmaGassmaUserWhereUse;
-  data: Partial<{ [K in keyof GassmaGassmaUserUse]: GassmaGassmaUserUse[K] | Gassma.NumberOperation }> & {
-    "posts"?: { create?: Omit<GassmaGassmaPostUse, "authorId"> | Omit<GassmaGassmaPostUse, "authorId">[]; createMany?: { data: Omit<GassmaGassmaPostUse, "authorId">[] }; connect?: GassmaGassmaPostWhereUse | GassmaGassmaPostWhereUse[]; connectOrCreate?: { where: GassmaGassmaPostWhereUse; create: Omit<GassmaGassmaPostUse, "authorId"> } | { where: GassmaGassmaPostWhereUse; create: Omit<GassmaGassmaPostUse, "authorId"> }[]; update?: { where: GassmaGassmaPostWhereUse; data: Partial<GassmaGassmaPostUse> } | { where: GassmaGassmaPostWhereUse; data: Partial<GassmaGassmaPostUse> }[]; delete?: GassmaGassmaPostWhereUse | GassmaGassmaPostWhereUse[]; deleteMany?: GassmaGassmaPostWhereUse | GassmaGassmaPostWhereUse[]; disconnect?: GassmaGassmaPostWhereUse | GassmaGassmaPostWhereUse[]; set?: GassmaGassmaPostWhereUse[] };
-    "comments"?: { create?: Omit<GassmaGassmaCommentUse, "authorId"> | Omit<GassmaGassmaCommentUse, "authorId">[]; createMany?: { data: Omit<GassmaGassmaCommentUse, "authorId">[] }; connect?: GassmaGassmaCommentWhereUse | GassmaGassmaCommentWhereUse[]; connectOrCreate?: { where: GassmaGassmaCommentWhereUse; create: Omit<GassmaGassmaCommentUse, "authorId"> } | { where: GassmaGassmaCommentWhereUse; create: Omit<GassmaGassmaCommentUse, "authorId"> }[]; update?: { where: GassmaGassmaCommentWhereUse; data: Partial<GassmaGassmaCommentUse> } | { where: GassmaGassmaCommentWhereUse; data: Partial<GassmaGassmaCommentUse> }[]; delete?: GassmaGassmaCommentWhereUse | GassmaGassmaCommentWhereUse[]; deleteMany?: GassmaGassmaCommentWhereUse | GassmaGassmaCommentWhereUse[]; disconnect?: GassmaGassmaCommentWhereUse | GassmaGassmaCommentWhereUse[]; set?: GassmaGassmaCommentWhereUse[] };
-    "orders"?: { create?: Omit<GassmaGassmaOrderUse, "userId"> | Omit<GassmaGassmaOrderUse, "userId">[]; createMany?: { data: Omit<GassmaGassmaOrderUse, "userId">[] }; connect?: GassmaGassmaOrderWhereUse | GassmaGassmaOrderWhereUse[]; connectOrCreate?: { where: GassmaGassmaOrderWhereUse; create: Omit<GassmaGassmaOrderUse, "userId"> } | { where: GassmaGassmaOrderWhereUse; create: Omit<GassmaGassmaOrderUse, "userId"> }[]; update?: { where: GassmaGassmaOrderWhereUse; data: Partial<GassmaGassmaOrderUse> } | { where: GassmaGassmaOrderWhereUse; data: Partial<GassmaGassmaOrderUse> }[]; delete?: GassmaGassmaOrderWhereUse | GassmaGassmaOrderWhereUse[]; deleteMany?: GassmaGassmaOrderWhereUse | GassmaGassmaOrderWhereUse[]; disconnect?: GassmaGassmaOrderWhereUse | GassmaGassmaOrderWhereUse[]; set?: GassmaGassmaOrderWhereUse[] };
-    "profile"?: { create?: Omit<GassmaGassmaProfileUse, "userId">; connect?: GassmaGassmaProfileWhereUse; connectOrCreate?: { where: GassmaGassmaProfileWhereUse; create: Omit<GassmaGassmaProfileUse, "userId"> }; update?: Partial<GassmaGassmaProfileUse>; delete?: true; disconnect?: true };
+  data: Partial<{ [K in keyof GassmaGassmaUserUse]: GassmaGassmaUserUse[K] | (K extends "id" | "age" ? Gassma.NumberOperation : never) }> & {
+    "posts"?: { create?: Omit<GassmaGassmaPostUse, "authorId"> | Omit<GassmaGassmaPostUse, "authorId">[]; createMany?: { data: Omit<GassmaGassmaPostUse, "authorId">[] }; connect?: GassmaGassmaPostWhereUse | GassmaGassmaPostWhereUse[]; connectOrCreate?: { where: GassmaGassmaPostWhereUse; create: Omit<GassmaGassmaPostUse, "authorId"> } | { where: GassmaGassmaPostWhereUse; create: Omit<GassmaGassmaPostUse, "authorId"> }[]; update?: { where: GassmaGassmaPostWhereUse; data: Partial<{ [K in keyof GassmaGassmaPostUse]: GassmaGassmaPostUse[K] | (K extends "id" | "content" | "viewCount" | "rating" | "authorId" | "categoryId" ? Gassma.NumberOperation : never) }> } | { where: GassmaGassmaPostWhereUse; data: Partial<{ [K in keyof GassmaGassmaPostUse]: GassmaGassmaPostUse[K] | (K extends "id" | "content" | "viewCount" | "rating" | "authorId" | "categoryId" ? Gassma.NumberOperation : never) }> }[]; delete?: GassmaGassmaPostWhereUse | GassmaGassmaPostWhereUse[]; deleteMany?: GassmaGassmaPostWhereUse | GassmaGassmaPostWhereUse[]; disconnect?: GassmaGassmaPostWhereUse | GassmaGassmaPostWhereUse[]; set?: GassmaGassmaPostWhereUse[] };
+    "comments"?: { create?: Omit<GassmaGassmaCommentUse, "authorId"> | Omit<GassmaGassmaCommentUse, "authorId">[]; createMany?: { data: Omit<GassmaGassmaCommentUse, "authorId">[] }; connect?: GassmaGassmaCommentWhereUse | GassmaGassmaCommentWhereUse[]; connectOrCreate?: { where: GassmaGassmaCommentWhereUse; create: Omit<GassmaGassmaCommentUse, "authorId"> } | { where: GassmaGassmaCommentWhereUse; create: Omit<GassmaGassmaCommentUse, "authorId"> }[]; update?: { where: GassmaGassmaCommentWhereUse; data: Partial<{ [K in keyof GassmaGassmaCommentUse]: GassmaGassmaCommentUse[K] | (K extends "id" | "authorId" | "postId" ? Gassma.NumberOperation : never) }> } | { where: GassmaGassmaCommentWhereUse; data: Partial<{ [K in keyof GassmaGassmaCommentUse]: GassmaGassmaCommentUse[K] | (K extends "id" | "authorId" | "postId" ? Gassma.NumberOperation : never) }> }[]; delete?: GassmaGassmaCommentWhereUse | GassmaGassmaCommentWhereUse[]; deleteMany?: GassmaGassmaCommentWhereUse | GassmaGassmaCommentWhereUse[]; disconnect?: GassmaGassmaCommentWhereUse | GassmaGassmaCommentWhereUse[]; set?: GassmaGassmaCommentWhereUse[] };
+    "orders"?: { create?: Omit<GassmaGassmaOrderUse, "userId"> | Omit<GassmaGassmaOrderUse, "userId">[]; createMany?: { data: Omit<GassmaGassmaOrderUse, "userId">[] }; connect?: GassmaGassmaOrderWhereUse | GassmaGassmaOrderWhereUse[]; connectOrCreate?: { where: GassmaGassmaOrderWhereUse; create: Omit<GassmaGassmaOrderUse, "userId"> } | { where: GassmaGassmaOrderWhereUse; create: Omit<GassmaGassmaOrderUse, "userId"> }[]; update?: { where: GassmaGassmaOrderWhereUse; data: Partial<{ [K in keyof GassmaGassmaOrderUse]: GassmaGassmaOrderUse[K] | (K extends "id" | "userId" | "totalAmount" | "quantity" ? Gassma.NumberOperation : never) }> } | { where: GassmaGassmaOrderWhereUse; data: Partial<{ [K in keyof GassmaGassmaOrderUse]: GassmaGassmaOrderUse[K] | (K extends "id" | "userId" | "totalAmount" | "quantity" ? Gassma.NumberOperation : never) }> }[]; delete?: GassmaGassmaOrderWhereUse | GassmaGassmaOrderWhereUse[]; deleteMany?: GassmaGassmaOrderWhereUse | GassmaGassmaOrderWhereUse[]; disconnect?: GassmaGassmaOrderWhereUse | GassmaGassmaOrderWhereUse[]; set?: GassmaGassmaOrderWhereUse[] };
+    "profile"?: { create?: Omit<GassmaGassmaProfileUse, "userId">; connect?: GassmaGassmaProfileWhereUse; connectOrCreate?: { where: GassmaGassmaProfileWhereUse; create: Omit<GassmaGassmaProfileUse, "userId"> }; update?: Partial<{ [K in keyof GassmaGassmaProfileUse]: GassmaGassmaProfileUse[K] | (K extends "id" | "userId" ? Gassma.NumberOperation : never) }>; delete?: true; disconnect?: true };
   };
   include?: GassmaGassmaUserInclude;
 } & ({ select?: GassmaGassmaUserSelect; omit?: never } | { select?: never; omit?: GassmaGassmaUserOmit });
 
 export type GassmaGassmaProfileUpdateSingleData = {
   where: GassmaGassmaProfileWhereUse;
-  data: Partial<{ [K in keyof GassmaGassmaProfileUse]: GassmaGassmaProfileUse[K] | Gassma.NumberOperation }> & {
-    "user"?: { create?: GassmaGassmaUserUse; connect?: GassmaGassmaUserWhereUse; connectOrCreate?: { where: GassmaGassmaUserWhereUse; create: GassmaGassmaUserUse }; update?: Partial<GassmaGassmaUserUse>; delete?: true; disconnect?: true };
+  data: Partial<{ [K in keyof GassmaGassmaProfileUse]: GassmaGassmaProfileUse[K] | (K extends "id" | "userId" ? Gassma.NumberOperation : never) }> & {
+    "user"?: { create?: GassmaGassmaUserUse; connect?: GassmaGassmaUserWhereUse; connectOrCreate?: { where: GassmaGassmaUserWhereUse; create: GassmaGassmaUserUse }; update?: Partial<{ [K in keyof GassmaGassmaUserUse]: GassmaGassmaUserUse[K] | (K extends "id" | "age" ? Gassma.NumberOperation : never) }>; delete?: true; disconnect?: true };
   };
   include?: GassmaGassmaProfileInclude;
 } & ({ select?: GassmaGassmaProfileSelect; omit?: never } | { select?: never; omit?: GassmaGassmaProfileOmit });
@@ -3107,10 +3107,10 @@ export type GassmaGassmaPostUpsertSingleData = {
     "comments"?: { create?: Omit<GassmaGassmaCommentUse, "postId"> | Omit<GassmaGassmaCommentUse, "postId">[]; createMany?: { data: Omit<GassmaGassmaCommentUse, "postId">[] }; connect?: GassmaGassmaCommentWhereUse | GassmaGassmaCommentWhereUse[]; connectOrCreate?: { where: GassmaGassmaCommentWhereUse; create: Omit<GassmaGassmaCommentUse, "postId"> } | { where: GassmaGassmaCommentWhereUse; create: Omit<GassmaGassmaCommentUse, "postId"> }[] };
     "tags"?: { create?: GassmaGassmaTagUse | GassmaGassmaTagUse[]; connect?: GassmaGassmaTagWhereUse | GassmaGassmaTagWhereUse[]; connectOrCreate?: { where: GassmaGassmaTagWhereUse; create: GassmaGassmaTagUse } | { where: GassmaGassmaTagWhereUse; create: GassmaGassmaTagUse }[] };
   };
-  update: Partial<{ [K in keyof GassmaGassmaPostUse]: GassmaGassmaPostUse[K] | Gassma.NumberOperation }> & {
-    "author"?: { create?: GassmaGassmaUserUse; connect?: GassmaGassmaUserWhereUse; connectOrCreate?: { where: GassmaGassmaUserWhereUse; create: GassmaGassmaUserUse }; update?: Partial<GassmaGassmaUserUse>; delete?: true; disconnect?: true };
-    "category"?: { create?: GassmaGassmaCategoryUse; connect?: GassmaGassmaCategoryWhereUse; connectOrCreate?: { where: GassmaGassmaCategoryWhereUse; create: GassmaGassmaCategoryUse }; update?: Partial<GassmaGassmaCategoryUse>; delete?: true; disconnect?: true };
-    "comments"?: { create?: Omit<GassmaGassmaCommentUse, "postId"> | Omit<GassmaGassmaCommentUse, "postId">[]; createMany?: { data: Omit<GassmaGassmaCommentUse, "postId">[] }; connect?: GassmaGassmaCommentWhereUse | GassmaGassmaCommentWhereUse[]; connectOrCreate?: { where: GassmaGassmaCommentWhereUse; create: Omit<GassmaGassmaCommentUse, "postId"> } | { where: GassmaGassmaCommentWhereUse; create: Omit<GassmaGassmaCommentUse, "postId"> }[]; update?: { where: GassmaGassmaCommentWhereUse; data: Partial<GassmaGassmaCommentUse> } | { where: GassmaGassmaCommentWhereUse; data: Partial<GassmaGassmaCommentUse> }[]; delete?: GassmaGassmaCommentWhereUse | GassmaGassmaCommentWhereUse[]; deleteMany?: GassmaGassmaCommentWhereUse | GassmaGassmaCommentWhereUse[]; disconnect?: GassmaGassmaCommentWhereUse | GassmaGassmaCommentWhereUse[]; set?: GassmaGassmaCommentWhereUse[] };
+  update: Partial<{ [K in keyof GassmaGassmaPostUse]: GassmaGassmaPostUse[K] | (K extends "id" | "content" | "viewCount" | "rating" | "authorId" | "categoryId" ? Gassma.NumberOperation : never) }> & {
+    "author"?: { create?: GassmaGassmaUserUse; connect?: GassmaGassmaUserWhereUse; connectOrCreate?: { where: GassmaGassmaUserWhereUse; create: GassmaGassmaUserUse }; update?: Partial<{ [K in keyof GassmaGassmaUserUse]: GassmaGassmaUserUse[K] | (K extends "id" | "age" ? Gassma.NumberOperation : never) }>; delete?: true; disconnect?: true };
+    "category"?: { create?: GassmaGassmaCategoryUse; connect?: GassmaGassmaCategoryWhereUse; connectOrCreate?: { where: GassmaGassmaCategoryWhereUse; create: GassmaGassmaCategoryUse }; update?: Partial<{ [K in keyof GassmaGassmaCategoryUse]: GassmaGassmaCategoryUse[K] | (K extends "id" | "parentId" ? Gassma.NumberOperation : never) }>; delete?: true; disconnect?: true };
+    "comments"?: { create?: Omit<GassmaGassmaCommentUse, "postId"> | Omit<GassmaGassmaCommentUse, "postId">[]; createMany?: { data: Omit<GassmaGassmaCommentUse, "postId">[] }; connect?: GassmaGassmaCommentWhereUse | GassmaGassmaCommentWhereUse[]; connectOrCreate?: { where: GassmaGassmaCommentWhereUse; create: Omit<GassmaGassmaCommentUse, "postId"> } | { where: GassmaGassmaCommentWhereUse; create: Omit<GassmaGassmaCommentUse, "postId"> }[]; update?: { where: GassmaGassmaCommentWhereUse; data: Partial<{ [K in keyof GassmaGassmaCommentUse]: GassmaGassmaCommentUse[K] | (K extends "id" | "authorId" | "postId" ? Gassma.NumberOperation : never) }> } | { where: GassmaGassmaCommentWhereUse; data: Partial<{ [K in keyof GassmaGassmaCommentUse]: GassmaGassmaCommentUse[K] | (K extends "id" | "authorId" | "postId" ? Gassma.NumberOperation : never) }> }[]; delete?: GassmaGassmaCommentWhereUse | GassmaGassmaCommentWhereUse[]; deleteMany?: GassmaGassmaCommentWhereUse | GassmaGassmaCommentWhereUse[]; disconnect?: GassmaGassmaCommentWhereUse | GassmaGassmaCommentWhereUse[]; set?: GassmaGassmaCommentWhereUse[] };
     "tags"?: { create?: GassmaGassmaTagUse | GassmaGassmaTagUse[]; connect?: GassmaGassmaTagWhereUse | GassmaGassmaTagWhereUse[]; connectOrCreate?: { where: GassmaGassmaTagWhereUse; create: GassmaGassmaTagUse } | { where: GassmaGassmaTagWhereUse; create: GassmaGassmaTagUse }[]; disconnect?: GassmaGassmaTagWhereUse | GassmaGassmaTagWhereUse[]; set?: GassmaGassmaTagWhereUse[] };
   };
   include?: GassmaGassmaPostInclude;
@@ -3119,9 +3119,9 @@ export type GassmaGassmaPostUpsertSingleData = {
 export type GassmaGassmaCommentUpsertSingleData = {
   where: GassmaGassmaCommentWhereUse;
   create: Omit<GassmaGassmaCommentUse, "authorId" | "postId"> & (Pick<GassmaGassmaCommentUse, "authorId"> | { "author": { create?: GassmaGassmaUserUse; connect?: GassmaGassmaUserWhereUse; connectOrCreate?: { where: GassmaGassmaUserWhereUse; create: GassmaGassmaUserUse } } }) & (Pick<GassmaGassmaCommentUse, "postId"> | { "post": { create?: GassmaGassmaPostUse; connect?: GassmaGassmaPostWhereUse; connectOrCreate?: { where: GassmaGassmaPostWhereUse; create: GassmaGassmaPostUse } } });
-  update: Partial<{ [K in keyof GassmaGassmaCommentUse]: GassmaGassmaCommentUse[K] | Gassma.NumberOperation }> & {
-    "author"?: { create?: GassmaGassmaUserUse; connect?: GassmaGassmaUserWhereUse; connectOrCreate?: { where: GassmaGassmaUserWhereUse; create: GassmaGassmaUserUse }; update?: Partial<GassmaGassmaUserUse>; delete?: true; disconnect?: true };
-    "post"?: { create?: GassmaGassmaPostUse; connect?: GassmaGassmaPostWhereUse; connectOrCreate?: { where: GassmaGassmaPostWhereUse; create: GassmaGassmaPostUse }; update?: Partial<GassmaGassmaPostUse>; delete?: true; disconnect?: true };
+  update: Partial<{ [K in keyof GassmaGassmaCommentUse]: GassmaGassmaCommentUse[K] | (K extends "id" | "authorId" | "postId" ? Gassma.NumberOperation : never) }> & {
+    "author"?: { create?: GassmaGassmaUserUse; connect?: GassmaGassmaUserWhereUse; connectOrCreate?: { where: GassmaGassmaUserWhereUse; create: GassmaGassmaUserUse }; update?: Partial<{ [K in keyof GassmaGassmaUserUse]: GassmaGassmaUserUse[K] | (K extends "id" | "age" ? Gassma.NumberOperation : never) }>; delete?: true; disconnect?: true };
+    "post"?: { create?: GassmaGassmaPostUse; connect?: GassmaGassmaPostWhereUse; connectOrCreate?: { where: GassmaGassmaPostWhereUse; create: GassmaGassmaPostUse }; update?: Partial<{ [K in keyof GassmaGassmaPostUse]: GassmaGassmaPostUse[K] | (K extends "id" | "content" | "viewCount" | "rating" | "authorId" | "categoryId" ? Gassma.NumberOperation : never) }>; delete?: true; disconnect?: true };
   };
   include?: GassmaGassmaCommentInclude;
 } & ({ select?: GassmaGassmaCommentSelect; omit?: never } | { select?: never; omit?: GassmaGassmaCommentOmit });
@@ -3132,10 +3132,10 @@ export type GassmaGassmaCategoryUpsertSingleData = {
     "posts"?: { create?: Omit<GassmaGassmaPostUse, "categoryId"> | Omit<GassmaGassmaPostUse, "categoryId">[]; createMany?: { data: Omit<GassmaGassmaPostUse, "categoryId">[] }; connect?: GassmaGassmaPostWhereUse | GassmaGassmaPostWhereUse[]; connectOrCreate?: { where: GassmaGassmaPostWhereUse; create: Omit<GassmaGassmaPostUse, "categoryId"> } | { where: GassmaGassmaPostWhereUse; create: Omit<GassmaGassmaPostUse, "categoryId"> }[] };
     "children"?: { create?: Omit<GassmaGassmaCategoryUse, "parentId"> | Omit<GassmaGassmaCategoryUse, "parentId">[]; createMany?: { data: Omit<GassmaGassmaCategoryUse, "parentId">[] }; connect?: GassmaGassmaCategoryWhereUse | GassmaGassmaCategoryWhereUse[]; connectOrCreate?: { where: GassmaGassmaCategoryWhereUse; create: Omit<GassmaGassmaCategoryUse, "parentId"> } | { where: GassmaGassmaCategoryWhereUse; create: Omit<GassmaGassmaCategoryUse, "parentId"> }[] };
   };
-  update: Partial<{ [K in keyof GassmaGassmaCategoryUse]: GassmaGassmaCategoryUse[K] | Gassma.NumberOperation }> & {
-    "posts"?: { create?: Omit<GassmaGassmaPostUse, "categoryId"> | Omit<GassmaGassmaPostUse, "categoryId">[]; createMany?: { data: Omit<GassmaGassmaPostUse, "categoryId">[] }; connect?: GassmaGassmaPostWhereUse | GassmaGassmaPostWhereUse[]; connectOrCreate?: { where: GassmaGassmaPostWhereUse; create: Omit<GassmaGassmaPostUse, "categoryId"> } | { where: GassmaGassmaPostWhereUse; create: Omit<GassmaGassmaPostUse, "categoryId"> }[]; update?: { where: GassmaGassmaPostWhereUse; data: Partial<GassmaGassmaPostUse> } | { where: GassmaGassmaPostWhereUse; data: Partial<GassmaGassmaPostUse> }[]; delete?: GassmaGassmaPostWhereUse | GassmaGassmaPostWhereUse[]; deleteMany?: GassmaGassmaPostWhereUse | GassmaGassmaPostWhereUse[]; disconnect?: GassmaGassmaPostWhereUse | GassmaGassmaPostWhereUse[]; set?: GassmaGassmaPostWhereUse[] };
-    "parent"?: { create?: GassmaGassmaCategoryUse; connect?: GassmaGassmaCategoryWhereUse; connectOrCreate?: { where: GassmaGassmaCategoryWhereUse; create: GassmaGassmaCategoryUse }; update?: Partial<GassmaGassmaCategoryUse>; delete?: true; disconnect?: true };
-    "children"?: { create?: Omit<GassmaGassmaCategoryUse, "parentId"> | Omit<GassmaGassmaCategoryUse, "parentId">[]; createMany?: { data: Omit<GassmaGassmaCategoryUse, "parentId">[] }; connect?: GassmaGassmaCategoryWhereUse | GassmaGassmaCategoryWhereUse[]; connectOrCreate?: { where: GassmaGassmaCategoryWhereUse; create: Omit<GassmaGassmaCategoryUse, "parentId"> } | { where: GassmaGassmaCategoryWhereUse; create: Omit<GassmaGassmaCategoryUse, "parentId"> }[]; update?: { where: GassmaGassmaCategoryWhereUse; data: Partial<GassmaGassmaCategoryUse> } | { where: GassmaGassmaCategoryWhereUse; data: Partial<GassmaGassmaCategoryUse> }[]; delete?: GassmaGassmaCategoryWhereUse | GassmaGassmaCategoryWhereUse[]; deleteMany?: GassmaGassmaCategoryWhereUse | GassmaGassmaCategoryWhereUse[]; disconnect?: GassmaGassmaCategoryWhereUse | GassmaGassmaCategoryWhereUse[]; set?: GassmaGassmaCategoryWhereUse[] };
+  update: Partial<{ [K in keyof GassmaGassmaCategoryUse]: GassmaGassmaCategoryUse[K] | (K extends "id" | "parentId" ? Gassma.NumberOperation : never) }> & {
+    "posts"?: { create?: Omit<GassmaGassmaPostUse, "categoryId"> | Omit<GassmaGassmaPostUse, "categoryId">[]; createMany?: { data: Omit<GassmaGassmaPostUse, "categoryId">[] }; connect?: GassmaGassmaPostWhereUse | GassmaGassmaPostWhereUse[]; connectOrCreate?: { where: GassmaGassmaPostWhereUse; create: Omit<GassmaGassmaPostUse, "categoryId"> } | { where: GassmaGassmaPostWhereUse; create: Omit<GassmaGassmaPostUse, "categoryId"> }[]; update?: { where: GassmaGassmaPostWhereUse; data: Partial<{ [K in keyof GassmaGassmaPostUse]: GassmaGassmaPostUse[K] | (K extends "id" | "content" | "viewCount" | "rating" | "authorId" | "categoryId" ? Gassma.NumberOperation : never) }> } | { where: GassmaGassmaPostWhereUse; data: Partial<{ [K in keyof GassmaGassmaPostUse]: GassmaGassmaPostUse[K] | (K extends "id" | "content" | "viewCount" | "rating" | "authorId" | "categoryId" ? Gassma.NumberOperation : never) }> }[]; delete?: GassmaGassmaPostWhereUse | GassmaGassmaPostWhereUse[]; deleteMany?: GassmaGassmaPostWhereUse | GassmaGassmaPostWhereUse[]; disconnect?: GassmaGassmaPostWhereUse | GassmaGassmaPostWhereUse[]; set?: GassmaGassmaPostWhereUse[] };
+    "parent"?: { create?: GassmaGassmaCategoryUse; connect?: GassmaGassmaCategoryWhereUse; connectOrCreate?: { where: GassmaGassmaCategoryWhereUse; create: GassmaGassmaCategoryUse }; update?: Partial<{ [K in keyof GassmaGassmaCategoryUse]: GassmaGassmaCategoryUse[K] | (K extends "id" | "parentId" ? Gassma.NumberOperation : never) }>; delete?: true; disconnect?: true };
+    "children"?: { create?: Omit<GassmaGassmaCategoryUse, "parentId"> | Omit<GassmaGassmaCategoryUse, "parentId">[]; createMany?: { data: Omit<GassmaGassmaCategoryUse, "parentId">[] }; connect?: GassmaGassmaCategoryWhereUse | GassmaGassmaCategoryWhereUse[]; connectOrCreate?: { where: GassmaGassmaCategoryWhereUse; create: Omit<GassmaGassmaCategoryUse, "parentId"> } | { where: GassmaGassmaCategoryWhereUse; create: Omit<GassmaGassmaCategoryUse, "parentId"> }[]; update?: { where: GassmaGassmaCategoryWhereUse; data: Partial<{ [K in keyof GassmaGassmaCategoryUse]: GassmaGassmaCategoryUse[K] | (K extends "id" | "parentId" ? Gassma.NumberOperation : never) }> } | { where: GassmaGassmaCategoryWhereUse; data: Partial<{ [K in keyof GassmaGassmaCategoryUse]: GassmaGassmaCategoryUse[K] | (K extends "id" | "parentId" ? Gassma.NumberOperation : never) }> }[]; delete?: GassmaGassmaCategoryWhereUse | GassmaGassmaCategoryWhereUse[]; deleteMany?: GassmaGassmaCategoryWhereUse | GassmaGassmaCategoryWhereUse[]; disconnect?: GassmaGassmaCategoryWhereUse | GassmaGassmaCategoryWhereUse[]; set?: GassmaGassmaCategoryWhereUse[] };
   };
   include?: GassmaGassmaCategoryInclude;
 } & ({ select?: GassmaGassmaCategorySelect; omit?: never } | { select?: never; omit?: GassmaGassmaCategoryOmit });
@@ -3145,7 +3145,7 @@ export type GassmaGassmaTagUpsertSingleData = {
   create: GassmaGassmaTagUse & {
     "posts"?: { create?: GassmaGassmaPostUse | GassmaGassmaPostUse[]; connect?: GassmaGassmaPostWhereUse | GassmaGassmaPostWhereUse[]; connectOrCreate?: { where: GassmaGassmaPostWhereUse; create: GassmaGassmaPostUse } | { where: GassmaGassmaPostWhereUse; create: GassmaGassmaPostUse }[] };
   };
-  update: Partial<{ [K in keyof GassmaGassmaTagUse]: GassmaGassmaTagUse[K] | Gassma.NumberOperation }> & {
+  update: Partial<{ [K in keyof GassmaGassmaTagUse]: GassmaGassmaTagUse[K] | (K extends "id" ? Gassma.NumberOperation : never) }> & {
     "posts"?: { create?: GassmaGassmaPostUse | GassmaGassmaPostUse[]; connect?: GassmaGassmaPostWhereUse | GassmaGassmaPostWhereUse[]; connectOrCreate?: { where: GassmaGassmaPostWhereUse; create: GassmaGassmaPostUse } | { where: GassmaGassmaPostWhereUse; create: GassmaGassmaPostUse }[]; disconnect?: GassmaGassmaPostWhereUse | GassmaGassmaPostWhereUse[]; set?: GassmaGassmaPostWhereUse[] };
   };
   include?: GassmaGassmaTagInclude;
@@ -3156,8 +3156,8 @@ export type GassmaGassmaProductUpsertSingleData = {
   create: GassmaGassmaProductUse & {
     "orderItems"?: { create?: Omit<GassmaGassmaOrderItemUse, "productId"> | Omit<GassmaGassmaOrderItemUse, "productId">[]; createMany?: { data: Omit<GassmaGassmaOrderItemUse, "productId">[] }; connect?: GassmaGassmaOrderItemWhereUse | GassmaGassmaOrderItemWhereUse[]; connectOrCreate?: { where: GassmaGassmaOrderItemWhereUse; create: Omit<GassmaGassmaOrderItemUse, "productId"> } | { where: GassmaGassmaOrderItemWhereUse; create: Omit<GassmaGassmaOrderItemUse, "productId"> }[] };
   };
-  update: Partial<{ [K in keyof GassmaGassmaProductUse]: GassmaGassmaProductUse[K] | Gassma.NumberOperation }> & {
-    "orderItems"?: { create?: Omit<GassmaGassmaOrderItemUse, "productId"> | Omit<GassmaGassmaOrderItemUse, "productId">[]; createMany?: { data: Omit<GassmaGassmaOrderItemUse, "productId">[] }; connect?: GassmaGassmaOrderItemWhereUse | GassmaGassmaOrderItemWhereUse[]; connectOrCreate?: { where: GassmaGassmaOrderItemWhereUse; create: Omit<GassmaGassmaOrderItemUse, "productId"> } | { where: GassmaGassmaOrderItemWhereUse; create: Omit<GassmaGassmaOrderItemUse, "productId"> }[]; update?: { where: GassmaGassmaOrderItemWhereUse; data: Partial<GassmaGassmaOrderItemUse> } | { where: GassmaGassmaOrderItemWhereUse; data: Partial<GassmaGassmaOrderItemUse> }[]; delete?: GassmaGassmaOrderItemWhereUse | GassmaGassmaOrderItemWhereUse[]; deleteMany?: GassmaGassmaOrderItemWhereUse | GassmaGassmaOrderItemWhereUse[]; disconnect?: GassmaGassmaOrderItemWhereUse | GassmaGassmaOrderItemWhereUse[]; set?: GassmaGassmaOrderItemWhereUse[] };
+  update: Partial<{ [K in keyof GassmaGassmaProductUse]: GassmaGassmaProductUse[K] | (K extends "id" | "price" | "stock" ? Gassma.NumberOperation : never) }> & {
+    "orderItems"?: { create?: Omit<GassmaGassmaOrderItemUse, "productId"> | Omit<GassmaGassmaOrderItemUse, "productId">[]; createMany?: { data: Omit<GassmaGassmaOrderItemUse, "productId">[] }; connect?: GassmaGassmaOrderItemWhereUse | GassmaGassmaOrderItemWhereUse[]; connectOrCreate?: { where: GassmaGassmaOrderItemWhereUse; create: Omit<GassmaGassmaOrderItemUse, "productId"> } | { where: GassmaGassmaOrderItemWhereUse; create: Omit<GassmaGassmaOrderItemUse, "productId"> }[]; update?: { where: GassmaGassmaOrderItemWhereUse; data: Partial<{ [K in keyof GassmaGassmaOrderItemUse]: GassmaGassmaOrderItemUse[K] | (K extends "id" | "orderId" | "productId" | "quantity" | "unitPrice" ? Gassma.NumberOperation : never) }> } | { where: GassmaGassmaOrderItemWhereUse; data: Partial<{ [K in keyof GassmaGassmaOrderItemUse]: GassmaGassmaOrderItemUse[K] | (K extends "id" | "orderId" | "productId" | "quantity" | "unitPrice" ? Gassma.NumberOperation : never) }> }[]; delete?: GassmaGassmaOrderItemWhereUse | GassmaGassmaOrderItemWhereUse[]; deleteMany?: GassmaGassmaOrderItemWhereUse | GassmaGassmaOrderItemWhereUse[]; disconnect?: GassmaGassmaOrderItemWhereUse | GassmaGassmaOrderItemWhereUse[]; set?: GassmaGassmaOrderItemWhereUse[] };
   };
   include?: GassmaGassmaProductInclude;
 } & ({ select?: GassmaGassmaProductSelect; omit?: never } | { select?: never; omit?: GassmaGassmaProductOmit });
@@ -3167,9 +3167,9 @@ export type GassmaGassmaOrderUpsertSingleData = {
   create: Omit<GassmaGassmaOrderUse, "userId"> & (Pick<GassmaGassmaOrderUse, "userId"> | { "user": { create?: GassmaGassmaUserUse; connect?: GassmaGassmaUserWhereUse; connectOrCreate?: { where: GassmaGassmaUserWhereUse; create: GassmaGassmaUserUse } } }) & {
     "items"?: { create?: Omit<GassmaGassmaOrderItemUse, "orderId"> | Omit<GassmaGassmaOrderItemUse, "orderId">[]; createMany?: { data: Omit<GassmaGassmaOrderItemUse, "orderId">[] }; connect?: GassmaGassmaOrderItemWhereUse | GassmaGassmaOrderItemWhereUse[]; connectOrCreate?: { where: GassmaGassmaOrderItemWhereUse; create: Omit<GassmaGassmaOrderItemUse, "orderId"> } | { where: GassmaGassmaOrderItemWhereUse; create: Omit<GassmaGassmaOrderItemUse, "orderId"> }[] };
   };
-  update: Partial<{ [K in keyof GassmaGassmaOrderUse]: GassmaGassmaOrderUse[K] | Gassma.NumberOperation }> & {
-    "user"?: { create?: GassmaGassmaUserUse; connect?: GassmaGassmaUserWhereUse; connectOrCreate?: { where: GassmaGassmaUserWhereUse; create: GassmaGassmaUserUse }; update?: Partial<GassmaGassmaUserUse>; delete?: true; disconnect?: true };
-    "items"?: { create?: Omit<GassmaGassmaOrderItemUse, "orderId"> | Omit<GassmaGassmaOrderItemUse, "orderId">[]; createMany?: { data: Omit<GassmaGassmaOrderItemUse, "orderId">[] }; connect?: GassmaGassmaOrderItemWhereUse | GassmaGassmaOrderItemWhereUse[]; connectOrCreate?: { where: GassmaGassmaOrderItemWhereUse; create: Omit<GassmaGassmaOrderItemUse, "orderId"> } | { where: GassmaGassmaOrderItemWhereUse; create: Omit<GassmaGassmaOrderItemUse, "orderId"> }[]; update?: { where: GassmaGassmaOrderItemWhereUse; data: Partial<GassmaGassmaOrderItemUse> } | { where: GassmaGassmaOrderItemWhereUse; data: Partial<GassmaGassmaOrderItemUse> }[]; delete?: GassmaGassmaOrderItemWhereUse | GassmaGassmaOrderItemWhereUse[]; deleteMany?: GassmaGassmaOrderItemWhereUse | GassmaGassmaOrderItemWhereUse[]; disconnect?: GassmaGassmaOrderItemWhereUse | GassmaGassmaOrderItemWhereUse[]; set?: GassmaGassmaOrderItemWhereUse[] };
+  update: Partial<{ [K in keyof GassmaGassmaOrderUse]: GassmaGassmaOrderUse[K] | (K extends "id" | "userId" | "totalAmount" | "quantity" ? Gassma.NumberOperation : never) }> & {
+    "user"?: { create?: GassmaGassmaUserUse; connect?: GassmaGassmaUserWhereUse; connectOrCreate?: { where: GassmaGassmaUserWhereUse; create: GassmaGassmaUserUse }; update?: Partial<{ [K in keyof GassmaGassmaUserUse]: GassmaGassmaUserUse[K] | (K extends "id" | "age" ? Gassma.NumberOperation : never) }>; delete?: true; disconnect?: true };
+    "items"?: { create?: Omit<GassmaGassmaOrderItemUse, "orderId"> | Omit<GassmaGassmaOrderItemUse, "orderId">[]; createMany?: { data: Omit<GassmaGassmaOrderItemUse, "orderId">[] }; connect?: GassmaGassmaOrderItemWhereUse | GassmaGassmaOrderItemWhereUse[]; connectOrCreate?: { where: GassmaGassmaOrderItemWhereUse; create: Omit<GassmaGassmaOrderItemUse, "orderId"> } | { where: GassmaGassmaOrderItemWhereUse; create: Omit<GassmaGassmaOrderItemUse, "orderId"> }[]; update?: { where: GassmaGassmaOrderItemWhereUse; data: Partial<{ [K in keyof GassmaGassmaOrderItemUse]: GassmaGassmaOrderItemUse[K] | (K extends "id" | "orderId" | "productId" | "quantity" | "unitPrice" ? Gassma.NumberOperation : never) }> } | { where: GassmaGassmaOrderItemWhereUse; data: Partial<{ [K in keyof GassmaGassmaOrderItemUse]: GassmaGassmaOrderItemUse[K] | (K extends "id" | "orderId" | "productId" | "quantity" | "unitPrice" ? Gassma.NumberOperation : never) }> }[]; delete?: GassmaGassmaOrderItemWhereUse | GassmaGassmaOrderItemWhereUse[]; deleteMany?: GassmaGassmaOrderItemWhereUse | GassmaGassmaOrderItemWhereUse[]; disconnect?: GassmaGassmaOrderItemWhereUse | GassmaGassmaOrderItemWhereUse[]; set?: GassmaGassmaOrderItemWhereUse[] };
   };
   include?: GassmaGassmaOrderInclude;
 } & ({ select?: GassmaGassmaOrderSelect; omit?: never } | { select?: never; omit?: GassmaGassmaOrderOmit });
@@ -3177,9 +3177,9 @@ export type GassmaGassmaOrderUpsertSingleData = {
 export type GassmaGassmaOrderItemUpsertSingleData = {
   where: GassmaGassmaOrderItemWhereUse;
   create: Omit<GassmaGassmaOrderItemUse, "orderId" | "productId"> & (Pick<GassmaGassmaOrderItemUse, "orderId"> | { "order": { create?: GassmaGassmaOrderUse; connect?: GassmaGassmaOrderWhereUse; connectOrCreate?: { where: GassmaGassmaOrderWhereUse; create: GassmaGassmaOrderUse } } }) & (Pick<GassmaGassmaOrderItemUse, "productId"> | { "product": { create?: GassmaGassmaProductUse; connect?: GassmaGassmaProductWhereUse; connectOrCreate?: { where: GassmaGassmaProductWhereUse; create: GassmaGassmaProductUse } } });
-  update: Partial<{ [K in keyof GassmaGassmaOrderItemUse]: GassmaGassmaOrderItemUse[K] | Gassma.NumberOperation }> & {
-    "order"?: { create?: GassmaGassmaOrderUse; connect?: GassmaGassmaOrderWhereUse; connectOrCreate?: { where: GassmaGassmaOrderWhereUse; create: GassmaGassmaOrderUse }; update?: Partial<GassmaGassmaOrderUse>; delete?: true; disconnect?: true };
-    "product"?: { create?: GassmaGassmaProductUse; connect?: GassmaGassmaProductWhereUse; connectOrCreate?: { where: GassmaGassmaProductWhereUse; create: GassmaGassmaProductUse }; update?: Partial<GassmaGassmaProductUse>; delete?: true; disconnect?: true };
+  update: Partial<{ [K in keyof GassmaGassmaOrderItemUse]: GassmaGassmaOrderItemUse[K] | (K extends "id" | "orderId" | "productId" | "quantity" | "unitPrice" ? Gassma.NumberOperation : never) }> & {
+    "order"?: { create?: GassmaGassmaOrderUse; connect?: GassmaGassmaOrderWhereUse; connectOrCreate?: { where: GassmaGassmaOrderWhereUse; create: GassmaGassmaOrderUse }; update?: Partial<{ [K in keyof GassmaGassmaOrderUse]: GassmaGassmaOrderUse[K] | (K extends "id" | "userId" | "totalAmount" | "quantity" ? Gassma.NumberOperation : never) }>; delete?: true; disconnect?: true };
+    "product"?: { create?: GassmaGassmaProductUse; connect?: GassmaGassmaProductWhereUse; connectOrCreate?: { where: GassmaGassmaProductWhereUse; create: GassmaGassmaProductUse }; update?: Partial<{ [K in keyof GassmaGassmaProductUse]: GassmaGassmaProductUse[K] | (K extends "id" | "price" | "stock" ? Gassma.NumberOperation : never) }>; delete?: true; disconnect?: true };
   };
   include?: GassmaGassmaOrderItemInclude;
 } & ({ select?: GassmaGassmaOrderItemSelect; omit?: never } | { select?: never; omit?: GassmaGassmaOrderItemOmit });
@@ -3187,21 +3187,21 @@ export type GassmaGassmaOrderItemUpsertSingleData = {
 export type GassmaGassmaFormulaCellUpsertSingleData = {
   where: GassmaGassmaFormulaCellWhereUse;
   create: GassmaGassmaFormulaCellUse;
-  update: Partial<{ [K in keyof GassmaGassmaFormulaCellUse]: GassmaGassmaFormulaCellUse[K] | Gassma.NumberOperation }>;
+  update: Partial<{ [K in keyof GassmaGassmaFormulaCellUse]: GassmaGassmaFormulaCellUse[K] | (K extends "id" | "amount" | "total" ? Gassma.NumberOperation : never) }>;
   include?: GassmaGassmaFormulaCellInclude;
 } & ({ select?: GassmaGassmaFormulaCellSelect; omit?: never } | { select?: never; omit?: GassmaGassmaFormulaCellOmit });
 
 export type GassmaGassmaNotificationUpsertSingleData = {
   where: GassmaGassmaNotificationWhereUse;
   create: GassmaGassmaNotificationUse;
-  update: Partial<{ [K in keyof GassmaGassmaNotificationUse]: GassmaGassmaNotificationUse[K] | Gassma.NumberOperation }>;
+  update: Partial<{ [K in keyof GassmaGassmaNotificationUse]: GassmaGassmaNotificationUse[K] | (K extends "id" | "userId" ? Gassma.NumberOperation : never) }>;
   include?: GassmaGassmaNotificationInclude;
 } & ({ select?: GassmaGassmaNotificationSelect; omit?: never } | { select?: never; omit?: GassmaGassmaNotificationOmit });
 
 export type GassmaGassmaOffsetNoteUpsertSingleData = {
   where: GassmaGassmaOffsetNoteWhereUse;
   create: GassmaGassmaOffsetNoteUse;
-  update: Partial<{ [K in keyof GassmaGassmaOffsetNoteUse]: GassmaGassmaOffsetNoteUse[K] | Gassma.NumberOperation }>;
+  update: Partial<{ [K in keyof GassmaGassmaOffsetNoteUse]: GassmaGassmaOffsetNoteUse[K] | (K extends "id" | "value" ? Gassma.NumberOperation : never) }>;
   include?: GassmaGassmaOffsetNoteInclude;
 } & ({ select?: GassmaGassmaOffsetNoteSelect; omit?: never } | { select?: never; omit?: GassmaGassmaOffsetNoteOmit });
 
@@ -3213,11 +3213,11 @@ export type GassmaGassmaUserUpsertSingleData = {
     "orders"?: { create?: Omit<GassmaGassmaOrderUse, "userId"> | Omit<GassmaGassmaOrderUse, "userId">[]; createMany?: { data: Omit<GassmaGassmaOrderUse, "userId">[] }; connect?: GassmaGassmaOrderWhereUse | GassmaGassmaOrderWhereUse[]; connectOrCreate?: { where: GassmaGassmaOrderWhereUse; create: Omit<GassmaGassmaOrderUse, "userId"> } | { where: GassmaGassmaOrderWhereUse; create: Omit<GassmaGassmaOrderUse, "userId"> }[] };
     "profile"?: { create?: Omit<GassmaGassmaProfileUse, "userId">; connect?: GassmaGassmaProfileWhereUse; connectOrCreate?: { where: GassmaGassmaProfileWhereUse; create: Omit<GassmaGassmaProfileUse, "userId"> } };
   };
-  update: Partial<{ [K in keyof GassmaGassmaUserUse]: GassmaGassmaUserUse[K] | Gassma.NumberOperation }> & {
-    "posts"?: { create?: Omit<GassmaGassmaPostUse, "authorId"> | Omit<GassmaGassmaPostUse, "authorId">[]; createMany?: { data: Omit<GassmaGassmaPostUse, "authorId">[] }; connect?: GassmaGassmaPostWhereUse | GassmaGassmaPostWhereUse[]; connectOrCreate?: { where: GassmaGassmaPostWhereUse; create: Omit<GassmaGassmaPostUse, "authorId"> } | { where: GassmaGassmaPostWhereUse; create: Omit<GassmaGassmaPostUse, "authorId"> }[]; update?: { where: GassmaGassmaPostWhereUse; data: Partial<GassmaGassmaPostUse> } | { where: GassmaGassmaPostWhereUse; data: Partial<GassmaGassmaPostUse> }[]; delete?: GassmaGassmaPostWhereUse | GassmaGassmaPostWhereUse[]; deleteMany?: GassmaGassmaPostWhereUse | GassmaGassmaPostWhereUse[]; disconnect?: GassmaGassmaPostWhereUse | GassmaGassmaPostWhereUse[]; set?: GassmaGassmaPostWhereUse[] };
-    "comments"?: { create?: Omit<GassmaGassmaCommentUse, "authorId"> | Omit<GassmaGassmaCommentUse, "authorId">[]; createMany?: { data: Omit<GassmaGassmaCommentUse, "authorId">[] }; connect?: GassmaGassmaCommentWhereUse | GassmaGassmaCommentWhereUse[]; connectOrCreate?: { where: GassmaGassmaCommentWhereUse; create: Omit<GassmaGassmaCommentUse, "authorId"> } | { where: GassmaGassmaCommentWhereUse; create: Omit<GassmaGassmaCommentUse, "authorId"> }[]; update?: { where: GassmaGassmaCommentWhereUse; data: Partial<GassmaGassmaCommentUse> } | { where: GassmaGassmaCommentWhereUse; data: Partial<GassmaGassmaCommentUse> }[]; delete?: GassmaGassmaCommentWhereUse | GassmaGassmaCommentWhereUse[]; deleteMany?: GassmaGassmaCommentWhereUse | GassmaGassmaCommentWhereUse[]; disconnect?: GassmaGassmaCommentWhereUse | GassmaGassmaCommentWhereUse[]; set?: GassmaGassmaCommentWhereUse[] };
-    "orders"?: { create?: Omit<GassmaGassmaOrderUse, "userId"> | Omit<GassmaGassmaOrderUse, "userId">[]; createMany?: { data: Omit<GassmaGassmaOrderUse, "userId">[] }; connect?: GassmaGassmaOrderWhereUse | GassmaGassmaOrderWhereUse[]; connectOrCreate?: { where: GassmaGassmaOrderWhereUse; create: Omit<GassmaGassmaOrderUse, "userId"> } | { where: GassmaGassmaOrderWhereUse; create: Omit<GassmaGassmaOrderUse, "userId"> }[]; update?: { where: GassmaGassmaOrderWhereUse; data: Partial<GassmaGassmaOrderUse> } | { where: GassmaGassmaOrderWhereUse; data: Partial<GassmaGassmaOrderUse> }[]; delete?: GassmaGassmaOrderWhereUse | GassmaGassmaOrderWhereUse[]; deleteMany?: GassmaGassmaOrderWhereUse | GassmaGassmaOrderWhereUse[]; disconnect?: GassmaGassmaOrderWhereUse | GassmaGassmaOrderWhereUse[]; set?: GassmaGassmaOrderWhereUse[] };
-    "profile"?: { create?: Omit<GassmaGassmaProfileUse, "userId">; connect?: GassmaGassmaProfileWhereUse; connectOrCreate?: { where: GassmaGassmaProfileWhereUse; create: Omit<GassmaGassmaProfileUse, "userId"> }; update?: Partial<GassmaGassmaProfileUse>; delete?: true; disconnect?: true };
+  update: Partial<{ [K in keyof GassmaGassmaUserUse]: GassmaGassmaUserUse[K] | (K extends "id" | "age" ? Gassma.NumberOperation : never) }> & {
+    "posts"?: { create?: Omit<GassmaGassmaPostUse, "authorId"> | Omit<GassmaGassmaPostUse, "authorId">[]; createMany?: { data: Omit<GassmaGassmaPostUse, "authorId">[] }; connect?: GassmaGassmaPostWhereUse | GassmaGassmaPostWhereUse[]; connectOrCreate?: { where: GassmaGassmaPostWhereUse; create: Omit<GassmaGassmaPostUse, "authorId"> } | { where: GassmaGassmaPostWhereUse; create: Omit<GassmaGassmaPostUse, "authorId"> }[]; update?: { where: GassmaGassmaPostWhereUse; data: Partial<{ [K in keyof GassmaGassmaPostUse]: GassmaGassmaPostUse[K] | (K extends "id" | "content" | "viewCount" | "rating" | "authorId" | "categoryId" ? Gassma.NumberOperation : never) }> } | { where: GassmaGassmaPostWhereUse; data: Partial<{ [K in keyof GassmaGassmaPostUse]: GassmaGassmaPostUse[K] | (K extends "id" | "content" | "viewCount" | "rating" | "authorId" | "categoryId" ? Gassma.NumberOperation : never) }> }[]; delete?: GassmaGassmaPostWhereUse | GassmaGassmaPostWhereUse[]; deleteMany?: GassmaGassmaPostWhereUse | GassmaGassmaPostWhereUse[]; disconnect?: GassmaGassmaPostWhereUse | GassmaGassmaPostWhereUse[]; set?: GassmaGassmaPostWhereUse[] };
+    "comments"?: { create?: Omit<GassmaGassmaCommentUse, "authorId"> | Omit<GassmaGassmaCommentUse, "authorId">[]; createMany?: { data: Omit<GassmaGassmaCommentUse, "authorId">[] }; connect?: GassmaGassmaCommentWhereUse | GassmaGassmaCommentWhereUse[]; connectOrCreate?: { where: GassmaGassmaCommentWhereUse; create: Omit<GassmaGassmaCommentUse, "authorId"> } | { where: GassmaGassmaCommentWhereUse; create: Omit<GassmaGassmaCommentUse, "authorId"> }[]; update?: { where: GassmaGassmaCommentWhereUse; data: Partial<{ [K in keyof GassmaGassmaCommentUse]: GassmaGassmaCommentUse[K] | (K extends "id" | "authorId" | "postId" ? Gassma.NumberOperation : never) }> } | { where: GassmaGassmaCommentWhereUse; data: Partial<{ [K in keyof GassmaGassmaCommentUse]: GassmaGassmaCommentUse[K] | (K extends "id" | "authorId" | "postId" ? Gassma.NumberOperation : never) }> }[]; delete?: GassmaGassmaCommentWhereUse | GassmaGassmaCommentWhereUse[]; deleteMany?: GassmaGassmaCommentWhereUse | GassmaGassmaCommentWhereUse[]; disconnect?: GassmaGassmaCommentWhereUse | GassmaGassmaCommentWhereUse[]; set?: GassmaGassmaCommentWhereUse[] };
+    "orders"?: { create?: Omit<GassmaGassmaOrderUse, "userId"> | Omit<GassmaGassmaOrderUse, "userId">[]; createMany?: { data: Omit<GassmaGassmaOrderUse, "userId">[] }; connect?: GassmaGassmaOrderWhereUse | GassmaGassmaOrderWhereUse[]; connectOrCreate?: { where: GassmaGassmaOrderWhereUse; create: Omit<GassmaGassmaOrderUse, "userId"> } | { where: GassmaGassmaOrderWhereUse; create: Omit<GassmaGassmaOrderUse, "userId"> }[]; update?: { where: GassmaGassmaOrderWhereUse; data: Partial<{ [K in keyof GassmaGassmaOrderUse]: GassmaGassmaOrderUse[K] | (K extends "id" | "userId" | "totalAmount" | "quantity" ? Gassma.NumberOperation : never) }> } | { where: GassmaGassmaOrderWhereUse; data: Partial<{ [K in keyof GassmaGassmaOrderUse]: GassmaGassmaOrderUse[K] | (K extends "id" | "userId" | "totalAmount" | "quantity" ? Gassma.NumberOperation : never) }> }[]; delete?: GassmaGassmaOrderWhereUse | GassmaGassmaOrderWhereUse[]; deleteMany?: GassmaGassmaOrderWhereUse | GassmaGassmaOrderWhereUse[]; disconnect?: GassmaGassmaOrderWhereUse | GassmaGassmaOrderWhereUse[]; set?: GassmaGassmaOrderWhereUse[] };
+    "profile"?: { create?: Omit<GassmaGassmaProfileUse, "userId">; connect?: GassmaGassmaProfileWhereUse; connectOrCreate?: { where: GassmaGassmaProfileWhereUse; create: Omit<GassmaGassmaProfileUse, "userId"> }; update?: Partial<{ [K in keyof GassmaGassmaProfileUse]: GassmaGassmaProfileUse[K] | (K extends "id" | "userId" ? Gassma.NumberOperation : never) }>; delete?: true; disconnect?: true };
   };
   include?: GassmaGassmaUserInclude;
 } & ({ select?: GassmaGassmaUserSelect; omit?: never } | { select?: never; omit?: GassmaGassmaUserOmit });
@@ -3225,8 +3225,8 @@ export type GassmaGassmaUserUpsertSingleData = {
 export type GassmaGassmaProfileUpsertSingleData = {
   where: GassmaGassmaProfileWhereUse;
   create: Omit<GassmaGassmaProfileUse, "userId"> & (Pick<GassmaGassmaProfileUse, "userId"> | { "user": { create?: GassmaGassmaUserUse; connect?: GassmaGassmaUserWhereUse; connectOrCreate?: { where: GassmaGassmaUserWhereUse; create: GassmaGassmaUserUse } } });
-  update: Partial<{ [K in keyof GassmaGassmaProfileUse]: GassmaGassmaProfileUse[K] | Gassma.NumberOperation }> & {
-    "user"?: { create?: GassmaGassmaUserUse; connect?: GassmaGassmaUserWhereUse; connectOrCreate?: { where: GassmaGassmaUserWhereUse; create: GassmaGassmaUserUse }; update?: Partial<GassmaGassmaUserUse>; delete?: true; disconnect?: true };
+  update: Partial<{ [K in keyof GassmaGassmaProfileUse]: GassmaGassmaProfileUse[K] | (K extends "id" | "userId" ? Gassma.NumberOperation : never) }> & {
+    "user"?: { create?: GassmaGassmaUserUse; connect?: GassmaGassmaUserWhereUse; connectOrCreate?: { where: GassmaGassmaUserWhereUse; create: GassmaGassmaUserUse }; update?: Partial<{ [K in keyof GassmaGassmaUserUse]: GassmaGassmaUserUse[K] | (K extends "id" | "age" ? Gassma.NumberOperation : never) }>; delete?: true; disconnect?: true };
   };
   include?: GassmaGassmaProfileInclude;
 } & ({ select?: GassmaGassmaProfileSelect; omit?: never } | { select?: never; omit?: GassmaGassmaProfileOmit });
