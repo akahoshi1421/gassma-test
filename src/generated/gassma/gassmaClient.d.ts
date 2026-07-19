@@ -1913,8 +1913,8 @@ export type GassmaGassmaPostWhereUse = {
   "categoryId"?: number | null | GassmaGassmaPostcategoryIdFilterConditions;
   "createdAt"?: Date | GassmaGassmaPostcreatedAtFilterConditions;
   "updatedAt"?: Date | GassmaGassmaPostupdatedAtFilterConditions;
-  "author"?: { is?: GassmaGassmaUserWhereUse | null; isNot?: GassmaGassmaUserWhereUse | null };
-  "category"?: { is?: GassmaGassmaCategoryWhereUse | null; isNot?: GassmaGassmaCategoryWhereUse | null };
+  "author"?: { is?: GassmaGassmaUserWhereUse | null; isNot?: GassmaGassmaUserWhereUse | null } | null;
+  "category"?: { is?: GassmaGassmaCategoryWhereUse | null; isNot?: GassmaGassmaCategoryWhereUse | null } | null;
   "comments"?: { some?: GassmaGassmaCommentWhereUse; every?: GassmaGassmaCommentWhereUse; none?: GassmaGassmaCommentWhereUse };
   "tags"?: { some?: GassmaGassmaTagWhereUse; every?: GassmaGassmaTagWhereUse; none?: GassmaGassmaTagWhereUse };
 
@@ -1929,8 +1929,8 @@ export type GassmaGassmaCommentWhereUse = {
   "authorId"?: number | GassmaGassmaCommentauthorIdFilterConditions;
   "postId"?: number | GassmaGassmaCommentpostIdFilterConditions;
   "createdAt"?: Date | GassmaGassmaCommentcreatedAtFilterConditions;
-  "author"?: { is?: GassmaGassmaUserWhereUse | null; isNot?: GassmaGassmaUserWhereUse | null };
-  "post"?: { is?: GassmaGassmaPostWhereUse | null; isNot?: GassmaGassmaPostWhereUse | null };
+  "author"?: { is?: GassmaGassmaUserWhereUse | null; isNot?: GassmaGassmaUserWhereUse | null } | null;
+  "post"?: { is?: GassmaGassmaPostWhereUse | null; isNot?: GassmaGassmaPostWhereUse | null } | null;
 
   AND?: GassmaGassmaCommentWhereUse[] | GassmaGassmaCommentWhereUse;
   OR?: GassmaGassmaCommentWhereUse[];
@@ -1942,7 +1942,7 @@ export type GassmaGassmaCategoryWhereUse = {
   "name"?: string | GassmaGassmaCategorynameFilterConditions;
   "parentId"?: number | null | GassmaGassmaCategoryparentIdFilterConditions;
   "posts"?: { some?: GassmaGassmaPostWhereUse; every?: GassmaGassmaPostWhereUse; none?: GassmaGassmaPostWhereUse };
-  "parent"?: { is?: GassmaGassmaCategoryWhereUse | null; isNot?: GassmaGassmaCategoryWhereUse | null };
+  "parent"?: { is?: GassmaGassmaCategoryWhereUse | null; isNot?: GassmaGassmaCategoryWhereUse | null } | null;
   "children"?: { some?: GassmaGassmaCategoryWhereUse; every?: GassmaGassmaCategoryWhereUse; none?: GassmaGassmaCategoryWhereUse };
 
   AND?: GassmaGassmaCategoryWhereUse[] | GassmaGassmaCategoryWhereUse;
@@ -1982,7 +1982,7 @@ export type GassmaGassmaOrderWhereUse = {
   "quantity"?: number | GassmaGassmaOrderquantityFilterConditions;
   "status"?: "pending" | "shipped" | "delivered" | "cancelled" | GassmaGassmaOrderstatusFilterConditions;
   "createdAt"?: Date | GassmaGassmaOrdercreatedAtFilterConditions;
-  "user"?: { is?: GassmaGassmaUserWhereUse | null; isNot?: GassmaGassmaUserWhereUse | null };
+  "user"?: { is?: GassmaGassmaUserWhereUse | null; isNot?: GassmaGassmaUserWhereUse | null } | null;
   "items"?: { some?: GassmaGassmaOrderItemWhereUse; every?: GassmaGassmaOrderItemWhereUse; none?: GassmaGassmaOrderItemWhereUse };
 
   AND?: GassmaGassmaOrderWhereUse[] | GassmaGassmaOrderWhereUse;
@@ -1996,8 +1996,8 @@ export type GassmaGassmaOrderItemWhereUse = {
   "productId"?: number | GassmaGassmaOrderItemproductIdFilterConditions;
   "quantity"?: number | GassmaGassmaOrderItemquantityFilterConditions;
   "unitPrice"?: number | GassmaGassmaOrderItemunitPriceFilterConditions;
-  "order"?: { is?: GassmaGassmaOrderWhereUse | null; isNot?: GassmaGassmaOrderWhereUse | null };
-  "product"?: { is?: GassmaGassmaProductWhereUse | null; isNot?: GassmaGassmaProductWhereUse | null };
+  "order"?: { is?: GassmaGassmaOrderWhereUse | null; isNot?: GassmaGassmaOrderWhereUse | null } | null;
+  "product"?: { is?: GassmaGassmaProductWhereUse | null; isNot?: GassmaGassmaProductWhereUse | null } | null;
 
   AND?: GassmaGassmaOrderItemWhereUse[] | GassmaGassmaOrderItemWhereUse;
   OR?: GassmaGassmaOrderItemWhereUse[];
@@ -2047,7 +2047,7 @@ export type GassmaGassmaUserWhereUse = {
   "posts"?: { some?: GassmaGassmaPostWhereUse; every?: GassmaGassmaPostWhereUse; none?: GassmaGassmaPostWhereUse };
   "comments"?: { some?: GassmaGassmaCommentWhereUse; every?: GassmaGassmaCommentWhereUse; none?: GassmaGassmaCommentWhereUse };
   "orders"?: { some?: GassmaGassmaOrderWhereUse; every?: GassmaGassmaOrderWhereUse; none?: GassmaGassmaOrderWhereUse };
-  "profile"?: { is?: GassmaGassmaProfileWhereUse | null; isNot?: GassmaGassmaProfileWhereUse | null };
+  "profile"?: { is?: GassmaGassmaProfileWhereUse | null; isNot?: GassmaGassmaProfileWhereUse | null } | null;
 
   AND?: GassmaGassmaUserWhereUse[] | GassmaGassmaUserWhereUse;
   OR?: GassmaGassmaUserWhereUse[];
@@ -2059,7 +2059,7 @@ export type GassmaGassmaProfileWhereUse = {
   "bio"?: string | null | GassmaGassmaProfilebioFilterConditions;
   "website"?: string | null | GassmaGassmaProfilewebsiteFilterConditions;
   "userId"?: number | GassmaGassmaProfileuserIdFilterConditions;
-  "user"?: { is?: GassmaGassmaUserWhereUse | null; isNot?: GassmaGassmaUserWhereUse | null };
+  "user"?: { is?: GassmaGassmaUserWhereUse | null; isNot?: GassmaGassmaUserWhereUse | null } | null;
 
   AND?: GassmaGassmaProfileWhereUse[] | GassmaGassmaProfileWhereUse;
   OR?: GassmaGassmaProfileWhereUse[];
