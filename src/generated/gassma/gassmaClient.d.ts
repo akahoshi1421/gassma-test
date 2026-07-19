@@ -5297,7 +5297,1541 @@ export type GassmaGassmaProfileGroupByResult<T extends GassmaGassmaProfileGroupB
     : never]: K extends string ? GassmaGassmaProfileAggregateField<T[K], K> : never;
 };
 
-export interface GassmaClient<O extends Gassma.StrictGlobalOmit<O, GassmaGassmaGlobalOmitConfig> = {}> extends GassmaGassmaSheet<O> {}
+export type GassmaGassmaModelName =
+  | "Post"
+  | "Comment"
+  | "Category"
+  | "Tag"
+  | "Product"
+  | "Order"
+  | "OrderItem"
+  | "FormulaCell"
+  | "Notification"
+  | "OffsetNote"
+  | "User"
+  | "Profile";
+
+export type GassmaGassmaOperationName =
+  | "findFirst"
+  | "findFirstOrThrow"
+  | "findMany"
+  | "create"
+  | "createMany"
+  | "createManyAndReturn"
+  | "update"
+  | "updateMany"
+  | "updateManyAndReturn"
+  | "upsert"
+  | "delete"
+  | "deleteMany"
+  | "count"
+  | "aggregate"
+  | "groupBy";
+
+export type GassmaGassmaPostQueryArgs =
+  | GassmaGassmaPostFindFirstData
+  | GassmaGassmaPostFindManyData
+  | GassmaGassmaPostCreateData
+  | GassmaGassmaPostCreateManyData
+  | GassmaGassmaPostCreateManyAndReturnData
+  | GassmaGassmaPostUpdateSingleData
+  | GassmaGassmaPostUpdateData
+  | GassmaGassmaPostUpsertSingleData
+  | GassmaGassmaPostDeleteSingleData
+  | GassmaGassmaPostDeleteData
+  | GassmaGassmaPostCountData
+  | GassmaGassmaPostAggregateData
+  | GassmaGassmaPostGroupByData;
+
+export type GassmaGassmaPostQueryHooks<GO extends GassmaGassmaPostOmit = {}, O = {}> = {
+  findFirst?: <T extends GassmaGassmaPostFindFirstData>(params: {
+    model: "Post";
+    operation: "findFirst";
+    args: T;
+    query: (args: T) => GassmaGassmaPostFindResult<T["select"], T["include"], T["omit"], GO, O> | null;
+  }) => GassmaGassmaPostFindResult<T["select"], T["include"], T["omit"], GO, O> | null;
+  findFirstOrThrow?: <T extends GassmaGassmaPostFindFirstData>(params: {
+    model: "Post";
+    operation: "findFirstOrThrow";
+    args: T;
+    query: (args: T) => GassmaGassmaPostFindResult<T["select"], T["include"], T["omit"], GO, O>;
+  }) => GassmaGassmaPostFindResult<T["select"], T["include"], T["omit"], GO, O>;
+  findMany?: <T extends GassmaGassmaPostFindManyData>(params: {
+    model: "Post";
+    operation: "findMany";
+    args: T;
+    query: (args: T) => GassmaGassmaPostFindResult<T["select"], T["include"], T["omit"], GO, O>[];
+  }) => GassmaGassmaPostFindResult<T["select"], T["include"], T["omit"], GO, O>[];
+  create?: <T extends GassmaGassmaPostCreateData>(params: {
+    model: "Post";
+    operation: "create";
+    args: T;
+    query: (args: T) => GassmaGassmaPostFindResult<T["select"], T["include"], T["omit"], GO, O>;
+  }) => GassmaGassmaPostFindResult<T["select"], T["include"], T["omit"], GO, O>;
+  createMany?: (params: {
+    model: "Post";
+    operation: "createMany";
+    args: GassmaGassmaPostCreateManyData;
+    query: (args: GassmaGassmaPostCreateManyData) => CreateManyReturn;
+  }) => CreateManyReturn;
+  createManyAndReturn?: <T extends GassmaGassmaPostCreateManyAndReturnData>(params: {
+    model: "Post";
+    operation: "createManyAndReturn";
+    args: T;
+    query: (args: T) => GassmaGassmaPostFindResult<T["select"], T["include"], T["omit"], GO, O>[];
+  }) => GassmaGassmaPostFindResult<T["select"], T["include"], T["omit"], GO, O>[];
+  update?: <T extends GassmaGassmaPostUpdateSingleData>(params: {
+    model: "Post";
+    operation: "update";
+    args: T;
+    query: (args: T) => GassmaGassmaPostFindResult<T["select"], T["include"], T["omit"], GO, O> | null;
+  }) => GassmaGassmaPostFindResult<T["select"], T["include"], T["omit"], GO, O> | null;
+  updateMany?: (params: {
+    model: "Post";
+    operation: "updateMany";
+    args: GassmaGassmaPostUpdateData;
+    query: (args: GassmaGassmaPostUpdateData) => UpdateManyReturn;
+  }) => UpdateManyReturn;
+  updateManyAndReturn?: (params: {
+    model: "Post";
+    operation: "updateManyAndReturn";
+    args: GassmaGassmaPostUpdateData;
+    query: (args: GassmaGassmaPostUpdateData) => GassmaGassmaPostFindResult<undefined, undefined, undefined, GO, O>[];
+  }) => GassmaGassmaPostFindResult<undefined, undefined, undefined, GO, O>[];
+  upsert?: <T extends GassmaGassmaPostUpsertSingleData>(params: {
+    model: "Post";
+    operation: "upsert";
+    args: T;
+    query: (args: T) => GassmaGassmaPostFindResult<T["select"], T["include"], T["omit"], GO, O>;
+  }) => GassmaGassmaPostFindResult<T["select"], T["include"], T["omit"], GO, O>;
+  delete?: <T extends GassmaGassmaPostDeleteSingleData>(params: {
+    model: "Post";
+    operation: "delete";
+    args: T;
+    query: (args: T) => GassmaGassmaPostFindResult<T["select"], T["include"], T["omit"], GO, O> | null;
+  }) => GassmaGassmaPostFindResult<T["select"], T["include"], T["omit"], GO, O> | null;
+  deleteMany?: (params: {
+    model: "Post";
+    operation: "deleteMany";
+    args: GassmaGassmaPostDeleteData;
+    query: (args: GassmaGassmaPostDeleteData) => DeleteManyReturn;
+  }) => DeleteManyReturn;
+  count?: (params: {
+    model: "Post";
+    operation: "count";
+    args: GassmaGassmaPostCountData;
+    query: (args: GassmaGassmaPostCountData) => number;
+  }) => number;
+  aggregate?: <T extends GassmaGassmaPostAggregateData>(params: {
+    model: "Post";
+    operation: "aggregate";
+    args: T;
+    query: (args: T) => GassmaGassmaPostAggregateResult<T>;
+  }) => GassmaGassmaPostAggregateResult<T>;
+  groupBy?: <T extends GassmaGassmaPostGroupByData>(params: {
+    model: "Post";
+    operation: "groupBy";
+    args: T;
+    query: (args: T) => GassmaGassmaPostGroupByResult<T>[];
+  }) => GassmaGassmaPostGroupByResult<T>[];
+  $allOperations?: (params: {
+    model: "Post";
+    operation: GassmaGassmaOperationName;
+    args: GassmaGassmaPostQueryArgs;
+    query: (args: GassmaGassmaPostQueryArgs) => unknown;
+  }) => unknown;
+};
+
+export type GassmaGassmaCommentQueryArgs =
+  | GassmaGassmaCommentFindFirstData
+  | GassmaGassmaCommentFindManyData
+  | GassmaGassmaCommentCreateData
+  | GassmaGassmaCommentCreateManyData
+  | GassmaGassmaCommentCreateManyAndReturnData
+  | GassmaGassmaCommentUpdateSingleData
+  | GassmaGassmaCommentUpdateData
+  | GassmaGassmaCommentUpsertSingleData
+  | GassmaGassmaCommentDeleteSingleData
+  | GassmaGassmaCommentDeleteData
+  | GassmaGassmaCommentCountData
+  | GassmaGassmaCommentAggregateData
+  | GassmaGassmaCommentGroupByData;
+
+export type GassmaGassmaCommentQueryHooks<GO extends GassmaGassmaCommentOmit = {}, O = {}> = {
+  findFirst?: <T extends GassmaGassmaCommentFindFirstData>(params: {
+    model: "Comment";
+    operation: "findFirst";
+    args: T;
+    query: (args: T) => GassmaGassmaCommentFindResult<T["select"], T["include"], T["omit"], GO, O> | null;
+  }) => GassmaGassmaCommentFindResult<T["select"], T["include"], T["omit"], GO, O> | null;
+  findFirstOrThrow?: <T extends GassmaGassmaCommentFindFirstData>(params: {
+    model: "Comment";
+    operation: "findFirstOrThrow";
+    args: T;
+    query: (args: T) => GassmaGassmaCommentFindResult<T["select"], T["include"], T["omit"], GO, O>;
+  }) => GassmaGassmaCommentFindResult<T["select"], T["include"], T["omit"], GO, O>;
+  findMany?: <T extends GassmaGassmaCommentFindManyData>(params: {
+    model: "Comment";
+    operation: "findMany";
+    args: T;
+    query: (args: T) => GassmaGassmaCommentFindResult<T["select"], T["include"], T["omit"], GO, O>[];
+  }) => GassmaGassmaCommentFindResult<T["select"], T["include"], T["omit"], GO, O>[];
+  create?: <T extends GassmaGassmaCommentCreateData>(params: {
+    model: "Comment";
+    operation: "create";
+    args: T;
+    query: (args: T) => GassmaGassmaCommentFindResult<T["select"], T["include"], T["omit"], GO, O>;
+  }) => GassmaGassmaCommentFindResult<T["select"], T["include"], T["omit"], GO, O>;
+  createMany?: (params: {
+    model: "Comment";
+    operation: "createMany";
+    args: GassmaGassmaCommentCreateManyData;
+    query: (args: GassmaGassmaCommentCreateManyData) => CreateManyReturn;
+  }) => CreateManyReturn;
+  createManyAndReturn?: <T extends GassmaGassmaCommentCreateManyAndReturnData>(params: {
+    model: "Comment";
+    operation: "createManyAndReturn";
+    args: T;
+    query: (args: T) => GassmaGassmaCommentFindResult<T["select"], T["include"], T["omit"], GO, O>[];
+  }) => GassmaGassmaCommentFindResult<T["select"], T["include"], T["omit"], GO, O>[];
+  update?: <T extends GassmaGassmaCommentUpdateSingleData>(params: {
+    model: "Comment";
+    operation: "update";
+    args: T;
+    query: (args: T) => GassmaGassmaCommentFindResult<T["select"], T["include"], T["omit"], GO, O> | null;
+  }) => GassmaGassmaCommentFindResult<T["select"], T["include"], T["omit"], GO, O> | null;
+  updateMany?: (params: {
+    model: "Comment";
+    operation: "updateMany";
+    args: GassmaGassmaCommentUpdateData;
+    query: (args: GassmaGassmaCommentUpdateData) => UpdateManyReturn;
+  }) => UpdateManyReturn;
+  updateManyAndReturn?: (params: {
+    model: "Comment";
+    operation: "updateManyAndReturn";
+    args: GassmaGassmaCommentUpdateData;
+    query: (args: GassmaGassmaCommentUpdateData) => GassmaGassmaCommentFindResult<undefined, undefined, undefined, GO, O>[];
+  }) => GassmaGassmaCommentFindResult<undefined, undefined, undefined, GO, O>[];
+  upsert?: <T extends GassmaGassmaCommentUpsertSingleData>(params: {
+    model: "Comment";
+    operation: "upsert";
+    args: T;
+    query: (args: T) => GassmaGassmaCommentFindResult<T["select"], T["include"], T["omit"], GO, O>;
+  }) => GassmaGassmaCommentFindResult<T["select"], T["include"], T["omit"], GO, O>;
+  delete?: <T extends GassmaGassmaCommentDeleteSingleData>(params: {
+    model: "Comment";
+    operation: "delete";
+    args: T;
+    query: (args: T) => GassmaGassmaCommentFindResult<T["select"], T["include"], T["omit"], GO, O> | null;
+  }) => GassmaGassmaCommentFindResult<T["select"], T["include"], T["omit"], GO, O> | null;
+  deleteMany?: (params: {
+    model: "Comment";
+    operation: "deleteMany";
+    args: GassmaGassmaCommentDeleteData;
+    query: (args: GassmaGassmaCommentDeleteData) => DeleteManyReturn;
+  }) => DeleteManyReturn;
+  count?: (params: {
+    model: "Comment";
+    operation: "count";
+    args: GassmaGassmaCommentCountData;
+    query: (args: GassmaGassmaCommentCountData) => number;
+  }) => number;
+  aggregate?: <T extends GassmaGassmaCommentAggregateData>(params: {
+    model: "Comment";
+    operation: "aggregate";
+    args: T;
+    query: (args: T) => GassmaGassmaCommentAggregateResult<T>;
+  }) => GassmaGassmaCommentAggregateResult<T>;
+  groupBy?: <T extends GassmaGassmaCommentGroupByData>(params: {
+    model: "Comment";
+    operation: "groupBy";
+    args: T;
+    query: (args: T) => GassmaGassmaCommentGroupByResult<T>[];
+  }) => GassmaGassmaCommentGroupByResult<T>[];
+  $allOperations?: (params: {
+    model: "Comment";
+    operation: GassmaGassmaOperationName;
+    args: GassmaGassmaCommentQueryArgs;
+    query: (args: GassmaGassmaCommentQueryArgs) => unknown;
+  }) => unknown;
+};
+
+export type GassmaGassmaCategoryQueryArgs =
+  | GassmaGassmaCategoryFindFirstData
+  | GassmaGassmaCategoryFindManyData
+  | GassmaGassmaCategoryCreateData
+  | GassmaGassmaCategoryCreateManyData
+  | GassmaGassmaCategoryCreateManyAndReturnData
+  | GassmaGassmaCategoryUpdateSingleData
+  | GassmaGassmaCategoryUpdateData
+  | GassmaGassmaCategoryUpsertSingleData
+  | GassmaGassmaCategoryDeleteSingleData
+  | GassmaGassmaCategoryDeleteData
+  | GassmaGassmaCategoryCountData
+  | GassmaGassmaCategoryAggregateData
+  | GassmaGassmaCategoryGroupByData;
+
+export type GassmaGassmaCategoryQueryHooks<GO extends GassmaGassmaCategoryOmit = {}, O = {}> = {
+  findFirst?: <T extends GassmaGassmaCategoryFindFirstData>(params: {
+    model: "Category";
+    operation: "findFirst";
+    args: T;
+    query: (args: T) => GassmaGassmaCategoryFindResult<T["select"], T["include"], T["omit"], GO, O> | null;
+  }) => GassmaGassmaCategoryFindResult<T["select"], T["include"], T["omit"], GO, O> | null;
+  findFirstOrThrow?: <T extends GassmaGassmaCategoryFindFirstData>(params: {
+    model: "Category";
+    operation: "findFirstOrThrow";
+    args: T;
+    query: (args: T) => GassmaGassmaCategoryFindResult<T["select"], T["include"], T["omit"], GO, O>;
+  }) => GassmaGassmaCategoryFindResult<T["select"], T["include"], T["omit"], GO, O>;
+  findMany?: <T extends GassmaGassmaCategoryFindManyData>(params: {
+    model: "Category";
+    operation: "findMany";
+    args: T;
+    query: (args: T) => GassmaGassmaCategoryFindResult<T["select"], T["include"], T["omit"], GO, O>[];
+  }) => GassmaGassmaCategoryFindResult<T["select"], T["include"], T["omit"], GO, O>[];
+  create?: <T extends GassmaGassmaCategoryCreateData>(params: {
+    model: "Category";
+    operation: "create";
+    args: T;
+    query: (args: T) => GassmaGassmaCategoryFindResult<T["select"], T["include"], T["omit"], GO, O>;
+  }) => GassmaGassmaCategoryFindResult<T["select"], T["include"], T["omit"], GO, O>;
+  createMany?: (params: {
+    model: "Category";
+    operation: "createMany";
+    args: GassmaGassmaCategoryCreateManyData;
+    query: (args: GassmaGassmaCategoryCreateManyData) => CreateManyReturn;
+  }) => CreateManyReturn;
+  createManyAndReturn?: <T extends GassmaGassmaCategoryCreateManyAndReturnData>(params: {
+    model: "Category";
+    operation: "createManyAndReturn";
+    args: T;
+    query: (args: T) => GassmaGassmaCategoryFindResult<T["select"], T["include"], T["omit"], GO, O>[];
+  }) => GassmaGassmaCategoryFindResult<T["select"], T["include"], T["omit"], GO, O>[];
+  update?: <T extends GassmaGassmaCategoryUpdateSingleData>(params: {
+    model: "Category";
+    operation: "update";
+    args: T;
+    query: (args: T) => GassmaGassmaCategoryFindResult<T["select"], T["include"], T["omit"], GO, O> | null;
+  }) => GassmaGassmaCategoryFindResult<T["select"], T["include"], T["omit"], GO, O> | null;
+  updateMany?: (params: {
+    model: "Category";
+    operation: "updateMany";
+    args: GassmaGassmaCategoryUpdateData;
+    query: (args: GassmaGassmaCategoryUpdateData) => UpdateManyReturn;
+  }) => UpdateManyReturn;
+  updateManyAndReturn?: (params: {
+    model: "Category";
+    operation: "updateManyAndReturn";
+    args: GassmaGassmaCategoryUpdateData;
+    query: (args: GassmaGassmaCategoryUpdateData) => GassmaGassmaCategoryFindResult<undefined, undefined, undefined, GO, O>[];
+  }) => GassmaGassmaCategoryFindResult<undefined, undefined, undefined, GO, O>[];
+  upsert?: <T extends GassmaGassmaCategoryUpsertSingleData>(params: {
+    model: "Category";
+    operation: "upsert";
+    args: T;
+    query: (args: T) => GassmaGassmaCategoryFindResult<T["select"], T["include"], T["omit"], GO, O>;
+  }) => GassmaGassmaCategoryFindResult<T["select"], T["include"], T["omit"], GO, O>;
+  delete?: <T extends GassmaGassmaCategoryDeleteSingleData>(params: {
+    model: "Category";
+    operation: "delete";
+    args: T;
+    query: (args: T) => GassmaGassmaCategoryFindResult<T["select"], T["include"], T["omit"], GO, O> | null;
+  }) => GassmaGassmaCategoryFindResult<T["select"], T["include"], T["omit"], GO, O> | null;
+  deleteMany?: (params: {
+    model: "Category";
+    operation: "deleteMany";
+    args: GassmaGassmaCategoryDeleteData;
+    query: (args: GassmaGassmaCategoryDeleteData) => DeleteManyReturn;
+  }) => DeleteManyReturn;
+  count?: (params: {
+    model: "Category";
+    operation: "count";
+    args: GassmaGassmaCategoryCountData;
+    query: (args: GassmaGassmaCategoryCountData) => number;
+  }) => number;
+  aggregate?: <T extends GassmaGassmaCategoryAggregateData>(params: {
+    model: "Category";
+    operation: "aggregate";
+    args: T;
+    query: (args: T) => GassmaGassmaCategoryAggregateResult<T>;
+  }) => GassmaGassmaCategoryAggregateResult<T>;
+  groupBy?: <T extends GassmaGassmaCategoryGroupByData>(params: {
+    model: "Category";
+    operation: "groupBy";
+    args: T;
+    query: (args: T) => GassmaGassmaCategoryGroupByResult<T>[];
+  }) => GassmaGassmaCategoryGroupByResult<T>[];
+  $allOperations?: (params: {
+    model: "Category";
+    operation: GassmaGassmaOperationName;
+    args: GassmaGassmaCategoryQueryArgs;
+    query: (args: GassmaGassmaCategoryQueryArgs) => unknown;
+  }) => unknown;
+};
+
+export type GassmaGassmaTagQueryArgs =
+  | GassmaGassmaTagFindFirstData
+  | GassmaGassmaTagFindManyData
+  | GassmaGassmaTagCreateData
+  | GassmaGassmaTagCreateManyData
+  | GassmaGassmaTagCreateManyAndReturnData
+  | GassmaGassmaTagUpdateSingleData
+  | GassmaGassmaTagUpdateData
+  | GassmaGassmaTagUpsertSingleData
+  | GassmaGassmaTagDeleteSingleData
+  | GassmaGassmaTagDeleteData
+  | GassmaGassmaTagCountData
+  | GassmaGassmaTagAggregateData
+  | GassmaGassmaTagGroupByData;
+
+export type GassmaGassmaTagQueryHooks<GO extends GassmaGassmaTagOmit = {}, O = {}> = {
+  findFirst?: <T extends GassmaGassmaTagFindFirstData>(params: {
+    model: "Tag";
+    operation: "findFirst";
+    args: T;
+    query: (args: T) => GassmaGassmaTagFindResult<T["select"], T["include"], T["omit"], GO, O> | null;
+  }) => GassmaGassmaTagFindResult<T["select"], T["include"], T["omit"], GO, O> | null;
+  findFirstOrThrow?: <T extends GassmaGassmaTagFindFirstData>(params: {
+    model: "Tag";
+    operation: "findFirstOrThrow";
+    args: T;
+    query: (args: T) => GassmaGassmaTagFindResult<T["select"], T["include"], T["omit"], GO, O>;
+  }) => GassmaGassmaTagFindResult<T["select"], T["include"], T["omit"], GO, O>;
+  findMany?: <T extends GassmaGassmaTagFindManyData>(params: {
+    model: "Tag";
+    operation: "findMany";
+    args: T;
+    query: (args: T) => GassmaGassmaTagFindResult<T["select"], T["include"], T["omit"], GO, O>[];
+  }) => GassmaGassmaTagFindResult<T["select"], T["include"], T["omit"], GO, O>[];
+  create?: <T extends GassmaGassmaTagCreateData>(params: {
+    model: "Tag";
+    operation: "create";
+    args: T;
+    query: (args: T) => GassmaGassmaTagFindResult<T["select"], T["include"], T["omit"], GO, O>;
+  }) => GassmaGassmaTagFindResult<T["select"], T["include"], T["omit"], GO, O>;
+  createMany?: (params: {
+    model: "Tag";
+    operation: "createMany";
+    args: GassmaGassmaTagCreateManyData;
+    query: (args: GassmaGassmaTagCreateManyData) => CreateManyReturn;
+  }) => CreateManyReturn;
+  createManyAndReturn?: <T extends GassmaGassmaTagCreateManyAndReturnData>(params: {
+    model: "Tag";
+    operation: "createManyAndReturn";
+    args: T;
+    query: (args: T) => GassmaGassmaTagFindResult<T["select"], T["include"], T["omit"], GO, O>[];
+  }) => GassmaGassmaTagFindResult<T["select"], T["include"], T["omit"], GO, O>[];
+  update?: <T extends GassmaGassmaTagUpdateSingleData>(params: {
+    model: "Tag";
+    operation: "update";
+    args: T;
+    query: (args: T) => GassmaGassmaTagFindResult<T["select"], T["include"], T["omit"], GO, O> | null;
+  }) => GassmaGassmaTagFindResult<T["select"], T["include"], T["omit"], GO, O> | null;
+  updateMany?: (params: {
+    model: "Tag";
+    operation: "updateMany";
+    args: GassmaGassmaTagUpdateData;
+    query: (args: GassmaGassmaTagUpdateData) => UpdateManyReturn;
+  }) => UpdateManyReturn;
+  updateManyAndReturn?: (params: {
+    model: "Tag";
+    operation: "updateManyAndReturn";
+    args: GassmaGassmaTagUpdateData;
+    query: (args: GassmaGassmaTagUpdateData) => GassmaGassmaTagFindResult<undefined, undefined, undefined, GO, O>[];
+  }) => GassmaGassmaTagFindResult<undefined, undefined, undefined, GO, O>[];
+  upsert?: <T extends GassmaGassmaTagUpsertSingleData>(params: {
+    model: "Tag";
+    operation: "upsert";
+    args: T;
+    query: (args: T) => GassmaGassmaTagFindResult<T["select"], T["include"], T["omit"], GO, O>;
+  }) => GassmaGassmaTagFindResult<T["select"], T["include"], T["omit"], GO, O>;
+  delete?: <T extends GassmaGassmaTagDeleteSingleData>(params: {
+    model: "Tag";
+    operation: "delete";
+    args: T;
+    query: (args: T) => GassmaGassmaTagFindResult<T["select"], T["include"], T["omit"], GO, O> | null;
+  }) => GassmaGassmaTagFindResult<T["select"], T["include"], T["omit"], GO, O> | null;
+  deleteMany?: (params: {
+    model: "Tag";
+    operation: "deleteMany";
+    args: GassmaGassmaTagDeleteData;
+    query: (args: GassmaGassmaTagDeleteData) => DeleteManyReturn;
+  }) => DeleteManyReturn;
+  count?: (params: {
+    model: "Tag";
+    operation: "count";
+    args: GassmaGassmaTagCountData;
+    query: (args: GassmaGassmaTagCountData) => number;
+  }) => number;
+  aggregate?: <T extends GassmaGassmaTagAggregateData>(params: {
+    model: "Tag";
+    operation: "aggregate";
+    args: T;
+    query: (args: T) => GassmaGassmaTagAggregateResult<T>;
+  }) => GassmaGassmaTagAggregateResult<T>;
+  groupBy?: <T extends GassmaGassmaTagGroupByData>(params: {
+    model: "Tag";
+    operation: "groupBy";
+    args: T;
+    query: (args: T) => GassmaGassmaTagGroupByResult<T>[];
+  }) => GassmaGassmaTagGroupByResult<T>[];
+  $allOperations?: (params: {
+    model: "Tag";
+    operation: GassmaGassmaOperationName;
+    args: GassmaGassmaTagQueryArgs;
+    query: (args: GassmaGassmaTagQueryArgs) => unknown;
+  }) => unknown;
+};
+
+export type GassmaGassmaProductQueryArgs =
+  | GassmaGassmaProductFindFirstData
+  | GassmaGassmaProductFindManyData
+  | GassmaGassmaProductCreateData
+  | GassmaGassmaProductCreateManyData
+  | GassmaGassmaProductCreateManyAndReturnData
+  | GassmaGassmaProductUpdateSingleData
+  | GassmaGassmaProductUpdateData
+  | GassmaGassmaProductUpsertSingleData
+  | GassmaGassmaProductDeleteSingleData
+  | GassmaGassmaProductDeleteData
+  | GassmaGassmaProductCountData
+  | GassmaGassmaProductAggregateData
+  | GassmaGassmaProductGroupByData;
+
+export type GassmaGassmaProductQueryHooks<GO extends GassmaGassmaProductOmit = {}, O = {}> = {
+  findFirst?: <T extends GassmaGassmaProductFindFirstData>(params: {
+    model: "Product";
+    operation: "findFirst";
+    args: T;
+    query: (args: T) => GassmaGassmaProductFindResult<T["select"], T["include"], T["omit"], GO, O> | null;
+  }) => GassmaGassmaProductFindResult<T["select"], T["include"], T["omit"], GO, O> | null;
+  findFirstOrThrow?: <T extends GassmaGassmaProductFindFirstData>(params: {
+    model: "Product";
+    operation: "findFirstOrThrow";
+    args: T;
+    query: (args: T) => GassmaGassmaProductFindResult<T["select"], T["include"], T["omit"], GO, O>;
+  }) => GassmaGassmaProductFindResult<T["select"], T["include"], T["omit"], GO, O>;
+  findMany?: <T extends GassmaGassmaProductFindManyData>(params: {
+    model: "Product";
+    operation: "findMany";
+    args: T;
+    query: (args: T) => GassmaGassmaProductFindResult<T["select"], T["include"], T["omit"], GO, O>[];
+  }) => GassmaGassmaProductFindResult<T["select"], T["include"], T["omit"], GO, O>[];
+  create?: <T extends GassmaGassmaProductCreateData>(params: {
+    model: "Product";
+    operation: "create";
+    args: T;
+    query: (args: T) => GassmaGassmaProductFindResult<T["select"], T["include"], T["omit"], GO, O>;
+  }) => GassmaGassmaProductFindResult<T["select"], T["include"], T["omit"], GO, O>;
+  createMany?: (params: {
+    model: "Product";
+    operation: "createMany";
+    args: GassmaGassmaProductCreateManyData;
+    query: (args: GassmaGassmaProductCreateManyData) => CreateManyReturn;
+  }) => CreateManyReturn;
+  createManyAndReturn?: <T extends GassmaGassmaProductCreateManyAndReturnData>(params: {
+    model: "Product";
+    operation: "createManyAndReturn";
+    args: T;
+    query: (args: T) => GassmaGassmaProductFindResult<T["select"], T["include"], T["omit"], GO, O>[];
+  }) => GassmaGassmaProductFindResult<T["select"], T["include"], T["omit"], GO, O>[];
+  update?: <T extends GassmaGassmaProductUpdateSingleData>(params: {
+    model: "Product";
+    operation: "update";
+    args: T;
+    query: (args: T) => GassmaGassmaProductFindResult<T["select"], T["include"], T["omit"], GO, O> | null;
+  }) => GassmaGassmaProductFindResult<T["select"], T["include"], T["omit"], GO, O> | null;
+  updateMany?: (params: {
+    model: "Product";
+    operation: "updateMany";
+    args: GassmaGassmaProductUpdateData;
+    query: (args: GassmaGassmaProductUpdateData) => UpdateManyReturn;
+  }) => UpdateManyReturn;
+  updateManyAndReturn?: (params: {
+    model: "Product";
+    operation: "updateManyAndReturn";
+    args: GassmaGassmaProductUpdateData;
+    query: (args: GassmaGassmaProductUpdateData) => GassmaGassmaProductFindResult<undefined, undefined, undefined, GO, O>[];
+  }) => GassmaGassmaProductFindResult<undefined, undefined, undefined, GO, O>[];
+  upsert?: <T extends GassmaGassmaProductUpsertSingleData>(params: {
+    model: "Product";
+    operation: "upsert";
+    args: T;
+    query: (args: T) => GassmaGassmaProductFindResult<T["select"], T["include"], T["omit"], GO, O>;
+  }) => GassmaGassmaProductFindResult<T["select"], T["include"], T["omit"], GO, O>;
+  delete?: <T extends GassmaGassmaProductDeleteSingleData>(params: {
+    model: "Product";
+    operation: "delete";
+    args: T;
+    query: (args: T) => GassmaGassmaProductFindResult<T["select"], T["include"], T["omit"], GO, O> | null;
+  }) => GassmaGassmaProductFindResult<T["select"], T["include"], T["omit"], GO, O> | null;
+  deleteMany?: (params: {
+    model: "Product";
+    operation: "deleteMany";
+    args: GassmaGassmaProductDeleteData;
+    query: (args: GassmaGassmaProductDeleteData) => DeleteManyReturn;
+  }) => DeleteManyReturn;
+  count?: (params: {
+    model: "Product";
+    operation: "count";
+    args: GassmaGassmaProductCountData;
+    query: (args: GassmaGassmaProductCountData) => number;
+  }) => number;
+  aggregate?: <T extends GassmaGassmaProductAggregateData>(params: {
+    model: "Product";
+    operation: "aggregate";
+    args: T;
+    query: (args: T) => GassmaGassmaProductAggregateResult<T>;
+  }) => GassmaGassmaProductAggregateResult<T>;
+  groupBy?: <T extends GassmaGassmaProductGroupByData>(params: {
+    model: "Product";
+    operation: "groupBy";
+    args: T;
+    query: (args: T) => GassmaGassmaProductGroupByResult<T>[];
+  }) => GassmaGassmaProductGroupByResult<T>[];
+  $allOperations?: (params: {
+    model: "Product";
+    operation: GassmaGassmaOperationName;
+    args: GassmaGassmaProductQueryArgs;
+    query: (args: GassmaGassmaProductQueryArgs) => unknown;
+  }) => unknown;
+};
+
+export type GassmaGassmaOrderQueryArgs =
+  | GassmaGassmaOrderFindFirstData
+  | GassmaGassmaOrderFindManyData
+  | GassmaGassmaOrderCreateData
+  | GassmaGassmaOrderCreateManyData
+  | GassmaGassmaOrderCreateManyAndReturnData
+  | GassmaGassmaOrderUpdateSingleData
+  | GassmaGassmaOrderUpdateData
+  | GassmaGassmaOrderUpsertSingleData
+  | GassmaGassmaOrderDeleteSingleData
+  | GassmaGassmaOrderDeleteData
+  | GassmaGassmaOrderCountData
+  | GassmaGassmaOrderAggregateData
+  | GassmaGassmaOrderGroupByData;
+
+export type GassmaGassmaOrderQueryHooks<GO extends GassmaGassmaOrderOmit = {}, O = {}> = {
+  findFirst?: <T extends GassmaGassmaOrderFindFirstData>(params: {
+    model: "Order";
+    operation: "findFirst";
+    args: T;
+    query: (args: T) => GassmaGassmaOrderFindResult<T["select"], T["include"], T["omit"], GO, O> | null;
+  }) => GassmaGassmaOrderFindResult<T["select"], T["include"], T["omit"], GO, O> | null;
+  findFirstOrThrow?: <T extends GassmaGassmaOrderFindFirstData>(params: {
+    model: "Order";
+    operation: "findFirstOrThrow";
+    args: T;
+    query: (args: T) => GassmaGassmaOrderFindResult<T["select"], T["include"], T["omit"], GO, O>;
+  }) => GassmaGassmaOrderFindResult<T["select"], T["include"], T["omit"], GO, O>;
+  findMany?: <T extends GassmaGassmaOrderFindManyData>(params: {
+    model: "Order";
+    operation: "findMany";
+    args: T;
+    query: (args: T) => GassmaGassmaOrderFindResult<T["select"], T["include"], T["omit"], GO, O>[];
+  }) => GassmaGassmaOrderFindResult<T["select"], T["include"], T["omit"], GO, O>[];
+  create?: <T extends GassmaGassmaOrderCreateData>(params: {
+    model: "Order";
+    operation: "create";
+    args: T;
+    query: (args: T) => GassmaGassmaOrderFindResult<T["select"], T["include"], T["omit"], GO, O>;
+  }) => GassmaGassmaOrderFindResult<T["select"], T["include"], T["omit"], GO, O>;
+  createMany?: (params: {
+    model: "Order";
+    operation: "createMany";
+    args: GassmaGassmaOrderCreateManyData;
+    query: (args: GassmaGassmaOrderCreateManyData) => CreateManyReturn;
+  }) => CreateManyReturn;
+  createManyAndReturn?: <T extends GassmaGassmaOrderCreateManyAndReturnData>(params: {
+    model: "Order";
+    operation: "createManyAndReturn";
+    args: T;
+    query: (args: T) => GassmaGassmaOrderFindResult<T["select"], T["include"], T["omit"], GO, O>[];
+  }) => GassmaGassmaOrderFindResult<T["select"], T["include"], T["omit"], GO, O>[];
+  update?: <T extends GassmaGassmaOrderUpdateSingleData>(params: {
+    model: "Order";
+    operation: "update";
+    args: T;
+    query: (args: T) => GassmaGassmaOrderFindResult<T["select"], T["include"], T["omit"], GO, O> | null;
+  }) => GassmaGassmaOrderFindResult<T["select"], T["include"], T["omit"], GO, O> | null;
+  updateMany?: (params: {
+    model: "Order";
+    operation: "updateMany";
+    args: GassmaGassmaOrderUpdateData;
+    query: (args: GassmaGassmaOrderUpdateData) => UpdateManyReturn;
+  }) => UpdateManyReturn;
+  updateManyAndReturn?: (params: {
+    model: "Order";
+    operation: "updateManyAndReturn";
+    args: GassmaGassmaOrderUpdateData;
+    query: (args: GassmaGassmaOrderUpdateData) => GassmaGassmaOrderFindResult<undefined, undefined, undefined, GO, O>[];
+  }) => GassmaGassmaOrderFindResult<undefined, undefined, undefined, GO, O>[];
+  upsert?: <T extends GassmaGassmaOrderUpsertSingleData>(params: {
+    model: "Order";
+    operation: "upsert";
+    args: T;
+    query: (args: T) => GassmaGassmaOrderFindResult<T["select"], T["include"], T["omit"], GO, O>;
+  }) => GassmaGassmaOrderFindResult<T["select"], T["include"], T["omit"], GO, O>;
+  delete?: <T extends GassmaGassmaOrderDeleteSingleData>(params: {
+    model: "Order";
+    operation: "delete";
+    args: T;
+    query: (args: T) => GassmaGassmaOrderFindResult<T["select"], T["include"], T["omit"], GO, O> | null;
+  }) => GassmaGassmaOrderFindResult<T["select"], T["include"], T["omit"], GO, O> | null;
+  deleteMany?: (params: {
+    model: "Order";
+    operation: "deleteMany";
+    args: GassmaGassmaOrderDeleteData;
+    query: (args: GassmaGassmaOrderDeleteData) => DeleteManyReturn;
+  }) => DeleteManyReturn;
+  count?: (params: {
+    model: "Order";
+    operation: "count";
+    args: GassmaGassmaOrderCountData;
+    query: (args: GassmaGassmaOrderCountData) => number;
+  }) => number;
+  aggregate?: <T extends GassmaGassmaOrderAggregateData>(params: {
+    model: "Order";
+    operation: "aggregate";
+    args: T;
+    query: (args: T) => GassmaGassmaOrderAggregateResult<T>;
+  }) => GassmaGassmaOrderAggregateResult<T>;
+  groupBy?: <T extends GassmaGassmaOrderGroupByData>(params: {
+    model: "Order";
+    operation: "groupBy";
+    args: T;
+    query: (args: T) => GassmaGassmaOrderGroupByResult<T>[];
+  }) => GassmaGassmaOrderGroupByResult<T>[];
+  $allOperations?: (params: {
+    model: "Order";
+    operation: GassmaGassmaOperationName;
+    args: GassmaGassmaOrderQueryArgs;
+    query: (args: GassmaGassmaOrderQueryArgs) => unknown;
+  }) => unknown;
+};
+
+export type GassmaGassmaOrderItemQueryArgs =
+  | GassmaGassmaOrderItemFindFirstData
+  | GassmaGassmaOrderItemFindManyData
+  | GassmaGassmaOrderItemCreateData
+  | GassmaGassmaOrderItemCreateManyData
+  | GassmaGassmaOrderItemCreateManyAndReturnData
+  | GassmaGassmaOrderItemUpdateSingleData
+  | GassmaGassmaOrderItemUpdateData
+  | GassmaGassmaOrderItemUpsertSingleData
+  | GassmaGassmaOrderItemDeleteSingleData
+  | GassmaGassmaOrderItemDeleteData
+  | GassmaGassmaOrderItemCountData
+  | GassmaGassmaOrderItemAggregateData
+  | GassmaGassmaOrderItemGroupByData;
+
+export type GassmaGassmaOrderItemQueryHooks<GO extends GassmaGassmaOrderItemOmit = {}, O = {}> = {
+  findFirst?: <T extends GassmaGassmaOrderItemFindFirstData>(params: {
+    model: "OrderItem";
+    operation: "findFirst";
+    args: T;
+    query: (args: T) => GassmaGassmaOrderItemFindResult<T["select"], T["include"], T["omit"], GO, O> | null;
+  }) => GassmaGassmaOrderItemFindResult<T["select"], T["include"], T["omit"], GO, O> | null;
+  findFirstOrThrow?: <T extends GassmaGassmaOrderItemFindFirstData>(params: {
+    model: "OrderItem";
+    operation: "findFirstOrThrow";
+    args: T;
+    query: (args: T) => GassmaGassmaOrderItemFindResult<T["select"], T["include"], T["omit"], GO, O>;
+  }) => GassmaGassmaOrderItemFindResult<T["select"], T["include"], T["omit"], GO, O>;
+  findMany?: <T extends GassmaGassmaOrderItemFindManyData>(params: {
+    model: "OrderItem";
+    operation: "findMany";
+    args: T;
+    query: (args: T) => GassmaGassmaOrderItemFindResult<T["select"], T["include"], T["omit"], GO, O>[];
+  }) => GassmaGassmaOrderItemFindResult<T["select"], T["include"], T["omit"], GO, O>[];
+  create?: <T extends GassmaGassmaOrderItemCreateData>(params: {
+    model: "OrderItem";
+    operation: "create";
+    args: T;
+    query: (args: T) => GassmaGassmaOrderItemFindResult<T["select"], T["include"], T["omit"], GO, O>;
+  }) => GassmaGassmaOrderItemFindResult<T["select"], T["include"], T["omit"], GO, O>;
+  createMany?: (params: {
+    model: "OrderItem";
+    operation: "createMany";
+    args: GassmaGassmaOrderItemCreateManyData;
+    query: (args: GassmaGassmaOrderItemCreateManyData) => CreateManyReturn;
+  }) => CreateManyReturn;
+  createManyAndReturn?: <T extends GassmaGassmaOrderItemCreateManyAndReturnData>(params: {
+    model: "OrderItem";
+    operation: "createManyAndReturn";
+    args: T;
+    query: (args: T) => GassmaGassmaOrderItemFindResult<T["select"], T["include"], T["omit"], GO, O>[];
+  }) => GassmaGassmaOrderItemFindResult<T["select"], T["include"], T["omit"], GO, O>[];
+  update?: <T extends GassmaGassmaOrderItemUpdateSingleData>(params: {
+    model: "OrderItem";
+    operation: "update";
+    args: T;
+    query: (args: T) => GassmaGassmaOrderItemFindResult<T["select"], T["include"], T["omit"], GO, O> | null;
+  }) => GassmaGassmaOrderItemFindResult<T["select"], T["include"], T["omit"], GO, O> | null;
+  updateMany?: (params: {
+    model: "OrderItem";
+    operation: "updateMany";
+    args: GassmaGassmaOrderItemUpdateData;
+    query: (args: GassmaGassmaOrderItemUpdateData) => UpdateManyReturn;
+  }) => UpdateManyReturn;
+  updateManyAndReturn?: (params: {
+    model: "OrderItem";
+    operation: "updateManyAndReturn";
+    args: GassmaGassmaOrderItemUpdateData;
+    query: (args: GassmaGassmaOrderItemUpdateData) => GassmaGassmaOrderItemFindResult<undefined, undefined, undefined, GO, O>[];
+  }) => GassmaGassmaOrderItemFindResult<undefined, undefined, undefined, GO, O>[];
+  upsert?: <T extends GassmaGassmaOrderItemUpsertSingleData>(params: {
+    model: "OrderItem";
+    operation: "upsert";
+    args: T;
+    query: (args: T) => GassmaGassmaOrderItemFindResult<T["select"], T["include"], T["omit"], GO, O>;
+  }) => GassmaGassmaOrderItemFindResult<T["select"], T["include"], T["omit"], GO, O>;
+  delete?: <T extends GassmaGassmaOrderItemDeleteSingleData>(params: {
+    model: "OrderItem";
+    operation: "delete";
+    args: T;
+    query: (args: T) => GassmaGassmaOrderItemFindResult<T["select"], T["include"], T["omit"], GO, O> | null;
+  }) => GassmaGassmaOrderItemFindResult<T["select"], T["include"], T["omit"], GO, O> | null;
+  deleteMany?: (params: {
+    model: "OrderItem";
+    operation: "deleteMany";
+    args: GassmaGassmaOrderItemDeleteData;
+    query: (args: GassmaGassmaOrderItemDeleteData) => DeleteManyReturn;
+  }) => DeleteManyReturn;
+  count?: (params: {
+    model: "OrderItem";
+    operation: "count";
+    args: GassmaGassmaOrderItemCountData;
+    query: (args: GassmaGassmaOrderItemCountData) => number;
+  }) => number;
+  aggregate?: <T extends GassmaGassmaOrderItemAggregateData>(params: {
+    model: "OrderItem";
+    operation: "aggregate";
+    args: T;
+    query: (args: T) => GassmaGassmaOrderItemAggregateResult<T>;
+  }) => GassmaGassmaOrderItemAggregateResult<T>;
+  groupBy?: <T extends GassmaGassmaOrderItemGroupByData>(params: {
+    model: "OrderItem";
+    operation: "groupBy";
+    args: T;
+    query: (args: T) => GassmaGassmaOrderItemGroupByResult<T>[];
+  }) => GassmaGassmaOrderItemGroupByResult<T>[];
+  $allOperations?: (params: {
+    model: "OrderItem";
+    operation: GassmaGassmaOperationName;
+    args: GassmaGassmaOrderItemQueryArgs;
+    query: (args: GassmaGassmaOrderItemQueryArgs) => unknown;
+  }) => unknown;
+};
+
+export type GassmaGassmaFormulaCellQueryArgs =
+  | GassmaGassmaFormulaCellFindFirstData
+  | GassmaGassmaFormulaCellFindManyData
+  | GassmaGassmaFormulaCellCreateData
+  | GassmaGassmaFormulaCellCreateManyData
+  | GassmaGassmaFormulaCellCreateManyAndReturnData
+  | GassmaGassmaFormulaCellUpdateSingleData
+  | GassmaGassmaFormulaCellUpdateData
+  | GassmaGassmaFormulaCellUpsertSingleData
+  | GassmaGassmaFormulaCellDeleteSingleData
+  | GassmaGassmaFormulaCellDeleteData
+  | GassmaGassmaFormulaCellCountData
+  | GassmaGassmaFormulaCellAggregateData
+  | GassmaGassmaFormulaCellGroupByData;
+
+export type GassmaGassmaFormulaCellQueryHooks<GO extends GassmaGassmaFormulaCellOmit = {}, O = {}> = {
+  findFirst?: <T extends GassmaGassmaFormulaCellFindFirstData>(params: {
+    model: "FormulaCell";
+    operation: "findFirst";
+    args: T;
+    query: (args: T) => GassmaGassmaFormulaCellFindResult<T["select"], T["include"], T["omit"], GO, O> | null;
+  }) => GassmaGassmaFormulaCellFindResult<T["select"], T["include"], T["omit"], GO, O> | null;
+  findFirstOrThrow?: <T extends GassmaGassmaFormulaCellFindFirstData>(params: {
+    model: "FormulaCell";
+    operation: "findFirstOrThrow";
+    args: T;
+    query: (args: T) => GassmaGassmaFormulaCellFindResult<T["select"], T["include"], T["omit"], GO, O>;
+  }) => GassmaGassmaFormulaCellFindResult<T["select"], T["include"], T["omit"], GO, O>;
+  findMany?: <T extends GassmaGassmaFormulaCellFindManyData>(params: {
+    model: "FormulaCell";
+    operation: "findMany";
+    args: T;
+    query: (args: T) => GassmaGassmaFormulaCellFindResult<T["select"], T["include"], T["omit"], GO, O>[];
+  }) => GassmaGassmaFormulaCellFindResult<T["select"], T["include"], T["omit"], GO, O>[];
+  create?: <T extends GassmaGassmaFormulaCellCreateData>(params: {
+    model: "FormulaCell";
+    operation: "create";
+    args: T;
+    query: (args: T) => GassmaGassmaFormulaCellFindResult<T["select"], T["include"], T["omit"], GO, O>;
+  }) => GassmaGassmaFormulaCellFindResult<T["select"], T["include"], T["omit"], GO, O>;
+  createMany?: (params: {
+    model: "FormulaCell";
+    operation: "createMany";
+    args: GassmaGassmaFormulaCellCreateManyData;
+    query: (args: GassmaGassmaFormulaCellCreateManyData) => CreateManyReturn;
+  }) => CreateManyReturn;
+  createManyAndReturn?: <T extends GassmaGassmaFormulaCellCreateManyAndReturnData>(params: {
+    model: "FormulaCell";
+    operation: "createManyAndReturn";
+    args: T;
+    query: (args: T) => GassmaGassmaFormulaCellFindResult<T["select"], T["include"], T["omit"], GO, O>[];
+  }) => GassmaGassmaFormulaCellFindResult<T["select"], T["include"], T["omit"], GO, O>[];
+  update?: <T extends GassmaGassmaFormulaCellUpdateSingleData>(params: {
+    model: "FormulaCell";
+    operation: "update";
+    args: T;
+    query: (args: T) => GassmaGassmaFormulaCellFindResult<T["select"], T["include"], T["omit"], GO, O> | null;
+  }) => GassmaGassmaFormulaCellFindResult<T["select"], T["include"], T["omit"], GO, O> | null;
+  updateMany?: (params: {
+    model: "FormulaCell";
+    operation: "updateMany";
+    args: GassmaGassmaFormulaCellUpdateData;
+    query: (args: GassmaGassmaFormulaCellUpdateData) => UpdateManyReturn;
+  }) => UpdateManyReturn;
+  updateManyAndReturn?: (params: {
+    model: "FormulaCell";
+    operation: "updateManyAndReturn";
+    args: GassmaGassmaFormulaCellUpdateData;
+    query: (args: GassmaGassmaFormulaCellUpdateData) => GassmaGassmaFormulaCellFindResult<undefined, undefined, undefined, GO, O>[];
+  }) => GassmaGassmaFormulaCellFindResult<undefined, undefined, undefined, GO, O>[];
+  upsert?: <T extends GassmaGassmaFormulaCellUpsertSingleData>(params: {
+    model: "FormulaCell";
+    operation: "upsert";
+    args: T;
+    query: (args: T) => GassmaGassmaFormulaCellFindResult<T["select"], T["include"], T["omit"], GO, O>;
+  }) => GassmaGassmaFormulaCellFindResult<T["select"], T["include"], T["omit"], GO, O>;
+  delete?: <T extends GassmaGassmaFormulaCellDeleteSingleData>(params: {
+    model: "FormulaCell";
+    operation: "delete";
+    args: T;
+    query: (args: T) => GassmaGassmaFormulaCellFindResult<T["select"], T["include"], T["omit"], GO, O> | null;
+  }) => GassmaGassmaFormulaCellFindResult<T["select"], T["include"], T["omit"], GO, O> | null;
+  deleteMany?: (params: {
+    model: "FormulaCell";
+    operation: "deleteMany";
+    args: GassmaGassmaFormulaCellDeleteData;
+    query: (args: GassmaGassmaFormulaCellDeleteData) => DeleteManyReturn;
+  }) => DeleteManyReturn;
+  count?: (params: {
+    model: "FormulaCell";
+    operation: "count";
+    args: GassmaGassmaFormulaCellCountData;
+    query: (args: GassmaGassmaFormulaCellCountData) => number;
+  }) => number;
+  aggregate?: <T extends GassmaGassmaFormulaCellAggregateData>(params: {
+    model: "FormulaCell";
+    operation: "aggregate";
+    args: T;
+    query: (args: T) => GassmaGassmaFormulaCellAggregateResult<T>;
+  }) => GassmaGassmaFormulaCellAggregateResult<T>;
+  groupBy?: <T extends GassmaGassmaFormulaCellGroupByData>(params: {
+    model: "FormulaCell";
+    operation: "groupBy";
+    args: T;
+    query: (args: T) => GassmaGassmaFormulaCellGroupByResult<T>[];
+  }) => GassmaGassmaFormulaCellGroupByResult<T>[];
+  $allOperations?: (params: {
+    model: "FormulaCell";
+    operation: GassmaGassmaOperationName;
+    args: GassmaGassmaFormulaCellQueryArgs;
+    query: (args: GassmaGassmaFormulaCellQueryArgs) => unknown;
+  }) => unknown;
+};
+
+export type GassmaGassmaNotificationQueryArgs =
+  | GassmaGassmaNotificationFindFirstData
+  | GassmaGassmaNotificationFindManyData
+  | GassmaGassmaNotificationCreateData
+  | GassmaGassmaNotificationCreateManyData
+  | GassmaGassmaNotificationCreateManyAndReturnData
+  | GassmaGassmaNotificationUpdateSingleData
+  | GassmaGassmaNotificationUpdateData
+  | GassmaGassmaNotificationUpsertSingleData
+  | GassmaGassmaNotificationDeleteSingleData
+  | GassmaGassmaNotificationDeleteData
+  | GassmaGassmaNotificationCountData
+  | GassmaGassmaNotificationAggregateData
+  | GassmaGassmaNotificationGroupByData;
+
+export type GassmaGassmaNotificationQueryHooks<GO extends GassmaGassmaNotificationOmit = {}, O = {}> = {
+  findFirst?: <T extends GassmaGassmaNotificationFindFirstData>(params: {
+    model: "Notification";
+    operation: "findFirst";
+    args: T;
+    query: (args: T) => GassmaGassmaNotificationFindResult<T["select"], T["include"], T["omit"], GO, O> | null;
+  }) => GassmaGassmaNotificationFindResult<T["select"], T["include"], T["omit"], GO, O> | null;
+  findFirstOrThrow?: <T extends GassmaGassmaNotificationFindFirstData>(params: {
+    model: "Notification";
+    operation: "findFirstOrThrow";
+    args: T;
+    query: (args: T) => GassmaGassmaNotificationFindResult<T["select"], T["include"], T["omit"], GO, O>;
+  }) => GassmaGassmaNotificationFindResult<T["select"], T["include"], T["omit"], GO, O>;
+  findMany?: <T extends GassmaGassmaNotificationFindManyData>(params: {
+    model: "Notification";
+    operation: "findMany";
+    args: T;
+    query: (args: T) => GassmaGassmaNotificationFindResult<T["select"], T["include"], T["omit"], GO, O>[];
+  }) => GassmaGassmaNotificationFindResult<T["select"], T["include"], T["omit"], GO, O>[];
+  create?: <T extends GassmaGassmaNotificationCreateData>(params: {
+    model: "Notification";
+    operation: "create";
+    args: T;
+    query: (args: T) => GassmaGassmaNotificationFindResult<T["select"], T["include"], T["omit"], GO, O>;
+  }) => GassmaGassmaNotificationFindResult<T["select"], T["include"], T["omit"], GO, O>;
+  createMany?: (params: {
+    model: "Notification";
+    operation: "createMany";
+    args: GassmaGassmaNotificationCreateManyData;
+    query: (args: GassmaGassmaNotificationCreateManyData) => CreateManyReturn;
+  }) => CreateManyReturn;
+  createManyAndReturn?: <T extends GassmaGassmaNotificationCreateManyAndReturnData>(params: {
+    model: "Notification";
+    operation: "createManyAndReturn";
+    args: T;
+    query: (args: T) => GassmaGassmaNotificationFindResult<T["select"], T["include"], T["omit"], GO, O>[];
+  }) => GassmaGassmaNotificationFindResult<T["select"], T["include"], T["omit"], GO, O>[];
+  update?: <T extends GassmaGassmaNotificationUpdateSingleData>(params: {
+    model: "Notification";
+    operation: "update";
+    args: T;
+    query: (args: T) => GassmaGassmaNotificationFindResult<T["select"], T["include"], T["omit"], GO, O> | null;
+  }) => GassmaGassmaNotificationFindResult<T["select"], T["include"], T["omit"], GO, O> | null;
+  updateMany?: (params: {
+    model: "Notification";
+    operation: "updateMany";
+    args: GassmaGassmaNotificationUpdateData;
+    query: (args: GassmaGassmaNotificationUpdateData) => UpdateManyReturn;
+  }) => UpdateManyReturn;
+  updateManyAndReturn?: (params: {
+    model: "Notification";
+    operation: "updateManyAndReturn";
+    args: GassmaGassmaNotificationUpdateData;
+    query: (args: GassmaGassmaNotificationUpdateData) => GassmaGassmaNotificationFindResult<undefined, undefined, undefined, GO, O>[];
+  }) => GassmaGassmaNotificationFindResult<undefined, undefined, undefined, GO, O>[];
+  upsert?: <T extends GassmaGassmaNotificationUpsertSingleData>(params: {
+    model: "Notification";
+    operation: "upsert";
+    args: T;
+    query: (args: T) => GassmaGassmaNotificationFindResult<T["select"], T["include"], T["omit"], GO, O>;
+  }) => GassmaGassmaNotificationFindResult<T["select"], T["include"], T["omit"], GO, O>;
+  delete?: <T extends GassmaGassmaNotificationDeleteSingleData>(params: {
+    model: "Notification";
+    operation: "delete";
+    args: T;
+    query: (args: T) => GassmaGassmaNotificationFindResult<T["select"], T["include"], T["omit"], GO, O> | null;
+  }) => GassmaGassmaNotificationFindResult<T["select"], T["include"], T["omit"], GO, O> | null;
+  deleteMany?: (params: {
+    model: "Notification";
+    operation: "deleteMany";
+    args: GassmaGassmaNotificationDeleteData;
+    query: (args: GassmaGassmaNotificationDeleteData) => DeleteManyReturn;
+  }) => DeleteManyReturn;
+  count?: (params: {
+    model: "Notification";
+    operation: "count";
+    args: GassmaGassmaNotificationCountData;
+    query: (args: GassmaGassmaNotificationCountData) => number;
+  }) => number;
+  aggregate?: <T extends GassmaGassmaNotificationAggregateData>(params: {
+    model: "Notification";
+    operation: "aggregate";
+    args: T;
+    query: (args: T) => GassmaGassmaNotificationAggregateResult<T>;
+  }) => GassmaGassmaNotificationAggregateResult<T>;
+  groupBy?: <T extends GassmaGassmaNotificationGroupByData>(params: {
+    model: "Notification";
+    operation: "groupBy";
+    args: T;
+    query: (args: T) => GassmaGassmaNotificationGroupByResult<T>[];
+  }) => GassmaGassmaNotificationGroupByResult<T>[];
+  $allOperations?: (params: {
+    model: "Notification";
+    operation: GassmaGassmaOperationName;
+    args: GassmaGassmaNotificationQueryArgs;
+    query: (args: GassmaGassmaNotificationQueryArgs) => unknown;
+  }) => unknown;
+};
+
+export type GassmaGassmaOffsetNoteQueryArgs =
+  | GassmaGassmaOffsetNoteFindFirstData
+  | GassmaGassmaOffsetNoteFindManyData
+  | GassmaGassmaOffsetNoteCreateData
+  | GassmaGassmaOffsetNoteCreateManyData
+  | GassmaGassmaOffsetNoteCreateManyAndReturnData
+  | GassmaGassmaOffsetNoteUpdateSingleData
+  | GassmaGassmaOffsetNoteUpdateData
+  | GassmaGassmaOffsetNoteUpsertSingleData
+  | GassmaGassmaOffsetNoteDeleteSingleData
+  | GassmaGassmaOffsetNoteDeleteData
+  | GassmaGassmaOffsetNoteCountData
+  | GassmaGassmaOffsetNoteAggregateData
+  | GassmaGassmaOffsetNoteGroupByData;
+
+export type GassmaGassmaOffsetNoteQueryHooks<GO extends GassmaGassmaOffsetNoteOmit = {}, O = {}> = {
+  findFirst?: <T extends GassmaGassmaOffsetNoteFindFirstData>(params: {
+    model: "OffsetNote";
+    operation: "findFirst";
+    args: T;
+    query: (args: T) => GassmaGassmaOffsetNoteFindResult<T["select"], T["include"], T["omit"], GO, O> | null;
+  }) => GassmaGassmaOffsetNoteFindResult<T["select"], T["include"], T["omit"], GO, O> | null;
+  findFirstOrThrow?: <T extends GassmaGassmaOffsetNoteFindFirstData>(params: {
+    model: "OffsetNote";
+    operation: "findFirstOrThrow";
+    args: T;
+    query: (args: T) => GassmaGassmaOffsetNoteFindResult<T["select"], T["include"], T["omit"], GO, O>;
+  }) => GassmaGassmaOffsetNoteFindResult<T["select"], T["include"], T["omit"], GO, O>;
+  findMany?: <T extends GassmaGassmaOffsetNoteFindManyData>(params: {
+    model: "OffsetNote";
+    operation: "findMany";
+    args: T;
+    query: (args: T) => GassmaGassmaOffsetNoteFindResult<T["select"], T["include"], T["omit"], GO, O>[];
+  }) => GassmaGassmaOffsetNoteFindResult<T["select"], T["include"], T["omit"], GO, O>[];
+  create?: <T extends GassmaGassmaOffsetNoteCreateData>(params: {
+    model: "OffsetNote";
+    operation: "create";
+    args: T;
+    query: (args: T) => GassmaGassmaOffsetNoteFindResult<T["select"], T["include"], T["omit"], GO, O>;
+  }) => GassmaGassmaOffsetNoteFindResult<T["select"], T["include"], T["omit"], GO, O>;
+  createMany?: (params: {
+    model: "OffsetNote";
+    operation: "createMany";
+    args: GassmaGassmaOffsetNoteCreateManyData;
+    query: (args: GassmaGassmaOffsetNoteCreateManyData) => CreateManyReturn;
+  }) => CreateManyReturn;
+  createManyAndReturn?: <T extends GassmaGassmaOffsetNoteCreateManyAndReturnData>(params: {
+    model: "OffsetNote";
+    operation: "createManyAndReturn";
+    args: T;
+    query: (args: T) => GassmaGassmaOffsetNoteFindResult<T["select"], T["include"], T["omit"], GO, O>[];
+  }) => GassmaGassmaOffsetNoteFindResult<T["select"], T["include"], T["omit"], GO, O>[];
+  update?: <T extends GassmaGassmaOffsetNoteUpdateSingleData>(params: {
+    model: "OffsetNote";
+    operation: "update";
+    args: T;
+    query: (args: T) => GassmaGassmaOffsetNoteFindResult<T["select"], T["include"], T["omit"], GO, O> | null;
+  }) => GassmaGassmaOffsetNoteFindResult<T["select"], T["include"], T["omit"], GO, O> | null;
+  updateMany?: (params: {
+    model: "OffsetNote";
+    operation: "updateMany";
+    args: GassmaGassmaOffsetNoteUpdateData;
+    query: (args: GassmaGassmaOffsetNoteUpdateData) => UpdateManyReturn;
+  }) => UpdateManyReturn;
+  updateManyAndReturn?: (params: {
+    model: "OffsetNote";
+    operation: "updateManyAndReturn";
+    args: GassmaGassmaOffsetNoteUpdateData;
+    query: (args: GassmaGassmaOffsetNoteUpdateData) => GassmaGassmaOffsetNoteFindResult<undefined, undefined, undefined, GO, O>[];
+  }) => GassmaGassmaOffsetNoteFindResult<undefined, undefined, undefined, GO, O>[];
+  upsert?: <T extends GassmaGassmaOffsetNoteUpsertSingleData>(params: {
+    model: "OffsetNote";
+    operation: "upsert";
+    args: T;
+    query: (args: T) => GassmaGassmaOffsetNoteFindResult<T["select"], T["include"], T["omit"], GO, O>;
+  }) => GassmaGassmaOffsetNoteFindResult<T["select"], T["include"], T["omit"], GO, O>;
+  delete?: <T extends GassmaGassmaOffsetNoteDeleteSingleData>(params: {
+    model: "OffsetNote";
+    operation: "delete";
+    args: T;
+    query: (args: T) => GassmaGassmaOffsetNoteFindResult<T["select"], T["include"], T["omit"], GO, O> | null;
+  }) => GassmaGassmaOffsetNoteFindResult<T["select"], T["include"], T["omit"], GO, O> | null;
+  deleteMany?: (params: {
+    model: "OffsetNote";
+    operation: "deleteMany";
+    args: GassmaGassmaOffsetNoteDeleteData;
+    query: (args: GassmaGassmaOffsetNoteDeleteData) => DeleteManyReturn;
+  }) => DeleteManyReturn;
+  count?: (params: {
+    model: "OffsetNote";
+    operation: "count";
+    args: GassmaGassmaOffsetNoteCountData;
+    query: (args: GassmaGassmaOffsetNoteCountData) => number;
+  }) => number;
+  aggregate?: <T extends GassmaGassmaOffsetNoteAggregateData>(params: {
+    model: "OffsetNote";
+    operation: "aggregate";
+    args: T;
+    query: (args: T) => GassmaGassmaOffsetNoteAggregateResult<T>;
+  }) => GassmaGassmaOffsetNoteAggregateResult<T>;
+  groupBy?: <T extends GassmaGassmaOffsetNoteGroupByData>(params: {
+    model: "OffsetNote";
+    operation: "groupBy";
+    args: T;
+    query: (args: T) => GassmaGassmaOffsetNoteGroupByResult<T>[];
+  }) => GassmaGassmaOffsetNoteGroupByResult<T>[];
+  $allOperations?: (params: {
+    model: "OffsetNote";
+    operation: GassmaGassmaOperationName;
+    args: GassmaGassmaOffsetNoteQueryArgs;
+    query: (args: GassmaGassmaOffsetNoteQueryArgs) => unknown;
+  }) => unknown;
+};
+
+export type GassmaGassmaUserQueryArgs =
+  | GassmaGassmaUserFindFirstData
+  | GassmaGassmaUserFindManyData
+  | GassmaGassmaUserCreateData
+  | GassmaGassmaUserCreateManyData
+  | GassmaGassmaUserCreateManyAndReturnData
+  | GassmaGassmaUserUpdateSingleData
+  | GassmaGassmaUserUpdateData
+  | GassmaGassmaUserUpsertSingleData
+  | GassmaGassmaUserDeleteSingleData
+  | GassmaGassmaUserDeleteData
+  | GassmaGassmaUserCountData
+  | GassmaGassmaUserAggregateData
+  | GassmaGassmaUserGroupByData;
+
+export type GassmaGassmaUserQueryHooks<GO extends GassmaGassmaUserOmit = {}, O = {}> = {
+  findFirst?: <T extends GassmaGassmaUserFindFirstData>(params: {
+    model: "User";
+    operation: "findFirst";
+    args: T;
+    query: (args: T) => GassmaGassmaUserFindResult<T["select"], T["include"], T["omit"], GO, O> | null;
+  }) => GassmaGassmaUserFindResult<T["select"], T["include"], T["omit"], GO, O> | null;
+  findFirstOrThrow?: <T extends GassmaGassmaUserFindFirstData>(params: {
+    model: "User";
+    operation: "findFirstOrThrow";
+    args: T;
+    query: (args: T) => GassmaGassmaUserFindResult<T["select"], T["include"], T["omit"], GO, O>;
+  }) => GassmaGassmaUserFindResult<T["select"], T["include"], T["omit"], GO, O>;
+  findMany?: <T extends GassmaGassmaUserFindManyData>(params: {
+    model: "User";
+    operation: "findMany";
+    args: T;
+    query: (args: T) => GassmaGassmaUserFindResult<T["select"], T["include"], T["omit"], GO, O>[];
+  }) => GassmaGassmaUserFindResult<T["select"], T["include"], T["omit"], GO, O>[];
+  create?: <T extends GassmaGassmaUserCreateData>(params: {
+    model: "User";
+    operation: "create";
+    args: T;
+    query: (args: T) => GassmaGassmaUserFindResult<T["select"], T["include"], T["omit"], GO, O>;
+  }) => GassmaGassmaUserFindResult<T["select"], T["include"], T["omit"], GO, O>;
+  createMany?: (params: {
+    model: "User";
+    operation: "createMany";
+    args: GassmaGassmaUserCreateManyData;
+    query: (args: GassmaGassmaUserCreateManyData) => CreateManyReturn;
+  }) => CreateManyReturn;
+  createManyAndReturn?: <T extends GassmaGassmaUserCreateManyAndReturnData>(params: {
+    model: "User";
+    operation: "createManyAndReturn";
+    args: T;
+    query: (args: T) => GassmaGassmaUserFindResult<T["select"], T["include"], T["omit"], GO, O>[];
+  }) => GassmaGassmaUserFindResult<T["select"], T["include"], T["omit"], GO, O>[];
+  update?: <T extends GassmaGassmaUserUpdateSingleData>(params: {
+    model: "User";
+    operation: "update";
+    args: T;
+    query: (args: T) => GassmaGassmaUserFindResult<T["select"], T["include"], T["omit"], GO, O> | null;
+  }) => GassmaGassmaUserFindResult<T["select"], T["include"], T["omit"], GO, O> | null;
+  updateMany?: (params: {
+    model: "User";
+    operation: "updateMany";
+    args: GassmaGassmaUserUpdateData;
+    query: (args: GassmaGassmaUserUpdateData) => UpdateManyReturn;
+  }) => UpdateManyReturn;
+  updateManyAndReturn?: (params: {
+    model: "User";
+    operation: "updateManyAndReturn";
+    args: GassmaGassmaUserUpdateData;
+    query: (args: GassmaGassmaUserUpdateData) => GassmaGassmaUserFindResult<undefined, undefined, undefined, GO, O>[];
+  }) => GassmaGassmaUserFindResult<undefined, undefined, undefined, GO, O>[];
+  upsert?: <T extends GassmaGassmaUserUpsertSingleData>(params: {
+    model: "User";
+    operation: "upsert";
+    args: T;
+    query: (args: T) => GassmaGassmaUserFindResult<T["select"], T["include"], T["omit"], GO, O>;
+  }) => GassmaGassmaUserFindResult<T["select"], T["include"], T["omit"], GO, O>;
+  delete?: <T extends GassmaGassmaUserDeleteSingleData>(params: {
+    model: "User";
+    operation: "delete";
+    args: T;
+    query: (args: T) => GassmaGassmaUserFindResult<T["select"], T["include"], T["omit"], GO, O> | null;
+  }) => GassmaGassmaUserFindResult<T["select"], T["include"], T["omit"], GO, O> | null;
+  deleteMany?: (params: {
+    model: "User";
+    operation: "deleteMany";
+    args: GassmaGassmaUserDeleteData;
+    query: (args: GassmaGassmaUserDeleteData) => DeleteManyReturn;
+  }) => DeleteManyReturn;
+  count?: (params: {
+    model: "User";
+    operation: "count";
+    args: GassmaGassmaUserCountData;
+    query: (args: GassmaGassmaUserCountData) => number;
+  }) => number;
+  aggregate?: <T extends GassmaGassmaUserAggregateData>(params: {
+    model: "User";
+    operation: "aggregate";
+    args: T;
+    query: (args: T) => GassmaGassmaUserAggregateResult<T>;
+  }) => GassmaGassmaUserAggregateResult<T>;
+  groupBy?: <T extends GassmaGassmaUserGroupByData>(params: {
+    model: "User";
+    operation: "groupBy";
+    args: T;
+    query: (args: T) => GassmaGassmaUserGroupByResult<T>[];
+  }) => GassmaGassmaUserGroupByResult<T>[];
+  $allOperations?: (params: {
+    model: "User";
+    operation: GassmaGassmaOperationName;
+    args: GassmaGassmaUserQueryArgs;
+    query: (args: GassmaGassmaUserQueryArgs) => unknown;
+  }) => unknown;
+};
+
+export type GassmaGassmaProfileQueryArgs =
+  | GassmaGassmaProfileFindFirstData
+  | GassmaGassmaProfileFindManyData
+  | GassmaGassmaProfileCreateData
+  | GassmaGassmaProfileCreateManyData
+  | GassmaGassmaProfileCreateManyAndReturnData
+  | GassmaGassmaProfileUpdateSingleData
+  | GassmaGassmaProfileUpdateData
+  | GassmaGassmaProfileUpsertSingleData
+  | GassmaGassmaProfileDeleteSingleData
+  | GassmaGassmaProfileDeleteData
+  | GassmaGassmaProfileCountData
+  | GassmaGassmaProfileAggregateData
+  | GassmaGassmaProfileGroupByData;
+
+export type GassmaGassmaProfileQueryHooks<GO extends GassmaGassmaProfileOmit = {}, O = {}> = {
+  findFirst?: <T extends GassmaGassmaProfileFindFirstData>(params: {
+    model: "Profile";
+    operation: "findFirst";
+    args: T;
+    query: (args: T) => GassmaGassmaProfileFindResult<T["select"], T["include"], T["omit"], GO, O> | null;
+  }) => GassmaGassmaProfileFindResult<T["select"], T["include"], T["omit"], GO, O> | null;
+  findFirstOrThrow?: <T extends GassmaGassmaProfileFindFirstData>(params: {
+    model: "Profile";
+    operation: "findFirstOrThrow";
+    args: T;
+    query: (args: T) => GassmaGassmaProfileFindResult<T["select"], T["include"], T["omit"], GO, O>;
+  }) => GassmaGassmaProfileFindResult<T["select"], T["include"], T["omit"], GO, O>;
+  findMany?: <T extends GassmaGassmaProfileFindManyData>(params: {
+    model: "Profile";
+    operation: "findMany";
+    args: T;
+    query: (args: T) => GassmaGassmaProfileFindResult<T["select"], T["include"], T["omit"], GO, O>[];
+  }) => GassmaGassmaProfileFindResult<T["select"], T["include"], T["omit"], GO, O>[];
+  create?: <T extends GassmaGassmaProfileCreateData>(params: {
+    model: "Profile";
+    operation: "create";
+    args: T;
+    query: (args: T) => GassmaGassmaProfileFindResult<T["select"], T["include"], T["omit"], GO, O>;
+  }) => GassmaGassmaProfileFindResult<T["select"], T["include"], T["omit"], GO, O>;
+  createMany?: (params: {
+    model: "Profile";
+    operation: "createMany";
+    args: GassmaGassmaProfileCreateManyData;
+    query: (args: GassmaGassmaProfileCreateManyData) => CreateManyReturn;
+  }) => CreateManyReturn;
+  createManyAndReturn?: <T extends GassmaGassmaProfileCreateManyAndReturnData>(params: {
+    model: "Profile";
+    operation: "createManyAndReturn";
+    args: T;
+    query: (args: T) => GassmaGassmaProfileFindResult<T["select"], T["include"], T["omit"], GO, O>[];
+  }) => GassmaGassmaProfileFindResult<T["select"], T["include"], T["omit"], GO, O>[];
+  update?: <T extends GassmaGassmaProfileUpdateSingleData>(params: {
+    model: "Profile";
+    operation: "update";
+    args: T;
+    query: (args: T) => GassmaGassmaProfileFindResult<T["select"], T["include"], T["omit"], GO, O> | null;
+  }) => GassmaGassmaProfileFindResult<T["select"], T["include"], T["omit"], GO, O> | null;
+  updateMany?: (params: {
+    model: "Profile";
+    operation: "updateMany";
+    args: GassmaGassmaProfileUpdateData;
+    query: (args: GassmaGassmaProfileUpdateData) => UpdateManyReturn;
+  }) => UpdateManyReturn;
+  updateManyAndReturn?: (params: {
+    model: "Profile";
+    operation: "updateManyAndReturn";
+    args: GassmaGassmaProfileUpdateData;
+    query: (args: GassmaGassmaProfileUpdateData) => GassmaGassmaProfileFindResult<undefined, undefined, undefined, GO, O>[];
+  }) => GassmaGassmaProfileFindResult<undefined, undefined, undefined, GO, O>[];
+  upsert?: <T extends GassmaGassmaProfileUpsertSingleData>(params: {
+    model: "Profile";
+    operation: "upsert";
+    args: T;
+    query: (args: T) => GassmaGassmaProfileFindResult<T["select"], T["include"], T["omit"], GO, O>;
+  }) => GassmaGassmaProfileFindResult<T["select"], T["include"], T["omit"], GO, O>;
+  delete?: <T extends GassmaGassmaProfileDeleteSingleData>(params: {
+    model: "Profile";
+    operation: "delete";
+    args: T;
+    query: (args: T) => GassmaGassmaProfileFindResult<T["select"], T["include"], T["omit"], GO, O> | null;
+  }) => GassmaGassmaProfileFindResult<T["select"], T["include"], T["omit"], GO, O> | null;
+  deleteMany?: (params: {
+    model: "Profile";
+    operation: "deleteMany";
+    args: GassmaGassmaProfileDeleteData;
+    query: (args: GassmaGassmaProfileDeleteData) => DeleteManyReturn;
+  }) => DeleteManyReturn;
+  count?: (params: {
+    model: "Profile";
+    operation: "count";
+    args: GassmaGassmaProfileCountData;
+    query: (args: GassmaGassmaProfileCountData) => number;
+  }) => number;
+  aggregate?: <T extends GassmaGassmaProfileAggregateData>(params: {
+    model: "Profile";
+    operation: "aggregate";
+    args: T;
+    query: (args: T) => GassmaGassmaProfileAggregateResult<T>;
+  }) => GassmaGassmaProfileAggregateResult<T>;
+  groupBy?: <T extends GassmaGassmaProfileGroupByData>(params: {
+    model: "Profile";
+    operation: "groupBy";
+    args: T;
+    query: (args: T) => GassmaGassmaProfileGroupByResult<T>[];
+  }) => GassmaGassmaProfileGroupByResult<T>[];
+  $allOperations?: (params: {
+    model: "Profile";
+    operation: GassmaGassmaOperationName;
+    args: GassmaGassmaProfileQueryArgs;
+    query: (args: GassmaGassmaProfileQueryArgs) => unknown;
+  }) => unknown;
+};
+
+export type GassmaGassmaQueryArgs =
+  | GassmaGassmaPostQueryArgs
+  | GassmaGassmaCommentQueryArgs
+  | GassmaGassmaCategoryQueryArgs
+  | GassmaGassmaTagQueryArgs
+  | GassmaGassmaProductQueryArgs
+  | GassmaGassmaOrderQueryArgs
+  | GassmaGassmaOrderItemQueryArgs
+  | GassmaGassmaFormulaCellQueryArgs
+  | GassmaGassmaNotificationQueryArgs
+  | GassmaGassmaOffsetNoteQueryArgs
+  | GassmaGassmaUserQueryArgs
+  | GassmaGassmaProfileQueryArgs;
+
+export type GassmaGassmaAllModelsQueryHooks = {
+  findFirst?: (params: {
+    model: GassmaGassmaModelName;
+    operation: "findFirst";
+    args: GassmaGassmaPostFindFirstData | GassmaGassmaCommentFindFirstData | GassmaGassmaCategoryFindFirstData | GassmaGassmaTagFindFirstData | GassmaGassmaProductFindFirstData | GassmaGassmaOrderFindFirstData | GassmaGassmaOrderItemFindFirstData | GassmaGassmaFormulaCellFindFirstData | GassmaGassmaNotificationFindFirstData | GassmaGassmaOffsetNoteFindFirstData | GassmaGassmaUserFindFirstData | GassmaGassmaProfileFindFirstData;
+    query: (args: GassmaGassmaPostFindFirstData | GassmaGassmaCommentFindFirstData | GassmaGassmaCategoryFindFirstData | GassmaGassmaTagFindFirstData | GassmaGassmaProductFindFirstData | GassmaGassmaOrderFindFirstData | GassmaGassmaOrderItemFindFirstData | GassmaGassmaFormulaCellFindFirstData | GassmaGassmaNotificationFindFirstData | GassmaGassmaOffsetNoteFindFirstData | GassmaGassmaUserFindFirstData | GassmaGassmaProfileFindFirstData) => unknown;
+  }) => unknown;
+  findFirstOrThrow?: (params: {
+    model: GassmaGassmaModelName;
+    operation: "findFirstOrThrow";
+    args: GassmaGassmaPostFindFirstData | GassmaGassmaCommentFindFirstData | GassmaGassmaCategoryFindFirstData | GassmaGassmaTagFindFirstData | GassmaGassmaProductFindFirstData | GassmaGassmaOrderFindFirstData | GassmaGassmaOrderItemFindFirstData | GassmaGassmaFormulaCellFindFirstData | GassmaGassmaNotificationFindFirstData | GassmaGassmaOffsetNoteFindFirstData | GassmaGassmaUserFindFirstData | GassmaGassmaProfileFindFirstData;
+    query: (args: GassmaGassmaPostFindFirstData | GassmaGassmaCommentFindFirstData | GassmaGassmaCategoryFindFirstData | GassmaGassmaTagFindFirstData | GassmaGassmaProductFindFirstData | GassmaGassmaOrderFindFirstData | GassmaGassmaOrderItemFindFirstData | GassmaGassmaFormulaCellFindFirstData | GassmaGassmaNotificationFindFirstData | GassmaGassmaOffsetNoteFindFirstData | GassmaGassmaUserFindFirstData | GassmaGassmaProfileFindFirstData) => unknown;
+  }) => unknown;
+  findMany?: (params: {
+    model: GassmaGassmaModelName;
+    operation: "findMany";
+    args: GassmaGassmaPostFindManyData | GassmaGassmaCommentFindManyData | GassmaGassmaCategoryFindManyData | GassmaGassmaTagFindManyData | GassmaGassmaProductFindManyData | GassmaGassmaOrderFindManyData | GassmaGassmaOrderItemFindManyData | GassmaGassmaFormulaCellFindManyData | GassmaGassmaNotificationFindManyData | GassmaGassmaOffsetNoteFindManyData | GassmaGassmaUserFindManyData | GassmaGassmaProfileFindManyData;
+    query: (args: GassmaGassmaPostFindManyData | GassmaGassmaCommentFindManyData | GassmaGassmaCategoryFindManyData | GassmaGassmaTagFindManyData | GassmaGassmaProductFindManyData | GassmaGassmaOrderFindManyData | GassmaGassmaOrderItemFindManyData | GassmaGassmaFormulaCellFindManyData | GassmaGassmaNotificationFindManyData | GassmaGassmaOffsetNoteFindManyData | GassmaGassmaUserFindManyData | GassmaGassmaProfileFindManyData) => unknown;
+  }) => unknown;
+  create?: (params: {
+    model: GassmaGassmaModelName;
+    operation: "create";
+    args: GassmaGassmaPostCreateData | GassmaGassmaCommentCreateData | GassmaGassmaCategoryCreateData | GassmaGassmaTagCreateData | GassmaGassmaProductCreateData | GassmaGassmaOrderCreateData | GassmaGassmaOrderItemCreateData | GassmaGassmaFormulaCellCreateData | GassmaGassmaNotificationCreateData | GassmaGassmaOffsetNoteCreateData | GassmaGassmaUserCreateData | GassmaGassmaProfileCreateData;
+    query: (args: GassmaGassmaPostCreateData | GassmaGassmaCommentCreateData | GassmaGassmaCategoryCreateData | GassmaGassmaTagCreateData | GassmaGassmaProductCreateData | GassmaGassmaOrderCreateData | GassmaGassmaOrderItemCreateData | GassmaGassmaFormulaCellCreateData | GassmaGassmaNotificationCreateData | GassmaGassmaOffsetNoteCreateData | GassmaGassmaUserCreateData | GassmaGassmaProfileCreateData) => unknown;
+  }) => unknown;
+  createMany?: (params: {
+    model: GassmaGassmaModelName;
+    operation: "createMany";
+    args: GassmaGassmaPostCreateManyData | GassmaGassmaCommentCreateManyData | GassmaGassmaCategoryCreateManyData | GassmaGassmaTagCreateManyData | GassmaGassmaProductCreateManyData | GassmaGassmaOrderCreateManyData | GassmaGassmaOrderItemCreateManyData | GassmaGassmaFormulaCellCreateManyData | GassmaGassmaNotificationCreateManyData | GassmaGassmaOffsetNoteCreateManyData | GassmaGassmaUserCreateManyData | GassmaGassmaProfileCreateManyData;
+    query: (args: GassmaGassmaPostCreateManyData | GassmaGassmaCommentCreateManyData | GassmaGassmaCategoryCreateManyData | GassmaGassmaTagCreateManyData | GassmaGassmaProductCreateManyData | GassmaGassmaOrderCreateManyData | GassmaGassmaOrderItemCreateManyData | GassmaGassmaFormulaCellCreateManyData | GassmaGassmaNotificationCreateManyData | GassmaGassmaOffsetNoteCreateManyData | GassmaGassmaUserCreateManyData | GassmaGassmaProfileCreateManyData) => unknown;
+  }) => unknown;
+  createManyAndReturn?: (params: {
+    model: GassmaGassmaModelName;
+    operation: "createManyAndReturn";
+    args: GassmaGassmaPostCreateManyAndReturnData | GassmaGassmaCommentCreateManyAndReturnData | GassmaGassmaCategoryCreateManyAndReturnData | GassmaGassmaTagCreateManyAndReturnData | GassmaGassmaProductCreateManyAndReturnData | GassmaGassmaOrderCreateManyAndReturnData | GassmaGassmaOrderItemCreateManyAndReturnData | GassmaGassmaFormulaCellCreateManyAndReturnData | GassmaGassmaNotificationCreateManyAndReturnData | GassmaGassmaOffsetNoteCreateManyAndReturnData | GassmaGassmaUserCreateManyAndReturnData | GassmaGassmaProfileCreateManyAndReturnData;
+    query: (args: GassmaGassmaPostCreateManyAndReturnData | GassmaGassmaCommentCreateManyAndReturnData | GassmaGassmaCategoryCreateManyAndReturnData | GassmaGassmaTagCreateManyAndReturnData | GassmaGassmaProductCreateManyAndReturnData | GassmaGassmaOrderCreateManyAndReturnData | GassmaGassmaOrderItemCreateManyAndReturnData | GassmaGassmaFormulaCellCreateManyAndReturnData | GassmaGassmaNotificationCreateManyAndReturnData | GassmaGassmaOffsetNoteCreateManyAndReturnData | GassmaGassmaUserCreateManyAndReturnData | GassmaGassmaProfileCreateManyAndReturnData) => unknown;
+  }) => unknown;
+  update?: (params: {
+    model: GassmaGassmaModelName;
+    operation: "update";
+    args: GassmaGassmaPostUpdateSingleData | GassmaGassmaCommentUpdateSingleData | GassmaGassmaCategoryUpdateSingleData | GassmaGassmaTagUpdateSingleData | GassmaGassmaProductUpdateSingleData | GassmaGassmaOrderUpdateSingleData | GassmaGassmaOrderItemUpdateSingleData | GassmaGassmaFormulaCellUpdateSingleData | GassmaGassmaNotificationUpdateSingleData | GassmaGassmaOffsetNoteUpdateSingleData | GassmaGassmaUserUpdateSingleData | GassmaGassmaProfileUpdateSingleData;
+    query: (args: GassmaGassmaPostUpdateSingleData | GassmaGassmaCommentUpdateSingleData | GassmaGassmaCategoryUpdateSingleData | GassmaGassmaTagUpdateSingleData | GassmaGassmaProductUpdateSingleData | GassmaGassmaOrderUpdateSingleData | GassmaGassmaOrderItemUpdateSingleData | GassmaGassmaFormulaCellUpdateSingleData | GassmaGassmaNotificationUpdateSingleData | GassmaGassmaOffsetNoteUpdateSingleData | GassmaGassmaUserUpdateSingleData | GassmaGassmaProfileUpdateSingleData) => unknown;
+  }) => unknown;
+  updateMany?: (params: {
+    model: GassmaGassmaModelName;
+    operation: "updateMany";
+    args: GassmaGassmaPostUpdateData | GassmaGassmaCommentUpdateData | GassmaGassmaCategoryUpdateData | GassmaGassmaTagUpdateData | GassmaGassmaProductUpdateData | GassmaGassmaOrderUpdateData | GassmaGassmaOrderItemUpdateData | GassmaGassmaFormulaCellUpdateData | GassmaGassmaNotificationUpdateData | GassmaGassmaOffsetNoteUpdateData | GassmaGassmaUserUpdateData | GassmaGassmaProfileUpdateData;
+    query: (args: GassmaGassmaPostUpdateData | GassmaGassmaCommentUpdateData | GassmaGassmaCategoryUpdateData | GassmaGassmaTagUpdateData | GassmaGassmaProductUpdateData | GassmaGassmaOrderUpdateData | GassmaGassmaOrderItemUpdateData | GassmaGassmaFormulaCellUpdateData | GassmaGassmaNotificationUpdateData | GassmaGassmaOffsetNoteUpdateData | GassmaGassmaUserUpdateData | GassmaGassmaProfileUpdateData) => unknown;
+  }) => unknown;
+  updateManyAndReturn?: (params: {
+    model: GassmaGassmaModelName;
+    operation: "updateManyAndReturn";
+    args: GassmaGassmaPostUpdateData | GassmaGassmaCommentUpdateData | GassmaGassmaCategoryUpdateData | GassmaGassmaTagUpdateData | GassmaGassmaProductUpdateData | GassmaGassmaOrderUpdateData | GassmaGassmaOrderItemUpdateData | GassmaGassmaFormulaCellUpdateData | GassmaGassmaNotificationUpdateData | GassmaGassmaOffsetNoteUpdateData | GassmaGassmaUserUpdateData | GassmaGassmaProfileUpdateData;
+    query: (args: GassmaGassmaPostUpdateData | GassmaGassmaCommentUpdateData | GassmaGassmaCategoryUpdateData | GassmaGassmaTagUpdateData | GassmaGassmaProductUpdateData | GassmaGassmaOrderUpdateData | GassmaGassmaOrderItemUpdateData | GassmaGassmaFormulaCellUpdateData | GassmaGassmaNotificationUpdateData | GassmaGassmaOffsetNoteUpdateData | GassmaGassmaUserUpdateData | GassmaGassmaProfileUpdateData) => unknown;
+  }) => unknown;
+  upsert?: (params: {
+    model: GassmaGassmaModelName;
+    operation: "upsert";
+    args: GassmaGassmaPostUpsertSingleData | GassmaGassmaCommentUpsertSingleData | GassmaGassmaCategoryUpsertSingleData | GassmaGassmaTagUpsertSingleData | GassmaGassmaProductUpsertSingleData | GassmaGassmaOrderUpsertSingleData | GassmaGassmaOrderItemUpsertSingleData | GassmaGassmaFormulaCellUpsertSingleData | GassmaGassmaNotificationUpsertSingleData | GassmaGassmaOffsetNoteUpsertSingleData | GassmaGassmaUserUpsertSingleData | GassmaGassmaProfileUpsertSingleData;
+    query: (args: GassmaGassmaPostUpsertSingleData | GassmaGassmaCommentUpsertSingleData | GassmaGassmaCategoryUpsertSingleData | GassmaGassmaTagUpsertSingleData | GassmaGassmaProductUpsertSingleData | GassmaGassmaOrderUpsertSingleData | GassmaGassmaOrderItemUpsertSingleData | GassmaGassmaFormulaCellUpsertSingleData | GassmaGassmaNotificationUpsertSingleData | GassmaGassmaOffsetNoteUpsertSingleData | GassmaGassmaUserUpsertSingleData | GassmaGassmaProfileUpsertSingleData) => unknown;
+  }) => unknown;
+  delete?: (params: {
+    model: GassmaGassmaModelName;
+    operation: "delete";
+    args: GassmaGassmaPostDeleteSingleData | GassmaGassmaCommentDeleteSingleData | GassmaGassmaCategoryDeleteSingleData | GassmaGassmaTagDeleteSingleData | GassmaGassmaProductDeleteSingleData | GassmaGassmaOrderDeleteSingleData | GassmaGassmaOrderItemDeleteSingleData | GassmaGassmaFormulaCellDeleteSingleData | GassmaGassmaNotificationDeleteSingleData | GassmaGassmaOffsetNoteDeleteSingleData | GassmaGassmaUserDeleteSingleData | GassmaGassmaProfileDeleteSingleData;
+    query: (args: GassmaGassmaPostDeleteSingleData | GassmaGassmaCommentDeleteSingleData | GassmaGassmaCategoryDeleteSingleData | GassmaGassmaTagDeleteSingleData | GassmaGassmaProductDeleteSingleData | GassmaGassmaOrderDeleteSingleData | GassmaGassmaOrderItemDeleteSingleData | GassmaGassmaFormulaCellDeleteSingleData | GassmaGassmaNotificationDeleteSingleData | GassmaGassmaOffsetNoteDeleteSingleData | GassmaGassmaUserDeleteSingleData | GassmaGassmaProfileDeleteSingleData) => unknown;
+  }) => unknown;
+  deleteMany?: (params: {
+    model: GassmaGassmaModelName;
+    operation: "deleteMany";
+    args: GassmaGassmaPostDeleteData | GassmaGassmaCommentDeleteData | GassmaGassmaCategoryDeleteData | GassmaGassmaTagDeleteData | GassmaGassmaProductDeleteData | GassmaGassmaOrderDeleteData | GassmaGassmaOrderItemDeleteData | GassmaGassmaFormulaCellDeleteData | GassmaGassmaNotificationDeleteData | GassmaGassmaOffsetNoteDeleteData | GassmaGassmaUserDeleteData | GassmaGassmaProfileDeleteData;
+    query: (args: GassmaGassmaPostDeleteData | GassmaGassmaCommentDeleteData | GassmaGassmaCategoryDeleteData | GassmaGassmaTagDeleteData | GassmaGassmaProductDeleteData | GassmaGassmaOrderDeleteData | GassmaGassmaOrderItemDeleteData | GassmaGassmaFormulaCellDeleteData | GassmaGassmaNotificationDeleteData | GassmaGassmaOffsetNoteDeleteData | GassmaGassmaUserDeleteData | GassmaGassmaProfileDeleteData) => unknown;
+  }) => unknown;
+  count?: (params: {
+    model: GassmaGassmaModelName;
+    operation: "count";
+    args: GassmaGassmaPostCountData | GassmaGassmaCommentCountData | GassmaGassmaCategoryCountData | GassmaGassmaTagCountData | GassmaGassmaProductCountData | GassmaGassmaOrderCountData | GassmaGassmaOrderItemCountData | GassmaGassmaFormulaCellCountData | GassmaGassmaNotificationCountData | GassmaGassmaOffsetNoteCountData | GassmaGassmaUserCountData | GassmaGassmaProfileCountData;
+    query: (args: GassmaGassmaPostCountData | GassmaGassmaCommentCountData | GassmaGassmaCategoryCountData | GassmaGassmaTagCountData | GassmaGassmaProductCountData | GassmaGassmaOrderCountData | GassmaGassmaOrderItemCountData | GassmaGassmaFormulaCellCountData | GassmaGassmaNotificationCountData | GassmaGassmaOffsetNoteCountData | GassmaGassmaUserCountData | GassmaGassmaProfileCountData) => unknown;
+  }) => unknown;
+  aggregate?: (params: {
+    model: GassmaGassmaModelName;
+    operation: "aggregate";
+    args: GassmaGassmaPostAggregateData | GassmaGassmaCommentAggregateData | GassmaGassmaCategoryAggregateData | GassmaGassmaTagAggregateData | GassmaGassmaProductAggregateData | GassmaGassmaOrderAggregateData | GassmaGassmaOrderItemAggregateData | GassmaGassmaFormulaCellAggregateData | GassmaGassmaNotificationAggregateData | GassmaGassmaOffsetNoteAggregateData | GassmaGassmaUserAggregateData | GassmaGassmaProfileAggregateData;
+    query: (args: GassmaGassmaPostAggregateData | GassmaGassmaCommentAggregateData | GassmaGassmaCategoryAggregateData | GassmaGassmaTagAggregateData | GassmaGassmaProductAggregateData | GassmaGassmaOrderAggregateData | GassmaGassmaOrderItemAggregateData | GassmaGassmaFormulaCellAggregateData | GassmaGassmaNotificationAggregateData | GassmaGassmaOffsetNoteAggregateData | GassmaGassmaUserAggregateData | GassmaGassmaProfileAggregateData) => unknown;
+  }) => unknown;
+  groupBy?: (params: {
+    model: GassmaGassmaModelName;
+    operation: "groupBy";
+    args: GassmaGassmaPostGroupByData | GassmaGassmaCommentGroupByData | GassmaGassmaCategoryGroupByData | GassmaGassmaTagGroupByData | GassmaGassmaProductGroupByData | GassmaGassmaOrderGroupByData | GassmaGassmaOrderItemGroupByData | GassmaGassmaFormulaCellGroupByData | GassmaGassmaNotificationGroupByData | GassmaGassmaOffsetNoteGroupByData | GassmaGassmaUserGroupByData | GassmaGassmaProfileGroupByData;
+    query: (args: GassmaGassmaPostGroupByData | GassmaGassmaCommentGroupByData | GassmaGassmaCategoryGroupByData | GassmaGassmaTagGroupByData | GassmaGassmaProductGroupByData | GassmaGassmaOrderGroupByData | GassmaGassmaOrderItemGroupByData | GassmaGassmaFormulaCellGroupByData | GassmaGassmaNotificationGroupByData | GassmaGassmaOffsetNoteGroupByData | GassmaGassmaUserGroupByData | GassmaGassmaProfileGroupByData) => unknown;
+  }) => unknown;
+  $allOperations?: (params: {
+    model: GassmaGassmaModelName;
+    operation: GassmaGassmaOperationName;
+    args: GassmaGassmaQueryArgs;
+    query: (args: GassmaGassmaQueryArgs) => unknown;
+  }) => unknown;
+};
+
+export type GassmaGassmaQueryExtension<O extends GassmaGassmaGlobalOmitConfig = {}> = {
+  "Post"?: GassmaGassmaPostQueryHooks<O extends { "Post": infer UO } ? UO extends GassmaGassmaPostOmit ? UO : {} : {}, O>;
+  "Comment"?: GassmaGassmaCommentQueryHooks<O extends { "Comment": infer UO } ? UO extends GassmaGassmaCommentOmit ? UO : {} : {}, O>;
+  "Category"?: GassmaGassmaCategoryQueryHooks<O extends { "Category": infer UO } ? UO extends GassmaGassmaCategoryOmit ? UO : {} : {}, O>;
+  "Tag"?: GassmaGassmaTagQueryHooks<O extends { "Tag": infer UO } ? UO extends GassmaGassmaTagOmit ? UO : {} : {}, O>;
+  "Product"?: GassmaGassmaProductQueryHooks<O extends { "Product": infer UO } ? UO extends GassmaGassmaProductOmit ? UO : {} : {}, O>;
+  "Order"?: GassmaGassmaOrderQueryHooks<O extends { "Order": infer UO } ? UO extends GassmaGassmaOrderOmit ? UO : {} : {}, O>;
+  "OrderItem"?: GassmaGassmaOrderItemQueryHooks<O extends { "OrderItem": infer UO } ? UO extends GassmaGassmaOrderItemOmit ? UO : {} : {}, O>;
+  "FormulaCell"?: GassmaGassmaFormulaCellQueryHooks<O extends { "FormulaCell": infer UO } ? UO extends GassmaGassmaFormulaCellOmit ? UO : {} : {}, O>;
+  "Notification"?: GassmaGassmaNotificationQueryHooks<O extends { "Notification": infer UO } ? UO extends GassmaGassmaNotificationOmit ? UO : {} : {}, O>;
+  "OffsetNote"?: GassmaGassmaOffsetNoteQueryHooks<O extends { "OffsetNote": infer UO } ? UO extends GassmaGassmaOffsetNoteOmit ? UO : {} : {}, O>;
+  "User"?: GassmaGassmaUserQueryHooks<O extends { "User": infer UO } ? UO extends GassmaGassmaUserOmit ? UO : {} : {}, O>;
+  "Profile"?: GassmaGassmaProfileQueryHooks<O extends { "Profile": infer UO } ? UO extends GassmaGassmaProfileOmit ? UO : {} : {}, O>;
+  $allModels?: GassmaGassmaAllModelsQueryHooks;
+};
+
+export type GassmaGassmaExtension<O extends GassmaGassmaGlobalOmitConfig = {}> = {
+  query?: GassmaGassmaQueryExtension<O>;
+};
+
+export interface GassmaClient<O extends Gassma.StrictGlobalOmit<O, GassmaGassmaGlobalOmitConfig> = {}> extends GassmaGassmaSheet<O> {
+  $extends(extension: GassmaGassmaExtension<O>): GassmaClient<O>;
+}
 export declare class GassmaClient<O extends Gassma.StrictGlobalOmit<O, GassmaGassmaGlobalOmitConfig> = {}> {
   constructor(options?: GassmaGassmaClientOptions<O>);
 }
