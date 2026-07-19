@@ -1,13 +1,15 @@
 {
   "compilerOptions": {
     "target": "es2015",
-    "module": "es2015",
+    "module": "preserve",
     "outDir": "./dist",
     "rootDir": "./src",
     "strict": true,
     "esModuleInterop": true,
-    "moduleResolution": "node",
-    "skipLibCheck": true
+    "moduleResolution": "bundler",
+    "skipLibCheck": true,
+    "lib": ["ES2020", "DOM"],
+    "types": ["google-apps-script"]
   },
   "include": ["./src/**/*"]
 }
