@@ -7,6 +7,7 @@ import { testAggregate } from "./read/testAggregate";
 import { testGroupBy } from "./read/testGroupBy";
 import { testGroupByHaving } from "./read/testGroupByHaving";
 import { testWhereRelation } from "./read/testWhereRelation";
+import { testWhereOneToOneNull } from "./read/testWhereOneToOneNull";
 import { testCursor } from "./read/testCursor";
 import { testGlobalOmit } from "./read/testGlobalOmit";
 import { testFilterConditions } from "./read/testFilterConditions";
@@ -41,6 +42,7 @@ function testRead() {
   testGroupBy();
   testGroupByHaving();
   testWhereRelation();
+  testWhereOneToOneNull();
   testCursor();
   testGlobalOmit();
   testFilterConditions();
