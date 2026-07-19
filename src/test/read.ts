@@ -1,5 +1,6 @@
 import { testFindMany } from "./read/testFindMany";
 import { testFindFirst } from "./read/testFindFirst";
+import { testFindFirstTakeSkipDistinct } from "./read/testFindFirstTakeSkipDistinct";
 import { testCount } from "./read/testCount";
 import { testInclude } from "./read/testInclude";
 import { testIncludeAdvanced } from "./read/testIncludeAdvanced";
@@ -35,6 +36,7 @@ function testRead() {
   resetAllSheets();
   testFindMany();
   testFindFirst();
+  testFindFirstTakeSkipDistinct();
   testCount();
   testInclude();
   testIncludeAdvanced();

@@ -2775,6 +2775,9 @@ export type GassmaGassmaProfileFindData = {
 export type GassmaGassmaPostFindFirstData = {
   where?: GassmaGassmaPostWhereUse;
   orderBy?: GassmaGassmaPostOrderBy | GassmaGassmaPostOrderBy[];
+  take?: number;
+  skip?: number;
+  distinct?: "id" | "title" | "content" | "published" | "viewCount" | "rating" | "authorId" | "categoryId" | "createdAt" | "updatedAt" | ("id" | "title" | "content" | "published" | "viewCount" | "rating" | "authorId" | "categoryId" | "createdAt" | "updatedAt")[];
   include?: GassmaGassmaPostInclude;
   cursor?: Partial<GassmaGassmaPostUse>;
   _count?: GassmaGassmaPostCountValue;
@@ -2783,6 +2786,9 @@ export type GassmaGassmaPostFindFirstData = {
 export type GassmaGassmaCommentFindFirstData = {
   where?: GassmaGassmaCommentWhereUse;
   orderBy?: GassmaGassmaCommentOrderBy | GassmaGassmaCommentOrderBy[];
+  take?: number;
+  skip?: number;
+  distinct?: "id" | "text" | "authorId" | "postId" | "createdAt" | ("id" | "text" | "authorId" | "postId" | "createdAt")[];
   include?: GassmaGassmaCommentInclude;
   cursor?: Partial<GassmaGassmaCommentUse>;
   _count?: GassmaGassmaCommentCountValue;
@@ -2791,6 +2797,9 @@ export type GassmaGassmaCommentFindFirstData = {
 export type GassmaGassmaCategoryFindFirstData = {
   where?: GassmaGassmaCategoryWhereUse;
   orderBy?: GassmaGassmaCategoryOrderBy | GassmaGassmaCategoryOrderBy[];
+  take?: number;
+  skip?: number;
+  distinct?: "id" | "name" | "parentId" | ("id" | "name" | "parentId")[];
   include?: GassmaGassmaCategoryInclude;
   cursor?: Partial<GassmaGassmaCategoryUse>;
   _count?: GassmaGassmaCategoryCountValue;
@@ -2799,6 +2808,9 @@ export type GassmaGassmaCategoryFindFirstData = {
 export type GassmaGassmaTagFindFirstData = {
   where?: GassmaGassmaTagWhereUse;
   orderBy?: GassmaGassmaTagOrderBy | GassmaGassmaTagOrderBy[];
+  take?: number;
+  skip?: number;
+  distinct?: "id" | "name" | ("id" | "name")[];
   include?: GassmaGassmaTagInclude;
   cursor?: Partial<GassmaGassmaTagUse>;
   _count?: GassmaGassmaTagCountValue;
@@ -2807,6 +2819,9 @@ export type GassmaGassmaTagFindFirstData = {
 export type GassmaGassmaProductFindFirstData = {
   where?: GassmaGassmaProductWhereUse;
   orderBy?: GassmaGassmaProductOrderBy | GassmaGassmaProductOrderBy[];
+  take?: number;
+  skip?: number;
+  distinct?: "id" | "name" | "price" | "stock" | "status" | "createdAt" | "updatedAt" | ("id" | "name" | "price" | "stock" | "status" | "createdAt" | "updatedAt")[];
   include?: GassmaGassmaProductInclude;
   cursor?: Partial<GassmaGassmaProductUse>;
   _count?: GassmaGassmaProductCountValue;
@@ -2815,6 +2830,9 @@ export type GassmaGassmaProductFindFirstData = {
 export type GassmaGassmaOrderFindFirstData = {
   where?: GassmaGassmaOrderWhereUse;
   orderBy?: GassmaGassmaOrderOrderBy | GassmaGassmaOrderOrderBy[];
+  take?: number;
+  skip?: number;
+  distinct?: "id" | "userId" | "totalAmount" | "quantity" | "status" | "createdAt" | ("id" | "userId" | "totalAmount" | "quantity" | "status" | "createdAt")[];
   include?: GassmaGassmaOrderInclude;
   cursor?: Partial<GassmaGassmaOrderUse>;
   _count?: GassmaGassmaOrderCountValue;
@@ -2823,6 +2841,9 @@ export type GassmaGassmaOrderFindFirstData = {
 export type GassmaGassmaOrderItemFindFirstData = {
   where?: GassmaGassmaOrderItemWhereUse;
   orderBy?: GassmaGassmaOrderItemOrderBy | GassmaGassmaOrderItemOrderBy[];
+  take?: number;
+  skip?: number;
+  distinct?: "id" | "orderId" | "productId" | "quantity" | "unitPrice" | ("id" | "orderId" | "productId" | "quantity" | "unitPrice")[];
   include?: GassmaGassmaOrderItemInclude;
   cursor?: Partial<GassmaGassmaOrderItemUse>;
   _count?: GassmaGassmaOrderItemCountValue;
@@ -2831,6 +2852,9 @@ export type GassmaGassmaOrderItemFindFirstData = {
 export type GassmaGassmaFormulaCellFindFirstData = {
   where?: GassmaGassmaFormulaCellWhereUse;
   orderBy?: GassmaGassmaFormulaCellOrderBy | GassmaGassmaFormulaCellOrderBy[];
+  take?: number;
+  skip?: number;
+  distinct?: "id" | "label" | "amount" | "total" | ("id" | "label" | "amount" | "total")[];
   include?: GassmaGassmaFormulaCellInclude;
   cursor?: Partial<GassmaGassmaFormulaCellUse>;
   _count?: GassmaGassmaFormulaCellCountValue;
@@ -2839,6 +2863,9 @@ export type GassmaGassmaFormulaCellFindFirstData = {
 export type GassmaGassmaNotificationFindFirstData = {
   where?: GassmaGassmaNotificationWhereUse;
   orderBy?: GassmaGassmaNotificationOrderBy | GassmaGassmaNotificationOrderBy[];
+  take?: number;
+  skip?: number;
+  distinct?: "id" | "userId" | "message" | "isRead" | ("id" | "userId" | "message" | "isRead")[];
   include?: GassmaGassmaNotificationInclude;
   cursor?: Partial<GassmaGassmaNotificationUse>;
   _count?: GassmaGassmaNotificationCountValue;
@@ -2847,6 +2874,9 @@ export type GassmaGassmaNotificationFindFirstData = {
 export type GassmaGassmaOffsetNoteFindFirstData = {
   where?: GassmaGassmaOffsetNoteWhereUse;
   orderBy?: GassmaGassmaOffsetNoteOrderBy | GassmaGassmaOffsetNoteOrderBy[];
+  take?: number;
+  skip?: number;
+  distinct?: "id" | "title" | "value" | ("id" | "title" | "value")[];
   include?: GassmaGassmaOffsetNoteInclude;
   cursor?: Partial<GassmaGassmaOffsetNoteUse>;
   _count?: GassmaGassmaOffsetNoteCountValue;
@@ -2855,6 +2885,9 @@ export type GassmaGassmaOffsetNoteFindFirstData = {
 export type GassmaGassmaUserFindFirstData = {
   where?: GassmaGassmaUserWhereUse;
   orderBy?: GassmaGassmaUserOrderBy | GassmaGassmaUserOrderBy[];
+  take?: number;
+  skip?: number;
+  distinct?: "id" | "email" | "name" | "age" | "isActive" | "role" | "createdAt" | ("id" | "email" | "name" | "age" | "isActive" | "role" | "createdAt")[];
   include?: GassmaGassmaUserInclude;
   cursor?: Partial<GassmaGassmaUserUse>;
   _count?: GassmaGassmaUserCountValue;
@@ -2863,6 +2896,9 @@ export type GassmaGassmaUserFindFirstData = {
 export type GassmaGassmaProfileFindFirstData = {
   where?: GassmaGassmaProfileWhereUse;
   orderBy?: GassmaGassmaProfileOrderBy | GassmaGassmaProfileOrderBy[];
+  take?: number;
+  skip?: number;
+  distinct?: "id" | "bio" | "website" | "userId" | ("id" | "bio" | "website" | "userId")[];
   include?: GassmaGassmaProfileInclude;
   cursor?: Partial<GassmaGassmaProfileUse>;
   _count?: GassmaGassmaProfileCountValue;
