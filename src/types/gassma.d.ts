@@ -561,7 +561,49 @@ declare namespace Gassma {
   class GassmaSkipInArrayError extends Error {
     constructor(path: string);
   }
-  class GassmaUpdateWhereMissingError extends Error {
+  class GassmaMissingArgumentError extends Error {
+    constructor(argumentName: string);
+  }
+  class GassmaFindSelectOmitConflictError extends Error {
     constructor();
+  }
+  class GassmaInValidColumnValueError extends Error {
+    constructor();
+  }
+  class GassmaGroupByHavingDontWriteByError extends Error {
+    constructor();
+  }
+  class GassmaAggregateMaxError extends Error {
+    constructor();
+  }
+  class GassmaAggregateMinError extends GassmaAggregateMaxError {
+    constructor();
+  }
+  class GassmaAggregateSumError extends GassmaAggregateMaxError {
+    constructor();
+  }
+  class GassmaAggregateAvgError extends GassmaAggregateMaxError {
+    constructor();
+  }
+  class GassmaAggregateTypeError extends Error {
+    constructor();
+  }
+  class GassmaAggregateSumTypeError extends Error {
+    constructor();
+  }
+  class GassmaAggregateAvgTypeError extends GassmaAggregateSumTypeError {
+    constructor();
+  }
+  class GassmaRelationNotFoundError extends Error {
+    constructor(relationName: string, sheetName: string);
+  }
+  class GassmaThroughRequiredError extends Error {
+    constructor(relationName: string);
+  }
+  class GassmaIncludeSelectConflictError extends Error {
+    constructor();
+  }
+  class GassmaRelationDuplicateError extends Error {
+    constructor(sheetName: string, field: string, value: unknown);
   }
 }

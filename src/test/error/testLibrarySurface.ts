@@ -6,6 +6,7 @@ function testLibrarySurface() {
   const client = new GassmaClient();
 
   testPublicGlobalsExposed();
+  testAggregateErrorInheritance();
   testErrorInstanceof(client);
   testStrictClientSkipAndUndefined();
   testControllerInstanceof(client);
@@ -23,7 +24,7 @@ function captureError(fn: () => void, label: string): unknown {
 }
 
 function testPublicGlobalsExposed() {
-  // 公開33実体(クラス32 + symbol 1)がライブラリメンバーとして実機参照できること
+  // 公開47実体(クラス46 + symbol 1)がライブラリメンバーとして実機参照できること
   const publicClasses: (readonly [string, unknown])[] = [
     ["GassmaClient", Gassma.GassmaClient],
     ["GassmaController", Gassma.GassmaController],
@@ -83,7 +84,30 @@ function testPublicGlobalsExposed() {
     ["NestedWriteTargetNotFoundError", Gassma.NestedWriteTargetNotFoundError],
     ["GassmaUndefinedValueError", Gassma.GassmaUndefinedValueError],
     ["GassmaSkipInArrayError", Gassma.GassmaSkipInArrayError],
-    ["GassmaUpdateWhereMissingError", Gassma.GassmaUpdateWhereMissingError],
+    ["GassmaMissingArgumentError", Gassma.GassmaMissingArgumentError],
+    [
+      "GassmaFindSelectOmitConflictError",
+      Gassma.GassmaFindSelectOmitConflictError,
+    ],
+    ["GassmaInValidColumnValueError", Gassma.GassmaInValidColumnValueError],
+    [
+      "GassmaGroupByHavingDontWriteByError",
+      Gassma.GassmaGroupByHavingDontWriteByError,
+    ],
+    ["GassmaAggregateMaxError", Gassma.GassmaAggregateMaxError],
+    ["GassmaAggregateMinError", Gassma.GassmaAggregateMinError],
+    ["GassmaAggregateSumError", Gassma.GassmaAggregateSumError],
+    ["GassmaAggregateAvgError", Gassma.GassmaAggregateAvgError],
+    ["GassmaAggregateTypeError", Gassma.GassmaAggregateTypeError],
+    ["GassmaAggregateSumTypeError", Gassma.GassmaAggregateSumTypeError],
+    ["GassmaAggregateAvgTypeError", Gassma.GassmaAggregateAvgTypeError],
+    ["GassmaRelationNotFoundError", Gassma.GassmaRelationNotFoundError],
+    ["GassmaThroughRequiredError", Gassma.GassmaThroughRequiredError],
+    [
+      "GassmaIncludeSelectConflictError",
+      Gassma.GassmaIncludeSelectConflictError,
+    ],
+    ["GassmaRelationDuplicateError", Gassma.GassmaRelationDuplicateError],
   ];
   publicClasses.forEach((entry) => {
     assertEquals(typeof entry[1], "function", `typeof Gassma.${entry[0]}`);
@@ -91,6 +115,36 @@ function testPublicGlobalsExposed() {
 
   // 非関数値(symbol)もライブラリメンバーとして参照できること
   assertEquals(typeof Gassma.skip, "symbol", "typeof Gassma.skip");
+}
+
+function testAggregateErrorInheritance() {
+  // aggregate 系エラーは継承関係を持つ(Min/Sum/Avg は Max を、AvgType は SumType を継承)。
+  // ライブラリ realm 内のクラス同士なので、new したインスタンスの instanceof が継承どおり成立する。
+  // (instanceof Error は realm 境界で偽になり得るため、ここでは Gassma.* 側でのみ検証する)
+  assertEquals(
+    new Gassma.GassmaAggregateMinError() instanceof
+      Gassma.GassmaAggregateMaxError,
+    true,
+    "GassmaAggregateMinError instanceof GassmaAggregateMaxError",
+  );
+  assertEquals(
+    new Gassma.GassmaAggregateSumError() instanceof
+      Gassma.GassmaAggregateMaxError,
+    true,
+    "GassmaAggregateSumError instanceof GassmaAggregateMaxError",
+  );
+  assertEquals(
+    new Gassma.GassmaAggregateAvgError() instanceof
+      Gassma.GassmaAggregateMaxError,
+    true,
+    "GassmaAggregateAvgError instanceof GassmaAggregateMaxError",
+  );
+  assertEquals(
+    new Gassma.GassmaAggregateAvgTypeError() instanceof
+      Gassma.GassmaAggregateSumTypeError,
+    true,
+    "GassmaAggregateAvgTypeError instanceof GassmaAggregateSumTypeError",
+  );
 }
 
 function testErrorInstanceof(client: GassmaClient) {
