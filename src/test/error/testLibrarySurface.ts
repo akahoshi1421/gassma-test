@@ -23,7 +23,7 @@ function captureError(fn: () => void, label: string): unknown {
 }
 
 function testPublicGlobalsExposed() {
-  // 公開32実体(クラス31 + symbol 1)がライブラリメンバーとして実機参照できること
+  // 公開33実体(クラス32 + symbol 1)がライブラリメンバーとして実機参照できること
   const publicClasses: (readonly [string, unknown])[] = [
     ["GassmaClient", Gassma.GassmaClient],
     ["GassmaController", Gassma.GassmaController],
@@ -83,6 +83,7 @@ function testPublicGlobalsExposed() {
     ["NestedWriteTargetNotFoundError", Gassma.NestedWriteTargetNotFoundError],
     ["GassmaUndefinedValueError", Gassma.GassmaUndefinedValueError],
     ["GassmaSkipInArrayError", Gassma.GassmaSkipInArrayError],
+    ["GassmaUpdateWhereMissingError", Gassma.GassmaUpdateWhereMissingError],
   ];
   publicClasses.forEach((entry) => {
     assertEquals(typeof entry[1], "function", `typeof Gassma.${entry[0]}`);

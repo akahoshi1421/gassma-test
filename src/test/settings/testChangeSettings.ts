@@ -16,33 +16,18 @@ import { SPREADSHEET_ID_DB1 } from "../../consts/spreadsheetIds";
 
 function testChangeSettings() {
   const client = new GassmaClient();
-  callChangeSettings(client.OffsetNote, OFFSET_NOTE_START_ROW, "B", "D", "changeSettings string form");
+  client.OffsetNote.changeSettings(OFFSET_NOTE_START_ROW, "B", "D");
 
   testChangeSettingsFindMany(client);
   testChangeSettingsFindManyWhere(client);
   testChangeSettingsFindFirst(client);
+  testChangeSettingsColumnLetterEquivalence(client);
   testChangeSettingsCreate();
   testChangeSettingsUpdate(client);
   testChangeSettingsDelete(client);
   testChangeSettingsOtherSheetsUnaffected(client);
 
   Logger.log("✅ testChangeSettings: all passed");
-}
-
-// 生成型の changeSettings は数値のみ受け付けるため、列アルファベット指定は実行時に存在検証して呼び出す
-function callChangeSettings(
-  controller: unknown,
-  startRowNumber: number,
-  startColumnValue: number | string,
-  endColumnValue: number | string,
-  label: string,
-): void {
-  const record = controller as unknown as Record<string, unknown>;
-  const fn = record["changeSettings"];
-  if (typeof fn !== "function") {
-    throw new Error(`${label}: changeSettings is not a function`);
-  }
-  fn.call(controller, startRowNumber, startColumnValue, endColumnValue);
 }
 
 function resetOffsetNote() {
@@ -93,6 +78,42 @@ function testChangeSettingsFindFirst(client: GassmaClient) {
     assertEquals(note.id, 3, "changeSettings findFirst id");
     assertEquals(note.value, 30, "changeSettings findFirst value");
   }
+}
+
+// 同じ範囲を数値指定と列文字指定("B" = 2)で設定しても同結果になること
+function testChangeSettingsColumnLetterEquivalence(client: GassmaClient) {
+  client.OffsetNote.changeSettings(
+    OFFSET_NOTE_START_ROW,
+    OFFSET_NOTE_START_COLUMN,
+    OFFSET_NOTE_END_COLUMN,
+  );
+  const byNumber = client.OffsetNote.findMany({});
+  assertEquals(byNumber.length, 5, "changeSettings number form count");
+  assertDeepEquals(
+    byNumber[0],
+    { id: 1, title: "alpha", value: 10 },
+    "changeSettings number form first record",
+  );
+
+  client.OffsetNote.changeSettings(OFFSET_NOTE_START_ROW, "B", "D");
+  const byLetter = client.OffsetNote.findMany({});
+  assertDeepEquals(
+    byLetter,
+    byNumber,
+    "changeSettings letter form equals number form",
+  );
+
+  client.OffsetNote.changeSettings(
+    OFFSET_NOTE_START_ROW,
+    OFFSET_NOTE_START_COLUMN,
+    "D",
+  );
+  const byMixed = client.OffsetNote.findMany({});
+  assertDeepEquals(
+    byMixed,
+    byNumber,
+    "changeSettings mixed number/letter equals number form",
+  );
 }
 
 function testChangeSettingsCreate() {
