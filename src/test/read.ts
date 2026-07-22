@@ -31,6 +31,7 @@ import { testDistinctPipeline } from "./read/testDistinctPipeline";
 import { testCountZeroRelation } from "./read/testCountZeroRelation";
 import { testIncludeNull } from "./read/testIncludeNull";
 import { testDateFilter } from "./read/testDateFilter";
+import { testDateKeyRelation } from "./read/testDateKeyRelation";
 import { resetAllSheets } from "../reset/resetAllSheets";
 
 function testRead() {
@@ -68,6 +69,7 @@ function testRead() {
   testCountZeroRelation();
   testIncludeNull();
   testDateFilter();
+  testDateKeyRelation();
 
   Logger.log("🎉 All read tests passed!");
 }

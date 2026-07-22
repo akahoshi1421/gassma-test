@@ -3,6 +3,7 @@ import { testUpdateMany } from "./update/testUpdateMany";
 import { testUpdateInclude } from "./update/testUpdateInclude";
 import { testNumberOperation } from "./update/testNumberOperation";
 import { testOnUpdate } from "./update/testOnUpdate";
+import { testOnUpdateDateKey } from "./update/testOnUpdateDateKey";
 import { testNestedUpdate } from "./update/testNestedUpdate";
 import { testNestedOneToOneNonFk } from "./update/testNestedOneToOneNonFk";
 import { testUpdateFirstMatch } from "./update/testUpdateFirstMatch";
@@ -15,6 +16,7 @@ function testUpdateAll() {
   testUpdateInclude();
   testNumberOperation();
   testOnUpdate();
+  testOnUpdateDateKey();
   testNestedUpdate();
   testNestedOneToOneNonFk();
   testUpdateFirstMatch();

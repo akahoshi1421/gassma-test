@@ -1,0 +1,26 @@
+// ===== Date 時刻一致比較テスト用（groupBy 同時刻集約 / DateTime FK の onUpdate 参照アクション） =====
+
+/// 複数センサーが同時刻にまとめて計測値を送るバッチ収集を模したモデル。
+/// recordedAt が同時刻（別インスタンス）の行を複数含み、groupBy の時刻一致集約を検証する。
+model SensorReading {
+  id         Int      @id @default(autoincrement())
+  sensorName String
+  recordedAt DateTime
+}
+
+/// 予約枠。slotAt（DateTime）をユニークキーとして Reservation から参照される。
+model TimeSlot {
+  id           Int           @id @default(autoincrement())
+  label        String
+  slotAt       DateTime      @unique
+  reservations Reservation[]
+}
+
+/// 予約枠に紐づく予約。slotAt が TimeSlot.slotAt を参照する DateTime FK。
+/// onUpdate: Cascade が同時刻の update では発火せず、異なる時刻への update では発火することを検証する。
+model Reservation {
+  id        Int      @id @default(autoincrement())
+  guestName String
+  slotAt    DateTime
+  timeSlot  TimeSlot @relation(fields: [slotAt], references: [slotAt], onDelete: Cascade, onUpdate: Cascade)
+}

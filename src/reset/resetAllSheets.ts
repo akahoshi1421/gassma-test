@@ -11,6 +11,9 @@ import { orderData } from "../consts/orderData";
 import { orderItemData } from "../consts/orderItemData";
 import { auditLogData } from "../consts/auditLogData";
 import { notificationData } from "../consts/notificationData";
+import { sensorReadingData } from "../consts/sensorReadingData";
+import { timeSlotData } from "../consts/timeSlotData";
+import { reservationData } from "../consts/reservationData";
 
 const sheetDataMap: [string, unknown[][]][] = [
   ["User", userData],
@@ -25,6 +28,9 @@ const sheetDataMap: [string, unknown[][]][] = [
   ["OrderItem", orderItemData],
   ["AuditLog", auditLogData],
   ["notifications", notificationData],
+  ["SensorReading", sensorReadingData],
+  ["TimeSlot", timeSlotData],
+  ["Reservation", reservationData],
 ];
 
 function resetAllSheets() {

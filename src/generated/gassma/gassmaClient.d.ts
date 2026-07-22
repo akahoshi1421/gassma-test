@@ -229,6 +229,9 @@ export type GassmaGassmaGlobalOmitConfig = {
   "Comment"?: GassmaGassmaCommentOmit;
   "Category"?: GassmaGassmaCategoryOmit;
   "Tag"?: GassmaGassmaTagOmit;
+  "SensorReading"?: GassmaGassmaSensorReadingOmit;
+  "TimeSlot"?: GassmaGassmaTimeSlotOmit;
+  "Reservation"?: GassmaGassmaReservationOmit;
   "Product"?: GassmaGassmaProductOmit;
   "Order"?: GassmaGassmaOrderOmit;
   "OrderItem"?: GassmaGassmaOrderItemOmit;
@@ -273,6 +276,9 @@ export type GassmaGassmaIgnoreConfig = {
   "Comment"?: "id" | "text" | "authorId" | "postId" | "createdAt" | ("id" | "text" | "authorId" | "postId" | "createdAt")[];
   "Category"?: "id" | "name" | "parentId" | ("id" | "name" | "parentId")[];
   "Tag"?: "id" | "name" | ("id" | "name")[];
+  "SensorReading"?: "id" | "sensorName" | "recordedAt" | ("id" | "sensorName" | "recordedAt")[];
+  "TimeSlot"?: "id" | "label" | "slotAt" | ("id" | "label" | "slotAt")[];
+  "Reservation"?: "id" | "guestName" | "slotAt" | ("id" | "guestName" | "slotAt")[];
   "Product"?: "id" | "name" | "price" | "stock" | "status" | "createdAt" | "updatedAt" | ("id" | "name" | "price" | "stock" | "status" | "createdAt" | "updatedAt")[];
   "Order"?: "id" | "userId" | "totalAmount" | "quantity" | "status" | "createdAt" | ("id" | "userId" | "totalAmount" | "quantity" | "status" | "createdAt")[];
   "OrderItem"?: "id" | "orderId" | "productId" | "quantity" | "unitPrice" | ("id" | "orderId" | "productId" | "quantity" | "unitPrice")[];
@@ -283,7 +289,7 @@ export type GassmaGassmaIgnoreConfig = {
   "Profile"?: "id" | "bio" | "website" | "userId" | ("id" | "bio" | "website" | "userId")[];
 };
 
-export type GassmaGassmaIgnoreSheetsConfig = "Post" | "Comment" | "Category" | "Tag" | "Product" | "Order" | "OrderItem" | "FormulaCell" | "Notification" | "OffsetNote" | "User" | "Profile" | ("Post" | "Comment" | "Category" | "Tag" | "Product" | "Order" | "OrderItem" | "FormulaCell" | "Notification" | "OffsetNote" | "User" | "Profile")[];
+export type GassmaGassmaIgnoreSheetsConfig = "Post" | "Comment" | "Category" | "Tag" | "SensorReading" | "TimeSlot" | "Reservation" | "Product" | "Order" | "OrderItem" | "FormulaCell" | "Notification" | "OffsetNote" | "User" | "Profile" | ("Post" | "Comment" | "Category" | "Tag" | "SensorReading" | "TimeSlot" | "Reservation" | "Product" | "Order" | "OrderItem" | "FormulaCell" | "Notification" | "OffsetNote" | "User" | "Profile")[];
 
 export type GassmaGassmaMapConfig = {
   "Post"?: {
@@ -313,6 +319,21 @@ export type GassmaGassmaMapConfig = {
   "Tag"?: {
       "id"?: string;
       "name"?: string;
+  };
+  "SensorReading"?: {
+      "id"?: string;
+      "sensorName"?: string;
+      "recordedAt"?: string;
+  };
+  "TimeSlot"?: {
+      "id"?: string;
+      "label"?: string;
+      "slotAt"?: string;
+  };
+  "Reservation"?: {
+      "id"?: string;
+      "guestName"?: string;
+      "slotAt"?: string;
   };
   "Product"?: {
       "id"?: string;
@@ -377,6 +398,9 @@ export type GassmaGassmaMapSheetsConfig = {
   "Comment"?: string;
   "Category"?: string;
   "Tag"?: string;
+  "SensorReading"?: string;
+  "TimeSlot"?: string;
+  "Reservation"?: string;
   "Product"?: string;
   "Order"?: string;
   "OrderItem"?: string;
@@ -392,6 +416,9 @@ export type GassmaGassmaAutoincrementConfig = {
   "Comment"?: "id" | "text" | "authorId" | "postId" | "createdAt" | ("id" | "text" | "authorId" | "postId" | "createdAt")[];
   "Category"?: "id" | "name" | "parentId" | ("id" | "name" | "parentId")[];
   "Tag"?: "id" | "name" | ("id" | "name")[];
+  "SensorReading"?: "id" | "sensorName" | "recordedAt" | ("id" | "sensorName" | "recordedAt")[];
+  "TimeSlot"?: "id" | "label" | "slotAt" | ("id" | "label" | "slotAt")[];
+  "Reservation"?: "id" | "guestName" | "slotAt" | ("id" | "guestName" | "slotAt")[];
   "Product"?: "id" | "name" | "price" | "stock" | "status" | "createdAt" | "updatedAt" | ("id" | "name" | "price" | "stock" | "status" | "createdAt" | "updatedAt")[];
   "Order"?: "id" | "userId" | "totalAmount" | "quantity" | "status" | "createdAt" | ("id" | "userId" | "totalAmount" | "quantity" | "status" | "createdAt")[];
   "OrderItem"?: "id" | "orderId" | "productId" | "quantity" | "unitPrice" | ("id" | "orderId" | "productId" | "quantity" | "unitPrice")[];
@@ -418,6 +445,9 @@ export type GassmaGassmaSheet<O extends GassmaGassmaGlobalOmitConfig = {}> = {
   "Comment": GassmaGassmaCommentController<O extends { "Comment": infer UO } ? UO extends GassmaGassmaCommentOmit ? UO : {} : {}, O>;
   "Category": GassmaGassmaCategoryController<O extends { "Category": infer UO } ? UO extends GassmaGassmaCategoryOmit ? UO : {} : {}, O>;
   "Tag": GassmaGassmaTagController<O extends { "Tag": infer UO } ? UO extends GassmaGassmaTagOmit ? UO : {} : {}, O>;
+  "SensorReading": GassmaGassmaSensorReadingController<O extends { "SensorReading": infer UO } ? UO extends GassmaGassmaSensorReadingOmit ? UO : {} : {}, O>;
+  "TimeSlot": GassmaGassmaTimeSlotController<O extends { "TimeSlot": infer UO } ? UO extends GassmaGassmaTimeSlotOmit ? UO : {} : {}, O>;
+  "Reservation": GassmaGassmaReservationController<O extends { "Reservation": infer UO } ? UO extends GassmaGassmaReservationOmit ? UO : {} : {}, O>;
   "Product": GassmaGassmaProductController<O extends { "Product": infer UO } ? UO extends GassmaGassmaProductOmit ? UO : {} : {}, O>;
   "Order": GassmaGassmaOrderController<O extends { "Order": infer UO } ? UO extends GassmaGassmaOrderOmit ? UO : {} : {}, O>;
   "OrderItem": GassmaGassmaOrderItemController<O extends { "OrderItem": infer UO } ? UO extends GassmaGassmaOrderItemOmit ? UO : {} : {}, O>;
@@ -530,6 +560,84 @@ export declare class GassmaGassmaTagController<GO extends GassmaGassmaTagOmit = 
   aggregate<T extends GassmaGassmaTagAggregateData>(aggregateData: T): GassmaGassmaTagAggregateResult<T>;
   count(coutData: GassmaGassmaTagCountData): number;
   groupBy<T extends GassmaGassmaTagGroupByData>(groupByData: T): GassmaGassmaTagGroupByResult<T>[];
+}
+
+export declare class GassmaGassmaSensorReadingController<GO extends GassmaGassmaSensorReadingOmit = {}, O = {}, CMap = {}> {
+  constructor(sheetName: string, id?: string);
+
+  readonly fields: Record<string, Gassma.FieldRef>;
+  changeSettings(
+    startRowNumber: number,
+    startColumnValue: number | string,
+    endColumnValue: number | string
+  ): void;
+  createMany(createdData: GassmaGassmaSensorReadingCreateManyData): CreateManyReturn;
+  createManyAndReturn<T extends GassmaGassmaSensorReadingCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "SensorReading">>>(createdData: T): GassmaGassmaSensorReadingFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  create<T extends GassmaGassmaSensorReadingCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "SensorReading">>>(createdData: T): GassmaGassmaSensorReadingFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  findFirst<T extends GassmaGassmaSensorReadingFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "SensorReading">>>(findData: T): GassmaGassmaSensorReadingFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  findFirstOrThrow<T extends GassmaGassmaSensorReadingFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "SensorReading">>>(findData: T): GassmaGassmaSensorReadingFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  findMany<T extends GassmaGassmaSensorReadingFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "SensorReading">>>(findData: T): GassmaGassmaSensorReadingFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  update<T extends GassmaGassmaSensorReadingUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "SensorReading">>>(updateData: T): GassmaGassmaSensorReadingFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  updateMany(updateData: GassmaGassmaSensorReadingUpdateData): UpdateManyReturn;
+  updateManyAndReturn(updateData: GassmaGassmaSensorReadingUpdateData): GassmaGassmaSensorReadingFindResult<undefined, undefined, undefined, GO, O, CMap>[];
+  upsert<T extends GassmaGassmaSensorReadingUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "SensorReading">>>(upsertData: T): GassmaGassmaSensorReadingFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  delete<T extends GassmaGassmaSensorReadingDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "SensorReading">>>(deleteData: T): GassmaGassmaSensorReadingFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  deleteMany(deleteData: GassmaGassmaSensorReadingDeleteData): DeleteManyReturn;
+  aggregate<T extends GassmaGassmaSensorReadingAggregateData>(aggregateData: T): GassmaGassmaSensorReadingAggregateResult<T>;
+  count(coutData: GassmaGassmaSensorReadingCountData): number;
+  groupBy<T extends GassmaGassmaSensorReadingGroupByData>(groupByData: T): GassmaGassmaSensorReadingGroupByResult<T>[];
+}
+
+export declare class GassmaGassmaTimeSlotController<GO extends GassmaGassmaTimeSlotOmit = {}, O = {}, CMap = {}> {
+  constructor(sheetName: string, id?: string);
+
+  readonly fields: Record<string, Gassma.FieldRef>;
+  changeSettings(
+    startRowNumber: number,
+    startColumnValue: number | string,
+    endColumnValue: number | string
+  ): void;
+  createMany(createdData: GassmaGassmaTimeSlotCreateManyData): CreateManyReturn;
+  createManyAndReturn<T extends GassmaGassmaTimeSlotCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "TimeSlot">>>(createdData: T): GassmaGassmaTimeSlotFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  create<T extends GassmaGassmaTimeSlotCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "TimeSlot">>>(createdData: T): GassmaGassmaTimeSlotFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  findFirst<T extends GassmaGassmaTimeSlotFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "TimeSlot">>>(findData: T): GassmaGassmaTimeSlotFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  findFirstOrThrow<T extends GassmaGassmaTimeSlotFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "TimeSlot">>>(findData: T): GassmaGassmaTimeSlotFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  findMany<T extends GassmaGassmaTimeSlotFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "TimeSlot">>>(findData: T): GassmaGassmaTimeSlotFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  update<T extends GassmaGassmaTimeSlotUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "TimeSlot">>>(updateData: T): GassmaGassmaTimeSlotFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  updateMany(updateData: GassmaGassmaTimeSlotUpdateData): UpdateManyReturn;
+  updateManyAndReturn(updateData: GassmaGassmaTimeSlotUpdateData): GassmaGassmaTimeSlotFindResult<undefined, undefined, undefined, GO, O, CMap>[];
+  upsert<T extends GassmaGassmaTimeSlotUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "TimeSlot">>>(upsertData: T): GassmaGassmaTimeSlotFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  delete<T extends GassmaGassmaTimeSlotDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "TimeSlot">>>(deleteData: T): GassmaGassmaTimeSlotFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  deleteMany(deleteData: GassmaGassmaTimeSlotDeleteData): DeleteManyReturn;
+  aggregate<T extends GassmaGassmaTimeSlotAggregateData>(aggregateData: T): GassmaGassmaTimeSlotAggregateResult<T>;
+  count(coutData: GassmaGassmaTimeSlotCountData): number;
+  groupBy<T extends GassmaGassmaTimeSlotGroupByData>(groupByData: T): GassmaGassmaTimeSlotGroupByResult<T>[];
+}
+
+export declare class GassmaGassmaReservationController<GO extends GassmaGassmaReservationOmit = {}, O = {}, CMap = {}> {
+  constructor(sheetName: string, id?: string);
+
+  readonly fields: Record<string, Gassma.FieldRef>;
+  changeSettings(
+    startRowNumber: number,
+    startColumnValue: number | string,
+    endColumnValue: number | string
+  ): void;
+  createMany(createdData: GassmaGassmaReservationCreateManyData): CreateManyReturn;
+  createManyAndReturn<T extends GassmaGassmaReservationCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Reservation">>>(createdData: T): GassmaGassmaReservationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  create<T extends GassmaGassmaReservationCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "Reservation">>>(createdData: T): GassmaGassmaReservationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  findFirst<T extends GassmaGassmaReservationFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Reservation">>>(findData: T): GassmaGassmaReservationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  findFirstOrThrow<T extends GassmaGassmaReservationFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Reservation">>>(findData: T): GassmaGassmaReservationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  findMany<T extends GassmaGassmaReservationFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "Reservation">>>(findData: T): GassmaGassmaReservationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  update<T extends GassmaGassmaReservationUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Reservation">>>(updateData: T): GassmaGassmaReservationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  updateMany(updateData: GassmaGassmaReservationUpdateData): UpdateManyReturn;
+  updateManyAndReturn(updateData: GassmaGassmaReservationUpdateData): GassmaGassmaReservationFindResult<undefined, undefined, undefined, GO, O, CMap>[];
+  upsert<T extends GassmaGassmaReservationUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Reservation">>>(upsertData: T): GassmaGassmaReservationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  delete<T extends GassmaGassmaReservationDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Reservation">>>(deleteData: T): GassmaGassmaReservationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  deleteMany(deleteData: GassmaGassmaReservationDeleteData): DeleteManyReturn;
+  aggregate<T extends GassmaGassmaReservationAggregateData>(aggregateData: T): GassmaGassmaReservationAggregateResult<T>;
+  count(coutData: GassmaGassmaReservationCountData): number;
+  groupBy<T extends GassmaGassmaReservationGroupByData>(groupByData: T): GassmaGassmaReservationGroupByResult<T>[];
 }
 
 export declare class GassmaGassmaProductController<GO extends GassmaGassmaProductOmit = {}, O = {}, CMap = {}> {
@@ -780,6 +888,24 @@ export type GassmaGassmaTagUse = {
   "name": string;
 };
 
+export type GassmaGassmaSensorReadingUse = {
+  "id"?: number;
+  "sensorName": string;
+  "recordedAt": Date;
+};
+
+export type GassmaGassmaTimeSlotUse = {
+  "id"?: number;
+  "label": string;
+  "slotAt": Date;
+};
+
+export type GassmaGassmaReservationUse = {
+  "id"?: number;
+  "guestName": string;
+  "slotAt": Date;
+};
+
 export type GassmaGassmaProductUse = {
   "id"?: number;
   "name": string;
@@ -872,6 +998,23 @@ export type GassmaGassmaTagCreateData = {
   include?: GassmaGassmaTagInclude;
 } & ({ select?: GassmaGassmaTagSelect; omit?: never } | { select?: never; omit?: GassmaGassmaTagOmit });
 
+export type GassmaGassmaSensorReadingCreateData = {
+  data: GassmaGassmaSensorReadingUse;
+  include?: GassmaGassmaSensorReadingInclude;
+} & ({ select?: GassmaGassmaSensorReadingSelect; omit?: never } | { select?: never; omit?: GassmaGassmaSensorReadingOmit });
+
+export type GassmaGassmaTimeSlotCreateData = {
+  data: GassmaGassmaTimeSlotUse & {
+    "reservations"?: { create?: Omit<GassmaGassmaReservationUse, "slotAt"> | Omit<GassmaGassmaReservationUse, "slotAt">[]; createMany?: { data: Omit<GassmaGassmaReservationUse, "slotAt">[] }; connect?: GassmaGassmaReservationWhereUse | GassmaGassmaReservationWhereUse[]; connectOrCreate?: { where: GassmaGassmaReservationWhereUse; create: Omit<GassmaGassmaReservationUse, "slotAt"> } | { where: GassmaGassmaReservationWhereUse; create: Omit<GassmaGassmaReservationUse, "slotAt"> }[] };
+  };
+  include?: GassmaGassmaTimeSlotInclude;
+} & ({ select?: GassmaGassmaTimeSlotSelect; omit?: never } | { select?: never; omit?: GassmaGassmaTimeSlotOmit });
+
+export type GassmaGassmaReservationCreateData = {
+  data: Omit<GassmaGassmaReservationUse, "slotAt"> & (Pick<GassmaGassmaReservationUse, "slotAt"> | { "timeSlot": { create?: GassmaGassmaTimeSlotUse; connect?: GassmaGassmaTimeSlotWhereUse; connectOrCreate?: { where: GassmaGassmaTimeSlotWhereUse; create: GassmaGassmaTimeSlotUse } } });
+  include?: GassmaGassmaReservationInclude;
+} & ({ select?: GassmaGassmaReservationSelect; omit?: never } | { select?: never; omit?: GassmaGassmaReservationOmit });
+
 export type GassmaGassmaProductCreateData = {
   data: GassmaGassmaProductUse & {
     "orderItems"?: { create?: Omit<GassmaGassmaOrderItemUse, "productId"> | Omit<GassmaGassmaOrderItemUse, "productId">[]; createMany?: { data: Omit<GassmaGassmaOrderItemUse, "productId">[] }; connect?: GassmaGassmaOrderItemWhereUse | GassmaGassmaOrderItemWhereUse[]; connectOrCreate?: { where: GassmaGassmaOrderItemWhereUse; create: Omit<GassmaGassmaOrderItemUse, "productId"> } | { where: GassmaGassmaOrderItemWhereUse; create: Omit<GassmaGassmaOrderItemUse, "productId"> }[] };
@@ -937,6 +1080,18 @@ export type GassmaGassmaTagCreateManyData = {
   data: GassmaGassmaTagUse[];
 };
 
+export type GassmaGassmaSensorReadingCreateManyData = {
+  data: GassmaGassmaSensorReadingUse[];
+};
+
+export type GassmaGassmaTimeSlotCreateManyData = {
+  data: GassmaGassmaTimeSlotUse[];
+};
+
+export type GassmaGassmaReservationCreateManyData = {
+  data: GassmaGassmaReservationUse[];
+};
+
 export type GassmaGassmaProductCreateManyData = {
   data: GassmaGassmaProductUse[];
 };
@@ -988,6 +1143,21 @@ export type GassmaGassmaTagCreateManyAndReturnData = {
   data: GassmaGassmaTagUse[];
   include?: GassmaGassmaTagInclude;
 } & ({ select?: GassmaGassmaTagSelect; omit?: never } | { select?: never; omit?: GassmaGassmaTagOmit });
+
+export type GassmaGassmaSensorReadingCreateManyAndReturnData = {
+  data: GassmaGassmaSensorReadingUse[];
+  include?: GassmaGassmaSensorReadingInclude;
+} & ({ select?: GassmaGassmaSensorReadingSelect; omit?: never } | { select?: never; omit?: GassmaGassmaSensorReadingOmit });
+
+export type GassmaGassmaTimeSlotCreateManyAndReturnData = {
+  data: GassmaGassmaTimeSlotUse[];
+  include?: GassmaGassmaTimeSlotInclude;
+} & ({ select?: GassmaGassmaTimeSlotSelect; omit?: never } | { select?: never; omit?: GassmaGassmaTimeSlotOmit });
+
+export type GassmaGassmaReservationCreateManyAndReturnData = {
+  data: GassmaGassmaReservationUse[];
+  include?: GassmaGassmaReservationInclude;
+} & ({ select?: GassmaGassmaReservationSelect; omit?: never } | { select?: never; omit?: GassmaGassmaReservationOmit });
 
 export type GassmaGassmaProductCreateManyAndReturnData = {
   data: GassmaGassmaProductUse[];
@@ -1323,6 +1493,141 @@ export type GassmaGassmaTagnameFilterConditions = {
   lte?: string | Gassma.FieldRef;
   gt?: string | Gassma.FieldRef;
   gte?: string | Gassma.FieldRef;
+  contains?: string | Gassma.FieldRef;
+  startsWith?: string | Gassma.FieldRef;
+  endsWith?: string | Gassma.FieldRef;
+  mode?: "default" | "insensitive";
+};
+
+export type GassmaGassmaSensorReadingidFilterConditions = {
+  equals?: number | Gassma.FieldRef;
+  not?: number;
+  in?: number[];
+  notIn?: number[];
+  lt?: number | Gassma.FieldRef;
+  lte?: number | Gassma.FieldRef;
+  gt?: number | Gassma.FieldRef;
+  gte?: number | Gassma.FieldRef;
+  contains?: string | Gassma.FieldRef;
+  startsWith?: string | Gassma.FieldRef;
+  endsWith?: string | Gassma.FieldRef;
+  mode?: "default" | "insensitive";
+};
+
+export type GassmaGassmaSensorReadingsensorNameFilterConditions = {
+  equals?: string | Gassma.FieldRef;
+  not?: string;
+  in?: string[];
+  notIn?: string[];
+  lt?: string | Gassma.FieldRef;
+  lte?: string | Gassma.FieldRef;
+  gt?: string | Gassma.FieldRef;
+  gte?: string | Gassma.FieldRef;
+  contains?: string | Gassma.FieldRef;
+  startsWith?: string | Gassma.FieldRef;
+  endsWith?: string | Gassma.FieldRef;
+  mode?: "default" | "insensitive";
+};
+
+export type GassmaGassmaSensorReadingrecordedAtFilterConditions = {
+  equals?: Date | Gassma.FieldRef;
+  not?: Date;
+  in?: Date[];
+  notIn?: Date[];
+  lt?: Date | Gassma.FieldRef;
+  lte?: Date | Gassma.FieldRef;
+  gt?: Date | Gassma.FieldRef;
+  gte?: Date | Gassma.FieldRef;
+  contains?: string | Gassma.FieldRef;
+  startsWith?: string | Gassma.FieldRef;
+  endsWith?: string | Gassma.FieldRef;
+  mode?: "default" | "insensitive";
+};
+
+export type GassmaGassmaTimeSlotidFilterConditions = {
+  equals?: number | Gassma.FieldRef;
+  not?: number;
+  in?: number[];
+  notIn?: number[];
+  lt?: number | Gassma.FieldRef;
+  lte?: number | Gassma.FieldRef;
+  gt?: number | Gassma.FieldRef;
+  gte?: number | Gassma.FieldRef;
+  contains?: string | Gassma.FieldRef;
+  startsWith?: string | Gassma.FieldRef;
+  endsWith?: string | Gassma.FieldRef;
+  mode?: "default" | "insensitive";
+};
+
+export type GassmaGassmaTimeSlotlabelFilterConditions = {
+  equals?: string | Gassma.FieldRef;
+  not?: string;
+  in?: string[];
+  notIn?: string[];
+  lt?: string | Gassma.FieldRef;
+  lte?: string | Gassma.FieldRef;
+  gt?: string | Gassma.FieldRef;
+  gte?: string | Gassma.FieldRef;
+  contains?: string | Gassma.FieldRef;
+  startsWith?: string | Gassma.FieldRef;
+  endsWith?: string | Gassma.FieldRef;
+  mode?: "default" | "insensitive";
+};
+
+export type GassmaGassmaTimeSlotslotAtFilterConditions = {
+  equals?: Date | Gassma.FieldRef;
+  not?: Date;
+  in?: Date[];
+  notIn?: Date[];
+  lt?: Date | Gassma.FieldRef;
+  lte?: Date | Gassma.FieldRef;
+  gt?: Date | Gassma.FieldRef;
+  gte?: Date | Gassma.FieldRef;
+  contains?: string | Gassma.FieldRef;
+  startsWith?: string | Gassma.FieldRef;
+  endsWith?: string | Gassma.FieldRef;
+  mode?: "default" | "insensitive";
+};
+
+export type GassmaGassmaReservationidFilterConditions = {
+  equals?: number | Gassma.FieldRef;
+  not?: number;
+  in?: number[];
+  notIn?: number[];
+  lt?: number | Gassma.FieldRef;
+  lte?: number | Gassma.FieldRef;
+  gt?: number | Gassma.FieldRef;
+  gte?: number | Gassma.FieldRef;
+  contains?: string | Gassma.FieldRef;
+  startsWith?: string | Gassma.FieldRef;
+  endsWith?: string | Gassma.FieldRef;
+  mode?: "default" | "insensitive";
+};
+
+export type GassmaGassmaReservationguestNameFilterConditions = {
+  equals?: string | Gassma.FieldRef;
+  not?: string;
+  in?: string[];
+  notIn?: string[];
+  lt?: string | Gassma.FieldRef;
+  lte?: string | Gassma.FieldRef;
+  gt?: string | Gassma.FieldRef;
+  gte?: string | Gassma.FieldRef;
+  contains?: string | Gassma.FieldRef;
+  startsWith?: string | Gassma.FieldRef;
+  endsWith?: string | Gassma.FieldRef;
+  mode?: "default" | "insensitive";
+};
+
+export type GassmaGassmaReservationslotAtFilterConditions = {
+  equals?: Date | Gassma.FieldRef;
+  not?: Date;
+  in?: Date[];
+  notIn?: Date[];
+  lt?: Date | Gassma.FieldRef;
+  lte?: Date | Gassma.FieldRef;
+  gt?: Date | Gassma.FieldRef;
+  gte?: Date | Gassma.FieldRef;
   contains?: string | Gassma.FieldRef;
   startsWith?: string | Gassma.FieldRef;
   endsWith?: string | Gassma.FieldRef;
@@ -1987,6 +2292,38 @@ export type GassmaGassmaTagWhereUse = {
   NOT?: GassmaGassmaTagWhereUse[] | GassmaGassmaTagWhereUse;
 };
 
+export type GassmaGassmaSensorReadingWhereUse = {
+  "id"?: number | GassmaGassmaSensorReadingidFilterConditions;
+  "sensorName"?: string | GassmaGassmaSensorReadingsensorNameFilterConditions;
+  "recordedAt"?: Date | GassmaGassmaSensorReadingrecordedAtFilterConditions;
+
+  AND?: GassmaGassmaSensorReadingWhereUse[] | GassmaGassmaSensorReadingWhereUse;
+  OR?: GassmaGassmaSensorReadingWhereUse[];
+  NOT?: GassmaGassmaSensorReadingWhereUse[] | GassmaGassmaSensorReadingWhereUse;
+};
+
+export type GassmaGassmaTimeSlotWhereUse = {
+  "id"?: number | GassmaGassmaTimeSlotidFilterConditions;
+  "label"?: string | GassmaGassmaTimeSlotlabelFilterConditions;
+  "slotAt"?: Date | GassmaGassmaTimeSlotslotAtFilterConditions;
+  "reservations"?: { some?: GassmaGassmaReservationWhereUse; every?: GassmaGassmaReservationWhereUse; none?: GassmaGassmaReservationWhereUse };
+
+  AND?: GassmaGassmaTimeSlotWhereUse[] | GassmaGassmaTimeSlotWhereUse;
+  OR?: GassmaGassmaTimeSlotWhereUse[];
+  NOT?: GassmaGassmaTimeSlotWhereUse[] | GassmaGassmaTimeSlotWhereUse;
+};
+
+export type GassmaGassmaReservationWhereUse = {
+  "id"?: number | GassmaGassmaReservationidFilterConditions;
+  "guestName"?: string | GassmaGassmaReservationguestNameFilterConditions;
+  "slotAt"?: Date | GassmaGassmaReservationslotAtFilterConditions;
+  "timeSlot"?: { is?: GassmaGassmaTimeSlotWhereUse | null; isNot?: GassmaGassmaTimeSlotWhereUse | null } | null;
+
+  AND?: GassmaGassmaReservationWhereUse[] | GassmaGassmaReservationWhereUse;
+  OR?: GassmaGassmaReservationWhereUse[];
+  NOT?: GassmaGassmaReservationWhereUse[] | GassmaGassmaReservationWhereUse;
+};
+
 export type GassmaGassmaProductWhereUse = {
   "id"?: number | GassmaGassmaProductidFilterConditions;
   "name"?: string | GassmaGassmaProductnameFilterConditions;
@@ -2236,6 +2573,66 @@ export type GassmaGassmaTagnameHavingCore = {
   _max?: GassmaGassmaTagnameFilterConditions;
   _min?: GassmaGassmaTagnameFilterConditions;
 } & GassmaGassmaTagnameFilterConditions;
+
+export type GassmaGassmaSensorReadingidHavingCore = {
+  _avg?: Gassma.FilterConditions<number>;
+  _count?: Gassma.FilterConditions<number>;
+  _max?: GassmaGassmaSensorReadingidFilterConditions;
+  _min?: GassmaGassmaSensorReadingidFilterConditions;
+  _sum?: Gassma.FilterConditions<number>;
+} & GassmaGassmaSensorReadingidFilterConditions;
+
+export type GassmaGassmaSensorReadingsensorNameHavingCore = {
+  _count?: Gassma.FilterConditions<number>;
+  _max?: GassmaGassmaSensorReadingsensorNameFilterConditions;
+  _min?: GassmaGassmaSensorReadingsensorNameFilterConditions;
+} & GassmaGassmaSensorReadingsensorNameFilterConditions;
+
+export type GassmaGassmaSensorReadingrecordedAtHavingCore = {
+  _count?: Gassma.FilterConditions<number>;
+  _max?: GassmaGassmaSensorReadingrecordedAtFilterConditions;
+  _min?: GassmaGassmaSensorReadingrecordedAtFilterConditions;
+} & GassmaGassmaSensorReadingrecordedAtFilterConditions;
+
+export type GassmaGassmaTimeSlotidHavingCore = {
+  _avg?: Gassma.FilterConditions<number>;
+  _count?: Gassma.FilterConditions<number>;
+  _max?: GassmaGassmaTimeSlotidFilterConditions;
+  _min?: GassmaGassmaTimeSlotidFilterConditions;
+  _sum?: Gassma.FilterConditions<number>;
+} & GassmaGassmaTimeSlotidFilterConditions;
+
+export type GassmaGassmaTimeSlotlabelHavingCore = {
+  _count?: Gassma.FilterConditions<number>;
+  _max?: GassmaGassmaTimeSlotlabelFilterConditions;
+  _min?: GassmaGassmaTimeSlotlabelFilterConditions;
+} & GassmaGassmaTimeSlotlabelFilterConditions;
+
+export type GassmaGassmaTimeSlotslotAtHavingCore = {
+  _count?: Gassma.FilterConditions<number>;
+  _max?: GassmaGassmaTimeSlotslotAtFilterConditions;
+  _min?: GassmaGassmaTimeSlotslotAtFilterConditions;
+} & GassmaGassmaTimeSlotslotAtFilterConditions;
+
+export type GassmaGassmaReservationidHavingCore = {
+  _avg?: Gassma.FilterConditions<number>;
+  _count?: Gassma.FilterConditions<number>;
+  _max?: GassmaGassmaReservationidFilterConditions;
+  _min?: GassmaGassmaReservationidFilterConditions;
+  _sum?: Gassma.FilterConditions<number>;
+} & GassmaGassmaReservationidFilterConditions;
+
+export type GassmaGassmaReservationguestNameHavingCore = {
+  _count?: Gassma.FilterConditions<number>;
+  _max?: GassmaGassmaReservationguestNameFilterConditions;
+  _min?: GassmaGassmaReservationguestNameFilterConditions;
+} & GassmaGassmaReservationguestNameFilterConditions;
+
+export type GassmaGassmaReservationslotAtHavingCore = {
+  _count?: Gassma.FilterConditions<number>;
+  _max?: GassmaGassmaReservationslotAtFilterConditions;
+  _min?: GassmaGassmaReservationslotAtFilterConditions;
+} & GassmaGassmaReservationslotAtFilterConditions;
 
 export type GassmaGassmaProductidHavingCore = {
   _avg?: Gassma.FilterConditions<number>;
@@ -2571,6 +2968,36 @@ export type GassmaGassmaTagHavingUse = {
   NOT?: GassmaGassmaTagHavingUse[] | GassmaGassmaTagHavingUse;
 };
 
+export type GassmaGassmaSensorReadingHavingUse = {
+  "id"?: number | GassmaGassmaSensorReadingidHavingCore;
+  "sensorName"?: string | GassmaGassmaSensorReadingsensorNameHavingCore;
+  "recordedAt"?: Date | GassmaGassmaSensorReadingrecordedAtHavingCore;
+
+  AND?: GassmaGassmaSensorReadingHavingUse[] | GassmaGassmaSensorReadingHavingUse;
+  OR?: GassmaGassmaSensorReadingHavingUse[];
+  NOT?: GassmaGassmaSensorReadingHavingUse[] | GassmaGassmaSensorReadingHavingUse;
+};
+
+export type GassmaGassmaTimeSlotHavingUse = {
+  "id"?: number | GassmaGassmaTimeSlotidHavingCore;
+  "label"?: string | GassmaGassmaTimeSlotlabelHavingCore;
+  "slotAt"?: Date | GassmaGassmaTimeSlotslotAtHavingCore;
+
+  AND?: GassmaGassmaTimeSlotHavingUse[] | GassmaGassmaTimeSlotHavingUse;
+  OR?: GassmaGassmaTimeSlotHavingUse[];
+  NOT?: GassmaGassmaTimeSlotHavingUse[] | GassmaGassmaTimeSlotHavingUse;
+};
+
+export type GassmaGassmaReservationHavingUse = {
+  "id"?: number | GassmaGassmaReservationidHavingCore;
+  "guestName"?: string | GassmaGassmaReservationguestNameHavingCore;
+  "slotAt"?: Date | GassmaGassmaReservationslotAtHavingCore;
+
+  AND?: GassmaGassmaReservationHavingUse[] | GassmaGassmaReservationHavingUse;
+  OR?: GassmaGassmaReservationHavingUse[];
+  NOT?: GassmaGassmaReservationHavingUse[] | GassmaGassmaReservationHavingUse;
+};
+
 export type GassmaGassmaProductHavingUse = {
   "id"?: number | GassmaGassmaProductidHavingCore;
   "name"?: string | GassmaGassmaProductnameHavingCore;
@@ -2711,6 +3138,39 @@ export type GassmaGassmaTagFindData = {
   _count?: GassmaGassmaTagCountValue;
 } & ({ select?: GassmaGassmaTagFindSelect; omit?: never } | { select?: never; omit?: GassmaGassmaTagOmit });
 
+export type GassmaGassmaSensorReadingFindData = {
+  where?: GassmaGassmaSensorReadingWhereUse;
+  orderBy?: GassmaGassmaSensorReadingOrderBy | GassmaGassmaSensorReadingOrderBy[];
+  take?: number;
+  skip?: number;
+  distinct?: "id" | "sensorName" | "recordedAt" | ("id" | "sensorName" | "recordedAt")[];
+  include?: GassmaGassmaSensorReadingInclude;
+  cursor?: Partial<GassmaGassmaSensorReadingUse>;
+  _count?: GassmaGassmaSensorReadingCountValue;
+} & ({ select?: GassmaGassmaSensorReadingFindSelect; omit?: never } | { select?: never; omit?: GassmaGassmaSensorReadingOmit });
+
+export type GassmaGassmaTimeSlotFindData = {
+  where?: GassmaGassmaTimeSlotWhereUse;
+  orderBy?: GassmaGassmaTimeSlotOrderBy | GassmaGassmaTimeSlotOrderBy[];
+  take?: number;
+  skip?: number;
+  distinct?: "id" | "label" | "slotAt" | ("id" | "label" | "slotAt")[];
+  include?: GassmaGassmaTimeSlotInclude;
+  cursor?: Partial<GassmaGassmaTimeSlotUse>;
+  _count?: GassmaGassmaTimeSlotCountValue;
+} & ({ select?: GassmaGassmaTimeSlotFindSelect; omit?: never } | { select?: never; omit?: GassmaGassmaTimeSlotOmit });
+
+export type GassmaGassmaReservationFindData = {
+  where?: GassmaGassmaReservationWhereUse;
+  orderBy?: GassmaGassmaReservationOrderBy | GassmaGassmaReservationOrderBy[];
+  take?: number;
+  skip?: number;
+  distinct?: "id" | "guestName" | "slotAt" | ("id" | "guestName" | "slotAt")[];
+  include?: GassmaGassmaReservationInclude;
+  cursor?: Partial<GassmaGassmaReservationUse>;
+  _count?: GassmaGassmaReservationCountValue;
+} & ({ select?: GassmaGassmaReservationFindSelect; omit?: never } | { select?: never; omit?: GassmaGassmaReservationOmit });
+
 export type GassmaGassmaProductFindData = {
   where?: GassmaGassmaProductWhereUse;
   orderBy?: GassmaGassmaProductOrderBy | GassmaGassmaProductOrderBy[];
@@ -2843,6 +3303,39 @@ export type GassmaGassmaTagFindFirstData = {
   _count?: GassmaGassmaTagCountValue;
 } & ({ select?: GassmaGassmaTagFindSelect; omit?: never } | { select?: never; omit?: GassmaGassmaTagOmit });
 
+export type GassmaGassmaSensorReadingFindFirstData = {
+  where?: GassmaGassmaSensorReadingWhereUse;
+  orderBy?: GassmaGassmaSensorReadingOrderBy | GassmaGassmaSensorReadingOrderBy[];
+  take?: number;
+  skip?: number;
+  distinct?: "id" | "sensorName" | "recordedAt" | ("id" | "sensorName" | "recordedAt")[];
+  include?: GassmaGassmaSensorReadingInclude;
+  cursor?: Partial<GassmaGassmaSensorReadingUse>;
+  _count?: GassmaGassmaSensorReadingCountValue;
+} & ({ select?: GassmaGassmaSensorReadingFindSelect; omit?: never } | { select?: never; omit?: GassmaGassmaSensorReadingOmit });
+
+export type GassmaGassmaTimeSlotFindFirstData = {
+  where?: GassmaGassmaTimeSlotWhereUse;
+  orderBy?: GassmaGassmaTimeSlotOrderBy | GassmaGassmaTimeSlotOrderBy[];
+  take?: number;
+  skip?: number;
+  distinct?: "id" | "label" | "slotAt" | ("id" | "label" | "slotAt")[];
+  include?: GassmaGassmaTimeSlotInclude;
+  cursor?: Partial<GassmaGassmaTimeSlotUse>;
+  _count?: GassmaGassmaTimeSlotCountValue;
+} & ({ select?: GassmaGassmaTimeSlotFindSelect; omit?: never } | { select?: never; omit?: GassmaGassmaTimeSlotOmit });
+
+export type GassmaGassmaReservationFindFirstData = {
+  where?: GassmaGassmaReservationWhereUse;
+  orderBy?: GassmaGassmaReservationOrderBy | GassmaGassmaReservationOrderBy[];
+  take?: number;
+  skip?: number;
+  distinct?: "id" | "guestName" | "slotAt" | ("id" | "guestName" | "slotAt")[];
+  include?: GassmaGassmaReservationInclude;
+  cursor?: Partial<GassmaGassmaReservationUse>;
+  _count?: GassmaGassmaReservationCountValue;
+} & ({ select?: GassmaGassmaReservationFindSelect; omit?: never } | { select?: never; omit?: GassmaGassmaReservationOmit });
+
 export type GassmaGassmaProductFindFirstData = {
   where?: GassmaGassmaProductWhereUse;
   orderBy?: GassmaGassmaProductOrderBy | GassmaGassmaProductOrderBy[];
@@ -2939,6 +3432,12 @@ export type GassmaGassmaCategoryFindManyData = GassmaGassmaCategoryFindData;
 
 export type GassmaGassmaTagFindManyData = GassmaGassmaTagFindData;
 
+export type GassmaGassmaSensorReadingFindManyData = GassmaGassmaSensorReadingFindData;
+
+export type GassmaGassmaTimeSlotFindManyData = GassmaGassmaTimeSlotFindData;
+
+export type GassmaGassmaReservationFindManyData = GassmaGassmaReservationFindData;
+
 export type GassmaGassmaProductFindManyData = GassmaGassmaProductFindData;
 
 export type GassmaGassmaOrderFindManyData = GassmaGassmaOrderFindData;
@@ -2976,6 +3475,24 @@ export type GassmaGassmaCategoryUpdateData = {
 export type GassmaGassmaTagUpdateData = {
   where?: GassmaGassmaTagWhereUse;
   data: Partial<{ [K in keyof GassmaGassmaTagUse]: GassmaGassmaTagUse[K] | (K extends "id" ? Gassma.NumberOperation : never) }>;
+  limit?: number;
+};
+
+export type GassmaGassmaSensorReadingUpdateData = {
+  where?: GassmaGassmaSensorReadingWhereUse;
+  data: Partial<{ [K in keyof GassmaGassmaSensorReadingUse]: GassmaGassmaSensorReadingUse[K] | (K extends "id" ? Gassma.NumberOperation : never) }>;
+  limit?: number;
+};
+
+export type GassmaGassmaTimeSlotUpdateData = {
+  where?: GassmaGassmaTimeSlotWhereUse;
+  data: Partial<{ [K in keyof GassmaGassmaTimeSlotUse]: GassmaGassmaTimeSlotUse[K] | (K extends "id" ? Gassma.NumberOperation : never) }>;
+  limit?: number;
+};
+
+export type GassmaGassmaReservationUpdateData = {
+  where?: GassmaGassmaReservationWhereUse;
+  data: Partial<{ [K in keyof GassmaGassmaReservationUse]: GassmaGassmaReservationUse[K] | (K extends "id" ? Gassma.NumberOperation : never) }>;
   limit?: number;
 };
 
@@ -3064,6 +3581,28 @@ export type GassmaGassmaTagUpdateSingleData = {
   };
   include?: GassmaGassmaTagInclude;
 } & ({ select?: GassmaGassmaTagSelect; omit?: never } | { select?: never; omit?: GassmaGassmaTagOmit });
+
+export type GassmaGassmaSensorReadingUpdateSingleData = {
+  where: GassmaGassmaSensorReadingWhereUse;
+  data: Partial<{ [K in keyof GassmaGassmaSensorReadingUse]: GassmaGassmaSensorReadingUse[K] | (K extends "id" ? Gassma.NumberOperation : never) }>;
+  include?: GassmaGassmaSensorReadingInclude;
+} & ({ select?: GassmaGassmaSensorReadingSelect; omit?: never } | { select?: never; omit?: GassmaGassmaSensorReadingOmit });
+
+export type GassmaGassmaTimeSlotUpdateSingleData = {
+  where: GassmaGassmaTimeSlotWhereUse;
+  data: Partial<{ [K in keyof GassmaGassmaTimeSlotUse]: GassmaGassmaTimeSlotUse[K] | (K extends "id" ? Gassma.NumberOperation : never) }> & {
+    "reservations"?: { create?: Omit<GassmaGassmaReservationUse, "slotAt"> | Omit<GassmaGassmaReservationUse, "slotAt">[]; createMany?: { data: Omit<GassmaGassmaReservationUse, "slotAt">[] }; connect?: GassmaGassmaReservationWhereUse | GassmaGassmaReservationWhereUse[]; connectOrCreate?: { where: GassmaGassmaReservationWhereUse; create: Omit<GassmaGassmaReservationUse, "slotAt"> } | { where: GassmaGassmaReservationWhereUse; create: Omit<GassmaGassmaReservationUse, "slotAt"> }[]; update?: { where: GassmaGassmaReservationWhereUse; data: Partial<{ [K in keyof GassmaGassmaReservationUse]: GassmaGassmaReservationUse[K] | (K extends "id" ? Gassma.NumberOperation : never) }> } | { where: GassmaGassmaReservationWhereUse; data: Partial<{ [K in keyof GassmaGassmaReservationUse]: GassmaGassmaReservationUse[K] | (K extends "id" ? Gassma.NumberOperation : never) }> }[]; delete?: GassmaGassmaReservationWhereUse | GassmaGassmaReservationWhereUse[]; deleteMany?: GassmaGassmaReservationWhereUse | GassmaGassmaReservationWhereUse[]; disconnect?: GassmaGassmaReservationWhereUse | GassmaGassmaReservationWhereUse[]; set?: GassmaGassmaReservationWhereUse[] };
+  };
+  include?: GassmaGassmaTimeSlotInclude;
+} & ({ select?: GassmaGassmaTimeSlotSelect; omit?: never } | { select?: never; omit?: GassmaGassmaTimeSlotOmit });
+
+export type GassmaGassmaReservationUpdateSingleData = {
+  where: GassmaGassmaReservationWhereUse;
+  data: Partial<{ [K in keyof GassmaGassmaReservationUse]: GassmaGassmaReservationUse[K] | (K extends "id" ? Gassma.NumberOperation : never) }> & {
+    "timeSlot"?: { create?: GassmaGassmaTimeSlotUse; connect?: GassmaGassmaTimeSlotWhereUse; connectOrCreate?: { where: GassmaGassmaTimeSlotWhereUse; create: GassmaGassmaTimeSlotUse }; update?: Partial<{ [K in keyof GassmaGassmaTimeSlotUse]: GassmaGassmaTimeSlotUse[K] | (K extends "id" ? Gassma.NumberOperation : never) }>; delete?: true; disconnect?: true };
+  };
+  include?: GassmaGassmaReservationInclude;
+} & ({ select?: GassmaGassmaReservationSelect; omit?: never } | { select?: never; omit?: GassmaGassmaReservationOmit });
 
 export type GassmaGassmaProductUpdateSingleData = {
   where: GassmaGassmaProductWhereUse;
@@ -3178,6 +3717,33 @@ export type GassmaGassmaTagUpsertSingleData = {
   include?: GassmaGassmaTagInclude;
 } & ({ select?: GassmaGassmaTagSelect; omit?: never } | { select?: never; omit?: GassmaGassmaTagOmit });
 
+export type GassmaGassmaSensorReadingUpsertSingleData = {
+  where: GassmaGassmaSensorReadingWhereUse;
+  create: GassmaGassmaSensorReadingUse;
+  update: Partial<{ [K in keyof GassmaGassmaSensorReadingUse]: GassmaGassmaSensorReadingUse[K] | (K extends "id" ? Gassma.NumberOperation : never) }>;
+  include?: GassmaGassmaSensorReadingInclude;
+} & ({ select?: GassmaGassmaSensorReadingSelect; omit?: never } | { select?: never; omit?: GassmaGassmaSensorReadingOmit });
+
+export type GassmaGassmaTimeSlotUpsertSingleData = {
+  where: GassmaGassmaTimeSlotWhereUse;
+  create: GassmaGassmaTimeSlotUse & {
+    "reservations"?: { create?: Omit<GassmaGassmaReservationUse, "slotAt"> | Omit<GassmaGassmaReservationUse, "slotAt">[]; createMany?: { data: Omit<GassmaGassmaReservationUse, "slotAt">[] }; connect?: GassmaGassmaReservationWhereUse | GassmaGassmaReservationWhereUse[]; connectOrCreate?: { where: GassmaGassmaReservationWhereUse; create: Omit<GassmaGassmaReservationUse, "slotAt"> } | { where: GassmaGassmaReservationWhereUse; create: Omit<GassmaGassmaReservationUse, "slotAt"> }[] };
+  };
+  update: Partial<{ [K in keyof GassmaGassmaTimeSlotUse]: GassmaGassmaTimeSlotUse[K] | (K extends "id" ? Gassma.NumberOperation : never) }> & {
+    "reservations"?: { create?: Omit<GassmaGassmaReservationUse, "slotAt"> | Omit<GassmaGassmaReservationUse, "slotAt">[]; createMany?: { data: Omit<GassmaGassmaReservationUse, "slotAt">[] }; connect?: GassmaGassmaReservationWhereUse | GassmaGassmaReservationWhereUse[]; connectOrCreate?: { where: GassmaGassmaReservationWhereUse; create: Omit<GassmaGassmaReservationUse, "slotAt"> } | { where: GassmaGassmaReservationWhereUse; create: Omit<GassmaGassmaReservationUse, "slotAt"> }[]; update?: { where: GassmaGassmaReservationWhereUse; data: Partial<{ [K in keyof GassmaGassmaReservationUse]: GassmaGassmaReservationUse[K] | (K extends "id" ? Gassma.NumberOperation : never) }> } | { where: GassmaGassmaReservationWhereUse; data: Partial<{ [K in keyof GassmaGassmaReservationUse]: GassmaGassmaReservationUse[K] | (K extends "id" ? Gassma.NumberOperation : never) }> }[]; delete?: GassmaGassmaReservationWhereUse | GassmaGassmaReservationWhereUse[]; deleteMany?: GassmaGassmaReservationWhereUse | GassmaGassmaReservationWhereUse[]; disconnect?: GassmaGassmaReservationWhereUse | GassmaGassmaReservationWhereUse[]; set?: GassmaGassmaReservationWhereUse[] };
+  };
+  include?: GassmaGassmaTimeSlotInclude;
+} & ({ select?: GassmaGassmaTimeSlotSelect; omit?: never } | { select?: never; omit?: GassmaGassmaTimeSlotOmit });
+
+export type GassmaGassmaReservationUpsertSingleData = {
+  where: GassmaGassmaReservationWhereUse;
+  create: Omit<GassmaGassmaReservationUse, "slotAt"> & (Pick<GassmaGassmaReservationUse, "slotAt"> | { "timeSlot": { create?: GassmaGassmaTimeSlotUse; connect?: GassmaGassmaTimeSlotWhereUse; connectOrCreate?: { where: GassmaGassmaTimeSlotWhereUse; create: GassmaGassmaTimeSlotUse } } });
+  update: Partial<{ [K in keyof GassmaGassmaReservationUse]: GassmaGassmaReservationUse[K] | (K extends "id" ? Gassma.NumberOperation : never) }> & {
+    "timeSlot"?: { create?: GassmaGassmaTimeSlotUse; connect?: GassmaGassmaTimeSlotWhereUse; connectOrCreate?: { where: GassmaGassmaTimeSlotWhereUse; create: GassmaGassmaTimeSlotUse }; update?: Partial<{ [K in keyof GassmaGassmaTimeSlotUse]: GassmaGassmaTimeSlotUse[K] | (K extends "id" ? Gassma.NumberOperation : never) }>; delete?: true; disconnect?: true };
+  };
+  include?: GassmaGassmaReservationInclude;
+} & ({ select?: GassmaGassmaReservationSelect; omit?: never } | { select?: never; omit?: GassmaGassmaReservationOmit });
+
 export type GassmaGassmaProductUpsertSingleData = {
   where: GassmaGassmaProductWhereUse;
   create: GassmaGassmaProductUse & {
@@ -3278,6 +3844,21 @@ export type GassmaGassmaTagDeleteData = {
   limit?: number;
 };
 
+export type GassmaGassmaSensorReadingDeleteData = {
+  where?: GassmaGassmaSensorReadingWhereUse;
+  limit?: number;
+};
+
+export type GassmaGassmaTimeSlotDeleteData = {
+  where?: GassmaGassmaTimeSlotWhereUse;
+  limit?: number;
+};
+
+export type GassmaGassmaReservationDeleteData = {
+  where?: GassmaGassmaReservationWhereUse;
+  limit?: number;
+};
+
 export type GassmaGassmaProductDeleteData = {
   where?: GassmaGassmaProductWhereUse;
   limit?: number;
@@ -3337,6 +3918,21 @@ export type GassmaGassmaTagDeleteSingleData = {
   where: GassmaGassmaTagWhereUse;
   include?: GassmaGassmaTagInclude;
 } & ({ select?: GassmaGassmaTagSelect; omit?: never } | { select?: never; omit?: GassmaGassmaTagOmit });
+
+export type GassmaGassmaSensorReadingDeleteSingleData = {
+  where: GassmaGassmaSensorReadingWhereUse;
+  include?: GassmaGassmaSensorReadingInclude;
+} & ({ select?: GassmaGassmaSensorReadingSelect; omit?: never } | { select?: never; omit?: GassmaGassmaSensorReadingOmit });
+
+export type GassmaGassmaTimeSlotDeleteSingleData = {
+  where: GassmaGassmaTimeSlotWhereUse;
+  include?: GassmaGassmaTimeSlotInclude;
+} & ({ select?: GassmaGassmaTimeSlotSelect; omit?: never } | { select?: never; omit?: GassmaGassmaTimeSlotOmit });
+
+export type GassmaGassmaReservationDeleteSingleData = {
+  where: GassmaGassmaReservationWhereUse;
+  include?: GassmaGassmaReservationInclude;
+} & ({ select?: GassmaGassmaReservationSelect; omit?: never } | { select?: never; omit?: GassmaGassmaReservationOmit });
 
 export type GassmaGassmaProductDeleteSingleData = {
   where: GassmaGassmaProductWhereUse;
@@ -3428,6 +4024,45 @@ export type GassmaGassmaTagAggregateData = {
   _max?: GassmaGassmaTagSelect;
   _min?: GassmaGassmaTagSelect;
   _sum?: GassmaGassmaTagNumberSelect;
+};
+
+export type GassmaGassmaSensorReadingAggregateData = {
+  where?: GassmaGassmaSensorReadingWhereUse;
+  orderBy?: GassmaGassmaSensorReadingOrderBy | GassmaGassmaSensorReadingOrderBy[];
+  take?: number;
+  skip?: number;
+  cursor?: Partial<GassmaGassmaSensorReadingUse>;
+  _avg?: GassmaGassmaSensorReadingNumberSelect;
+  _count?: GassmaGassmaSensorReadingSelect;
+  _max?: GassmaGassmaSensorReadingSelect;
+  _min?: GassmaGassmaSensorReadingSelect;
+  _sum?: GassmaGassmaSensorReadingNumberSelect;
+};
+
+export type GassmaGassmaTimeSlotAggregateData = {
+  where?: GassmaGassmaTimeSlotWhereUse;
+  orderBy?: GassmaGassmaTimeSlotOrderBy | GassmaGassmaTimeSlotOrderBy[];
+  take?: number;
+  skip?: number;
+  cursor?: Partial<GassmaGassmaTimeSlotUse>;
+  _avg?: GassmaGassmaTimeSlotNumberSelect;
+  _count?: GassmaGassmaTimeSlotSelect;
+  _max?: GassmaGassmaTimeSlotSelect;
+  _min?: GassmaGassmaTimeSlotSelect;
+  _sum?: GassmaGassmaTimeSlotNumberSelect;
+};
+
+export type GassmaGassmaReservationAggregateData = {
+  where?: GassmaGassmaReservationWhereUse;
+  orderBy?: GassmaGassmaReservationOrderBy | GassmaGassmaReservationOrderBy[];
+  take?: number;
+  skip?: number;
+  cursor?: Partial<GassmaGassmaReservationUse>;
+  _avg?: GassmaGassmaReservationNumberSelect;
+  _count?: GassmaGassmaReservationSelect;
+  _max?: GassmaGassmaReservationSelect;
+  _min?: GassmaGassmaReservationSelect;
+  _sum?: GassmaGassmaReservationNumberSelect;
 };
 
 export type GassmaGassmaProductAggregateData = {
@@ -3554,6 +4189,21 @@ export type GassmaGassmaTagGroupByData = Omit<GassmaGassmaTagAggregateData, "cur
   having?: GassmaGassmaTagHavingUse;
 };
 
+export type GassmaGassmaSensorReadingGroupByData = Omit<GassmaGassmaSensorReadingAggregateData, "cursor"> & {
+  by: "id" | "sensorName" | "recordedAt" | ("id" | "sensorName" | "recordedAt")[];
+  having?: GassmaGassmaSensorReadingHavingUse;
+};
+
+export type GassmaGassmaTimeSlotGroupByData = Omit<GassmaGassmaTimeSlotAggregateData, "cursor"> & {
+  by: "id" | "label" | "slotAt" | ("id" | "label" | "slotAt")[];
+  having?: GassmaGassmaTimeSlotHavingUse;
+};
+
+export type GassmaGassmaReservationGroupByData = Omit<GassmaGassmaReservationAggregateData, "cursor"> & {
+  by: "id" | "guestName" | "slotAt" | ("id" | "guestName" | "slotAt")[];
+  having?: GassmaGassmaReservationHavingUse;
+};
+
 export type GassmaGassmaProductGroupByData = Omit<GassmaGassmaProductAggregateData, "cursor"> & {
   by: "id" | "name" | "price" | "stock" | "status" | "createdAt" | "updatedAt" | ("id" | "name" | "price" | "stock" | "status" | "createdAt" | "updatedAt")[];
   having?: GassmaGassmaProductHavingUse;
@@ -3620,6 +4270,18 @@ export type GassmaGassmaTagInclude = {
   "_count"?: GassmaGassmaTagCountValue;
 };
 
+export type GassmaGassmaSensorReadingInclude = {};
+
+export type GassmaGassmaTimeSlotInclude = {
+  "reservations"?: true | { select?: GassmaGassmaReservationFindSelect; omit?: GassmaGassmaReservationOmit; where?: GassmaGassmaReservationWhereUse; orderBy?: GassmaGassmaReservationOrderBy | GassmaGassmaReservationOrderBy[]; take?: number; skip?: number; include?: GassmaGassmaReservationInclude; _count?: GassmaGassmaReservationCountValue };
+  "_count"?: GassmaGassmaTimeSlotCountValue;
+};
+
+export type GassmaGassmaReservationInclude = {
+  "timeSlot"?: true | { select?: GassmaGassmaTimeSlotFindSelect; omit?: GassmaGassmaTimeSlotOmit; where?: GassmaGassmaTimeSlotWhereUse; orderBy?: GassmaGassmaTimeSlotOrderBy | GassmaGassmaTimeSlotOrderBy[]; take?: number; skip?: number; include?: GassmaGassmaTimeSlotInclude; _count?: GassmaGassmaTimeSlotCountValue };
+  "_count"?: GassmaGassmaReservationCountValue;
+};
+
 export type GassmaGassmaProductInclude = {
   "orderItems"?: true | { select?: GassmaGassmaOrderItemFindSelect; omit?: GassmaGassmaOrderItemOmit; where?: GassmaGassmaOrderItemWhereUse; orderBy?: GassmaGassmaOrderItemOrderBy | GassmaGassmaOrderItemOrderBy[]; take?: number; skip?: number; include?: GassmaGassmaOrderItemInclude; _count?: GassmaGassmaOrderItemCountValue };
   "_count"?: GassmaGassmaProductCountValue;
@@ -3676,6 +4338,16 @@ export type GassmaGassmaCategoryCountValue = true | { select: {
 
 export type GassmaGassmaTagCountValue = true | { select: {
     "posts"?: true | { where?: GassmaGassmaPostWhereUse };
+  } };
+
+export type GassmaGassmaSensorReadingCountValue = true;
+
+export type GassmaGassmaTimeSlotCountValue = true | { select: {
+    "reservations"?: true | { where?: GassmaGassmaReservationWhereUse };
+  } };
+
+export type GassmaGassmaReservationCountValue = true | { select: {
+    "timeSlot"?: true | { where?: GassmaGassmaTimeSlotWhereUse };
   } };
 
 export type GassmaGassmaProductCountValue = true | { select: {
@@ -3753,6 +4425,28 @@ export type GassmaGassmaTagOrderBy = {
   "name"?: "asc" | "desc" | Gassma.SortOrderInput;
   "posts"?: GassmaGassmaPostOrderBy | { _count: "asc" | "desc" };
   "_count"?: { "posts"?: "asc" | "desc" };
+};
+
+export type GassmaGassmaSensorReadingOrderBy = {
+  "id"?: "asc" | "desc" | Gassma.SortOrderInput;
+  "sensorName"?: "asc" | "desc" | Gassma.SortOrderInput;
+  "recordedAt"?: "asc" | "desc" | Gassma.SortOrderInput;
+};
+
+export type GassmaGassmaTimeSlotOrderBy = {
+  "id"?: "asc" | "desc" | Gassma.SortOrderInput;
+  "label"?: "asc" | "desc" | Gassma.SortOrderInput;
+  "slotAt"?: "asc" | "desc" | Gassma.SortOrderInput;
+  "reservations"?: GassmaGassmaReservationOrderBy | { _count: "asc" | "desc" };
+  "_count"?: { "reservations"?: "asc" | "desc" };
+};
+
+export type GassmaGassmaReservationOrderBy = {
+  "id"?: "asc" | "desc" | Gassma.SortOrderInput;
+  "guestName"?: "asc" | "desc" | Gassma.SortOrderInput;
+  "slotAt"?: "asc" | "desc" | Gassma.SortOrderInput;
+  "timeSlot"?: GassmaGassmaTimeSlotOrderBy | { _count: "asc" | "desc" };
+  "_count"?: { "timeSlot"?: "asc" | "desc" };
 };
 
 export type GassmaGassmaProductOrderBy = {
@@ -3934,6 +4628,58 @@ export type GassmaGassmaTagFindSelect = {
   "name"?: true;
   "posts"?: true | { select?: GassmaGassmaPostFindSelect; omit?: GassmaGassmaPostOmit; where?: GassmaGassmaPostWhereUse; orderBy?: GassmaGassmaPostOrderBy | GassmaGassmaPostOrderBy[]; take?: number; skip?: number; include?: GassmaGassmaPostInclude; _count?: GassmaGassmaPostCountValue };
   "_count"?: GassmaGassmaTagCountValue;
+};
+
+export type GassmaGassmaSensorReadingSelect = {
+  "id"?: true;
+  "sensorName"?: true;
+  "recordedAt"?: true;
+};
+
+export type GassmaGassmaSensorReadingNumberSelect = {
+  "id"?: true;
+};
+
+export type GassmaGassmaSensorReadingFindSelect = {
+  "id"?: true;
+  "sensorName"?: true;
+  "recordedAt"?: true;
+};
+
+export type GassmaGassmaTimeSlotSelect = {
+  "id"?: true;
+  "label"?: true;
+  "slotAt"?: true;
+};
+
+export type GassmaGassmaTimeSlotNumberSelect = {
+  "id"?: true;
+};
+
+export type GassmaGassmaTimeSlotFindSelect = {
+  "id"?: true;
+  "label"?: true;
+  "slotAt"?: true;
+  "reservations"?: true | { select?: GassmaGassmaReservationFindSelect; omit?: GassmaGassmaReservationOmit; where?: GassmaGassmaReservationWhereUse; orderBy?: GassmaGassmaReservationOrderBy | GassmaGassmaReservationOrderBy[]; take?: number; skip?: number; include?: GassmaGassmaReservationInclude; _count?: GassmaGassmaReservationCountValue };
+  "_count"?: GassmaGassmaTimeSlotCountValue;
+};
+
+export type GassmaGassmaReservationSelect = {
+  "id"?: true;
+  "guestName"?: true;
+  "slotAt"?: true;
+};
+
+export type GassmaGassmaReservationNumberSelect = {
+  "id"?: true;
+};
+
+export type GassmaGassmaReservationFindSelect = {
+  "id"?: true;
+  "guestName"?: true;
+  "slotAt"?: true;
+  "timeSlot"?: true | { select?: GassmaGassmaTimeSlotFindSelect; omit?: GassmaGassmaTimeSlotOmit; where?: GassmaGassmaTimeSlotWhereUse; orderBy?: GassmaGassmaTimeSlotOrderBy | GassmaGassmaTimeSlotOrderBy[]; take?: number; skip?: number; include?: GassmaGassmaTimeSlotInclude; _count?: GassmaGassmaTimeSlotCountValue };
+  "_count"?: GassmaGassmaReservationCountValue;
 };
 
 export type GassmaGassmaProductSelect = {
@@ -4158,6 +4904,24 @@ export type GassmaGassmaTagOmit = {
   "name"?: true | false;
 };
 
+export type GassmaGassmaSensorReadingOmit = {
+  "id"?: true | false;
+  "sensorName"?: true | false;
+  "recordedAt"?: true | false;
+};
+
+export type GassmaGassmaTimeSlotOmit = {
+  "id"?: true | false;
+  "label"?: true | false;
+  "slotAt"?: true | false;
+};
+
+export type GassmaGassmaReservationOmit = {
+  "id"?: true | false;
+  "guestName"?: true | false;
+  "slotAt"?: true | false;
+};
+
 export type GassmaGassmaProductOmit = {
   "id"?: true | false;
   "name"?: true | false;
@@ -4252,6 +5016,30 @@ export type GassmaGassmaTagCountData = {
   take?: number;
   skip?: number;
   cursor?: Partial<GassmaGassmaTagUse>;
+};
+
+export type GassmaGassmaSensorReadingCountData = {
+  where?: GassmaGassmaSensorReadingWhereUse;
+  orderBy?: GassmaGassmaSensorReadingOrderBy | GassmaGassmaSensorReadingOrderBy[];
+  take?: number;
+  skip?: number;
+  cursor?: Partial<GassmaGassmaSensorReadingUse>;
+};
+
+export type GassmaGassmaTimeSlotCountData = {
+  where?: GassmaGassmaTimeSlotWhereUse;
+  orderBy?: GassmaGassmaTimeSlotOrderBy | GassmaGassmaTimeSlotOrderBy[];
+  take?: number;
+  skip?: number;
+  cursor?: Partial<GassmaGassmaTimeSlotUse>;
+};
+
+export type GassmaGassmaReservationCountData = {
+  where?: GassmaGassmaReservationWhereUse;
+  orderBy?: GassmaGassmaReservationOrderBy | GassmaGassmaReservationOrderBy[];
+  take?: number;
+  skip?: number;
+  cursor?: Partial<GassmaGassmaReservationUse>;
 };
 
 export type GassmaGassmaProductCountData = {
@@ -4350,6 +5138,24 @@ export type GassmaGassmaTagCreateReturn = {
  "name": string;
 };
 
+export type GassmaGassmaSensorReadingCreateReturn = {
+ "id": number;
+ "sensorName": string;
+ "recordedAt": Date;
+};
+
+export type GassmaGassmaTimeSlotCreateReturn = {
+ "id": number;
+ "label": string;
+ "slotAt": Date;
+};
+
+export type GassmaGassmaReservationCreateReturn = {
+ "id": number;
+ "guestName": string;
+ "slotAt": Date;
+};
+
 export type GassmaGassmaProductCreateReturn = {
  "id": number;
  "name": string;
@@ -4421,6 +5227,12 @@ export type GassmaGassmaCommentDefaultFindResult = GassmaGassmaCommentCreateRetu
 export type GassmaGassmaCategoryDefaultFindResult = GassmaGassmaCategoryCreateReturn;
 
 export type GassmaGassmaTagDefaultFindResult = GassmaGassmaTagCreateReturn;
+
+export type GassmaGassmaSensorReadingDefaultFindResult = GassmaGassmaSensorReadingCreateReturn;
+
+export type GassmaGassmaTimeSlotDefaultFindResult = GassmaGassmaTimeSlotCreateReturn;
+
+export type GassmaGassmaReservationDefaultFindResult = GassmaGassmaReservationCreateReturn;
 
 export type GassmaGassmaProductDefaultFindResult = GassmaGassmaProductCreateReturn;
 
@@ -4670,6 +5482,165 @@ export type GassmaGassmaTagFindResultCore<S, I = undefined, QO = undefined, GO =
 export type GassmaGassmaTagFindResult<S, I = undefined, QO = undefined, GO = {}, O = {}, CMap = {}> = Gassma.WithComputed<
   GassmaGassmaTagFindResultCore<Gassma.StripComputed<S, Gassma.At<CMap, "Tag">>, I, QO, GO, O, CMap>,
   Gassma.At<CMap, "Tag">,
+  S,
+  QO
+>;
+
+export type GassmaGassmaSensorReadingFindResultBase<S, I = undefined, QO = undefined, GO = {}, O = {}> = (S extends GassmaGassmaSensorReadingFindSelect
+  ? {
+      [K in keyof S as S[K] extends false | undefined
+        ? never
+        : K & (keyof GassmaGassmaSensorReadingDefaultFindResult | "_count")]:
+
+          K extends "_count" ? Gassma.CountResult<S[K]> :
+          GassmaGassmaSensorReadingDefaultFindResult[K & keyof GassmaGassmaSensorReadingDefaultFindResult];
+    }
+  : {
+      [K in keyof GassmaGassmaSensorReadingDefaultFindResult as K extends Gassma.ResolveOmitKeys<GO, QO>
+        ? never
+        : K]: GassmaGassmaSensorReadingDefaultFindResult[K];
+    }) &
+  (I extends undefined
+    ? {}
+    : {
+        [K in keyof I as K extends "_count" ? K : never]:
+
+          K extends "_count" ? Gassma.CountResult<I[K]> :
+          never;
+      });
+
+export type GassmaGassmaSensorReadingFindResultCore<S, I = undefined, QO = undefined, GO = {}, O = {}, CMap = {}> = (S extends GassmaGassmaSensorReadingFindSelect
+  ? {
+      [K in keyof S as S[K] extends false | undefined
+        ? never
+        : K & (keyof GassmaGassmaSensorReadingDefaultFindResult | "_count")]:
+
+          K extends "_count" ? Gassma.CountResult<S[K]> :
+          GassmaGassmaSensorReadingDefaultFindResult[K & keyof GassmaGassmaSensorReadingDefaultFindResult];
+    }
+  : {
+      [K in keyof GassmaGassmaSensorReadingDefaultFindResult as K extends Gassma.ResolveOmitKeys<GO, QO>
+        ? never
+        : K]: GassmaGassmaSensorReadingDefaultFindResult[K];
+    }) &
+  (I extends undefined
+    ? {}
+    : {
+        [K in keyof I as K extends "_count" ? K : never]:
+
+          K extends "_count" ? Gassma.CountResult<I[K]> :
+          never;
+      });
+
+export type GassmaGassmaSensorReadingFindResult<S, I = undefined, QO = undefined, GO = {}, O = {}, CMap = {}> = Gassma.WithComputed<
+  GassmaGassmaSensorReadingFindResultCore<Gassma.StripComputed<S, Gassma.At<CMap, "SensorReading">>, I, QO, GO, O, CMap>,
+  Gassma.At<CMap, "SensorReading">,
+  S,
+  QO
+>;
+
+export type GassmaGassmaTimeSlotFindResultBase<S, I = undefined, QO = undefined, GO = {}, O = {}> = (S extends GassmaGassmaTimeSlotFindSelect
+  ? {
+      [K in keyof S as S[K] extends false | undefined
+        ? never
+        : K & (keyof GassmaGassmaTimeSlotDefaultFindResult | "reservations" | "_count")]:
+          K extends "reservations" ? GassmaGassmaReservationFindResultBase<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "Reservation": infer TO } ? TO extends GassmaGassmaReservationOmit ? TO : {} : {}, O>[] :
+          K extends "_count" ? Gassma.CountResult<S[K]> :
+          GassmaGassmaTimeSlotDefaultFindResult[K & keyof GassmaGassmaTimeSlotDefaultFindResult];
+    }
+  : {
+      [K in keyof GassmaGassmaTimeSlotDefaultFindResult as K extends Gassma.ResolveOmitKeys<GO, QO>
+        ? never
+        : K]: GassmaGassmaTimeSlotDefaultFindResult[K];
+    }) &
+  (I extends undefined
+    ? {}
+    : {
+        [K in keyof I as K extends "reservations" | "_count" ? K : never]:
+          K extends "reservations" ? GassmaGassmaReservationFindResultBase<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "Reservation": infer TO } ? TO extends GassmaGassmaReservationOmit ? TO : {} : {}, O>[] :
+          K extends "_count" ? Gassma.CountResult<I[K]> :
+          never;
+      });
+
+export type GassmaGassmaTimeSlotFindResultCore<S, I = undefined, QO = undefined, GO = {}, O = {}, CMap = {}> = (S extends GassmaGassmaTimeSlotFindSelect
+  ? {
+      [K in keyof S as S[K] extends false | undefined
+        ? never
+        : K & (keyof GassmaGassmaTimeSlotDefaultFindResult | "reservations" | "_count")]:
+          K extends "reservations" ? GassmaGassmaReservationFindResult<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "Reservation": infer TO } ? TO extends GassmaGassmaReservationOmit ? TO : {} : {}, O, CMap>[] :
+          K extends "_count" ? Gassma.CountResult<S[K]> :
+          GassmaGassmaTimeSlotDefaultFindResult[K & keyof GassmaGassmaTimeSlotDefaultFindResult];
+    }
+  : {
+      [K in keyof GassmaGassmaTimeSlotDefaultFindResult as K extends Gassma.ResolveOmitKeys<GO, QO>
+        ? never
+        : K]: GassmaGassmaTimeSlotDefaultFindResult[K];
+    }) &
+  (I extends undefined
+    ? {}
+    : {
+        [K in keyof I as K extends "reservations" | "_count" ? K : never]:
+          K extends "reservations" ? GassmaGassmaReservationFindResult<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "Reservation": infer TO } ? TO extends GassmaGassmaReservationOmit ? TO : {} : {}, O, CMap>[] :
+          K extends "_count" ? Gassma.CountResult<I[K]> :
+          never;
+      });
+
+export type GassmaGassmaTimeSlotFindResult<S, I = undefined, QO = undefined, GO = {}, O = {}, CMap = {}> = Gassma.WithComputed<
+  GassmaGassmaTimeSlotFindResultCore<Gassma.StripComputed<S, Gassma.At<CMap, "TimeSlot">>, I, QO, GO, O, CMap>,
+  Gassma.At<CMap, "TimeSlot">,
+  S,
+  QO
+>;
+
+export type GassmaGassmaReservationFindResultBase<S, I = undefined, QO = undefined, GO = {}, O = {}> = (S extends GassmaGassmaReservationFindSelect
+  ? {
+      [K in keyof S as S[K] extends false | undefined
+        ? never
+        : K & (keyof GassmaGassmaReservationDefaultFindResult | "timeSlot" | "_count")]:
+          K extends "timeSlot" ? GassmaGassmaTimeSlotFindResultBase<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "TimeSlot": infer TO } ? TO extends GassmaGassmaTimeSlotOmit ? TO : {} : {}, O> | null :
+          K extends "_count" ? Gassma.CountResult<S[K]> :
+          GassmaGassmaReservationDefaultFindResult[K & keyof GassmaGassmaReservationDefaultFindResult];
+    }
+  : {
+      [K in keyof GassmaGassmaReservationDefaultFindResult as K extends Gassma.ResolveOmitKeys<GO, QO>
+        ? never
+        : K]: GassmaGassmaReservationDefaultFindResult[K];
+    }) &
+  (I extends undefined
+    ? {}
+    : {
+        [K in keyof I as K extends "timeSlot" | "_count" ? K : never]:
+          K extends "timeSlot" ? GassmaGassmaTimeSlotFindResultBase<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "TimeSlot": infer TO } ? TO extends GassmaGassmaTimeSlotOmit ? TO : {} : {}, O> | null :
+          K extends "_count" ? Gassma.CountResult<I[K]> :
+          never;
+      });
+
+export type GassmaGassmaReservationFindResultCore<S, I = undefined, QO = undefined, GO = {}, O = {}, CMap = {}> = (S extends GassmaGassmaReservationFindSelect
+  ? {
+      [K in keyof S as S[K] extends false | undefined
+        ? never
+        : K & (keyof GassmaGassmaReservationDefaultFindResult | "timeSlot" | "_count")]:
+          K extends "timeSlot" ? GassmaGassmaTimeSlotFindResult<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "TimeSlot": infer TO } ? TO extends GassmaGassmaTimeSlotOmit ? TO : {} : {}, O, CMap> | null :
+          K extends "_count" ? Gassma.CountResult<S[K]> :
+          GassmaGassmaReservationDefaultFindResult[K & keyof GassmaGassmaReservationDefaultFindResult];
+    }
+  : {
+      [K in keyof GassmaGassmaReservationDefaultFindResult as K extends Gassma.ResolveOmitKeys<GO, QO>
+        ? never
+        : K]: GassmaGassmaReservationDefaultFindResult[K];
+    }) &
+  (I extends undefined
+    ? {}
+    : {
+        [K in keyof I as K extends "timeSlot" | "_count" ? K : never]:
+          K extends "timeSlot" ? GassmaGassmaTimeSlotFindResult<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "TimeSlot": infer TO } ? TO extends GassmaGassmaTimeSlotOmit ? TO : {} : {}, O, CMap> | null :
+          K extends "_count" ? Gassma.CountResult<I[K]> :
+          never;
+      });
+
+export type GassmaGassmaReservationFindResult<S, I = undefined, QO = undefined, GO = {}, O = {}, CMap = {}> = Gassma.WithComputed<
+  GassmaGassmaReservationFindResultCore<Gassma.StripComputed<S, Gassma.At<CMap, "Reservation">>, I, QO, GO, O, CMap>,
+  Gassma.At<CMap, "Reservation">,
   S,
   QO
 >;
@@ -5150,6 +6121,24 @@ export type GassmaGassmaTagAggregateBaseReturn = {
   "name": string
 };
 
+export type GassmaGassmaSensorReadingAggregateBaseReturn = {
+  "id": number
+  "sensorName": string
+  "recordedAt": Date
+};
+
+export type GassmaGassmaTimeSlotAggregateBaseReturn = {
+  "id": number
+  "label": string
+  "slotAt": Date
+};
+
+export type GassmaGassmaReservationAggregateBaseReturn = {
+  "id": number
+  "guestName": string
+  "slotAt": Date
+};
+
 export type GassmaGassmaProductAggregateBaseReturn = {
   "id": number
   "name": string
@@ -5260,6 +6249,42 @@ export type GassmaGassmaTagAggregateField<T, K extends string> = T extends undef
           [P in keyof T as T[P] extends true
             ? P & keyof GassmaGassmaTagAggregateBaseReturn
             : never]: GassmaGassmaTagAggregateBaseReturn[P & keyof GassmaGassmaTagAggregateBaseReturn] | null;
+        };
+
+export type GassmaGassmaSensorReadingAggregateField<T, K extends string> = T extends undefined
+  ? never
+  : K extends "_count"
+    ? { [P in keyof T as T[P] extends true ? P : never]: number }
+    : K extends "_avg" | "_sum"
+      ? { [P in keyof T as T[P] extends true ? P : never]: number | null }
+      : {
+          [P in keyof T as T[P] extends true
+            ? P & keyof GassmaGassmaSensorReadingAggregateBaseReturn
+            : never]: GassmaGassmaSensorReadingAggregateBaseReturn[P & keyof GassmaGassmaSensorReadingAggregateBaseReturn] | null;
+        };
+
+export type GassmaGassmaTimeSlotAggregateField<T, K extends string> = T extends undefined
+  ? never
+  : K extends "_count"
+    ? { [P in keyof T as T[P] extends true ? P : never]: number }
+    : K extends "_avg" | "_sum"
+      ? { [P in keyof T as T[P] extends true ? P : never]: number | null }
+      : {
+          [P in keyof T as T[P] extends true
+            ? P & keyof GassmaGassmaTimeSlotAggregateBaseReturn
+            : never]: GassmaGassmaTimeSlotAggregateBaseReturn[P & keyof GassmaGassmaTimeSlotAggregateBaseReturn] | null;
+        };
+
+export type GassmaGassmaReservationAggregateField<T, K extends string> = T extends undefined
+  ? never
+  : K extends "_count"
+    ? { [P in keyof T as T[P] extends true ? P : never]: number }
+    : K extends "_avg" | "_sum"
+      ? { [P in keyof T as T[P] extends true ? P : never]: number | null }
+      : {
+          [P in keyof T as T[P] extends true
+            ? P & keyof GassmaGassmaReservationAggregateBaseReturn
+            : never]: GassmaGassmaReservationAggregateBaseReturn[P & keyof GassmaGassmaReservationAggregateBaseReturn] | null;
         };
 
 export type GassmaGassmaProductAggregateField<T, K extends string> = T extends undefined
@@ -5390,6 +6415,30 @@ export type GassmaGassmaTagAggregateResult<T extends GassmaGassmaTagAggregateDat
     : never]: K extends string ? GassmaGassmaTagAggregateField<T[K], K> : never;
 };
 
+export type GassmaGassmaSensorReadingAggregateResult<T extends GassmaGassmaSensorReadingAggregateData> = {
+  [K in keyof T as K extends "_avg" | "_count" | "_max" | "_min" | "_sum"
+    ? T[K] extends undefined
+      ? never
+      : K
+    : never]: K extends string ? GassmaGassmaSensorReadingAggregateField<T[K], K> : never;
+};
+
+export type GassmaGassmaTimeSlotAggregateResult<T extends GassmaGassmaTimeSlotAggregateData> = {
+  [K in keyof T as K extends "_avg" | "_count" | "_max" | "_min" | "_sum"
+    ? T[K] extends undefined
+      ? never
+      : K
+    : never]: K extends string ? GassmaGassmaTimeSlotAggregateField<T[K], K> : never;
+};
+
+export type GassmaGassmaReservationAggregateResult<T extends GassmaGassmaReservationAggregateData> = {
+  [K in keyof T as K extends "_avg" | "_count" | "_max" | "_min" | "_sum"
+    ? T[K] extends undefined
+      ? never
+      : K
+    : never]: K extends string ? GassmaGassmaReservationAggregateField<T[K], K> : never;
+};
+
 export type GassmaGassmaProductAggregateResult<T extends GassmaGassmaProductAggregateData> = {
   [K in keyof T as K extends "_avg" | "_count" | "_max" | "_min" | "_sum"
     ? T[K] extends undefined
@@ -5462,6 +6511,12 @@ export type GassmaGassmaCategoryGroupByBaseReturn = GassmaGassmaCategoryCreateRe
 
 export type GassmaGassmaTagGroupByBaseReturn = GassmaGassmaTagCreateReturn;
 
+export type GassmaGassmaSensorReadingGroupByBaseReturn = GassmaGassmaSensorReadingCreateReturn;
+
+export type GassmaGassmaTimeSlotGroupByBaseReturn = GassmaGassmaTimeSlotCreateReturn;
+
+export type GassmaGassmaReservationGroupByBaseReturn = GassmaGassmaReservationCreateReturn;
+
 export type GassmaGassmaProductGroupByBaseReturn = GassmaGassmaProductCreateReturn;
 
 export type GassmaGassmaOrderGroupByBaseReturn = GassmaGassmaOrderCreateReturn;
@@ -5485,6 +6540,12 @@ export type GassmaGassmaCommentGroupByKeyOfBaseReturn = keyof GassmaGassmaCommen
 export type GassmaGassmaCategoryGroupByKeyOfBaseReturn = keyof GassmaGassmaCategoryGroupByBaseReturn;
 
 export type GassmaGassmaTagGroupByKeyOfBaseReturn = keyof GassmaGassmaTagGroupByBaseReturn;
+
+export type GassmaGassmaSensorReadingGroupByKeyOfBaseReturn = keyof GassmaGassmaSensorReadingGroupByBaseReturn;
+
+export type GassmaGassmaTimeSlotGroupByKeyOfBaseReturn = keyof GassmaGassmaTimeSlotGroupByBaseReturn;
+
+export type GassmaGassmaReservationGroupByKeyOfBaseReturn = keyof GassmaGassmaReservationGroupByBaseReturn;
 
 export type GassmaGassmaProductGroupByKeyOfBaseReturn = keyof GassmaGassmaProductGroupByBaseReturn;
 
@@ -5536,6 +6597,33 @@ export type GassmaGassmaTagByField<T extends GassmaGassmaTagGroupByKeyOfBaseRetu
       }
     : T extends keyof GassmaGassmaTagGroupByBaseReturn
       ? { [K in T]: GassmaGassmaTagGroupByBaseReturn[K] }
+      : never;
+
+export type GassmaGassmaSensorReadingByField<T extends GassmaGassmaSensorReadingGroupByKeyOfBaseReturn | GassmaGassmaSensorReadingGroupByKeyOfBaseReturn[]> =
+  T extends GassmaGassmaSensorReadingGroupByKeyOfBaseReturn[]
+    ? {
+        [K in T[number]]: GassmaGassmaSensorReadingGroupByBaseReturn[K & keyof GassmaGassmaSensorReadingGroupByBaseReturn];
+      }
+    : T extends keyof GassmaGassmaSensorReadingGroupByBaseReturn
+      ? { [K in T]: GassmaGassmaSensorReadingGroupByBaseReturn[K] }
+      : never;
+
+export type GassmaGassmaTimeSlotByField<T extends GassmaGassmaTimeSlotGroupByKeyOfBaseReturn | GassmaGassmaTimeSlotGroupByKeyOfBaseReturn[]> =
+  T extends GassmaGassmaTimeSlotGroupByKeyOfBaseReturn[]
+    ? {
+        [K in T[number]]: GassmaGassmaTimeSlotGroupByBaseReturn[K & keyof GassmaGassmaTimeSlotGroupByBaseReturn];
+      }
+    : T extends keyof GassmaGassmaTimeSlotGroupByBaseReturn
+      ? { [K in T]: GassmaGassmaTimeSlotGroupByBaseReturn[K] }
+      : never;
+
+export type GassmaGassmaReservationByField<T extends GassmaGassmaReservationGroupByKeyOfBaseReturn | GassmaGassmaReservationGroupByKeyOfBaseReturn[]> =
+  T extends GassmaGassmaReservationGroupByKeyOfBaseReturn[]
+    ? {
+        [K in T[number]]: GassmaGassmaReservationGroupByBaseReturn[K & keyof GassmaGassmaReservationGroupByBaseReturn];
+      }
+    : T extends keyof GassmaGassmaReservationGroupByBaseReturn
+      ? { [K in T]: GassmaGassmaReservationGroupByBaseReturn[K] }
       : never;
 
 export type GassmaGassmaProductByField<T extends GassmaGassmaProductGroupByKeyOfBaseReturn | GassmaGassmaProductGroupByKeyOfBaseReturn[]> =
@@ -5642,6 +6730,30 @@ export type GassmaGassmaTagGroupByResult<T extends GassmaGassmaTagGroupByData> =
     : never]: K extends string ? GassmaGassmaTagAggregateField<T[K], K> : never;
 };
 
+export type GassmaGassmaSensorReadingGroupByResult<T extends GassmaGassmaSensorReadingGroupByData> = GassmaGassmaSensorReadingByField<T["by"]> & {
+  [K in keyof T as K extends "_avg" | "_count" | "_max" | "_min" | "_sum"
+    ? T[K] extends undefined
+      ? never
+      : K
+    : never]: K extends string ? GassmaGassmaSensorReadingAggregateField<T[K], K> : never;
+};
+
+export type GassmaGassmaTimeSlotGroupByResult<T extends GassmaGassmaTimeSlotGroupByData> = GassmaGassmaTimeSlotByField<T["by"]> & {
+  [K in keyof T as K extends "_avg" | "_count" | "_max" | "_min" | "_sum"
+    ? T[K] extends undefined
+      ? never
+      : K
+    : never]: K extends string ? GassmaGassmaTimeSlotAggregateField<T[K], K> : never;
+};
+
+export type GassmaGassmaReservationGroupByResult<T extends GassmaGassmaReservationGroupByData> = GassmaGassmaReservationByField<T["by"]> & {
+  [K in keyof T as K extends "_avg" | "_count" | "_max" | "_min" | "_sum"
+    ? T[K] extends undefined
+      ? never
+      : K
+    : never]: K extends string ? GassmaGassmaReservationAggregateField<T[K], K> : never;
+};
+
 export type GassmaGassmaProductGroupByResult<T extends GassmaGassmaProductGroupByData> = GassmaGassmaProductByField<T["by"]> & {
   [K in keyof T as K extends "_avg" | "_count" | "_max" | "_min" | "_sum"
     ? T[K] extends undefined
@@ -5711,6 +6823,9 @@ export type GassmaGassmaModelName =
   | "Comment"
   | "Category"
   | "Tag"
+  | "SensorReading"
+  | "TimeSlot"
+  | "Reservation"
   | "Product"
   | "Order"
   | "OrderItem"
@@ -6190,6 +7305,348 @@ export type GassmaGassmaTagQueryHooks<GO extends GassmaGassmaTagOmit = {}, O = {
     operation: GassmaGassmaOperationName;
     args: GassmaGassmaTagQueryArgs;
     query: (args: GassmaGassmaTagQueryArgs) => unknown;
+  }) => unknown;
+};
+
+export type GassmaGassmaSensorReadingQueryArgs =
+  | GassmaGassmaSensorReadingFindFirstData
+  | GassmaGassmaSensorReadingFindManyData
+  | GassmaGassmaSensorReadingCreateData
+  | GassmaGassmaSensorReadingCreateManyData
+  | GassmaGassmaSensorReadingCreateManyAndReturnData
+  | GassmaGassmaSensorReadingUpdateSingleData
+  | GassmaGassmaSensorReadingUpdateData
+  | GassmaGassmaSensorReadingUpsertSingleData
+  | GassmaGassmaSensorReadingDeleteSingleData
+  | GassmaGassmaSensorReadingDeleteData
+  | GassmaGassmaSensorReadingCountData
+  | GassmaGassmaSensorReadingAggregateData
+  | GassmaGassmaSensorReadingGroupByData;
+
+export type GassmaGassmaSensorReadingQueryHooks<GO extends GassmaGassmaSensorReadingOmit = {}, O = {}> = {
+  findFirst?: <T extends GassmaGassmaSensorReadingFindFirstData>(params: {
+    model: "SensorReading";
+    operation: "findFirst";
+    args: T;
+    query: (args: T) => GassmaGassmaSensorReadingFindResultBase<T["select"], T["include"], T["omit"], GO, O> | null;
+  }) => GassmaGassmaSensorReadingFindResultBase<T["select"], T["include"], T["omit"], GO, O> | null;
+  findFirstOrThrow?: <T extends GassmaGassmaSensorReadingFindFirstData>(params: {
+    model: "SensorReading";
+    operation: "findFirstOrThrow";
+    args: T;
+    query: (args: T) => GassmaGassmaSensorReadingFindResultBase<T["select"], T["include"], T["omit"], GO, O>;
+  }) => GassmaGassmaSensorReadingFindResultBase<T["select"], T["include"], T["omit"], GO, O>;
+  findMany?: <T extends GassmaGassmaSensorReadingFindManyData>(params: {
+    model: "SensorReading";
+    operation: "findMany";
+    args: T;
+    query: (args: T) => GassmaGassmaSensorReadingFindResultBase<T["select"], T["include"], T["omit"], GO, O>[];
+  }) => GassmaGassmaSensorReadingFindResultBase<T["select"], T["include"], T["omit"], GO, O>[];
+  create?: <T extends GassmaGassmaSensorReadingCreateData>(params: {
+    model: "SensorReading";
+    operation: "create";
+    args: T;
+    query: (args: T) => GassmaGassmaSensorReadingFindResultBase<T["select"], T["include"], T["omit"], GO, O>;
+  }) => GassmaGassmaSensorReadingFindResultBase<T["select"], T["include"], T["omit"], GO, O>;
+  createMany?: (params: {
+    model: "SensorReading";
+    operation: "createMany";
+    args: GassmaGassmaSensorReadingCreateManyData;
+    query: (args: GassmaGassmaSensorReadingCreateManyData) => CreateManyReturn;
+  }) => CreateManyReturn;
+  createManyAndReturn?: <T extends GassmaGassmaSensorReadingCreateManyAndReturnData>(params: {
+    model: "SensorReading";
+    operation: "createManyAndReturn";
+    args: T;
+    query: (args: T) => GassmaGassmaSensorReadingFindResultBase<T["select"], T["include"], T["omit"], GO, O>[];
+  }) => GassmaGassmaSensorReadingFindResultBase<T["select"], T["include"], T["omit"], GO, O>[];
+  update?: <T extends GassmaGassmaSensorReadingUpdateSingleData>(params: {
+    model: "SensorReading";
+    operation: "update";
+    args: T;
+    query: (args: T) => GassmaGassmaSensorReadingFindResultBase<T["select"], T["include"], T["omit"], GO, O> | null;
+  }) => GassmaGassmaSensorReadingFindResultBase<T["select"], T["include"], T["omit"], GO, O> | null;
+  updateMany?: (params: {
+    model: "SensorReading";
+    operation: "updateMany";
+    args: GassmaGassmaSensorReadingUpdateData;
+    query: (args: GassmaGassmaSensorReadingUpdateData) => UpdateManyReturn;
+  }) => UpdateManyReturn;
+  updateManyAndReturn?: (params: {
+    model: "SensorReading";
+    operation: "updateManyAndReturn";
+    args: GassmaGassmaSensorReadingUpdateData;
+    query: (args: GassmaGassmaSensorReadingUpdateData) => GassmaGassmaSensorReadingFindResultBase<undefined, undefined, undefined, GO, O>[];
+  }) => GassmaGassmaSensorReadingFindResultBase<undefined, undefined, undefined, GO, O>[];
+  upsert?: <T extends GassmaGassmaSensorReadingUpsertSingleData>(params: {
+    model: "SensorReading";
+    operation: "upsert";
+    args: T;
+    query: (args: T) => GassmaGassmaSensorReadingFindResultBase<T["select"], T["include"], T["omit"], GO, O>;
+  }) => GassmaGassmaSensorReadingFindResultBase<T["select"], T["include"], T["omit"], GO, O>;
+  delete?: <T extends GassmaGassmaSensorReadingDeleteSingleData>(params: {
+    model: "SensorReading";
+    operation: "delete";
+    args: T;
+    query: (args: T) => GassmaGassmaSensorReadingFindResultBase<T["select"], T["include"], T["omit"], GO, O> | null;
+  }) => GassmaGassmaSensorReadingFindResultBase<T["select"], T["include"], T["omit"], GO, O> | null;
+  deleteMany?: (params: {
+    model: "SensorReading";
+    operation: "deleteMany";
+    args: GassmaGassmaSensorReadingDeleteData;
+    query: (args: GassmaGassmaSensorReadingDeleteData) => DeleteManyReturn;
+  }) => DeleteManyReturn;
+  count?: (params: {
+    model: "SensorReading";
+    operation: "count";
+    args: GassmaGassmaSensorReadingCountData;
+    query: (args: GassmaGassmaSensorReadingCountData) => number;
+  }) => number;
+  aggregate?: <T extends GassmaGassmaSensorReadingAggregateData>(params: {
+    model: "SensorReading";
+    operation: "aggregate";
+    args: T;
+    query: (args: T) => GassmaGassmaSensorReadingAggregateResult<T>;
+  }) => GassmaGassmaSensorReadingAggregateResult<T>;
+  groupBy?: <T extends GassmaGassmaSensorReadingGroupByData>(params: {
+    model: "SensorReading";
+    operation: "groupBy";
+    args: T;
+    query: (args: T) => GassmaGassmaSensorReadingGroupByResult<T>[];
+  }) => GassmaGassmaSensorReadingGroupByResult<T>[];
+  $allOperations?: (params: {
+    model: "SensorReading";
+    operation: GassmaGassmaOperationName;
+    args: GassmaGassmaSensorReadingQueryArgs;
+    query: (args: GassmaGassmaSensorReadingQueryArgs) => unknown;
+  }) => unknown;
+};
+
+export type GassmaGassmaTimeSlotQueryArgs =
+  | GassmaGassmaTimeSlotFindFirstData
+  | GassmaGassmaTimeSlotFindManyData
+  | GassmaGassmaTimeSlotCreateData
+  | GassmaGassmaTimeSlotCreateManyData
+  | GassmaGassmaTimeSlotCreateManyAndReturnData
+  | GassmaGassmaTimeSlotUpdateSingleData
+  | GassmaGassmaTimeSlotUpdateData
+  | GassmaGassmaTimeSlotUpsertSingleData
+  | GassmaGassmaTimeSlotDeleteSingleData
+  | GassmaGassmaTimeSlotDeleteData
+  | GassmaGassmaTimeSlotCountData
+  | GassmaGassmaTimeSlotAggregateData
+  | GassmaGassmaTimeSlotGroupByData;
+
+export type GassmaGassmaTimeSlotQueryHooks<GO extends GassmaGassmaTimeSlotOmit = {}, O = {}> = {
+  findFirst?: <T extends GassmaGassmaTimeSlotFindFirstData>(params: {
+    model: "TimeSlot";
+    operation: "findFirst";
+    args: T;
+    query: (args: T) => GassmaGassmaTimeSlotFindResultBase<T["select"], T["include"], T["omit"], GO, O> | null;
+  }) => GassmaGassmaTimeSlotFindResultBase<T["select"], T["include"], T["omit"], GO, O> | null;
+  findFirstOrThrow?: <T extends GassmaGassmaTimeSlotFindFirstData>(params: {
+    model: "TimeSlot";
+    operation: "findFirstOrThrow";
+    args: T;
+    query: (args: T) => GassmaGassmaTimeSlotFindResultBase<T["select"], T["include"], T["omit"], GO, O>;
+  }) => GassmaGassmaTimeSlotFindResultBase<T["select"], T["include"], T["omit"], GO, O>;
+  findMany?: <T extends GassmaGassmaTimeSlotFindManyData>(params: {
+    model: "TimeSlot";
+    operation: "findMany";
+    args: T;
+    query: (args: T) => GassmaGassmaTimeSlotFindResultBase<T["select"], T["include"], T["omit"], GO, O>[];
+  }) => GassmaGassmaTimeSlotFindResultBase<T["select"], T["include"], T["omit"], GO, O>[];
+  create?: <T extends GassmaGassmaTimeSlotCreateData>(params: {
+    model: "TimeSlot";
+    operation: "create";
+    args: T;
+    query: (args: T) => GassmaGassmaTimeSlotFindResultBase<T["select"], T["include"], T["omit"], GO, O>;
+  }) => GassmaGassmaTimeSlotFindResultBase<T["select"], T["include"], T["omit"], GO, O>;
+  createMany?: (params: {
+    model: "TimeSlot";
+    operation: "createMany";
+    args: GassmaGassmaTimeSlotCreateManyData;
+    query: (args: GassmaGassmaTimeSlotCreateManyData) => CreateManyReturn;
+  }) => CreateManyReturn;
+  createManyAndReturn?: <T extends GassmaGassmaTimeSlotCreateManyAndReturnData>(params: {
+    model: "TimeSlot";
+    operation: "createManyAndReturn";
+    args: T;
+    query: (args: T) => GassmaGassmaTimeSlotFindResultBase<T["select"], T["include"], T["omit"], GO, O>[];
+  }) => GassmaGassmaTimeSlotFindResultBase<T["select"], T["include"], T["omit"], GO, O>[];
+  update?: <T extends GassmaGassmaTimeSlotUpdateSingleData>(params: {
+    model: "TimeSlot";
+    operation: "update";
+    args: T;
+    query: (args: T) => GassmaGassmaTimeSlotFindResultBase<T["select"], T["include"], T["omit"], GO, O> | null;
+  }) => GassmaGassmaTimeSlotFindResultBase<T["select"], T["include"], T["omit"], GO, O> | null;
+  updateMany?: (params: {
+    model: "TimeSlot";
+    operation: "updateMany";
+    args: GassmaGassmaTimeSlotUpdateData;
+    query: (args: GassmaGassmaTimeSlotUpdateData) => UpdateManyReturn;
+  }) => UpdateManyReturn;
+  updateManyAndReturn?: (params: {
+    model: "TimeSlot";
+    operation: "updateManyAndReturn";
+    args: GassmaGassmaTimeSlotUpdateData;
+    query: (args: GassmaGassmaTimeSlotUpdateData) => GassmaGassmaTimeSlotFindResultBase<undefined, undefined, undefined, GO, O>[];
+  }) => GassmaGassmaTimeSlotFindResultBase<undefined, undefined, undefined, GO, O>[];
+  upsert?: <T extends GassmaGassmaTimeSlotUpsertSingleData>(params: {
+    model: "TimeSlot";
+    operation: "upsert";
+    args: T;
+    query: (args: T) => GassmaGassmaTimeSlotFindResultBase<T["select"], T["include"], T["omit"], GO, O>;
+  }) => GassmaGassmaTimeSlotFindResultBase<T["select"], T["include"], T["omit"], GO, O>;
+  delete?: <T extends GassmaGassmaTimeSlotDeleteSingleData>(params: {
+    model: "TimeSlot";
+    operation: "delete";
+    args: T;
+    query: (args: T) => GassmaGassmaTimeSlotFindResultBase<T["select"], T["include"], T["omit"], GO, O> | null;
+  }) => GassmaGassmaTimeSlotFindResultBase<T["select"], T["include"], T["omit"], GO, O> | null;
+  deleteMany?: (params: {
+    model: "TimeSlot";
+    operation: "deleteMany";
+    args: GassmaGassmaTimeSlotDeleteData;
+    query: (args: GassmaGassmaTimeSlotDeleteData) => DeleteManyReturn;
+  }) => DeleteManyReturn;
+  count?: (params: {
+    model: "TimeSlot";
+    operation: "count";
+    args: GassmaGassmaTimeSlotCountData;
+    query: (args: GassmaGassmaTimeSlotCountData) => number;
+  }) => number;
+  aggregate?: <T extends GassmaGassmaTimeSlotAggregateData>(params: {
+    model: "TimeSlot";
+    operation: "aggregate";
+    args: T;
+    query: (args: T) => GassmaGassmaTimeSlotAggregateResult<T>;
+  }) => GassmaGassmaTimeSlotAggregateResult<T>;
+  groupBy?: <T extends GassmaGassmaTimeSlotGroupByData>(params: {
+    model: "TimeSlot";
+    operation: "groupBy";
+    args: T;
+    query: (args: T) => GassmaGassmaTimeSlotGroupByResult<T>[];
+  }) => GassmaGassmaTimeSlotGroupByResult<T>[];
+  $allOperations?: (params: {
+    model: "TimeSlot";
+    operation: GassmaGassmaOperationName;
+    args: GassmaGassmaTimeSlotQueryArgs;
+    query: (args: GassmaGassmaTimeSlotQueryArgs) => unknown;
+  }) => unknown;
+};
+
+export type GassmaGassmaReservationQueryArgs =
+  | GassmaGassmaReservationFindFirstData
+  | GassmaGassmaReservationFindManyData
+  | GassmaGassmaReservationCreateData
+  | GassmaGassmaReservationCreateManyData
+  | GassmaGassmaReservationCreateManyAndReturnData
+  | GassmaGassmaReservationUpdateSingleData
+  | GassmaGassmaReservationUpdateData
+  | GassmaGassmaReservationUpsertSingleData
+  | GassmaGassmaReservationDeleteSingleData
+  | GassmaGassmaReservationDeleteData
+  | GassmaGassmaReservationCountData
+  | GassmaGassmaReservationAggregateData
+  | GassmaGassmaReservationGroupByData;
+
+export type GassmaGassmaReservationQueryHooks<GO extends GassmaGassmaReservationOmit = {}, O = {}> = {
+  findFirst?: <T extends GassmaGassmaReservationFindFirstData>(params: {
+    model: "Reservation";
+    operation: "findFirst";
+    args: T;
+    query: (args: T) => GassmaGassmaReservationFindResultBase<T["select"], T["include"], T["omit"], GO, O> | null;
+  }) => GassmaGassmaReservationFindResultBase<T["select"], T["include"], T["omit"], GO, O> | null;
+  findFirstOrThrow?: <T extends GassmaGassmaReservationFindFirstData>(params: {
+    model: "Reservation";
+    operation: "findFirstOrThrow";
+    args: T;
+    query: (args: T) => GassmaGassmaReservationFindResultBase<T["select"], T["include"], T["omit"], GO, O>;
+  }) => GassmaGassmaReservationFindResultBase<T["select"], T["include"], T["omit"], GO, O>;
+  findMany?: <T extends GassmaGassmaReservationFindManyData>(params: {
+    model: "Reservation";
+    operation: "findMany";
+    args: T;
+    query: (args: T) => GassmaGassmaReservationFindResultBase<T["select"], T["include"], T["omit"], GO, O>[];
+  }) => GassmaGassmaReservationFindResultBase<T["select"], T["include"], T["omit"], GO, O>[];
+  create?: <T extends GassmaGassmaReservationCreateData>(params: {
+    model: "Reservation";
+    operation: "create";
+    args: T;
+    query: (args: T) => GassmaGassmaReservationFindResultBase<T["select"], T["include"], T["omit"], GO, O>;
+  }) => GassmaGassmaReservationFindResultBase<T["select"], T["include"], T["omit"], GO, O>;
+  createMany?: (params: {
+    model: "Reservation";
+    operation: "createMany";
+    args: GassmaGassmaReservationCreateManyData;
+    query: (args: GassmaGassmaReservationCreateManyData) => CreateManyReturn;
+  }) => CreateManyReturn;
+  createManyAndReturn?: <T extends GassmaGassmaReservationCreateManyAndReturnData>(params: {
+    model: "Reservation";
+    operation: "createManyAndReturn";
+    args: T;
+    query: (args: T) => GassmaGassmaReservationFindResultBase<T["select"], T["include"], T["omit"], GO, O>[];
+  }) => GassmaGassmaReservationFindResultBase<T["select"], T["include"], T["omit"], GO, O>[];
+  update?: <T extends GassmaGassmaReservationUpdateSingleData>(params: {
+    model: "Reservation";
+    operation: "update";
+    args: T;
+    query: (args: T) => GassmaGassmaReservationFindResultBase<T["select"], T["include"], T["omit"], GO, O> | null;
+  }) => GassmaGassmaReservationFindResultBase<T["select"], T["include"], T["omit"], GO, O> | null;
+  updateMany?: (params: {
+    model: "Reservation";
+    operation: "updateMany";
+    args: GassmaGassmaReservationUpdateData;
+    query: (args: GassmaGassmaReservationUpdateData) => UpdateManyReturn;
+  }) => UpdateManyReturn;
+  updateManyAndReturn?: (params: {
+    model: "Reservation";
+    operation: "updateManyAndReturn";
+    args: GassmaGassmaReservationUpdateData;
+    query: (args: GassmaGassmaReservationUpdateData) => GassmaGassmaReservationFindResultBase<undefined, undefined, undefined, GO, O>[];
+  }) => GassmaGassmaReservationFindResultBase<undefined, undefined, undefined, GO, O>[];
+  upsert?: <T extends GassmaGassmaReservationUpsertSingleData>(params: {
+    model: "Reservation";
+    operation: "upsert";
+    args: T;
+    query: (args: T) => GassmaGassmaReservationFindResultBase<T["select"], T["include"], T["omit"], GO, O>;
+  }) => GassmaGassmaReservationFindResultBase<T["select"], T["include"], T["omit"], GO, O>;
+  delete?: <T extends GassmaGassmaReservationDeleteSingleData>(params: {
+    model: "Reservation";
+    operation: "delete";
+    args: T;
+    query: (args: T) => GassmaGassmaReservationFindResultBase<T["select"], T["include"], T["omit"], GO, O> | null;
+  }) => GassmaGassmaReservationFindResultBase<T["select"], T["include"], T["omit"], GO, O> | null;
+  deleteMany?: (params: {
+    model: "Reservation";
+    operation: "deleteMany";
+    args: GassmaGassmaReservationDeleteData;
+    query: (args: GassmaGassmaReservationDeleteData) => DeleteManyReturn;
+  }) => DeleteManyReturn;
+  count?: (params: {
+    model: "Reservation";
+    operation: "count";
+    args: GassmaGassmaReservationCountData;
+    query: (args: GassmaGassmaReservationCountData) => number;
+  }) => number;
+  aggregate?: <T extends GassmaGassmaReservationAggregateData>(params: {
+    model: "Reservation";
+    operation: "aggregate";
+    args: T;
+    query: (args: T) => GassmaGassmaReservationAggregateResult<T>;
+  }) => GassmaGassmaReservationAggregateResult<T>;
+  groupBy?: <T extends GassmaGassmaReservationGroupByData>(params: {
+    model: "Reservation";
+    operation: "groupBy";
+    args: T;
+    query: (args: T) => GassmaGassmaReservationGroupByResult<T>[];
+  }) => GassmaGassmaReservationGroupByResult<T>[];
+  $allOperations?: (params: {
+    model: "Reservation";
+    operation: GassmaGassmaOperationName;
+    args: GassmaGassmaReservationQueryArgs;
+    query: (args: GassmaGassmaReservationQueryArgs) => unknown;
   }) => unknown;
 };
 
@@ -7110,6 +8567,9 @@ export type GassmaGassmaQueryArgs =
   | GassmaGassmaCommentQueryArgs
   | GassmaGassmaCategoryQueryArgs
   | GassmaGassmaTagQueryArgs
+  | GassmaGassmaSensorReadingQueryArgs
+  | GassmaGassmaTimeSlotQueryArgs
+  | GassmaGassmaReservationQueryArgs
   | GassmaGassmaProductQueryArgs
   | GassmaGassmaOrderQueryArgs
   | GassmaGassmaOrderItemQueryArgs
@@ -7123,92 +8583,92 @@ export type GassmaGassmaAllModelsQueryHooks = {
   findFirst?: (params: {
     model: GassmaGassmaModelName;
     operation: "findFirst";
-    args: GassmaGassmaPostFindFirstData | GassmaGassmaCommentFindFirstData | GassmaGassmaCategoryFindFirstData | GassmaGassmaTagFindFirstData | GassmaGassmaProductFindFirstData | GassmaGassmaOrderFindFirstData | GassmaGassmaOrderItemFindFirstData | GassmaGassmaFormulaCellFindFirstData | GassmaGassmaNotificationFindFirstData | GassmaGassmaOffsetNoteFindFirstData | GassmaGassmaUserFindFirstData | GassmaGassmaProfileFindFirstData;
-    query: (args: GassmaGassmaPostFindFirstData | GassmaGassmaCommentFindFirstData | GassmaGassmaCategoryFindFirstData | GassmaGassmaTagFindFirstData | GassmaGassmaProductFindFirstData | GassmaGassmaOrderFindFirstData | GassmaGassmaOrderItemFindFirstData | GassmaGassmaFormulaCellFindFirstData | GassmaGassmaNotificationFindFirstData | GassmaGassmaOffsetNoteFindFirstData | GassmaGassmaUserFindFirstData | GassmaGassmaProfileFindFirstData) => unknown;
+    args: GassmaGassmaPostFindFirstData | GassmaGassmaCommentFindFirstData | GassmaGassmaCategoryFindFirstData | GassmaGassmaTagFindFirstData | GassmaGassmaSensorReadingFindFirstData | GassmaGassmaTimeSlotFindFirstData | GassmaGassmaReservationFindFirstData | GassmaGassmaProductFindFirstData | GassmaGassmaOrderFindFirstData | GassmaGassmaOrderItemFindFirstData | GassmaGassmaFormulaCellFindFirstData | GassmaGassmaNotificationFindFirstData | GassmaGassmaOffsetNoteFindFirstData | GassmaGassmaUserFindFirstData | GassmaGassmaProfileFindFirstData;
+    query: (args: GassmaGassmaPostFindFirstData | GassmaGassmaCommentFindFirstData | GassmaGassmaCategoryFindFirstData | GassmaGassmaTagFindFirstData | GassmaGassmaSensorReadingFindFirstData | GassmaGassmaTimeSlotFindFirstData | GassmaGassmaReservationFindFirstData | GassmaGassmaProductFindFirstData | GassmaGassmaOrderFindFirstData | GassmaGassmaOrderItemFindFirstData | GassmaGassmaFormulaCellFindFirstData | GassmaGassmaNotificationFindFirstData | GassmaGassmaOffsetNoteFindFirstData | GassmaGassmaUserFindFirstData | GassmaGassmaProfileFindFirstData) => unknown;
   }) => unknown;
   findFirstOrThrow?: (params: {
     model: GassmaGassmaModelName;
     operation: "findFirstOrThrow";
-    args: GassmaGassmaPostFindFirstData | GassmaGassmaCommentFindFirstData | GassmaGassmaCategoryFindFirstData | GassmaGassmaTagFindFirstData | GassmaGassmaProductFindFirstData | GassmaGassmaOrderFindFirstData | GassmaGassmaOrderItemFindFirstData | GassmaGassmaFormulaCellFindFirstData | GassmaGassmaNotificationFindFirstData | GassmaGassmaOffsetNoteFindFirstData | GassmaGassmaUserFindFirstData | GassmaGassmaProfileFindFirstData;
-    query: (args: GassmaGassmaPostFindFirstData | GassmaGassmaCommentFindFirstData | GassmaGassmaCategoryFindFirstData | GassmaGassmaTagFindFirstData | GassmaGassmaProductFindFirstData | GassmaGassmaOrderFindFirstData | GassmaGassmaOrderItemFindFirstData | GassmaGassmaFormulaCellFindFirstData | GassmaGassmaNotificationFindFirstData | GassmaGassmaOffsetNoteFindFirstData | GassmaGassmaUserFindFirstData | GassmaGassmaProfileFindFirstData) => unknown;
+    args: GassmaGassmaPostFindFirstData | GassmaGassmaCommentFindFirstData | GassmaGassmaCategoryFindFirstData | GassmaGassmaTagFindFirstData | GassmaGassmaSensorReadingFindFirstData | GassmaGassmaTimeSlotFindFirstData | GassmaGassmaReservationFindFirstData | GassmaGassmaProductFindFirstData | GassmaGassmaOrderFindFirstData | GassmaGassmaOrderItemFindFirstData | GassmaGassmaFormulaCellFindFirstData | GassmaGassmaNotificationFindFirstData | GassmaGassmaOffsetNoteFindFirstData | GassmaGassmaUserFindFirstData | GassmaGassmaProfileFindFirstData;
+    query: (args: GassmaGassmaPostFindFirstData | GassmaGassmaCommentFindFirstData | GassmaGassmaCategoryFindFirstData | GassmaGassmaTagFindFirstData | GassmaGassmaSensorReadingFindFirstData | GassmaGassmaTimeSlotFindFirstData | GassmaGassmaReservationFindFirstData | GassmaGassmaProductFindFirstData | GassmaGassmaOrderFindFirstData | GassmaGassmaOrderItemFindFirstData | GassmaGassmaFormulaCellFindFirstData | GassmaGassmaNotificationFindFirstData | GassmaGassmaOffsetNoteFindFirstData | GassmaGassmaUserFindFirstData | GassmaGassmaProfileFindFirstData) => unknown;
   }) => unknown;
   findMany?: (params: {
     model: GassmaGassmaModelName;
     operation: "findMany";
-    args: GassmaGassmaPostFindManyData | GassmaGassmaCommentFindManyData | GassmaGassmaCategoryFindManyData | GassmaGassmaTagFindManyData | GassmaGassmaProductFindManyData | GassmaGassmaOrderFindManyData | GassmaGassmaOrderItemFindManyData | GassmaGassmaFormulaCellFindManyData | GassmaGassmaNotificationFindManyData | GassmaGassmaOffsetNoteFindManyData | GassmaGassmaUserFindManyData | GassmaGassmaProfileFindManyData;
-    query: (args: GassmaGassmaPostFindManyData | GassmaGassmaCommentFindManyData | GassmaGassmaCategoryFindManyData | GassmaGassmaTagFindManyData | GassmaGassmaProductFindManyData | GassmaGassmaOrderFindManyData | GassmaGassmaOrderItemFindManyData | GassmaGassmaFormulaCellFindManyData | GassmaGassmaNotificationFindManyData | GassmaGassmaOffsetNoteFindManyData | GassmaGassmaUserFindManyData | GassmaGassmaProfileFindManyData) => unknown;
+    args: GassmaGassmaPostFindManyData | GassmaGassmaCommentFindManyData | GassmaGassmaCategoryFindManyData | GassmaGassmaTagFindManyData | GassmaGassmaSensorReadingFindManyData | GassmaGassmaTimeSlotFindManyData | GassmaGassmaReservationFindManyData | GassmaGassmaProductFindManyData | GassmaGassmaOrderFindManyData | GassmaGassmaOrderItemFindManyData | GassmaGassmaFormulaCellFindManyData | GassmaGassmaNotificationFindManyData | GassmaGassmaOffsetNoteFindManyData | GassmaGassmaUserFindManyData | GassmaGassmaProfileFindManyData;
+    query: (args: GassmaGassmaPostFindManyData | GassmaGassmaCommentFindManyData | GassmaGassmaCategoryFindManyData | GassmaGassmaTagFindManyData | GassmaGassmaSensorReadingFindManyData | GassmaGassmaTimeSlotFindManyData | GassmaGassmaReservationFindManyData | GassmaGassmaProductFindManyData | GassmaGassmaOrderFindManyData | GassmaGassmaOrderItemFindManyData | GassmaGassmaFormulaCellFindManyData | GassmaGassmaNotificationFindManyData | GassmaGassmaOffsetNoteFindManyData | GassmaGassmaUserFindManyData | GassmaGassmaProfileFindManyData) => unknown;
   }) => unknown;
   create?: (params: {
     model: GassmaGassmaModelName;
     operation: "create";
-    args: GassmaGassmaPostCreateData | GassmaGassmaCommentCreateData | GassmaGassmaCategoryCreateData | GassmaGassmaTagCreateData | GassmaGassmaProductCreateData | GassmaGassmaOrderCreateData | GassmaGassmaOrderItemCreateData | GassmaGassmaFormulaCellCreateData | GassmaGassmaNotificationCreateData | GassmaGassmaOffsetNoteCreateData | GassmaGassmaUserCreateData | GassmaGassmaProfileCreateData;
-    query: (args: GassmaGassmaPostCreateData | GassmaGassmaCommentCreateData | GassmaGassmaCategoryCreateData | GassmaGassmaTagCreateData | GassmaGassmaProductCreateData | GassmaGassmaOrderCreateData | GassmaGassmaOrderItemCreateData | GassmaGassmaFormulaCellCreateData | GassmaGassmaNotificationCreateData | GassmaGassmaOffsetNoteCreateData | GassmaGassmaUserCreateData | GassmaGassmaProfileCreateData) => unknown;
+    args: GassmaGassmaPostCreateData | GassmaGassmaCommentCreateData | GassmaGassmaCategoryCreateData | GassmaGassmaTagCreateData | GassmaGassmaSensorReadingCreateData | GassmaGassmaTimeSlotCreateData | GassmaGassmaReservationCreateData | GassmaGassmaProductCreateData | GassmaGassmaOrderCreateData | GassmaGassmaOrderItemCreateData | GassmaGassmaFormulaCellCreateData | GassmaGassmaNotificationCreateData | GassmaGassmaOffsetNoteCreateData | GassmaGassmaUserCreateData | GassmaGassmaProfileCreateData;
+    query: (args: GassmaGassmaPostCreateData | GassmaGassmaCommentCreateData | GassmaGassmaCategoryCreateData | GassmaGassmaTagCreateData | GassmaGassmaSensorReadingCreateData | GassmaGassmaTimeSlotCreateData | GassmaGassmaReservationCreateData | GassmaGassmaProductCreateData | GassmaGassmaOrderCreateData | GassmaGassmaOrderItemCreateData | GassmaGassmaFormulaCellCreateData | GassmaGassmaNotificationCreateData | GassmaGassmaOffsetNoteCreateData | GassmaGassmaUserCreateData | GassmaGassmaProfileCreateData) => unknown;
   }) => unknown;
   createMany?: (params: {
     model: GassmaGassmaModelName;
     operation: "createMany";
-    args: GassmaGassmaPostCreateManyData | GassmaGassmaCommentCreateManyData | GassmaGassmaCategoryCreateManyData | GassmaGassmaTagCreateManyData | GassmaGassmaProductCreateManyData | GassmaGassmaOrderCreateManyData | GassmaGassmaOrderItemCreateManyData | GassmaGassmaFormulaCellCreateManyData | GassmaGassmaNotificationCreateManyData | GassmaGassmaOffsetNoteCreateManyData | GassmaGassmaUserCreateManyData | GassmaGassmaProfileCreateManyData;
-    query: (args: GassmaGassmaPostCreateManyData | GassmaGassmaCommentCreateManyData | GassmaGassmaCategoryCreateManyData | GassmaGassmaTagCreateManyData | GassmaGassmaProductCreateManyData | GassmaGassmaOrderCreateManyData | GassmaGassmaOrderItemCreateManyData | GassmaGassmaFormulaCellCreateManyData | GassmaGassmaNotificationCreateManyData | GassmaGassmaOffsetNoteCreateManyData | GassmaGassmaUserCreateManyData | GassmaGassmaProfileCreateManyData) => unknown;
+    args: GassmaGassmaPostCreateManyData | GassmaGassmaCommentCreateManyData | GassmaGassmaCategoryCreateManyData | GassmaGassmaTagCreateManyData | GassmaGassmaSensorReadingCreateManyData | GassmaGassmaTimeSlotCreateManyData | GassmaGassmaReservationCreateManyData | GassmaGassmaProductCreateManyData | GassmaGassmaOrderCreateManyData | GassmaGassmaOrderItemCreateManyData | GassmaGassmaFormulaCellCreateManyData | GassmaGassmaNotificationCreateManyData | GassmaGassmaOffsetNoteCreateManyData | GassmaGassmaUserCreateManyData | GassmaGassmaProfileCreateManyData;
+    query: (args: GassmaGassmaPostCreateManyData | GassmaGassmaCommentCreateManyData | GassmaGassmaCategoryCreateManyData | GassmaGassmaTagCreateManyData | GassmaGassmaSensorReadingCreateManyData | GassmaGassmaTimeSlotCreateManyData | GassmaGassmaReservationCreateManyData | GassmaGassmaProductCreateManyData | GassmaGassmaOrderCreateManyData | GassmaGassmaOrderItemCreateManyData | GassmaGassmaFormulaCellCreateManyData | GassmaGassmaNotificationCreateManyData | GassmaGassmaOffsetNoteCreateManyData | GassmaGassmaUserCreateManyData | GassmaGassmaProfileCreateManyData) => unknown;
   }) => unknown;
   createManyAndReturn?: (params: {
     model: GassmaGassmaModelName;
     operation: "createManyAndReturn";
-    args: GassmaGassmaPostCreateManyAndReturnData | GassmaGassmaCommentCreateManyAndReturnData | GassmaGassmaCategoryCreateManyAndReturnData | GassmaGassmaTagCreateManyAndReturnData | GassmaGassmaProductCreateManyAndReturnData | GassmaGassmaOrderCreateManyAndReturnData | GassmaGassmaOrderItemCreateManyAndReturnData | GassmaGassmaFormulaCellCreateManyAndReturnData | GassmaGassmaNotificationCreateManyAndReturnData | GassmaGassmaOffsetNoteCreateManyAndReturnData | GassmaGassmaUserCreateManyAndReturnData | GassmaGassmaProfileCreateManyAndReturnData;
-    query: (args: GassmaGassmaPostCreateManyAndReturnData | GassmaGassmaCommentCreateManyAndReturnData | GassmaGassmaCategoryCreateManyAndReturnData | GassmaGassmaTagCreateManyAndReturnData | GassmaGassmaProductCreateManyAndReturnData | GassmaGassmaOrderCreateManyAndReturnData | GassmaGassmaOrderItemCreateManyAndReturnData | GassmaGassmaFormulaCellCreateManyAndReturnData | GassmaGassmaNotificationCreateManyAndReturnData | GassmaGassmaOffsetNoteCreateManyAndReturnData | GassmaGassmaUserCreateManyAndReturnData | GassmaGassmaProfileCreateManyAndReturnData) => unknown;
+    args: GassmaGassmaPostCreateManyAndReturnData | GassmaGassmaCommentCreateManyAndReturnData | GassmaGassmaCategoryCreateManyAndReturnData | GassmaGassmaTagCreateManyAndReturnData | GassmaGassmaSensorReadingCreateManyAndReturnData | GassmaGassmaTimeSlotCreateManyAndReturnData | GassmaGassmaReservationCreateManyAndReturnData | GassmaGassmaProductCreateManyAndReturnData | GassmaGassmaOrderCreateManyAndReturnData | GassmaGassmaOrderItemCreateManyAndReturnData | GassmaGassmaFormulaCellCreateManyAndReturnData | GassmaGassmaNotificationCreateManyAndReturnData | GassmaGassmaOffsetNoteCreateManyAndReturnData | GassmaGassmaUserCreateManyAndReturnData | GassmaGassmaProfileCreateManyAndReturnData;
+    query: (args: GassmaGassmaPostCreateManyAndReturnData | GassmaGassmaCommentCreateManyAndReturnData | GassmaGassmaCategoryCreateManyAndReturnData | GassmaGassmaTagCreateManyAndReturnData | GassmaGassmaSensorReadingCreateManyAndReturnData | GassmaGassmaTimeSlotCreateManyAndReturnData | GassmaGassmaReservationCreateManyAndReturnData | GassmaGassmaProductCreateManyAndReturnData | GassmaGassmaOrderCreateManyAndReturnData | GassmaGassmaOrderItemCreateManyAndReturnData | GassmaGassmaFormulaCellCreateManyAndReturnData | GassmaGassmaNotificationCreateManyAndReturnData | GassmaGassmaOffsetNoteCreateManyAndReturnData | GassmaGassmaUserCreateManyAndReturnData | GassmaGassmaProfileCreateManyAndReturnData) => unknown;
   }) => unknown;
   update?: (params: {
     model: GassmaGassmaModelName;
     operation: "update";
-    args: GassmaGassmaPostUpdateSingleData | GassmaGassmaCommentUpdateSingleData | GassmaGassmaCategoryUpdateSingleData | GassmaGassmaTagUpdateSingleData | GassmaGassmaProductUpdateSingleData | GassmaGassmaOrderUpdateSingleData | GassmaGassmaOrderItemUpdateSingleData | GassmaGassmaFormulaCellUpdateSingleData | GassmaGassmaNotificationUpdateSingleData | GassmaGassmaOffsetNoteUpdateSingleData | GassmaGassmaUserUpdateSingleData | GassmaGassmaProfileUpdateSingleData;
-    query: (args: GassmaGassmaPostUpdateSingleData | GassmaGassmaCommentUpdateSingleData | GassmaGassmaCategoryUpdateSingleData | GassmaGassmaTagUpdateSingleData | GassmaGassmaProductUpdateSingleData | GassmaGassmaOrderUpdateSingleData | GassmaGassmaOrderItemUpdateSingleData | GassmaGassmaFormulaCellUpdateSingleData | GassmaGassmaNotificationUpdateSingleData | GassmaGassmaOffsetNoteUpdateSingleData | GassmaGassmaUserUpdateSingleData | GassmaGassmaProfileUpdateSingleData) => unknown;
+    args: GassmaGassmaPostUpdateSingleData | GassmaGassmaCommentUpdateSingleData | GassmaGassmaCategoryUpdateSingleData | GassmaGassmaTagUpdateSingleData | GassmaGassmaSensorReadingUpdateSingleData | GassmaGassmaTimeSlotUpdateSingleData | GassmaGassmaReservationUpdateSingleData | GassmaGassmaProductUpdateSingleData | GassmaGassmaOrderUpdateSingleData | GassmaGassmaOrderItemUpdateSingleData | GassmaGassmaFormulaCellUpdateSingleData | GassmaGassmaNotificationUpdateSingleData | GassmaGassmaOffsetNoteUpdateSingleData | GassmaGassmaUserUpdateSingleData | GassmaGassmaProfileUpdateSingleData;
+    query: (args: GassmaGassmaPostUpdateSingleData | GassmaGassmaCommentUpdateSingleData | GassmaGassmaCategoryUpdateSingleData | GassmaGassmaTagUpdateSingleData | GassmaGassmaSensorReadingUpdateSingleData | GassmaGassmaTimeSlotUpdateSingleData | GassmaGassmaReservationUpdateSingleData | GassmaGassmaProductUpdateSingleData | GassmaGassmaOrderUpdateSingleData | GassmaGassmaOrderItemUpdateSingleData | GassmaGassmaFormulaCellUpdateSingleData | GassmaGassmaNotificationUpdateSingleData | GassmaGassmaOffsetNoteUpdateSingleData | GassmaGassmaUserUpdateSingleData | GassmaGassmaProfileUpdateSingleData) => unknown;
   }) => unknown;
   updateMany?: (params: {
     model: GassmaGassmaModelName;
     operation: "updateMany";
-    args: GassmaGassmaPostUpdateData | GassmaGassmaCommentUpdateData | GassmaGassmaCategoryUpdateData | GassmaGassmaTagUpdateData | GassmaGassmaProductUpdateData | GassmaGassmaOrderUpdateData | GassmaGassmaOrderItemUpdateData | GassmaGassmaFormulaCellUpdateData | GassmaGassmaNotificationUpdateData | GassmaGassmaOffsetNoteUpdateData | GassmaGassmaUserUpdateData | GassmaGassmaProfileUpdateData;
-    query: (args: GassmaGassmaPostUpdateData | GassmaGassmaCommentUpdateData | GassmaGassmaCategoryUpdateData | GassmaGassmaTagUpdateData | GassmaGassmaProductUpdateData | GassmaGassmaOrderUpdateData | GassmaGassmaOrderItemUpdateData | GassmaGassmaFormulaCellUpdateData | GassmaGassmaNotificationUpdateData | GassmaGassmaOffsetNoteUpdateData | GassmaGassmaUserUpdateData | GassmaGassmaProfileUpdateData) => unknown;
+    args: GassmaGassmaPostUpdateData | GassmaGassmaCommentUpdateData | GassmaGassmaCategoryUpdateData | GassmaGassmaTagUpdateData | GassmaGassmaSensorReadingUpdateData | GassmaGassmaTimeSlotUpdateData | GassmaGassmaReservationUpdateData | GassmaGassmaProductUpdateData | GassmaGassmaOrderUpdateData | GassmaGassmaOrderItemUpdateData | GassmaGassmaFormulaCellUpdateData | GassmaGassmaNotificationUpdateData | GassmaGassmaOffsetNoteUpdateData | GassmaGassmaUserUpdateData | GassmaGassmaProfileUpdateData;
+    query: (args: GassmaGassmaPostUpdateData | GassmaGassmaCommentUpdateData | GassmaGassmaCategoryUpdateData | GassmaGassmaTagUpdateData | GassmaGassmaSensorReadingUpdateData | GassmaGassmaTimeSlotUpdateData | GassmaGassmaReservationUpdateData | GassmaGassmaProductUpdateData | GassmaGassmaOrderUpdateData | GassmaGassmaOrderItemUpdateData | GassmaGassmaFormulaCellUpdateData | GassmaGassmaNotificationUpdateData | GassmaGassmaOffsetNoteUpdateData | GassmaGassmaUserUpdateData | GassmaGassmaProfileUpdateData) => unknown;
   }) => unknown;
   updateManyAndReturn?: (params: {
     model: GassmaGassmaModelName;
     operation: "updateManyAndReturn";
-    args: GassmaGassmaPostUpdateData | GassmaGassmaCommentUpdateData | GassmaGassmaCategoryUpdateData | GassmaGassmaTagUpdateData | GassmaGassmaProductUpdateData | GassmaGassmaOrderUpdateData | GassmaGassmaOrderItemUpdateData | GassmaGassmaFormulaCellUpdateData | GassmaGassmaNotificationUpdateData | GassmaGassmaOffsetNoteUpdateData | GassmaGassmaUserUpdateData | GassmaGassmaProfileUpdateData;
-    query: (args: GassmaGassmaPostUpdateData | GassmaGassmaCommentUpdateData | GassmaGassmaCategoryUpdateData | GassmaGassmaTagUpdateData | GassmaGassmaProductUpdateData | GassmaGassmaOrderUpdateData | GassmaGassmaOrderItemUpdateData | GassmaGassmaFormulaCellUpdateData | GassmaGassmaNotificationUpdateData | GassmaGassmaOffsetNoteUpdateData | GassmaGassmaUserUpdateData | GassmaGassmaProfileUpdateData) => unknown;
+    args: GassmaGassmaPostUpdateData | GassmaGassmaCommentUpdateData | GassmaGassmaCategoryUpdateData | GassmaGassmaTagUpdateData | GassmaGassmaSensorReadingUpdateData | GassmaGassmaTimeSlotUpdateData | GassmaGassmaReservationUpdateData | GassmaGassmaProductUpdateData | GassmaGassmaOrderUpdateData | GassmaGassmaOrderItemUpdateData | GassmaGassmaFormulaCellUpdateData | GassmaGassmaNotificationUpdateData | GassmaGassmaOffsetNoteUpdateData | GassmaGassmaUserUpdateData | GassmaGassmaProfileUpdateData;
+    query: (args: GassmaGassmaPostUpdateData | GassmaGassmaCommentUpdateData | GassmaGassmaCategoryUpdateData | GassmaGassmaTagUpdateData | GassmaGassmaSensorReadingUpdateData | GassmaGassmaTimeSlotUpdateData | GassmaGassmaReservationUpdateData | GassmaGassmaProductUpdateData | GassmaGassmaOrderUpdateData | GassmaGassmaOrderItemUpdateData | GassmaGassmaFormulaCellUpdateData | GassmaGassmaNotificationUpdateData | GassmaGassmaOffsetNoteUpdateData | GassmaGassmaUserUpdateData | GassmaGassmaProfileUpdateData) => unknown;
   }) => unknown;
   upsert?: (params: {
     model: GassmaGassmaModelName;
     operation: "upsert";
-    args: GassmaGassmaPostUpsertSingleData | GassmaGassmaCommentUpsertSingleData | GassmaGassmaCategoryUpsertSingleData | GassmaGassmaTagUpsertSingleData | GassmaGassmaProductUpsertSingleData | GassmaGassmaOrderUpsertSingleData | GassmaGassmaOrderItemUpsertSingleData | GassmaGassmaFormulaCellUpsertSingleData | GassmaGassmaNotificationUpsertSingleData | GassmaGassmaOffsetNoteUpsertSingleData | GassmaGassmaUserUpsertSingleData | GassmaGassmaProfileUpsertSingleData;
-    query: (args: GassmaGassmaPostUpsertSingleData | GassmaGassmaCommentUpsertSingleData | GassmaGassmaCategoryUpsertSingleData | GassmaGassmaTagUpsertSingleData | GassmaGassmaProductUpsertSingleData | GassmaGassmaOrderUpsertSingleData | GassmaGassmaOrderItemUpsertSingleData | GassmaGassmaFormulaCellUpsertSingleData | GassmaGassmaNotificationUpsertSingleData | GassmaGassmaOffsetNoteUpsertSingleData | GassmaGassmaUserUpsertSingleData | GassmaGassmaProfileUpsertSingleData) => unknown;
+    args: GassmaGassmaPostUpsertSingleData | GassmaGassmaCommentUpsertSingleData | GassmaGassmaCategoryUpsertSingleData | GassmaGassmaTagUpsertSingleData | GassmaGassmaSensorReadingUpsertSingleData | GassmaGassmaTimeSlotUpsertSingleData | GassmaGassmaReservationUpsertSingleData | GassmaGassmaProductUpsertSingleData | GassmaGassmaOrderUpsertSingleData | GassmaGassmaOrderItemUpsertSingleData | GassmaGassmaFormulaCellUpsertSingleData | GassmaGassmaNotificationUpsertSingleData | GassmaGassmaOffsetNoteUpsertSingleData | GassmaGassmaUserUpsertSingleData | GassmaGassmaProfileUpsertSingleData;
+    query: (args: GassmaGassmaPostUpsertSingleData | GassmaGassmaCommentUpsertSingleData | GassmaGassmaCategoryUpsertSingleData | GassmaGassmaTagUpsertSingleData | GassmaGassmaSensorReadingUpsertSingleData | GassmaGassmaTimeSlotUpsertSingleData | GassmaGassmaReservationUpsertSingleData | GassmaGassmaProductUpsertSingleData | GassmaGassmaOrderUpsertSingleData | GassmaGassmaOrderItemUpsertSingleData | GassmaGassmaFormulaCellUpsertSingleData | GassmaGassmaNotificationUpsertSingleData | GassmaGassmaOffsetNoteUpsertSingleData | GassmaGassmaUserUpsertSingleData | GassmaGassmaProfileUpsertSingleData) => unknown;
   }) => unknown;
   delete?: (params: {
     model: GassmaGassmaModelName;
     operation: "delete";
-    args: GassmaGassmaPostDeleteSingleData | GassmaGassmaCommentDeleteSingleData | GassmaGassmaCategoryDeleteSingleData | GassmaGassmaTagDeleteSingleData | GassmaGassmaProductDeleteSingleData | GassmaGassmaOrderDeleteSingleData | GassmaGassmaOrderItemDeleteSingleData | GassmaGassmaFormulaCellDeleteSingleData | GassmaGassmaNotificationDeleteSingleData | GassmaGassmaOffsetNoteDeleteSingleData | GassmaGassmaUserDeleteSingleData | GassmaGassmaProfileDeleteSingleData;
-    query: (args: GassmaGassmaPostDeleteSingleData | GassmaGassmaCommentDeleteSingleData | GassmaGassmaCategoryDeleteSingleData | GassmaGassmaTagDeleteSingleData | GassmaGassmaProductDeleteSingleData | GassmaGassmaOrderDeleteSingleData | GassmaGassmaOrderItemDeleteSingleData | GassmaGassmaFormulaCellDeleteSingleData | GassmaGassmaNotificationDeleteSingleData | GassmaGassmaOffsetNoteDeleteSingleData | GassmaGassmaUserDeleteSingleData | GassmaGassmaProfileDeleteSingleData) => unknown;
+    args: GassmaGassmaPostDeleteSingleData | GassmaGassmaCommentDeleteSingleData | GassmaGassmaCategoryDeleteSingleData | GassmaGassmaTagDeleteSingleData | GassmaGassmaSensorReadingDeleteSingleData | GassmaGassmaTimeSlotDeleteSingleData | GassmaGassmaReservationDeleteSingleData | GassmaGassmaProductDeleteSingleData | GassmaGassmaOrderDeleteSingleData | GassmaGassmaOrderItemDeleteSingleData | GassmaGassmaFormulaCellDeleteSingleData | GassmaGassmaNotificationDeleteSingleData | GassmaGassmaOffsetNoteDeleteSingleData | GassmaGassmaUserDeleteSingleData | GassmaGassmaProfileDeleteSingleData;
+    query: (args: GassmaGassmaPostDeleteSingleData | GassmaGassmaCommentDeleteSingleData | GassmaGassmaCategoryDeleteSingleData | GassmaGassmaTagDeleteSingleData | GassmaGassmaSensorReadingDeleteSingleData | GassmaGassmaTimeSlotDeleteSingleData | GassmaGassmaReservationDeleteSingleData | GassmaGassmaProductDeleteSingleData | GassmaGassmaOrderDeleteSingleData | GassmaGassmaOrderItemDeleteSingleData | GassmaGassmaFormulaCellDeleteSingleData | GassmaGassmaNotificationDeleteSingleData | GassmaGassmaOffsetNoteDeleteSingleData | GassmaGassmaUserDeleteSingleData | GassmaGassmaProfileDeleteSingleData) => unknown;
   }) => unknown;
   deleteMany?: (params: {
     model: GassmaGassmaModelName;
     operation: "deleteMany";
-    args: GassmaGassmaPostDeleteData | GassmaGassmaCommentDeleteData | GassmaGassmaCategoryDeleteData | GassmaGassmaTagDeleteData | GassmaGassmaProductDeleteData | GassmaGassmaOrderDeleteData | GassmaGassmaOrderItemDeleteData | GassmaGassmaFormulaCellDeleteData | GassmaGassmaNotificationDeleteData | GassmaGassmaOffsetNoteDeleteData | GassmaGassmaUserDeleteData | GassmaGassmaProfileDeleteData;
-    query: (args: GassmaGassmaPostDeleteData | GassmaGassmaCommentDeleteData | GassmaGassmaCategoryDeleteData | GassmaGassmaTagDeleteData | GassmaGassmaProductDeleteData | GassmaGassmaOrderDeleteData | GassmaGassmaOrderItemDeleteData | GassmaGassmaFormulaCellDeleteData | GassmaGassmaNotificationDeleteData | GassmaGassmaOffsetNoteDeleteData | GassmaGassmaUserDeleteData | GassmaGassmaProfileDeleteData) => unknown;
+    args: GassmaGassmaPostDeleteData | GassmaGassmaCommentDeleteData | GassmaGassmaCategoryDeleteData | GassmaGassmaTagDeleteData | GassmaGassmaSensorReadingDeleteData | GassmaGassmaTimeSlotDeleteData | GassmaGassmaReservationDeleteData | GassmaGassmaProductDeleteData | GassmaGassmaOrderDeleteData | GassmaGassmaOrderItemDeleteData | GassmaGassmaFormulaCellDeleteData | GassmaGassmaNotificationDeleteData | GassmaGassmaOffsetNoteDeleteData | GassmaGassmaUserDeleteData | GassmaGassmaProfileDeleteData;
+    query: (args: GassmaGassmaPostDeleteData | GassmaGassmaCommentDeleteData | GassmaGassmaCategoryDeleteData | GassmaGassmaTagDeleteData | GassmaGassmaSensorReadingDeleteData | GassmaGassmaTimeSlotDeleteData | GassmaGassmaReservationDeleteData | GassmaGassmaProductDeleteData | GassmaGassmaOrderDeleteData | GassmaGassmaOrderItemDeleteData | GassmaGassmaFormulaCellDeleteData | GassmaGassmaNotificationDeleteData | GassmaGassmaOffsetNoteDeleteData | GassmaGassmaUserDeleteData | GassmaGassmaProfileDeleteData) => unknown;
   }) => unknown;
   count?: (params: {
     model: GassmaGassmaModelName;
     operation: "count";
-    args: GassmaGassmaPostCountData | GassmaGassmaCommentCountData | GassmaGassmaCategoryCountData | GassmaGassmaTagCountData | GassmaGassmaProductCountData | GassmaGassmaOrderCountData | GassmaGassmaOrderItemCountData | GassmaGassmaFormulaCellCountData | GassmaGassmaNotificationCountData | GassmaGassmaOffsetNoteCountData | GassmaGassmaUserCountData | GassmaGassmaProfileCountData;
-    query: (args: GassmaGassmaPostCountData | GassmaGassmaCommentCountData | GassmaGassmaCategoryCountData | GassmaGassmaTagCountData | GassmaGassmaProductCountData | GassmaGassmaOrderCountData | GassmaGassmaOrderItemCountData | GassmaGassmaFormulaCellCountData | GassmaGassmaNotificationCountData | GassmaGassmaOffsetNoteCountData | GassmaGassmaUserCountData | GassmaGassmaProfileCountData) => unknown;
+    args: GassmaGassmaPostCountData | GassmaGassmaCommentCountData | GassmaGassmaCategoryCountData | GassmaGassmaTagCountData | GassmaGassmaSensorReadingCountData | GassmaGassmaTimeSlotCountData | GassmaGassmaReservationCountData | GassmaGassmaProductCountData | GassmaGassmaOrderCountData | GassmaGassmaOrderItemCountData | GassmaGassmaFormulaCellCountData | GassmaGassmaNotificationCountData | GassmaGassmaOffsetNoteCountData | GassmaGassmaUserCountData | GassmaGassmaProfileCountData;
+    query: (args: GassmaGassmaPostCountData | GassmaGassmaCommentCountData | GassmaGassmaCategoryCountData | GassmaGassmaTagCountData | GassmaGassmaSensorReadingCountData | GassmaGassmaTimeSlotCountData | GassmaGassmaReservationCountData | GassmaGassmaProductCountData | GassmaGassmaOrderCountData | GassmaGassmaOrderItemCountData | GassmaGassmaFormulaCellCountData | GassmaGassmaNotificationCountData | GassmaGassmaOffsetNoteCountData | GassmaGassmaUserCountData | GassmaGassmaProfileCountData) => unknown;
   }) => unknown;
   aggregate?: (params: {
     model: GassmaGassmaModelName;
     operation: "aggregate";
-    args: GassmaGassmaPostAggregateData | GassmaGassmaCommentAggregateData | GassmaGassmaCategoryAggregateData | GassmaGassmaTagAggregateData | GassmaGassmaProductAggregateData | GassmaGassmaOrderAggregateData | GassmaGassmaOrderItemAggregateData | GassmaGassmaFormulaCellAggregateData | GassmaGassmaNotificationAggregateData | GassmaGassmaOffsetNoteAggregateData | GassmaGassmaUserAggregateData | GassmaGassmaProfileAggregateData;
-    query: (args: GassmaGassmaPostAggregateData | GassmaGassmaCommentAggregateData | GassmaGassmaCategoryAggregateData | GassmaGassmaTagAggregateData | GassmaGassmaProductAggregateData | GassmaGassmaOrderAggregateData | GassmaGassmaOrderItemAggregateData | GassmaGassmaFormulaCellAggregateData | GassmaGassmaNotificationAggregateData | GassmaGassmaOffsetNoteAggregateData | GassmaGassmaUserAggregateData | GassmaGassmaProfileAggregateData) => unknown;
+    args: GassmaGassmaPostAggregateData | GassmaGassmaCommentAggregateData | GassmaGassmaCategoryAggregateData | GassmaGassmaTagAggregateData | GassmaGassmaSensorReadingAggregateData | GassmaGassmaTimeSlotAggregateData | GassmaGassmaReservationAggregateData | GassmaGassmaProductAggregateData | GassmaGassmaOrderAggregateData | GassmaGassmaOrderItemAggregateData | GassmaGassmaFormulaCellAggregateData | GassmaGassmaNotificationAggregateData | GassmaGassmaOffsetNoteAggregateData | GassmaGassmaUserAggregateData | GassmaGassmaProfileAggregateData;
+    query: (args: GassmaGassmaPostAggregateData | GassmaGassmaCommentAggregateData | GassmaGassmaCategoryAggregateData | GassmaGassmaTagAggregateData | GassmaGassmaSensorReadingAggregateData | GassmaGassmaTimeSlotAggregateData | GassmaGassmaReservationAggregateData | GassmaGassmaProductAggregateData | GassmaGassmaOrderAggregateData | GassmaGassmaOrderItemAggregateData | GassmaGassmaFormulaCellAggregateData | GassmaGassmaNotificationAggregateData | GassmaGassmaOffsetNoteAggregateData | GassmaGassmaUserAggregateData | GassmaGassmaProfileAggregateData) => unknown;
   }) => unknown;
   groupBy?: (params: {
     model: GassmaGassmaModelName;
     operation: "groupBy";
-    args: GassmaGassmaPostGroupByData | GassmaGassmaCommentGroupByData | GassmaGassmaCategoryGroupByData | GassmaGassmaTagGroupByData | GassmaGassmaProductGroupByData | GassmaGassmaOrderGroupByData | GassmaGassmaOrderItemGroupByData | GassmaGassmaFormulaCellGroupByData | GassmaGassmaNotificationGroupByData | GassmaGassmaOffsetNoteGroupByData | GassmaGassmaUserGroupByData | GassmaGassmaProfileGroupByData;
-    query: (args: GassmaGassmaPostGroupByData | GassmaGassmaCommentGroupByData | GassmaGassmaCategoryGroupByData | GassmaGassmaTagGroupByData | GassmaGassmaProductGroupByData | GassmaGassmaOrderGroupByData | GassmaGassmaOrderItemGroupByData | GassmaGassmaFormulaCellGroupByData | GassmaGassmaNotificationGroupByData | GassmaGassmaOffsetNoteGroupByData | GassmaGassmaUserGroupByData | GassmaGassmaProfileGroupByData) => unknown;
+    args: GassmaGassmaPostGroupByData | GassmaGassmaCommentGroupByData | GassmaGassmaCategoryGroupByData | GassmaGassmaTagGroupByData | GassmaGassmaSensorReadingGroupByData | GassmaGassmaTimeSlotGroupByData | GassmaGassmaReservationGroupByData | GassmaGassmaProductGroupByData | GassmaGassmaOrderGroupByData | GassmaGassmaOrderItemGroupByData | GassmaGassmaFormulaCellGroupByData | GassmaGassmaNotificationGroupByData | GassmaGassmaOffsetNoteGroupByData | GassmaGassmaUserGroupByData | GassmaGassmaProfileGroupByData;
+    query: (args: GassmaGassmaPostGroupByData | GassmaGassmaCommentGroupByData | GassmaGassmaCategoryGroupByData | GassmaGassmaTagGroupByData | GassmaGassmaSensorReadingGroupByData | GassmaGassmaTimeSlotGroupByData | GassmaGassmaReservationGroupByData | GassmaGassmaProductGroupByData | GassmaGassmaOrderGroupByData | GassmaGassmaOrderItemGroupByData | GassmaGassmaFormulaCellGroupByData | GassmaGassmaNotificationGroupByData | GassmaGassmaOffsetNoteGroupByData | GassmaGassmaUserGroupByData | GassmaGassmaProfileGroupByData) => unknown;
   }) => unknown;
   $allOperations?: (params: {
     model: GassmaGassmaModelName;
@@ -7223,6 +8683,9 @@ export type GassmaGassmaQueryExtension<O extends GassmaGassmaGlobalOmitConfig = 
   "Comment"?: GassmaGassmaCommentQueryHooks<O extends { "Comment": infer UO } ? UO extends GassmaGassmaCommentOmit ? UO : {} : {}, O>;
   "Category"?: GassmaGassmaCategoryQueryHooks<O extends { "Category": infer UO } ? UO extends GassmaGassmaCategoryOmit ? UO : {} : {}, O>;
   "Tag"?: GassmaGassmaTagQueryHooks<O extends { "Tag": infer UO } ? UO extends GassmaGassmaTagOmit ? UO : {} : {}, O>;
+  "SensorReading"?: GassmaGassmaSensorReadingQueryHooks<O extends { "SensorReading": infer UO } ? UO extends GassmaGassmaSensorReadingOmit ? UO : {} : {}, O>;
+  "TimeSlot"?: GassmaGassmaTimeSlotQueryHooks<O extends { "TimeSlot": infer UO } ? UO extends GassmaGassmaTimeSlotOmit ? UO : {} : {}, O>;
+  "Reservation"?: GassmaGassmaReservationQueryHooks<O extends { "Reservation": infer UO } ? UO extends GassmaGassmaReservationOmit ? UO : {} : {}, O>;
   "Product"?: GassmaGassmaProductQueryHooks<O extends { "Product": infer UO } ? UO extends GassmaGassmaProductOmit ? UO : {} : {}, O>;
   "Order"?: GassmaGassmaOrderQueryHooks<O extends { "Order": infer UO } ? UO extends GassmaGassmaOrderOmit ? UO : {} : {}, O>;
   "OrderItem"?: GassmaGassmaOrderItemQueryHooks<O extends { "OrderItem": infer UO } ? UO extends GassmaGassmaOrderItemOmit ? UO : {} : {}, O>;
@@ -7239,6 +8702,9 @@ export type GassmaGassmaResultScalars<M> =
   M extends "Comment" ? GassmaGassmaCommentDefaultFindResult :
   M extends "Category" ? GassmaGassmaCategoryDefaultFindResult :
   M extends "Tag" ? GassmaGassmaTagDefaultFindResult :
+  M extends "SensorReading" ? GassmaGassmaSensorReadingDefaultFindResult :
+  M extends "TimeSlot" ? GassmaGassmaTimeSlotDefaultFindResult :
+  M extends "Reservation" ? GassmaGassmaReservationDefaultFindResult :
   M extends "Product" ? GassmaGassmaProductDefaultFindResult :
   M extends "Order" ? GassmaGassmaOrderDefaultFindResult :
   M extends "OrderItem" ? GassmaGassmaOrderItemDefaultFindResult :
@@ -7278,6 +8744,9 @@ export type GassmaGassmaComputedMap<CMap, R> = {
   "Comment": Gassma.MergeShape<Gassma.At<CMap, "Comment">, Gassma.ComputedOf<R, "Comment">>;
   "Category": Gassma.MergeShape<Gassma.At<CMap, "Category">, Gassma.ComputedOf<R, "Category">>;
   "Tag": Gassma.MergeShape<Gassma.At<CMap, "Tag">, Gassma.ComputedOf<R, "Tag">>;
+  "SensorReading": Gassma.MergeShape<Gassma.At<CMap, "SensorReading">, Gassma.ComputedOf<R, "SensorReading">>;
+  "TimeSlot": Gassma.MergeShape<Gassma.At<CMap, "TimeSlot">, Gassma.ComputedOf<R, "TimeSlot">>;
+  "Reservation": Gassma.MergeShape<Gassma.At<CMap, "Reservation">, Gassma.ComputedOf<R, "Reservation">>;
   "Product": Gassma.MergeShape<Gassma.At<CMap, "Product">, Gassma.ComputedOf<R, "Product">>;
   "Order": Gassma.MergeShape<Gassma.At<CMap, "Order">, Gassma.ComputedOf<R, "Order">>;
   "OrderItem": Gassma.MergeShape<Gassma.At<CMap, "OrderItem">, Gassma.ComputedOf<R, "OrderItem">>;
@@ -7298,6 +8767,9 @@ export type GassmaGassmaExtendedClient<O extends GassmaGassmaGlobalOmitConfig = 
   "Comment": GassmaGassmaCommentController<O extends { "Comment": infer UO } ? UO extends GassmaGassmaCommentOmit ? UO : {} : {}, O, CMap>;
   "Category": GassmaGassmaCategoryController<O extends { "Category": infer UO } ? UO extends GassmaGassmaCategoryOmit ? UO : {} : {}, O, CMap>;
   "Tag": GassmaGassmaTagController<O extends { "Tag": infer UO } ? UO extends GassmaGassmaTagOmit ? UO : {} : {}, O, CMap>;
+  "SensorReading": GassmaGassmaSensorReadingController<O extends { "SensorReading": infer UO } ? UO extends GassmaGassmaSensorReadingOmit ? UO : {} : {}, O, CMap>;
+  "TimeSlot": GassmaGassmaTimeSlotController<O extends { "TimeSlot": infer UO } ? UO extends GassmaGassmaTimeSlotOmit ? UO : {} : {}, O, CMap>;
+  "Reservation": GassmaGassmaReservationController<O extends { "Reservation": infer UO } ? UO extends GassmaGassmaReservationOmit ? UO : {} : {}, O, CMap>;
   "Product": GassmaGassmaProductController<O extends { "Product": infer UO } ? UO extends GassmaGassmaProductOmit ? UO : {} : {}, O, CMap>;
   "Order": GassmaGassmaOrderController<O extends { "Order": infer UO } ? UO extends GassmaGassmaOrderOmit ? UO : {} : {}, O, CMap>;
   "OrderItem": GassmaGassmaOrderItemController<O extends { "OrderItem": infer UO } ? UO extends GassmaGassmaOrderItemOmit ? UO : {} : {}, O, CMap>;

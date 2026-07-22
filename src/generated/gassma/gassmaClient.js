@@ -102,6 +102,24 @@ const gassmaRelations = {
       "reference": "id"
     }
   },
+  "Reservation": {
+    "timeSlot": {
+      "type": "manyToOne",
+      "to": "TimeSlot",
+      "field": "slotAt",
+      "reference": "slotAt"
+    }
+  },
+  "TimeSlot": {
+    "reservations": {
+      "type": "oneToMany",
+      "to": "Reservation",
+      "field": "slotAt",
+      "reference": "slotAt",
+      "onDelete": "Cascade",
+      "onUpdate": "Cascade"
+    }
+  },
   "Order": {
     "user": {
       "type": "manyToOne",
@@ -217,6 +235,9 @@ const gassmaAutoincrement = {
     "Comment": "id",
     "Category": "id",
     "Tag": "id",
+    "SensorReading": "id",
+    "TimeSlot": "id",
+    "Reservation": "id",
     "Product": "id",
     "Order": "id",
     "OrderItem": "id",

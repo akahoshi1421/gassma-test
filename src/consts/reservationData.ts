@@ -1,0 +1,8 @@
+const reservationData = [
+  ["id", "guestName", "slotAt"],
+  [1, "Alice", "2025-09-01T09:00:00"],
+  [2, "Bob", "2025-09-01T09:00:00"],
+  [3, "Carol", "2025-09-01T13:00:00"],
+];
+
+export { reservationData };
