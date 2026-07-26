@@ -48,8 +48,25 @@ declare namespace Gassma {
     result?: ResultExtensionConfig;
   };
 
+  type ExtendedGassmaClient = {
+    $extends(extension: GassmaExtension): ExtendedGassmaClient;
+  } & GassmaSheet;
+
+  type GassmaTransactionOptions = {
+    maxWait?: number;
+    timeout?: number;
+  };
+
+  type GassmaTransactionClient = {
+    $extends(extension: GassmaExtension): ExtendedGassmaClient;
+  } & GassmaSheet;
+
   type GassmaClient = {
-    $extends(extension: GassmaExtension): GassmaClient;
+    $extends(extension: GassmaExtension): ExtendedGassmaClient;
+    $transaction<T>(
+      fn: (tx: GassmaTransactionClient) => T,
+      options?: GassmaTransactionOptions,
+    ): T;
   } & GassmaSheet;
 
   const GassmaClient: new (
@@ -605,5 +622,18 @@ declare namespace Gassma {
   }
   class GassmaRelationDuplicateError extends Error {
     constructor(sheetName: string, field: string, value: unknown);
+  }
+  class GassmaTransactionLockTimeoutError extends Error {
+    constructor(maxWaitMs: number);
+  }
+  class GassmaTransactionTimeoutError extends Error {
+    constructor(
+      phase: "query" | "commit",
+      timeoutMs: number,
+      elapsedMs: number,
+    );
+  }
+  class GassmaNestedTransactionError extends Error {
+    constructor();
   }
 }

@@ -24,7 +24,7 @@ function captureError(fn: () => void, label: string): unknown {
 }
 
 function testPublicGlobalsExposed() {
-  // 公開47実体(クラス46 + symbol 1)がライブラリメンバーとして実機参照できること
+  // 公開50実体(クラス49 + symbol 1)がライブラリメンバーとして実機参照できること
   const publicClasses: (readonly [string, unknown])[] = [
     ["GassmaClient", Gassma.GassmaClient],
     ["GassmaController", Gassma.GassmaController],
@@ -108,6 +108,15 @@ function testPublicGlobalsExposed() {
       Gassma.GassmaIncludeSelectConflictError,
     ],
     ["GassmaRelationDuplicateError", Gassma.GassmaRelationDuplicateError],
+    [
+      "GassmaTransactionLockTimeoutError",
+      Gassma.GassmaTransactionLockTimeoutError,
+    ],
+    [
+      "GassmaTransactionTimeoutError",
+      Gassma.GassmaTransactionTimeoutError,
+    ],
+    ["GassmaNestedTransactionError", Gassma.GassmaNestedTransactionError],
   ];
   publicClasses.forEach((entry) => {
     assertEquals(typeof entry[1], "function", `typeof Gassma.${entry[0]}`);

@@ -12,6 +12,7 @@ import { testGlobalOmitWriteAll } from "./test/globalOmitWrite";
 import { testSettingsAll } from "./test/settings";
 import { testFormulaAll } from "./test/formula";
 import { testExtendsAll } from "./test/extends";
+import { testTransactionAll } from "./test/transaction";
 
 function main() {
   testRead();
@@ -25,6 +26,7 @@ function main() {
   testSettingsAll();
   testFormulaAll();
   testExtendsAll();
+  testTransactionAll();
 }
 
-export { main, getSheetSnapshot, resetAllSheets, resetSheet, testRead, testCreateAll, testDeleteAll, testUpdateAll, testUpsertAll, testErrorAll, testSecurityAll, testGlobalOmitWriteAll, testSettingsAll, testFormulaAll, testExtendsAll };
+export { main, getSheetSnapshot, resetAllSheets, resetSheet, testRead, testCreateAll, testDeleteAll, testUpdateAll, testUpsertAll, testErrorAll, testSecurityAll, testGlobalOmitWriteAll, testSettingsAll, testFormulaAll, testExtendsAll, testTransactionAll };

@@ -73,6 +73,11 @@ export namespace Gassma {
     ? { [P in keyof S]: number }
     : { [key: string]: number };
 
+  type GassmaTransactionOptions = {
+    maxWait?: number;
+    timeout?: number;
+  };
+
   type ManyReturn = {
     count: number;
   };
@@ -212,6 +217,15 @@ export namespace Gassma {
   }
   class GassmaRelationDuplicateError extends Error {
     constructor(sheetName: string, field: string, value: unknown);
+  }
+  class GassmaTransactionLockTimeoutError extends Error {
+    constructor(maxWaitMs: number);
+  }
+  class GassmaTransactionTimeoutError extends Error {
+    constructor(phase: "query" | "commit", timeoutMs: number, elapsedMs: number);
+  }
+  class GassmaNestedTransactionError extends Error {
+    constructor();
   }
 }
 
@@ -8786,8 +8800,12 @@ export type GassmaGassmaExtension<O extends GassmaGassmaGlobalOmitConfig = {}> =
   result?: GassmaGassmaResultConfig;
 };
 
+export type GassmaGassmaTransactionClient<O extends Gassma.StrictGlobalOmit<O, GassmaGassmaGlobalOmitConfig> = {}> = GassmaGassmaSheet<O> & {
+  $extends: GassmaGassmaExtendsFn<O, {}>;
+};
 export interface GassmaClient<O extends Gassma.StrictGlobalOmit<O, GassmaGassmaGlobalOmitConfig> = {}> extends GassmaGassmaSheet<O> {
   $extends: GassmaGassmaExtendsFn<O, {}>;
+  $transaction<T>(fn: (tx: GassmaGassmaTransactionClient<O>) => T, options?: Gassma.GassmaTransactionOptions): T;
 }
 export declare class GassmaClient<O extends Gassma.StrictGlobalOmit<O, GassmaGassmaGlobalOmitConfig> = {}> {
   constructor(options?: GassmaGassmaClientOptions<O>);
