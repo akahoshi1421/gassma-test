@@ -7,6 +7,10 @@ import { testTransactionClientOptions } from "./transaction/testTransactionClien
 import { testTransactionAutoincrement } from "./transaction/testTransactionAutoincrement";
 import { testTransactionNested } from "./transaction/testTransactionNested";
 import { testTransactionTimeout } from "./transaction/testTransactionTimeout";
+import { testTransactionBackupCleanup } from "./transaction/testTransactionBackupCleanup";
+import { testTransactionRollbackDisabled } from "./transaction/testTransactionRollbackDisabled";
+import { testTransactionFormulaCell } from "./transaction/testTransactionFormulaCell";
+import { testTransactionStaleMarker } from "./transaction/testTransactionStaleMarker";
 import { resetAllSheets } from "../reset/resetAllSheets";
 
 function testTransactionAll() {
@@ -20,6 +24,10 @@ function testTransactionAll() {
   testTransactionAutoincrement();
   testTransactionNested();
   testTransactionTimeout();
+  testTransactionBackupCleanup();
+  testTransactionRollbackDisabled();
+  testTransactionFormulaCell();
+  testTransactionStaleMarker();
 
   Logger.log("🎉 All transaction tests passed!");
 }
