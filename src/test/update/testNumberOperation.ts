@@ -82,17 +82,33 @@ function testDivide(client: GassmaClient) {
 }
 
 function testNumberOperationInUpdateMany(client: GassmaClient) {
+  const before1 = client.Product.findFirst({ where: { id: 1 } });
+  const before2 = client.Product.findFirst({ where: { id: 2 } });
+  const before3 = client.Product.findFirst({ where: { id: 3 } });
+  if (!before1 || !before2 || !before3) {
+    throw new Error("updateMany increment: products 1-3 not found");
+  }
+  // 3行が別々の結果になることを検証するため、元値が互いに異なる前提を確認
+  if (
+    before1.stock === before2.stock ||
+    before2.stock === before3.stock ||
+    before1.stock === before3.stock
+  ) {
+    throw new Error("updateMany increment: fixture stocks must be distinct");
+  }
+
   client.Product.updateMany({
     where: { id: { lte: 3 } },
     data: { stock: { increment: 100 } },
   });
 
   const snapshot = getSheetSnapshot("Product");
-  // stock of id=1 was originally some value, now +100
-  // Just verify all 3 were updated by checking they exist
   snapshot.assertRowExists({ id: 1 });
   snapshot.assertRowExists({ id: 2 });
   snapshot.assertRowExists({ id: 3 });
+  snapshot.assertRowEquals({ id: 1 }, { stock: before1.stock + 100 });
+  snapshot.assertRowEquals({ id: 2 }, { stock: before2.stock + 100 });
+  snapshot.assertRowEquals({ id: 3 }, { stock: before3.stock + 100 });
 
   resetSheet("Product", productData);
 }

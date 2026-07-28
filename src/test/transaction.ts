@@ -1,5 +1,6 @@
 import { testTransactionCommit } from "./transaction/testTransactionCommit";
 import { testTransactionRollback } from "./transaction/testTransactionRollback";
+import { testTransactionBulkWrite } from "./transaction/testTransactionBulkWrite";
 import { testTransactionReadYourWrites } from "./transaction/testTransactionReadYourWrites";
 import { testTransactionIsolation } from "./transaction/testTransactionIsolation";
 import { testTransactionMappedModel } from "./transaction/testTransactionMappedModel";
@@ -16,6 +17,7 @@ function testTransactionAll() {
   resetAllSheets();
   testTransactionCommit();
   testTransactionRollback();
+  testTransactionBulkWrite();
   testTransactionReadYourWrites();
   testTransactionIsolation();
   testTransactionMappedModel();
