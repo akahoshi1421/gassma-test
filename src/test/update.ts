@@ -5,6 +5,7 @@ import { testNumberOperation } from "./update/testNumberOperation";
 import { testOnUpdate } from "./update/testOnUpdate";
 import { testOnUpdateDateKey } from "./update/testOnUpdateDateKey";
 import { testNestedUpdate } from "./update/testNestedUpdate";
+import { testNestedConnectBatch } from "./update/testNestedConnectBatch";
 import { testNestedOneToOneNonFk } from "./update/testNestedOneToOneNonFk";
 import { testUpdateFirstMatch } from "./update/testUpdateFirstMatch";
 import { resetAllSheets } from "../reset/resetAllSheets";
@@ -18,6 +19,7 @@ function testUpdateAll() {
   testOnUpdate();
   testOnUpdateDateKey();
   testNestedUpdate();
+  testNestedConnectBatch();
   testNestedOneToOneNonFk();
   testUpdateFirstMatch();
 
