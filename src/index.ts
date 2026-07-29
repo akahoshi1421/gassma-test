@@ -13,6 +13,7 @@ import { testSettingsAll } from "./test/settings";
 import { testFormulaAll } from "./test/formula";
 import { testExtendsAll } from "./test/extends";
 import { testTransactionAll } from "./test/transaction";
+import { testMigrateAll } from "./test/migrate";
 
 function main() {
   testRead();
@@ -27,6 +28,7 @@ function main() {
   testFormulaAll();
   testExtendsAll();
   testTransactionAll();
+  testMigrateAll();
 }
 
-export { main, getSheetSnapshot, resetAllSheets, resetSheet, testRead, testCreateAll, testDeleteAll, testUpdateAll, testUpsertAll, testErrorAll, testSecurityAll, testGlobalOmitWriteAll, testSettingsAll, testFormulaAll, testExtendsAll, testTransactionAll };
+export { main, getSheetSnapshot, resetAllSheets, resetSheet, testRead, testCreateAll, testDeleteAll, testUpdateAll, testUpsertAll, testErrorAll, testSecurityAll, testGlobalOmitWriteAll, testSettingsAll, testFormulaAll, testExtendsAll, testTransactionAll, testMigrateAll };
