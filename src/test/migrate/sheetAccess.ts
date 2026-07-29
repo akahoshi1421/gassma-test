@@ -33,6 +33,8 @@ function createSheetWith(
   if (rows.length > 0) {
     sheet.getRange(2, 1, rows.length, rows[0].length).setValues(rows);
   }
+  // ライブラリは別インスタンスでこのシートを読むので、下準備の書き込みを確定させておく
+  SpreadsheetApp.flush();
   return sheet;
 }
 
