@@ -1,7 +1,10 @@
 import { GassmaClient } from "../../generated/gassma/gassmaClient";
 import { assertEquals } from "../../assert/assertEquals";
+import { assertDeepEquals } from "../../assert/assertDeepEquals";
 import { resetSheet } from "../../reset/resetSheet";
 import { notificationData } from "../../consts/notificationData";
+import { userData } from "../../consts/userData";
+import { postData } from "../../consts/postData";
 
 function testAutoincrement() {
   const client = new GassmaClient();
@@ -11,6 +14,7 @@ function testAutoincrement() {
   testAutoincrementCreateMany(client);
   testAutoincrementCreateManyAndReturn(client);
   testAutoincrementSequential(client);
+  testAutoincrementNestedCreateArray(client);
 
   Logger.log("✅ testAutoincrement: all passed");
 }
@@ -121,6 +125,53 @@ function testAutoincrementSequential(client: GassmaClient) {
   }
 
   resetSheet("notifications", notificationData);
+}
+
+function testAutoincrementNestedCreateArray(client: GassmaClient) {
+  // nested create の配列は id 未指定でも連番かつ配列順どおりに採番される
+  client.User.create({
+    data: {
+      id: 979,
+      email: "nestedautoinc@test.com",
+      name: "NestedAutoincrementUser",
+      role: "USER",
+      posts: {
+        create: [{ title: "採番A" }, { title: "採番B" }, { title: "採番C" }],
+      },
+    },
+  });
+
+  const posts = client.Post.findMany({
+    where: { authorId: 979 },
+    orderBy: { id: "asc" },
+  });
+
+  assertEquals(posts.length, 3, "nested create autoincrement: post count");
+  assertDeepEquals(
+    posts.map((post) => post.title),
+    ["採番A", "採番B", "採番C"],
+    "nested create autoincrement: id order follows array order",
+  );
+  assertEquals(
+    posts[1].id,
+    posts[0].id + 1,
+    "nested create autoincrement: 2nd id is 1st + 1",
+  );
+  assertEquals(
+    posts[2].id,
+    posts[1].id + 1,
+    "nested create autoincrement: 3rd id is 2nd + 1",
+  );
+  posts.forEach((post) => {
+    assertEquals(
+      post.authorId,
+      979,
+      `nested create autoincrement: authorId of "${post.title}"`,
+    );
+  });
+
+  resetSheet("User", userData);
+  resetSheet("Post", postData);
 }
 
 export { testAutoincrement };
