@@ -24,7 +24,7 @@ function captureError(fn: () => void, label: string): unknown {
 }
 
 function testPublicGlobalsExposed() {
-  // 公開51実体(クラス50 + symbol 1)がライブラリメンバーとして実機参照できること
+  // 公開52実体(クラス50 + symbol 1 + 関数 1)がライブラリメンバーとして実機参照できること
   const publicClasses: (readonly [string, unknown])[] = [
     ["GassmaClient", Gassma.GassmaClient],
     ["GassmaController", Gassma.GassmaController],
@@ -128,6 +128,9 @@ function testPublicGlobalsExposed() {
 
   // 非関数値(symbol)もライブラリメンバーとして参照できること
   assertEquals(typeof Gassma.skip, "symbol", "typeof Gassma.skip");
+
+  // クラスでない関数(raw)もライブラリメンバーとして参照できること
+  assertEquals(typeof Gassma.raw, "function", "typeof Gassma.raw");
 }
 
 function testAggregateErrorInheritance() {

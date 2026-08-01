@@ -7,6 +7,25 @@ declare namespace Gassma {
 
   type SkipValue = typeof skip;
 
+  type RawValue = {
+    readonly __gassmaRawValueBrand: "Gassma.raw";
+  };
+
+  /**
+   * Writes the value to the cell as-is, skipping formula-injection escaping.
+   * A string starting with `=` therefore becomes a live spreadsheet formula.
+   *
+   * Susceptible to formula injection: never pass unsanitized user input.
+   *
+   * @example
+   * ```
+   * gassma.Report.create({
+   *   data: { title: userInput, total: Gassma.raw("=SUM(B2:B10)") },
+   * });
+   * ```
+   */
+  function raw(value: string): RawValue;
+
   class FieldRef {
     readonly modelName: string;
     readonly name: string;
@@ -89,17 +108,17 @@ declare namespace Gassma {
       createdData: CreateManyAndReturnData,
     ): Record<string, unknown>[];
     create(createdData: CreateData): Record<string, unknown>;
-    findFirst(findData: FindFirstData): Record<string, any>;
-    findFirstOrThrow(findData: FindFirstData): Record<string, any>;
-    findMany(findData: FindData): Record<string, any>[];
+    findFirst(findData?: FindFirstData): Record<string, any>;
+    findFirstOrThrow(findData?: FindFirstData): Record<string, any>;
+    findMany(findData?: FindData): Record<string, any>[];
     update(updateData: UpdateSingleData): Record<string, unknown> | null;
     updateMany(updateData: UpdateData): UpdateManyReturn;
     updateManyAndReturn(updateData: UpdateData): Record<string, unknown>[];
     upsert(upsertData: UpsertSingleData): Record<string, unknown>;
     delete(deleteData: DeleteSingleData): Record<string, unknown> | null;
-    deleteMany(deleteData: DeleteData): DeleteManyReturn;
+    deleteMany(deleteData?: DeleteData): DeleteManyReturn;
     aggregate(aggregateData: AggregateData): Record<string, any>;
-    count(countData: CountData): number;
+    count(countData?: CountData): number;
     groupBy(groupByData: GroupByData): Record<string, any>[];
     _setRelationContext(context: RelationContext): void;
     _setGlobalOmit(omit: Omit): void;
@@ -153,11 +172,11 @@ declare namespace Gassma {
   };
 
   type AnyUse = {
-    [key: string]: GassmaAny | SkipValue;
+    [key: string]: GassmaAny | RawValue | SkipValue;
   };
 
   type UpdateAnyUse = {
-    [key: string]: GassmaAny | NumberOperation | SkipValue;
+    [key: string]: GassmaAny | NumberOperation | RawValue | SkipValue;
   };
 
   type WhereUse = {
