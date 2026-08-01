@@ -51,10 +51,41 @@ const MULTI_EXPECTED_ROWS: unknown[][] = [
   [2, "bob", "bob@example.com"],
 ];
 
+// 0 / false / Date だけを持つ列。実機のセルは文字列でなく型付きの値を返すので、
+// これらが「空」と誤判定されずデータ入りの列として扱われる経路を実機で通す
+const TYPED_MODEL: Gassma.MigrateModel = {
+  name: "MigrateDropTyped",
+  columns: ["id"],
+};
+const TYPED_INITIAL_HEADERS = ["id", "flags"];
+const TYPED_INITIAL_ROWS: unknown[][] = [
+  [1, 0],
+  [2, false],
+  [3, new Date(2026, 0, 15, 12, 30, 0)],
+];
+
+// データの無い列と、ヘッダーだけでデータ行の無いシート(空なら警告なしで削除される側)
+const EMPTY_COLUMN_MODEL: Gassma.MigrateModel = {
+  name: "MigrateDropEmpty",
+  columns: ["id"],
+};
+const EMPTY_COLUMN_INITIAL_HEADERS = ["id", "blank"];
+const EMPTY_COLUMN_INITIAL_ROWS: unknown[][] = [[1], [2]];
+const EMPTY_SHEET_NAME = "MigrateDropEmptySheet";
+const EMPTY_SHEET_HEADERS = ["ghost"];
+
 export {
   GUARD_MODEL,
   GUARD_INITIAL_HEADERS,
   GUARD_INITIAL_ROWS,
+  TYPED_MODEL,
+  TYPED_INITIAL_HEADERS,
+  TYPED_INITIAL_ROWS,
+  EMPTY_COLUMN_MODEL,
+  EMPTY_COLUMN_INITIAL_HEADERS,
+  EMPTY_COLUMN_INITIAL_ROWS,
+  EMPTY_SHEET_NAME,
+  EMPTY_SHEET_HEADERS,
   DROP_COLUMN_MODEL,
   DROP_COLUMN_INITIAL_HEADERS,
   DROP_COLUMN_INITIAL_ROWS,
