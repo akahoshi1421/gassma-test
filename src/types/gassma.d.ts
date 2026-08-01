@@ -320,6 +320,7 @@ declare namespace Gassma {
   type MigrateSheetsOptions = {
     spreadsheetId?: string;
     models: MigrateModel[];
+    acceptDataLoss?: boolean;
   };
 
   /**
@@ -327,7 +328,11 @@ declare namespace Gassma {
    * missing sheets are created and missing columns are appended, idempotently.
    * Assumes the header row is row 1 starting at column A on every sheet
    * (header positions moved via changeSettings are not supported).
-   * Never deletes or reorders existing sheets/columns, never touches data rows.
+   * Columns and sheets not in the schema are only warned about by default;
+   * with `acceptDataLoss: true` they are dropped after a warning that reports
+   * how much data they still contain (silently when they are empty; the last
+   * remaining sheet is kept, since a spreadsheet must contain at least one
+   * sheet). Never reorders existing columns, never writes to data rows.
    */
   function migrateSheets(options: MigrateSheetsOptions): void;
 
@@ -570,6 +575,14 @@ declare namespace Gassma {
   }
   class RelationInvalidOnUpdateError extends Error {
     constructor(sheetName: string, relationName: string, value: string);
+  }
+  class RelationIgnoredColumnError extends Error {
+    constructor(
+      sheetName: string,
+      relationName: string,
+      columnName: string,
+      ignoredSheetName: string,
+    );
   }
   class NestedWriteConnectNotFoundError extends Error {
     constructor(sheetName: string);
