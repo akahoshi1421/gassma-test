@@ -74,6 +74,14 @@ const EMPTY_COLUMN_INITIAL_ROWS: unknown[][] = [[1], [2]];
 const EMPTY_SHEET_NAME = "MigrateDropEmptySheet";
 const EMPTY_SHEET_HEADERS = ["ghost"];
 
+// データ入りのままシートごと落とす
+const DROP_SHEET_NAME = "MigrateDropSheet";
+const DROP_SHEET_HEADERS = ["id", "note"];
+const DROP_SHEET_ROWS: unknown[][] = [
+  [1, "bye-1"],
+  [2, "bye-2"],
+];
+
 export {
   GUARD_MODEL,
   GUARD_INITIAL_HEADERS,
@@ -86,6 +94,9 @@ export {
   EMPTY_COLUMN_INITIAL_ROWS,
   EMPTY_SHEET_NAME,
   EMPTY_SHEET_HEADERS,
+  DROP_SHEET_NAME,
+  DROP_SHEET_HEADERS,
+  DROP_SHEET_ROWS,
   DROP_COLUMN_MODEL,
   DROP_COLUMN_INITIAL_HEADERS,
   DROP_COLUMN_INITIAL_ROWS,

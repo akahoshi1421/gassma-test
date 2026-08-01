@@ -11,6 +11,8 @@ import { testMigrateDropColumn } from "./migrate/testMigrateDropColumn";
 import { testMigrateDropMultipleColumns } from "./migrate/testMigrateDropMultipleColumns";
 import { testMigrateDropTypedValues } from "./migrate/testMigrateDropTypedValues";
 import { testMigrateDropEmptyTargets } from "./migrate/testMigrateDropEmptyTargets";
+import { testMigrateDropSheet } from "./migrate/testMigrateDropSheet";
+import { testMigrateDropIdempotent } from "./migrate/testMigrateDropIdempotent";
 
 // migrate は本番フィクスチャ(DB1)へ一切書き込まないため resetAllSheets しない。
 // 検証はすべて使い捨てスプレッドシート上で行い、終了時に必ずゴミ箱へ捨てる。
@@ -31,6 +33,8 @@ function testMigrateAll() {
     testMigrateDropMultipleColumns(spreadsheetId);
     testMigrateDropTypedValues(spreadsheetId);
     testMigrateDropEmptyTargets(spreadsheetId);
+    testMigrateDropSheet(spreadsheetId);
+    testMigrateDropIdempotent(spreadsheetId);
   });
 
   Logger.log("🎉 All migrate tests passed!");
