@@ -8,6 +8,7 @@ import { testNestedUpdate } from "./update/testNestedUpdate";
 import { testNestedConnectBatch } from "./update/testNestedConnectBatch";
 import { testNestedOneToOneNonFk } from "./update/testNestedOneToOneNonFk";
 import { testUpdateFirstMatch } from "./update/testUpdateFirstMatch";
+import { testOnUpdateCascadeChain } from "./update/testOnUpdateCascadeChain";
 import { resetAllSheets } from "../reset/resetAllSheets";
 
 function testUpdateAll() {
@@ -22,6 +23,7 @@ function testUpdateAll() {
   testNestedConnectBatch();
   testNestedOneToOneNonFk();
   testUpdateFirstMatch();
+  testOnUpdateCascadeChain();
 
   Logger.log("🎉 All update tests passed!");
 }
