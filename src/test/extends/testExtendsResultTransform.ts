@@ -15,9 +15,11 @@ function testExtendsResultTransform() {
           findManyRows = rows.length;
           return rows;
         },
+        // count は select の有無で戻り値が number と集計オブジェクトに分かれ、
+        // フック内では args が未確定なので両方を受ける型になる
         count({ args, query }) {
           const value = query(args);
-          countValue = value;
+          if (typeof value === "number") countValue = value;
           return value;
         },
       },

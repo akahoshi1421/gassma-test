@@ -80,6 +80,7 @@ export namespace Gassma {
       ? Omit<Base, keyof SelectedComputed<C, S>> & SelectedComputed<C, S>
       : Omit<Base, keyof ActiveComputed<C, QO>> & ActiveComputed<C, QO>;
 
+  type Subset<T, U> = { [K in keyof T]: K extends keyof U ? T[K] : never };
   type ExactKeys<T, Shape> = Shape & { [K in Exclude<keyof T, keyof Shape>]?: never };
   type StrictGlobalOmit<O, Config> = Config & {
     [K in keyof O]?: K extends keyof Config
@@ -123,6 +124,9 @@ export namespace Gassma {
   class GassmaSkipNegativeError extends Error {
     constructor(value: number);
   }
+  class GassmaFindFirstTakeError extends Error {
+    constructor();
+  }
   class GassmaLimitNegativeError extends Error {
     constructor(value: number);
   }
@@ -157,6 +161,9 @@ export namespace Gassma {
     constructor();
   }
   class GassmaAggregateAvgTypeError extends GassmaAggregateSumTypeError {
+    constructor();
+  }
+  class GassmaAggregateSelectionRequiredError extends Error {
     constructor();
   }
   class RelationSheetNotFoundError extends Error {
@@ -204,6 +211,9 @@ export namespace Gassma {
   class RelationInvalidOnUpdateError extends Error {
     constructor(sheetName: string, relationName: string, value: string);
   }
+  class RelationIgnoredColumnError extends Error {
+    constructor(sheetName: string, relationName: string, columnName: string, ignoredSheetName: string);
+  }
   class NestedWriteConnectNotFoundError extends Error {
     constructor(sheetName: string);
   }
@@ -225,11 +235,23 @@ export namespace Gassma {
   class RelationOrderByCountUnsupportedTypeError extends Error {
     constructor(relationName: string, relationType: string);
   }
+  class GassmaUndefinedValueError extends Error {
+    constructor(path: string);
+  }
+  class GassmaSkipInArrayError extends Error {
+    constructor(path: string);
+  }
+  class GassmaMissingArgumentError extends Error {
+    constructor(argumentName: string);
+  }
+  class GassmaUnknownArgumentError extends Error {
+    constructor(argumentName: string, availableArguments: string[]);
+  }
+  class GassmaInvalidValueError extends Error {
+    constructor(argumentName: string, expected: string);
+  }
   class GassmaRelationNotFoundError extends Error {
     constructor(relationName: string, sheetName: string);
-  }
-  class GassmaTargetSheetNotFoundError extends Error {
-    constructor(targetSheetName: string);
   }
   class GassmaThroughRequiredError extends Error {
     constructor(relationName: string);
@@ -508,25 +530,25 @@ export declare class GassmaGassmaPostController<GO extends GassmaGassmaPostOmit 
     endColumnValue: number | string
   ): void;
   createMany(createdData: GassmaGassmaPostCreateManyData): CreateManyReturn;
-  createManyAndReturn<T extends GassmaGassmaPostCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Post">>>(createdData: T): GassmaGassmaPostFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
-  create<T extends GassmaGassmaPostCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "Post">>>(createdData: T): GassmaGassmaPostFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
-  findFirst<T extends GassmaGassmaPostFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Post">>>(findData: T): GassmaGassmaPostFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  createManyAndReturn<T extends GassmaGassmaPostCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Post">>>(createdData: T & Gassma.Subset<T, GassmaGassmaPostCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Post">>>): GassmaGassmaPostFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  create<T extends GassmaGassmaPostCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "Post">>>(createdData: T & Gassma.Subset<T, GassmaGassmaPostCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "Post">>>): GassmaGassmaPostFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  findFirst<T extends GassmaGassmaPostFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Post">>>(findData: T & Gassma.Subset<T, GassmaGassmaPostFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Post">>>): GassmaGassmaPostFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
   findFirst(): GassmaGassmaPostFindResult<unknown, unknown, unknown, GO, O, CMap> | null;
-  findFirstOrThrow<T extends GassmaGassmaPostFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Post">>>(findData: T): GassmaGassmaPostFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  findFirstOrThrow<T extends GassmaGassmaPostFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Post">>>(findData: T & Gassma.Subset<T, GassmaGassmaPostFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Post">>>): GassmaGassmaPostFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
   findFirstOrThrow(): GassmaGassmaPostFindResult<unknown, unknown, unknown, GO, O, CMap>;
-  findMany<T extends GassmaGassmaPostFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "Post">>>(findData: T): GassmaGassmaPostFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  findMany<T extends GassmaGassmaPostFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "Post">>>(findData: T & Gassma.Subset<T, GassmaGassmaPostFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "Post">>>): GassmaGassmaPostFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
   findMany(): GassmaGassmaPostFindResult<unknown, unknown, unknown, GO, O, CMap>[];
-  update<T extends GassmaGassmaPostUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Post">>>(updateData: T): GassmaGassmaPostFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  update<T extends GassmaGassmaPostUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Post">>>(updateData: T & Gassma.Subset<T, GassmaGassmaPostUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Post">>>): GassmaGassmaPostFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
   updateMany(updateData: GassmaGassmaPostUpdateData): UpdateManyReturn;
-  updateManyAndReturn(updateData: GassmaGassmaPostUpdateData): GassmaGassmaPostFindResult<undefined, undefined, undefined, GO, O, CMap>[];
-  upsert<T extends GassmaGassmaPostUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Post">>>(upsertData: T): GassmaGassmaPostFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
-  delete<T extends GassmaGassmaPostDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Post">>>(deleteData: T): GassmaGassmaPostFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  updateManyAndReturn<T extends GassmaGassmaPostUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Post">>>(updateData: T & Gassma.Subset<T, GassmaGassmaPostUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Post">>>): GassmaGassmaPostFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  upsert<T extends GassmaGassmaPostUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Post">>>(upsertData: T & Gassma.Subset<T, GassmaGassmaPostUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Post">>>): GassmaGassmaPostFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  delete<T extends GassmaGassmaPostDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Post">>>(deleteData: T & Gassma.Subset<T, GassmaGassmaPostDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Post">>>): GassmaGassmaPostFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
   deleteMany(deleteData: GassmaGassmaPostDeleteData): DeleteManyReturn;
   deleteMany(): DeleteManyReturn;
-  aggregate<T extends GassmaGassmaPostAggregateData>(aggregateData: T): GassmaGassmaPostAggregateResult<T>;
-  count(coutData: GassmaGassmaPostCountData): number;
+  aggregate<T extends GassmaGassmaPostAggregateData>(aggregateData: T & Gassma.Subset<T, GassmaGassmaPostAggregateData>): GassmaGassmaPostAggregateResult<T>;
+  count<T extends GassmaGassmaPostCountData>(coutData: T & Gassma.Subset<T, GassmaGassmaPostCountData>): GassmaGassmaPostCountResult<T>;
   count(): number;
-  groupBy<T extends GassmaGassmaPostGroupByData>(groupByData: T): GassmaGassmaPostGroupByResult<T>[];
+  groupBy<T extends GassmaGassmaPostGroupByData>(groupByData: T & Gassma.Subset<T, GassmaGassmaPostGroupByData>): GassmaGassmaPostGroupByResult<T>[];
 }
 
 export declare class GassmaGassmaCommentController<GO extends GassmaGassmaCommentOmit = {}, O = {}, CMap = {}> {
@@ -539,25 +561,25 @@ export declare class GassmaGassmaCommentController<GO extends GassmaGassmaCommen
     endColumnValue: number | string
   ): void;
   createMany(createdData: GassmaGassmaCommentCreateManyData): CreateManyReturn;
-  createManyAndReturn<T extends GassmaGassmaCommentCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Comment">>>(createdData: T): GassmaGassmaCommentFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
-  create<T extends GassmaGassmaCommentCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "Comment">>>(createdData: T): GassmaGassmaCommentFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
-  findFirst<T extends GassmaGassmaCommentFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Comment">>>(findData: T): GassmaGassmaCommentFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  createManyAndReturn<T extends GassmaGassmaCommentCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Comment">>>(createdData: T & Gassma.Subset<T, GassmaGassmaCommentCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Comment">>>): GassmaGassmaCommentFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  create<T extends GassmaGassmaCommentCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "Comment">>>(createdData: T & Gassma.Subset<T, GassmaGassmaCommentCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "Comment">>>): GassmaGassmaCommentFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  findFirst<T extends GassmaGassmaCommentFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Comment">>>(findData: T & Gassma.Subset<T, GassmaGassmaCommentFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Comment">>>): GassmaGassmaCommentFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
   findFirst(): GassmaGassmaCommentFindResult<unknown, unknown, unknown, GO, O, CMap> | null;
-  findFirstOrThrow<T extends GassmaGassmaCommentFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Comment">>>(findData: T): GassmaGassmaCommentFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  findFirstOrThrow<T extends GassmaGassmaCommentFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Comment">>>(findData: T & Gassma.Subset<T, GassmaGassmaCommentFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Comment">>>): GassmaGassmaCommentFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
   findFirstOrThrow(): GassmaGassmaCommentFindResult<unknown, unknown, unknown, GO, O, CMap>;
-  findMany<T extends GassmaGassmaCommentFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "Comment">>>(findData: T): GassmaGassmaCommentFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  findMany<T extends GassmaGassmaCommentFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "Comment">>>(findData: T & Gassma.Subset<T, GassmaGassmaCommentFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "Comment">>>): GassmaGassmaCommentFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
   findMany(): GassmaGassmaCommentFindResult<unknown, unknown, unknown, GO, O, CMap>[];
-  update<T extends GassmaGassmaCommentUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Comment">>>(updateData: T): GassmaGassmaCommentFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  update<T extends GassmaGassmaCommentUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Comment">>>(updateData: T & Gassma.Subset<T, GassmaGassmaCommentUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Comment">>>): GassmaGassmaCommentFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
   updateMany(updateData: GassmaGassmaCommentUpdateData): UpdateManyReturn;
-  updateManyAndReturn(updateData: GassmaGassmaCommentUpdateData): GassmaGassmaCommentFindResult<undefined, undefined, undefined, GO, O, CMap>[];
-  upsert<T extends GassmaGassmaCommentUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Comment">>>(upsertData: T): GassmaGassmaCommentFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
-  delete<T extends GassmaGassmaCommentDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Comment">>>(deleteData: T): GassmaGassmaCommentFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  updateManyAndReturn<T extends GassmaGassmaCommentUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Comment">>>(updateData: T & Gassma.Subset<T, GassmaGassmaCommentUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Comment">>>): GassmaGassmaCommentFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  upsert<T extends GassmaGassmaCommentUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Comment">>>(upsertData: T & Gassma.Subset<T, GassmaGassmaCommentUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Comment">>>): GassmaGassmaCommentFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  delete<T extends GassmaGassmaCommentDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Comment">>>(deleteData: T & Gassma.Subset<T, GassmaGassmaCommentDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Comment">>>): GassmaGassmaCommentFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
   deleteMany(deleteData: GassmaGassmaCommentDeleteData): DeleteManyReturn;
   deleteMany(): DeleteManyReturn;
-  aggregate<T extends GassmaGassmaCommentAggregateData>(aggregateData: T): GassmaGassmaCommentAggregateResult<T>;
-  count(coutData: GassmaGassmaCommentCountData): number;
+  aggregate<T extends GassmaGassmaCommentAggregateData>(aggregateData: T & Gassma.Subset<T, GassmaGassmaCommentAggregateData>): GassmaGassmaCommentAggregateResult<T>;
+  count<T extends GassmaGassmaCommentCountData>(coutData: T & Gassma.Subset<T, GassmaGassmaCommentCountData>): GassmaGassmaCommentCountResult<T>;
   count(): number;
-  groupBy<T extends GassmaGassmaCommentGroupByData>(groupByData: T): GassmaGassmaCommentGroupByResult<T>[];
+  groupBy<T extends GassmaGassmaCommentGroupByData>(groupByData: T & Gassma.Subset<T, GassmaGassmaCommentGroupByData>): GassmaGassmaCommentGroupByResult<T>[];
 }
 
 export declare class GassmaGassmaCategoryController<GO extends GassmaGassmaCategoryOmit = {}, O = {}, CMap = {}> {
@@ -570,25 +592,25 @@ export declare class GassmaGassmaCategoryController<GO extends GassmaGassmaCateg
     endColumnValue: number | string
   ): void;
   createMany(createdData: GassmaGassmaCategoryCreateManyData): CreateManyReturn;
-  createManyAndReturn<T extends GassmaGassmaCategoryCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Category">>>(createdData: T): GassmaGassmaCategoryFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
-  create<T extends GassmaGassmaCategoryCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "Category">>>(createdData: T): GassmaGassmaCategoryFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
-  findFirst<T extends GassmaGassmaCategoryFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Category">>>(findData: T): GassmaGassmaCategoryFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  createManyAndReturn<T extends GassmaGassmaCategoryCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Category">>>(createdData: T & Gassma.Subset<T, GassmaGassmaCategoryCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Category">>>): GassmaGassmaCategoryFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  create<T extends GassmaGassmaCategoryCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "Category">>>(createdData: T & Gassma.Subset<T, GassmaGassmaCategoryCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "Category">>>): GassmaGassmaCategoryFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  findFirst<T extends GassmaGassmaCategoryFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Category">>>(findData: T & Gassma.Subset<T, GassmaGassmaCategoryFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Category">>>): GassmaGassmaCategoryFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
   findFirst(): GassmaGassmaCategoryFindResult<unknown, unknown, unknown, GO, O, CMap> | null;
-  findFirstOrThrow<T extends GassmaGassmaCategoryFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Category">>>(findData: T): GassmaGassmaCategoryFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  findFirstOrThrow<T extends GassmaGassmaCategoryFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Category">>>(findData: T & Gassma.Subset<T, GassmaGassmaCategoryFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Category">>>): GassmaGassmaCategoryFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
   findFirstOrThrow(): GassmaGassmaCategoryFindResult<unknown, unknown, unknown, GO, O, CMap>;
-  findMany<T extends GassmaGassmaCategoryFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "Category">>>(findData: T): GassmaGassmaCategoryFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  findMany<T extends GassmaGassmaCategoryFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "Category">>>(findData: T & Gassma.Subset<T, GassmaGassmaCategoryFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "Category">>>): GassmaGassmaCategoryFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
   findMany(): GassmaGassmaCategoryFindResult<unknown, unknown, unknown, GO, O, CMap>[];
-  update<T extends GassmaGassmaCategoryUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Category">>>(updateData: T): GassmaGassmaCategoryFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  update<T extends GassmaGassmaCategoryUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Category">>>(updateData: T & Gassma.Subset<T, GassmaGassmaCategoryUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Category">>>): GassmaGassmaCategoryFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
   updateMany(updateData: GassmaGassmaCategoryUpdateData): UpdateManyReturn;
-  updateManyAndReturn(updateData: GassmaGassmaCategoryUpdateData): GassmaGassmaCategoryFindResult<undefined, undefined, undefined, GO, O, CMap>[];
-  upsert<T extends GassmaGassmaCategoryUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Category">>>(upsertData: T): GassmaGassmaCategoryFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
-  delete<T extends GassmaGassmaCategoryDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Category">>>(deleteData: T): GassmaGassmaCategoryFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  updateManyAndReturn<T extends GassmaGassmaCategoryUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Category">>>(updateData: T & Gassma.Subset<T, GassmaGassmaCategoryUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Category">>>): GassmaGassmaCategoryFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  upsert<T extends GassmaGassmaCategoryUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Category">>>(upsertData: T & Gassma.Subset<T, GassmaGassmaCategoryUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Category">>>): GassmaGassmaCategoryFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  delete<T extends GassmaGassmaCategoryDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Category">>>(deleteData: T & Gassma.Subset<T, GassmaGassmaCategoryDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Category">>>): GassmaGassmaCategoryFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
   deleteMany(deleteData: GassmaGassmaCategoryDeleteData): DeleteManyReturn;
   deleteMany(): DeleteManyReturn;
-  aggregate<T extends GassmaGassmaCategoryAggregateData>(aggregateData: T): GassmaGassmaCategoryAggregateResult<T>;
-  count(coutData: GassmaGassmaCategoryCountData): number;
+  aggregate<T extends GassmaGassmaCategoryAggregateData>(aggregateData: T & Gassma.Subset<T, GassmaGassmaCategoryAggregateData>): GassmaGassmaCategoryAggregateResult<T>;
+  count<T extends GassmaGassmaCategoryCountData>(coutData: T & Gassma.Subset<T, GassmaGassmaCategoryCountData>): GassmaGassmaCategoryCountResult<T>;
   count(): number;
-  groupBy<T extends GassmaGassmaCategoryGroupByData>(groupByData: T): GassmaGassmaCategoryGroupByResult<T>[];
+  groupBy<T extends GassmaGassmaCategoryGroupByData>(groupByData: T & Gassma.Subset<T, GassmaGassmaCategoryGroupByData>): GassmaGassmaCategoryGroupByResult<T>[];
 }
 
 export declare class GassmaGassmaTagController<GO extends GassmaGassmaTagOmit = {}, O = {}, CMap = {}> {
@@ -601,25 +623,25 @@ export declare class GassmaGassmaTagController<GO extends GassmaGassmaTagOmit = 
     endColumnValue: number | string
   ): void;
   createMany(createdData: GassmaGassmaTagCreateManyData): CreateManyReturn;
-  createManyAndReturn<T extends GassmaGassmaTagCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Tag">>>(createdData: T): GassmaGassmaTagFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
-  create<T extends GassmaGassmaTagCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "Tag">>>(createdData: T): GassmaGassmaTagFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
-  findFirst<T extends GassmaGassmaTagFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Tag">>>(findData: T): GassmaGassmaTagFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  createManyAndReturn<T extends GassmaGassmaTagCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Tag">>>(createdData: T & Gassma.Subset<T, GassmaGassmaTagCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Tag">>>): GassmaGassmaTagFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  create<T extends GassmaGassmaTagCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "Tag">>>(createdData: T & Gassma.Subset<T, GassmaGassmaTagCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "Tag">>>): GassmaGassmaTagFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  findFirst<T extends GassmaGassmaTagFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Tag">>>(findData: T & Gassma.Subset<T, GassmaGassmaTagFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Tag">>>): GassmaGassmaTagFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
   findFirst(): GassmaGassmaTagFindResult<unknown, unknown, unknown, GO, O, CMap> | null;
-  findFirstOrThrow<T extends GassmaGassmaTagFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Tag">>>(findData: T): GassmaGassmaTagFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  findFirstOrThrow<T extends GassmaGassmaTagFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Tag">>>(findData: T & Gassma.Subset<T, GassmaGassmaTagFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Tag">>>): GassmaGassmaTagFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
   findFirstOrThrow(): GassmaGassmaTagFindResult<unknown, unknown, unknown, GO, O, CMap>;
-  findMany<T extends GassmaGassmaTagFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "Tag">>>(findData: T): GassmaGassmaTagFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  findMany<T extends GassmaGassmaTagFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "Tag">>>(findData: T & Gassma.Subset<T, GassmaGassmaTagFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "Tag">>>): GassmaGassmaTagFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
   findMany(): GassmaGassmaTagFindResult<unknown, unknown, unknown, GO, O, CMap>[];
-  update<T extends GassmaGassmaTagUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Tag">>>(updateData: T): GassmaGassmaTagFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  update<T extends GassmaGassmaTagUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Tag">>>(updateData: T & Gassma.Subset<T, GassmaGassmaTagUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Tag">>>): GassmaGassmaTagFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
   updateMany(updateData: GassmaGassmaTagUpdateData): UpdateManyReturn;
-  updateManyAndReturn(updateData: GassmaGassmaTagUpdateData): GassmaGassmaTagFindResult<undefined, undefined, undefined, GO, O, CMap>[];
-  upsert<T extends GassmaGassmaTagUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Tag">>>(upsertData: T): GassmaGassmaTagFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
-  delete<T extends GassmaGassmaTagDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Tag">>>(deleteData: T): GassmaGassmaTagFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  updateManyAndReturn<T extends GassmaGassmaTagUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Tag">>>(updateData: T & Gassma.Subset<T, GassmaGassmaTagUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Tag">>>): GassmaGassmaTagFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  upsert<T extends GassmaGassmaTagUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Tag">>>(upsertData: T & Gassma.Subset<T, GassmaGassmaTagUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Tag">>>): GassmaGassmaTagFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  delete<T extends GassmaGassmaTagDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Tag">>>(deleteData: T & Gassma.Subset<T, GassmaGassmaTagDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Tag">>>): GassmaGassmaTagFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
   deleteMany(deleteData: GassmaGassmaTagDeleteData): DeleteManyReturn;
   deleteMany(): DeleteManyReturn;
-  aggregate<T extends GassmaGassmaTagAggregateData>(aggregateData: T): GassmaGassmaTagAggregateResult<T>;
-  count(coutData: GassmaGassmaTagCountData): number;
+  aggregate<T extends GassmaGassmaTagAggregateData>(aggregateData: T & Gassma.Subset<T, GassmaGassmaTagAggregateData>): GassmaGassmaTagAggregateResult<T>;
+  count<T extends GassmaGassmaTagCountData>(coutData: T & Gassma.Subset<T, GassmaGassmaTagCountData>): GassmaGassmaTagCountResult<T>;
   count(): number;
-  groupBy<T extends GassmaGassmaTagGroupByData>(groupByData: T): GassmaGassmaTagGroupByResult<T>[];
+  groupBy<T extends GassmaGassmaTagGroupByData>(groupByData: T & Gassma.Subset<T, GassmaGassmaTagGroupByData>): GassmaGassmaTagGroupByResult<T>[];
 }
 
 export declare class GassmaGassmaSensorReadingController<GO extends GassmaGassmaSensorReadingOmit = {}, O = {}, CMap = {}> {
@@ -632,25 +654,25 @@ export declare class GassmaGassmaSensorReadingController<GO extends GassmaGassma
     endColumnValue: number | string
   ): void;
   createMany(createdData: GassmaGassmaSensorReadingCreateManyData): CreateManyReturn;
-  createManyAndReturn<T extends GassmaGassmaSensorReadingCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "SensorReading">>>(createdData: T): GassmaGassmaSensorReadingFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
-  create<T extends GassmaGassmaSensorReadingCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "SensorReading">>>(createdData: T): GassmaGassmaSensorReadingFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
-  findFirst<T extends GassmaGassmaSensorReadingFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "SensorReading">>>(findData: T): GassmaGassmaSensorReadingFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  createManyAndReturn<T extends GassmaGassmaSensorReadingCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "SensorReading">>>(createdData: T & Gassma.Subset<T, GassmaGassmaSensorReadingCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "SensorReading">>>): GassmaGassmaSensorReadingFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  create<T extends GassmaGassmaSensorReadingCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "SensorReading">>>(createdData: T & Gassma.Subset<T, GassmaGassmaSensorReadingCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "SensorReading">>>): GassmaGassmaSensorReadingFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  findFirst<T extends GassmaGassmaSensorReadingFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "SensorReading">>>(findData: T & Gassma.Subset<T, GassmaGassmaSensorReadingFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "SensorReading">>>): GassmaGassmaSensorReadingFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
   findFirst(): GassmaGassmaSensorReadingFindResult<unknown, unknown, unknown, GO, O, CMap> | null;
-  findFirstOrThrow<T extends GassmaGassmaSensorReadingFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "SensorReading">>>(findData: T): GassmaGassmaSensorReadingFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  findFirstOrThrow<T extends GassmaGassmaSensorReadingFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "SensorReading">>>(findData: T & Gassma.Subset<T, GassmaGassmaSensorReadingFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "SensorReading">>>): GassmaGassmaSensorReadingFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
   findFirstOrThrow(): GassmaGassmaSensorReadingFindResult<unknown, unknown, unknown, GO, O, CMap>;
-  findMany<T extends GassmaGassmaSensorReadingFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "SensorReading">>>(findData: T): GassmaGassmaSensorReadingFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  findMany<T extends GassmaGassmaSensorReadingFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "SensorReading">>>(findData: T & Gassma.Subset<T, GassmaGassmaSensorReadingFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "SensorReading">>>): GassmaGassmaSensorReadingFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
   findMany(): GassmaGassmaSensorReadingFindResult<unknown, unknown, unknown, GO, O, CMap>[];
-  update<T extends GassmaGassmaSensorReadingUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "SensorReading">>>(updateData: T): GassmaGassmaSensorReadingFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  update<T extends GassmaGassmaSensorReadingUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "SensorReading">>>(updateData: T & Gassma.Subset<T, GassmaGassmaSensorReadingUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "SensorReading">>>): GassmaGassmaSensorReadingFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
   updateMany(updateData: GassmaGassmaSensorReadingUpdateData): UpdateManyReturn;
-  updateManyAndReturn(updateData: GassmaGassmaSensorReadingUpdateData): GassmaGassmaSensorReadingFindResult<undefined, undefined, undefined, GO, O, CMap>[];
-  upsert<T extends GassmaGassmaSensorReadingUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "SensorReading">>>(upsertData: T): GassmaGassmaSensorReadingFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
-  delete<T extends GassmaGassmaSensorReadingDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "SensorReading">>>(deleteData: T): GassmaGassmaSensorReadingFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  updateManyAndReturn<T extends GassmaGassmaSensorReadingUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "SensorReading">>>(updateData: T & Gassma.Subset<T, GassmaGassmaSensorReadingUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "SensorReading">>>): GassmaGassmaSensorReadingFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  upsert<T extends GassmaGassmaSensorReadingUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "SensorReading">>>(upsertData: T & Gassma.Subset<T, GassmaGassmaSensorReadingUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "SensorReading">>>): GassmaGassmaSensorReadingFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  delete<T extends GassmaGassmaSensorReadingDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "SensorReading">>>(deleteData: T & Gassma.Subset<T, GassmaGassmaSensorReadingDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "SensorReading">>>): GassmaGassmaSensorReadingFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
   deleteMany(deleteData: GassmaGassmaSensorReadingDeleteData): DeleteManyReturn;
   deleteMany(): DeleteManyReturn;
-  aggregate<T extends GassmaGassmaSensorReadingAggregateData>(aggregateData: T): GassmaGassmaSensorReadingAggregateResult<T>;
-  count(coutData: GassmaGassmaSensorReadingCountData): number;
+  aggregate<T extends GassmaGassmaSensorReadingAggregateData>(aggregateData: T & Gassma.Subset<T, GassmaGassmaSensorReadingAggregateData>): GassmaGassmaSensorReadingAggregateResult<T>;
+  count<T extends GassmaGassmaSensorReadingCountData>(coutData: T & Gassma.Subset<T, GassmaGassmaSensorReadingCountData>): GassmaGassmaSensorReadingCountResult<T>;
   count(): number;
-  groupBy<T extends GassmaGassmaSensorReadingGroupByData>(groupByData: T): GassmaGassmaSensorReadingGroupByResult<T>[];
+  groupBy<T extends GassmaGassmaSensorReadingGroupByData>(groupByData: T & Gassma.Subset<T, GassmaGassmaSensorReadingGroupByData>): GassmaGassmaSensorReadingGroupByResult<T>[];
 }
 
 export declare class GassmaGassmaTimeSlotController<GO extends GassmaGassmaTimeSlotOmit = {}, O = {}, CMap = {}> {
@@ -663,25 +685,25 @@ export declare class GassmaGassmaTimeSlotController<GO extends GassmaGassmaTimeS
     endColumnValue: number | string
   ): void;
   createMany(createdData: GassmaGassmaTimeSlotCreateManyData): CreateManyReturn;
-  createManyAndReturn<T extends GassmaGassmaTimeSlotCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "TimeSlot">>>(createdData: T): GassmaGassmaTimeSlotFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
-  create<T extends GassmaGassmaTimeSlotCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "TimeSlot">>>(createdData: T): GassmaGassmaTimeSlotFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
-  findFirst<T extends GassmaGassmaTimeSlotFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "TimeSlot">>>(findData: T): GassmaGassmaTimeSlotFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  createManyAndReturn<T extends GassmaGassmaTimeSlotCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "TimeSlot">>>(createdData: T & Gassma.Subset<T, GassmaGassmaTimeSlotCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "TimeSlot">>>): GassmaGassmaTimeSlotFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  create<T extends GassmaGassmaTimeSlotCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "TimeSlot">>>(createdData: T & Gassma.Subset<T, GassmaGassmaTimeSlotCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "TimeSlot">>>): GassmaGassmaTimeSlotFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  findFirst<T extends GassmaGassmaTimeSlotFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "TimeSlot">>>(findData: T & Gassma.Subset<T, GassmaGassmaTimeSlotFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "TimeSlot">>>): GassmaGassmaTimeSlotFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
   findFirst(): GassmaGassmaTimeSlotFindResult<unknown, unknown, unknown, GO, O, CMap> | null;
-  findFirstOrThrow<T extends GassmaGassmaTimeSlotFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "TimeSlot">>>(findData: T): GassmaGassmaTimeSlotFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  findFirstOrThrow<T extends GassmaGassmaTimeSlotFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "TimeSlot">>>(findData: T & Gassma.Subset<T, GassmaGassmaTimeSlotFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "TimeSlot">>>): GassmaGassmaTimeSlotFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
   findFirstOrThrow(): GassmaGassmaTimeSlotFindResult<unknown, unknown, unknown, GO, O, CMap>;
-  findMany<T extends GassmaGassmaTimeSlotFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "TimeSlot">>>(findData: T): GassmaGassmaTimeSlotFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  findMany<T extends GassmaGassmaTimeSlotFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "TimeSlot">>>(findData: T & Gassma.Subset<T, GassmaGassmaTimeSlotFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "TimeSlot">>>): GassmaGassmaTimeSlotFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
   findMany(): GassmaGassmaTimeSlotFindResult<unknown, unknown, unknown, GO, O, CMap>[];
-  update<T extends GassmaGassmaTimeSlotUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "TimeSlot">>>(updateData: T): GassmaGassmaTimeSlotFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  update<T extends GassmaGassmaTimeSlotUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "TimeSlot">>>(updateData: T & Gassma.Subset<T, GassmaGassmaTimeSlotUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "TimeSlot">>>): GassmaGassmaTimeSlotFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
   updateMany(updateData: GassmaGassmaTimeSlotUpdateData): UpdateManyReturn;
-  updateManyAndReturn(updateData: GassmaGassmaTimeSlotUpdateData): GassmaGassmaTimeSlotFindResult<undefined, undefined, undefined, GO, O, CMap>[];
-  upsert<T extends GassmaGassmaTimeSlotUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "TimeSlot">>>(upsertData: T): GassmaGassmaTimeSlotFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
-  delete<T extends GassmaGassmaTimeSlotDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "TimeSlot">>>(deleteData: T): GassmaGassmaTimeSlotFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  updateManyAndReturn<T extends GassmaGassmaTimeSlotUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "TimeSlot">>>(updateData: T & Gassma.Subset<T, GassmaGassmaTimeSlotUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "TimeSlot">>>): GassmaGassmaTimeSlotFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  upsert<T extends GassmaGassmaTimeSlotUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "TimeSlot">>>(upsertData: T & Gassma.Subset<T, GassmaGassmaTimeSlotUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "TimeSlot">>>): GassmaGassmaTimeSlotFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  delete<T extends GassmaGassmaTimeSlotDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "TimeSlot">>>(deleteData: T & Gassma.Subset<T, GassmaGassmaTimeSlotDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "TimeSlot">>>): GassmaGassmaTimeSlotFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
   deleteMany(deleteData: GassmaGassmaTimeSlotDeleteData): DeleteManyReturn;
   deleteMany(): DeleteManyReturn;
-  aggregate<T extends GassmaGassmaTimeSlotAggregateData>(aggregateData: T): GassmaGassmaTimeSlotAggregateResult<T>;
-  count(coutData: GassmaGassmaTimeSlotCountData): number;
+  aggregate<T extends GassmaGassmaTimeSlotAggregateData>(aggregateData: T & Gassma.Subset<T, GassmaGassmaTimeSlotAggregateData>): GassmaGassmaTimeSlotAggregateResult<T>;
+  count<T extends GassmaGassmaTimeSlotCountData>(coutData: T & Gassma.Subset<T, GassmaGassmaTimeSlotCountData>): GassmaGassmaTimeSlotCountResult<T>;
   count(): number;
-  groupBy<T extends GassmaGassmaTimeSlotGroupByData>(groupByData: T): GassmaGassmaTimeSlotGroupByResult<T>[];
+  groupBy<T extends GassmaGassmaTimeSlotGroupByData>(groupByData: T & Gassma.Subset<T, GassmaGassmaTimeSlotGroupByData>): GassmaGassmaTimeSlotGroupByResult<T>[];
 }
 
 export declare class GassmaGassmaReservationController<GO extends GassmaGassmaReservationOmit = {}, O = {}, CMap = {}> {
@@ -694,25 +716,25 @@ export declare class GassmaGassmaReservationController<GO extends GassmaGassmaRe
     endColumnValue: number | string
   ): void;
   createMany(createdData: GassmaGassmaReservationCreateManyData): CreateManyReturn;
-  createManyAndReturn<T extends GassmaGassmaReservationCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Reservation">>>(createdData: T): GassmaGassmaReservationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
-  create<T extends GassmaGassmaReservationCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "Reservation">>>(createdData: T): GassmaGassmaReservationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
-  findFirst<T extends GassmaGassmaReservationFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Reservation">>>(findData: T): GassmaGassmaReservationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  createManyAndReturn<T extends GassmaGassmaReservationCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Reservation">>>(createdData: T & Gassma.Subset<T, GassmaGassmaReservationCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Reservation">>>): GassmaGassmaReservationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  create<T extends GassmaGassmaReservationCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "Reservation">>>(createdData: T & Gassma.Subset<T, GassmaGassmaReservationCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "Reservation">>>): GassmaGassmaReservationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  findFirst<T extends GassmaGassmaReservationFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Reservation">>>(findData: T & Gassma.Subset<T, GassmaGassmaReservationFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Reservation">>>): GassmaGassmaReservationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
   findFirst(): GassmaGassmaReservationFindResult<unknown, unknown, unknown, GO, O, CMap> | null;
-  findFirstOrThrow<T extends GassmaGassmaReservationFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Reservation">>>(findData: T): GassmaGassmaReservationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  findFirstOrThrow<T extends GassmaGassmaReservationFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Reservation">>>(findData: T & Gassma.Subset<T, GassmaGassmaReservationFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Reservation">>>): GassmaGassmaReservationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
   findFirstOrThrow(): GassmaGassmaReservationFindResult<unknown, unknown, unknown, GO, O, CMap>;
-  findMany<T extends GassmaGassmaReservationFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "Reservation">>>(findData: T): GassmaGassmaReservationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  findMany<T extends GassmaGassmaReservationFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "Reservation">>>(findData: T & Gassma.Subset<T, GassmaGassmaReservationFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "Reservation">>>): GassmaGassmaReservationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
   findMany(): GassmaGassmaReservationFindResult<unknown, unknown, unknown, GO, O, CMap>[];
-  update<T extends GassmaGassmaReservationUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Reservation">>>(updateData: T): GassmaGassmaReservationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  update<T extends GassmaGassmaReservationUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Reservation">>>(updateData: T & Gassma.Subset<T, GassmaGassmaReservationUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Reservation">>>): GassmaGassmaReservationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
   updateMany(updateData: GassmaGassmaReservationUpdateData): UpdateManyReturn;
-  updateManyAndReturn(updateData: GassmaGassmaReservationUpdateData): GassmaGassmaReservationFindResult<undefined, undefined, undefined, GO, O, CMap>[];
-  upsert<T extends GassmaGassmaReservationUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Reservation">>>(upsertData: T): GassmaGassmaReservationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
-  delete<T extends GassmaGassmaReservationDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Reservation">>>(deleteData: T): GassmaGassmaReservationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  updateManyAndReturn<T extends GassmaGassmaReservationUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Reservation">>>(updateData: T & Gassma.Subset<T, GassmaGassmaReservationUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Reservation">>>): GassmaGassmaReservationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  upsert<T extends GassmaGassmaReservationUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Reservation">>>(upsertData: T & Gassma.Subset<T, GassmaGassmaReservationUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Reservation">>>): GassmaGassmaReservationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  delete<T extends GassmaGassmaReservationDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Reservation">>>(deleteData: T & Gassma.Subset<T, GassmaGassmaReservationDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Reservation">>>): GassmaGassmaReservationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
   deleteMany(deleteData: GassmaGassmaReservationDeleteData): DeleteManyReturn;
   deleteMany(): DeleteManyReturn;
-  aggregate<T extends GassmaGassmaReservationAggregateData>(aggregateData: T): GassmaGassmaReservationAggregateResult<T>;
-  count(coutData: GassmaGassmaReservationCountData): number;
+  aggregate<T extends GassmaGassmaReservationAggregateData>(aggregateData: T & Gassma.Subset<T, GassmaGassmaReservationAggregateData>): GassmaGassmaReservationAggregateResult<T>;
+  count<T extends GassmaGassmaReservationCountData>(coutData: T & Gassma.Subset<T, GassmaGassmaReservationCountData>): GassmaGassmaReservationCountResult<T>;
   count(): number;
-  groupBy<T extends GassmaGassmaReservationGroupByData>(groupByData: T): GassmaGassmaReservationGroupByResult<T>[];
+  groupBy<T extends GassmaGassmaReservationGroupByData>(groupByData: T & Gassma.Subset<T, GassmaGassmaReservationGroupByData>): GassmaGassmaReservationGroupByResult<T>[];
 }
 
 export declare class GassmaGassmaProductController<GO extends GassmaGassmaProductOmit = {}, O = {}, CMap = {}> {
@@ -725,25 +747,25 @@ export declare class GassmaGassmaProductController<GO extends GassmaGassmaProduc
     endColumnValue: number | string
   ): void;
   createMany(createdData: GassmaGassmaProductCreateManyData): CreateManyReturn;
-  createManyAndReturn<T extends GassmaGassmaProductCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Product">>>(createdData: T): GassmaGassmaProductFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
-  create<T extends GassmaGassmaProductCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "Product">>>(createdData: T): GassmaGassmaProductFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
-  findFirst<T extends GassmaGassmaProductFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Product">>>(findData: T): GassmaGassmaProductFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  createManyAndReturn<T extends GassmaGassmaProductCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Product">>>(createdData: T & Gassma.Subset<T, GassmaGassmaProductCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Product">>>): GassmaGassmaProductFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  create<T extends GassmaGassmaProductCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "Product">>>(createdData: T & Gassma.Subset<T, GassmaGassmaProductCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "Product">>>): GassmaGassmaProductFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  findFirst<T extends GassmaGassmaProductFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Product">>>(findData: T & Gassma.Subset<T, GassmaGassmaProductFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Product">>>): GassmaGassmaProductFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
   findFirst(): GassmaGassmaProductFindResult<unknown, unknown, unknown, GO, O, CMap> | null;
-  findFirstOrThrow<T extends GassmaGassmaProductFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Product">>>(findData: T): GassmaGassmaProductFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  findFirstOrThrow<T extends GassmaGassmaProductFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Product">>>(findData: T & Gassma.Subset<T, GassmaGassmaProductFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Product">>>): GassmaGassmaProductFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
   findFirstOrThrow(): GassmaGassmaProductFindResult<unknown, unknown, unknown, GO, O, CMap>;
-  findMany<T extends GassmaGassmaProductFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "Product">>>(findData: T): GassmaGassmaProductFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  findMany<T extends GassmaGassmaProductFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "Product">>>(findData: T & Gassma.Subset<T, GassmaGassmaProductFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "Product">>>): GassmaGassmaProductFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
   findMany(): GassmaGassmaProductFindResult<unknown, unknown, unknown, GO, O, CMap>[];
-  update<T extends GassmaGassmaProductUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Product">>>(updateData: T): GassmaGassmaProductFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  update<T extends GassmaGassmaProductUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Product">>>(updateData: T & Gassma.Subset<T, GassmaGassmaProductUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Product">>>): GassmaGassmaProductFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
   updateMany(updateData: GassmaGassmaProductUpdateData): UpdateManyReturn;
-  updateManyAndReturn(updateData: GassmaGassmaProductUpdateData): GassmaGassmaProductFindResult<undefined, undefined, undefined, GO, O, CMap>[];
-  upsert<T extends GassmaGassmaProductUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Product">>>(upsertData: T): GassmaGassmaProductFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
-  delete<T extends GassmaGassmaProductDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Product">>>(deleteData: T): GassmaGassmaProductFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  updateManyAndReturn<T extends GassmaGassmaProductUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Product">>>(updateData: T & Gassma.Subset<T, GassmaGassmaProductUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Product">>>): GassmaGassmaProductFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  upsert<T extends GassmaGassmaProductUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Product">>>(upsertData: T & Gassma.Subset<T, GassmaGassmaProductUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Product">>>): GassmaGassmaProductFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  delete<T extends GassmaGassmaProductDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Product">>>(deleteData: T & Gassma.Subset<T, GassmaGassmaProductDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Product">>>): GassmaGassmaProductFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
   deleteMany(deleteData: GassmaGassmaProductDeleteData): DeleteManyReturn;
   deleteMany(): DeleteManyReturn;
-  aggregate<T extends GassmaGassmaProductAggregateData>(aggregateData: T): GassmaGassmaProductAggregateResult<T>;
-  count(coutData: GassmaGassmaProductCountData): number;
+  aggregate<T extends GassmaGassmaProductAggregateData>(aggregateData: T & Gassma.Subset<T, GassmaGassmaProductAggregateData>): GassmaGassmaProductAggregateResult<T>;
+  count<T extends GassmaGassmaProductCountData>(coutData: T & Gassma.Subset<T, GassmaGassmaProductCountData>): GassmaGassmaProductCountResult<T>;
   count(): number;
-  groupBy<T extends GassmaGassmaProductGroupByData>(groupByData: T): GassmaGassmaProductGroupByResult<T>[];
+  groupBy<T extends GassmaGassmaProductGroupByData>(groupByData: T & Gassma.Subset<T, GassmaGassmaProductGroupByData>): GassmaGassmaProductGroupByResult<T>[];
 }
 
 export declare class GassmaGassmaOrderController<GO extends GassmaGassmaOrderOmit = {}, O = {}, CMap = {}> {
@@ -756,25 +778,25 @@ export declare class GassmaGassmaOrderController<GO extends GassmaGassmaOrderOmi
     endColumnValue: number | string
   ): void;
   createMany(createdData: GassmaGassmaOrderCreateManyData): CreateManyReturn;
-  createManyAndReturn<T extends GassmaGassmaOrderCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Order">>>(createdData: T): GassmaGassmaOrderFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
-  create<T extends GassmaGassmaOrderCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "Order">>>(createdData: T): GassmaGassmaOrderFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
-  findFirst<T extends GassmaGassmaOrderFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Order">>>(findData: T): GassmaGassmaOrderFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  createManyAndReturn<T extends GassmaGassmaOrderCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Order">>>(createdData: T & Gassma.Subset<T, GassmaGassmaOrderCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Order">>>): GassmaGassmaOrderFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  create<T extends GassmaGassmaOrderCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "Order">>>(createdData: T & Gassma.Subset<T, GassmaGassmaOrderCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "Order">>>): GassmaGassmaOrderFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  findFirst<T extends GassmaGassmaOrderFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Order">>>(findData: T & Gassma.Subset<T, GassmaGassmaOrderFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Order">>>): GassmaGassmaOrderFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
   findFirst(): GassmaGassmaOrderFindResult<unknown, unknown, unknown, GO, O, CMap> | null;
-  findFirstOrThrow<T extends GassmaGassmaOrderFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Order">>>(findData: T): GassmaGassmaOrderFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  findFirstOrThrow<T extends GassmaGassmaOrderFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Order">>>(findData: T & Gassma.Subset<T, GassmaGassmaOrderFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Order">>>): GassmaGassmaOrderFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
   findFirstOrThrow(): GassmaGassmaOrderFindResult<unknown, unknown, unknown, GO, O, CMap>;
-  findMany<T extends GassmaGassmaOrderFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "Order">>>(findData: T): GassmaGassmaOrderFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  findMany<T extends GassmaGassmaOrderFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "Order">>>(findData: T & Gassma.Subset<T, GassmaGassmaOrderFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "Order">>>): GassmaGassmaOrderFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
   findMany(): GassmaGassmaOrderFindResult<unknown, unknown, unknown, GO, O, CMap>[];
-  update<T extends GassmaGassmaOrderUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Order">>>(updateData: T): GassmaGassmaOrderFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  update<T extends GassmaGassmaOrderUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Order">>>(updateData: T & Gassma.Subset<T, GassmaGassmaOrderUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Order">>>): GassmaGassmaOrderFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
   updateMany(updateData: GassmaGassmaOrderUpdateData): UpdateManyReturn;
-  updateManyAndReturn(updateData: GassmaGassmaOrderUpdateData): GassmaGassmaOrderFindResult<undefined, undefined, undefined, GO, O, CMap>[];
-  upsert<T extends GassmaGassmaOrderUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Order">>>(upsertData: T): GassmaGassmaOrderFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
-  delete<T extends GassmaGassmaOrderDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Order">>>(deleteData: T): GassmaGassmaOrderFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  updateManyAndReturn<T extends GassmaGassmaOrderUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Order">>>(updateData: T & Gassma.Subset<T, GassmaGassmaOrderUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Order">>>): GassmaGassmaOrderFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  upsert<T extends GassmaGassmaOrderUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Order">>>(upsertData: T & Gassma.Subset<T, GassmaGassmaOrderUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Order">>>): GassmaGassmaOrderFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  delete<T extends GassmaGassmaOrderDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Order">>>(deleteData: T & Gassma.Subset<T, GassmaGassmaOrderDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Order">>>): GassmaGassmaOrderFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
   deleteMany(deleteData: GassmaGassmaOrderDeleteData): DeleteManyReturn;
   deleteMany(): DeleteManyReturn;
-  aggregate<T extends GassmaGassmaOrderAggregateData>(aggregateData: T): GassmaGassmaOrderAggregateResult<T>;
-  count(coutData: GassmaGassmaOrderCountData): number;
+  aggregate<T extends GassmaGassmaOrderAggregateData>(aggregateData: T & Gassma.Subset<T, GassmaGassmaOrderAggregateData>): GassmaGassmaOrderAggregateResult<T>;
+  count<T extends GassmaGassmaOrderCountData>(coutData: T & Gassma.Subset<T, GassmaGassmaOrderCountData>): GassmaGassmaOrderCountResult<T>;
   count(): number;
-  groupBy<T extends GassmaGassmaOrderGroupByData>(groupByData: T): GassmaGassmaOrderGroupByResult<T>[];
+  groupBy<T extends GassmaGassmaOrderGroupByData>(groupByData: T & Gassma.Subset<T, GassmaGassmaOrderGroupByData>): GassmaGassmaOrderGroupByResult<T>[];
 }
 
 export declare class GassmaGassmaOrderItemController<GO extends GassmaGassmaOrderItemOmit = {}, O = {}, CMap = {}> {
@@ -787,25 +809,25 @@ export declare class GassmaGassmaOrderItemController<GO extends GassmaGassmaOrde
     endColumnValue: number | string
   ): void;
   createMany(createdData: GassmaGassmaOrderItemCreateManyData): CreateManyReturn;
-  createManyAndReturn<T extends GassmaGassmaOrderItemCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "OrderItem">>>(createdData: T): GassmaGassmaOrderItemFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
-  create<T extends GassmaGassmaOrderItemCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "OrderItem">>>(createdData: T): GassmaGassmaOrderItemFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
-  findFirst<T extends GassmaGassmaOrderItemFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "OrderItem">>>(findData: T): GassmaGassmaOrderItemFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  createManyAndReturn<T extends GassmaGassmaOrderItemCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "OrderItem">>>(createdData: T & Gassma.Subset<T, GassmaGassmaOrderItemCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "OrderItem">>>): GassmaGassmaOrderItemFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  create<T extends GassmaGassmaOrderItemCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "OrderItem">>>(createdData: T & Gassma.Subset<T, GassmaGassmaOrderItemCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "OrderItem">>>): GassmaGassmaOrderItemFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  findFirst<T extends GassmaGassmaOrderItemFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "OrderItem">>>(findData: T & Gassma.Subset<T, GassmaGassmaOrderItemFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "OrderItem">>>): GassmaGassmaOrderItemFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
   findFirst(): GassmaGassmaOrderItemFindResult<unknown, unknown, unknown, GO, O, CMap> | null;
-  findFirstOrThrow<T extends GassmaGassmaOrderItemFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "OrderItem">>>(findData: T): GassmaGassmaOrderItemFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  findFirstOrThrow<T extends GassmaGassmaOrderItemFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "OrderItem">>>(findData: T & Gassma.Subset<T, GassmaGassmaOrderItemFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "OrderItem">>>): GassmaGassmaOrderItemFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
   findFirstOrThrow(): GassmaGassmaOrderItemFindResult<unknown, unknown, unknown, GO, O, CMap>;
-  findMany<T extends GassmaGassmaOrderItemFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "OrderItem">>>(findData: T): GassmaGassmaOrderItemFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  findMany<T extends GassmaGassmaOrderItemFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "OrderItem">>>(findData: T & Gassma.Subset<T, GassmaGassmaOrderItemFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "OrderItem">>>): GassmaGassmaOrderItemFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
   findMany(): GassmaGassmaOrderItemFindResult<unknown, unknown, unknown, GO, O, CMap>[];
-  update<T extends GassmaGassmaOrderItemUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "OrderItem">>>(updateData: T): GassmaGassmaOrderItemFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  update<T extends GassmaGassmaOrderItemUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "OrderItem">>>(updateData: T & Gassma.Subset<T, GassmaGassmaOrderItemUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "OrderItem">>>): GassmaGassmaOrderItemFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
   updateMany(updateData: GassmaGassmaOrderItemUpdateData): UpdateManyReturn;
-  updateManyAndReturn(updateData: GassmaGassmaOrderItemUpdateData): GassmaGassmaOrderItemFindResult<undefined, undefined, undefined, GO, O, CMap>[];
-  upsert<T extends GassmaGassmaOrderItemUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "OrderItem">>>(upsertData: T): GassmaGassmaOrderItemFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
-  delete<T extends GassmaGassmaOrderItemDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "OrderItem">>>(deleteData: T): GassmaGassmaOrderItemFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  updateManyAndReturn<T extends GassmaGassmaOrderItemUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "OrderItem">>>(updateData: T & Gassma.Subset<T, GassmaGassmaOrderItemUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "OrderItem">>>): GassmaGassmaOrderItemFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  upsert<T extends GassmaGassmaOrderItemUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "OrderItem">>>(upsertData: T & Gassma.Subset<T, GassmaGassmaOrderItemUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "OrderItem">>>): GassmaGassmaOrderItemFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  delete<T extends GassmaGassmaOrderItemDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "OrderItem">>>(deleteData: T & Gassma.Subset<T, GassmaGassmaOrderItemDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "OrderItem">>>): GassmaGassmaOrderItemFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
   deleteMany(deleteData: GassmaGassmaOrderItemDeleteData): DeleteManyReturn;
   deleteMany(): DeleteManyReturn;
-  aggregate<T extends GassmaGassmaOrderItemAggregateData>(aggregateData: T): GassmaGassmaOrderItemAggregateResult<T>;
-  count(coutData: GassmaGassmaOrderItemCountData): number;
+  aggregate<T extends GassmaGassmaOrderItemAggregateData>(aggregateData: T & Gassma.Subset<T, GassmaGassmaOrderItemAggregateData>): GassmaGassmaOrderItemAggregateResult<T>;
+  count<T extends GassmaGassmaOrderItemCountData>(coutData: T & Gassma.Subset<T, GassmaGassmaOrderItemCountData>): GassmaGassmaOrderItemCountResult<T>;
   count(): number;
-  groupBy<T extends GassmaGassmaOrderItemGroupByData>(groupByData: T): GassmaGassmaOrderItemGroupByResult<T>[];
+  groupBy<T extends GassmaGassmaOrderItemGroupByData>(groupByData: T & Gassma.Subset<T, GassmaGassmaOrderItemGroupByData>): GassmaGassmaOrderItemGroupByResult<T>[];
 }
 
 export declare class GassmaGassmaFormulaCellController<GO extends GassmaGassmaFormulaCellOmit = {}, O = {}, CMap = {}> {
@@ -818,25 +840,25 @@ export declare class GassmaGassmaFormulaCellController<GO extends GassmaGassmaFo
     endColumnValue: number | string
   ): void;
   createMany(createdData: GassmaGassmaFormulaCellCreateManyData): CreateManyReturn;
-  createManyAndReturn<T extends GassmaGassmaFormulaCellCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "FormulaCell">>>(createdData: T): GassmaGassmaFormulaCellFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
-  create<T extends GassmaGassmaFormulaCellCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "FormulaCell">>>(createdData: T): GassmaGassmaFormulaCellFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
-  findFirst<T extends GassmaGassmaFormulaCellFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "FormulaCell">>>(findData: T): GassmaGassmaFormulaCellFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  createManyAndReturn<T extends GassmaGassmaFormulaCellCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "FormulaCell">>>(createdData: T & Gassma.Subset<T, GassmaGassmaFormulaCellCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "FormulaCell">>>): GassmaGassmaFormulaCellFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  create<T extends GassmaGassmaFormulaCellCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "FormulaCell">>>(createdData: T & Gassma.Subset<T, GassmaGassmaFormulaCellCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "FormulaCell">>>): GassmaGassmaFormulaCellFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  findFirst<T extends GassmaGassmaFormulaCellFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "FormulaCell">>>(findData: T & Gassma.Subset<T, GassmaGassmaFormulaCellFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "FormulaCell">>>): GassmaGassmaFormulaCellFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
   findFirst(): GassmaGassmaFormulaCellFindResult<unknown, unknown, unknown, GO, O, CMap> | null;
-  findFirstOrThrow<T extends GassmaGassmaFormulaCellFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "FormulaCell">>>(findData: T): GassmaGassmaFormulaCellFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  findFirstOrThrow<T extends GassmaGassmaFormulaCellFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "FormulaCell">>>(findData: T & Gassma.Subset<T, GassmaGassmaFormulaCellFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "FormulaCell">>>): GassmaGassmaFormulaCellFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
   findFirstOrThrow(): GassmaGassmaFormulaCellFindResult<unknown, unknown, unknown, GO, O, CMap>;
-  findMany<T extends GassmaGassmaFormulaCellFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "FormulaCell">>>(findData: T): GassmaGassmaFormulaCellFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  findMany<T extends GassmaGassmaFormulaCellFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "FormulaCell">>>(findData: T & Gassma.Subset<T, GassmaGassmaFormulaCellFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "FormulaCell">>>): GassmaGassmaFormulaCellFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
   findMany(): GassmaGassmaFormulaCellFindResult<unknown, unknown, unknown, GO, O, CMap>[];
-  update<T extends GassmaGassmaFormulaCellUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "FormulaCell">>>(updateData: T): GassmaGassmaFormulaCellFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  update<T extends GassmaGassmaFormulaCellUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "FormulaCell">>>(updateData: T & Gassma.Subset<T, GassmaGassmaFormulaCellUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "FormulaCell">>>): GassmaGassmaFormulaCellFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
   updateMany(updateData: GassmaGassmaFormulaCellUpdateData): UpdateManyReturn;
-  updateManyAndReturn(updateData: GassmaGassmaFormulaCellUpdateData): GassmaGassmaFormulaCellFindResult<undefined, undefined, undefined, GO, O, CMap>[];
-  upsert<T extends GassmaGassmaFormulaCellUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "FormulaCell">>>(upsertData: T): GassmaGassmaFormulaCellFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
-  delete<T extends GassmaGassmaFormulaCellDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "FormulaCell">>>(deleteData: T): GassmaGassmaFormulaCellFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  updateManyAndReturn<T extends GassmaGassmaFormulaCellUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "FormulaCell">>>(updateData: T & Gassma.Subset<T, GassmaGassmaFormulaCellUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "FormulaCell">>>): GassmaGassmaFormulaCellFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  upsert<T extends GassmaGassmaFormulaCellUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "FormulaCell">>>(upsertData: T & Gassma.Subset<T, GassmaGassmaFormulaCellUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "FormulaCell">>>): GassmaGassmaFormulaCellFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  delete<T extends GassmaGassmaFormulaCellDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "FormulaCell">>>(deleteData: T & Gassma.Subset<T, GassmaGassmaFormulaCellDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "FormulaCell">>>): GassmaGassmaFormulaCellFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
   deleteMany(deleteData: GassmaGassmaFormulaCellDeleteData): DeleteManyReturn;
   deleteMany(): DeleteManyReturn;
-  aggregate<T extends GassmaGassmaFormulaCellAggregateData>(aggregateData: T): GassmaGassmaFormulaCellAggregateResult<T>;
-  count(coutData: GassmaGassmaFormulaCellCountData): number;
+  aggregate<T extends GassmaGassmaFormulaCellAggregateData>(aggregateData: T & Gassma.Subset<T, GassmaGassmaFormulaCellAggregateData>): GassmaGassmaFormulaCellAggregateResult<T>;
+  count<T extends GassmaGassmaFormulaCellCountData>(coutData: T & Gassma.Subset<T, GassmaGassmaFormulaCellCountData>): GassmaGassmaFormulaCellCountResult<T>;
   count(): number;
-  groupBy<T extends GassmaGassmaFormulaCellGroupByData>(groupByData: T): GassmaGassmaFormulaCellGroupByResult<T>[];
+  groupBy<T extends GassmaGassmaFormulaCellGroupByData>(groupByData: T & Gassma.Subset<T, GassmaGassmaFormulaCellGroupByData>): GassmaGassmaFormulaCellGroupByResult<T>[];
 }
 
 export declare class GassmaGassmaNotificationController<GO extends GassmaGassmaNotificationOmit = {}, O = {}, CMap = {}> {
@@ -849,25 +871,25 @@ export declare class GassmaGassmaNotificationController<GO extends GassmaGassmaN
     endColumnValue: number | string
   ): void;
   createMany(createdData: GassmaGassmaNotificationCreateManyData): CreateManyReturn;
-  createManyAndReturn<T extends GassmaGassmaNotificationCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Notification">>>(createdData: T): GassmaGassmaNotificationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
-  create<T extends GassmaGassmaNotificationCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "Notification">>>(createdData: T): GassmaGassmaNotificationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
-  findFirst<T extends GassmaGassmaNotificationFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Notification">>>(findData: T): GassmaGassmaNotificationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  createManyAndReturn<T extends GassmaGassmaNotificationCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Notification">>>(createdData: T & Gassma.Subset<T, GassmaGassmaNotificationCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Notification">>>): GassmaGassmaNotificationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  create<T extends GassmaGassmaNotificationCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "Notification">>>(createdData: T & Gassma.Subset<T, GassmaGassmaNotificationCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "Notification">>>): GassmaGassmaNotificationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  findFirst<T extends GassmaGassmaNotificationFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Notification">>>(findData: T & Gassma.Subset<T, GassmaGassmaNotificationFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Notification">>>): GassmaGassmaNotificationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
   findFirst(): GassmaGassmaNotificationFindResult<unknown, unknown, unknown, GO, O, CMap> | null;
-  findFirstOrThrow<T extends GassmaGassmaNotificationFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Notification">>>(findData: T): GassmaGassmaNotificationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  findFirstOrThrow<T extends GassmaGassmaNotificationFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Notification">>>(findData: T & Gassma.Subset<T, GassmaGassmaNotificationFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Notification">>>): GassmaGassmaNotificationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
   findFirstOrThrow(): GassmaGassmaNotificationFindResult<unknown, unknown, unknown, GO, O, CMap>;
-  findMany<T extends GassmaGassmaNotificationFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "Notification">>>(findData: T): GassmaGassmaNotificationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  findMany<T extends GassmaGassmaNotificationFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "Notification">>>(findData: T & Gassma.Subset<T, GassmaGassmaNotificationFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "Notification">>>): GassmaGassmaNotificationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
   findMany(): GassmaGassmaNotificationFindResult<unknown, unknown, unknown, GO, O, CMap>[];
-  update<T extends GassmaGassmaNotificationUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Notification">>>(updateData: T): GassmaGassmaNotificationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  update<T extends GassmaGassmaNotificationUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Notification">>>(updateData: T & Gassma.Subset<T, GassmaGassmaNotificationUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Notification">>>): GassmaGassmaNotificationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
   updateMany(updateData: GassmaGassmaNotificationUpdateData): UpdateManyReturn;
-  updateManyAndReturn(updateData: GassmaGassmaNotificationUpdateData): GassmaGassmaNotificationFindResult<undefined, undefined, undefined, GO, O, CMap>[];
-  upsert<T extends GassmaGassmaNotificationUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Notification">>>(upsertData: T): GassmaGassmaNotificationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
-  delete<T extends GassmaGassmaNotificationDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Notification">>>(deleteData: T): GassmaGassmaNotificationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  updateManyAndReturn<T extends GassmaGassmaNotificationUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Notification">>>(updateData: T & Gassma.Subset<T, GassmaGassmaNotificationUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Notification">>>): GassmaGassmaNotificationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  upsert<T extends GassmaGassmaNotificationUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Notification">>>(upsertData: T & Gassma.Subset<T, GassmaGassmaNotificationUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Notification">>>): GassmaGassmaNotificationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  delete<T extends GassmaGassmaNotificationDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Notification">>>(deleteData: T & Gassma.Subset<T, GassmaGassmaNotificationDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Notification">>>): GassmaGassmaNotificationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
   deleteMany(deleteData: GassmaGassmaNotificationDeleteData): DeleteManyReturn;
   deleteMany(): DeleteManyReturn;
-  aggregate<T extends GassmaGassmaNotificationAggregateData>(aggregateData: T): GassmaGassmaNotificationAggregateResult<T>;
-  count(coutData: GassmaGassmaNotificationCountData): number;
+  aggregate<T extends GassmaGassmaNotificationAggregateData>(aggregateData: T & Gassma.Subset<T, GassmaGassmaNotificationAggregateData>): GassmaGassmaNotificationAggregateResult<T>;
+  count<T extends GassmaGassmaNotificationCountData>(coutData: T & Gassma.Subset<T, GassmaGassmaNotificationCountData>): GassmaGassmaNotificationCountResult<T>;
   count(): number;
-  groupBy<T extends GassmaGassmaNotificationGroupByData>(groupByData: T): GassmaGassmaNotificationGroupByResult<T>[];
+  groupBy<T extends GassmaGassmaNotificationGroupByData>(groupByData: T & Gassma.Subset<T, GassmaGassmaNotificationGroupByData>): GassmaGassmaNotificationGroupByResult<T>[];
 }
 
 export declare class GassmaGassmaOffsetNoteController<GO extends GassmaGassmaOffsetNoteOmit = {}, O = {}, CMap = {}> {
@@ -880,25 +902,25 @@ export declare class GassmaGassmaOffsetNoteController<GO extends GassmaGassmaOff
     endColumnValue: number | string
   ): void;
   createMany(createdData: GassmaGassmaOffsetNoteCreateManyData): CreateManyReturn;
-  createManyAndReturn<T extends GassmaGassmaOffsetNoteCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "OffsetNote">>>(createdData: T): GassmaGassmaOffsetNoteFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
-  create<T extends GassmaGassmaOffsetNoteCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "OffsetNote">>>(createdData: T): GassmaGassmaOffsetNoteFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
-  findFirst<T extends GassmaGassmaOffsetNoteFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "OffsetNote">>>(findData: T): GassmaGassmaOffsetNoteFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  createManyAndReturn<T extends GassmaGassmaOffsetNoteCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "OffsetNote">>>(createdData: T & Gassma.Subset<T, GassmaGassmaOffsetNoteCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "OffsetNote">>>): GassmaGassmaOffsetNoteFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  create<T extends GassmaGassmaOffsetNoteCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "OffsetNote">>>(createdData: T & Gassma.Subset<T, GassmaGassmaOffsetNoteCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "OffsetNote">>>): GassmaGassmaOffsetNoteFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  findFirst<T extends GassmaGassmaOffsetNoteFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "OffsetNote">>>(findData: T & Gassma.Subset<T, GassmaGassmaOffsetNoteFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "OffsetNote">>>): GassmaGassmaOffsetNoteFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
   findFirst(): GassmaGassmaOffsetNoteFindResult<unknown, unknown, unknown, GO, O, CMap> | null;
-  findFirstOrThrow<T extends GassmaGassmaOffsetNoteFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "OffsetNote">>>(findData: T): GassmaGassmaOffsetNoteFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  findFirstOrThrow<T extends GassmaGassmaOffsetNoteFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "OffsetNote">>>(findData: T & Gassma.Subset<T, GassmaGassmaOffsetNoteFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "OffsetNote">>>): GassmaGassmaOffsetNoteFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
   findFirstOrThrow(): GassmaGassmaOffsetNoteFindResult<unknown, unknown, unknown, GO, O, CMap>;
-  findMany<T extends GassmaGassmaOffsetNoteFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "OffsetNote">>>(findData: T): GassmaGassmaOffsetNoteFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  findMany<T extends GassmaGassmaOffsetNoteFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "OffsetNote">>>(findData: T & Gassma.Subset<T, GassmaGassmaOffsetNoteFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "OffsetNote">>>): GassmaGassmaOffsetNoteFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
   findMany(): GassmaGassmaOffsetNoteFindResult<unknown, unknown, unknown, GO, O, CMap>[];
-  update<T extends GassmaGassmaOffsetNoteUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "OffsetNote">>>(updateData: T): GassmaGassmaOffsetNoteFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  update<T extends GassmaGassmaOffsetNoteUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "OffsetNote">>>(updateData: T & Gassma.Subset<T, GassmaGassmaOffsetNoteUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "OffsetNote">>>): GassmaGassmaOffsetNoteFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
   updateMany(updateData: GassmaGassmaOffsetNoteUpdateData): UpdateManyReturn;
-  updateManyAndReturn(updateData: GassmaGassmaOffsetNoteUpdateData): GassmaGassmaOffsetNoteFindResult<undefined, undefined, undefined, GO, O, CMap>[];
-  upsert<T extends GassmaGassmaOffsetNoteUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "OffsetNote">>>(upsertData: T): GassmaGassmaOffsetNoteFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
-  delete<T extends GassmaGassmaOffsetNoteDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "OffsetNote">>>(deleteData: T): GassmaGassmaOffsetNoteFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  updateManyAndReturn<T extends GassmaGassmaOffsetNoteUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "OffsetNote">>>(updateData: T & Gassma.Subset<T, GassmaGassmaOffsetNoteUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "OffsetNote">>>): GassmaGassmaOffsetNoteFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  upsert<T extends GassmaGassmaOffsetNoteUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "OffsetNote">>>(upsertData: T & Gassma.Subset<T, GassmaGassmaOffsetNoteUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "OffsetNote">>>): GassmaGassmaOffsetNoteFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  delete<T extends GassmaGassmaOffsetNoteDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "OffsetNote">>>(deleteData: T & Gassma.Subset<T, GassmaGassmaOffsetNoteDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "OffsetNote">>>): GassmaGassmaOffsetNoteFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
   deleteMany(deleteData: GassmaGassmaOffsetNoteDeleteData): DeleteManyReturn;
   deleteMany(): DeleteManyReturn;
-  aggregate<T extends GassmaGassmaOffsetNoteAggregateData>(aggregateData: T): GassmaGassmaOffsetNoteAggregateResult<T>;
-  count(coutData: GassmaGassmaOffsetNoteCountData): number;
+  aggregate<T extends GassmaGassmaOffsetNoteAggregateData>(aggregateData: T & Gassma.Subset<T, GassmaGassmaOffsetNoteAggregateData>): GassmaGassmaOffsetNoteAggregateResult<T>;
+  count<T extends GassmaGassmaOffsetNoteCountData>(coutData: T & Gassma.Subset<T, GassmaGassmaOffsetNoteCountData>): GassmaGassmaOffsetNoteCountResult<T>;
   count(): number;
-  groupBy<T extends GassmaGassmaOffsetNoteGroupByData>(groupByData: T): GassmaGassmaOffsetNoteGroupByResult<T>[];
+  groupBy<T extends GassmaGassmaOffsetNoteGroupByData>(groupByData: T & Gassma.Subset<T, GassmaGassmaOffsetNoteGroupByData>): GassmaGassmaOffsetNoteGroupByResult<T>[];
 }
 
 export declare class GassmaGassmaUserController<GO extends GassmaGassmaUserOmit = {}, O = {}, CMap = {}> {
@@ -911,25 +933,25 @@ export declare class GassmaGassmaUserController<GO extends GassmaGassmaUserOmit 
     endColumnValue: number | string
   ): void;
   createMany(createdData: GassmaGassmaUserCreateManyData): CreateManyReturn;
-  createManyAndReturn<T extends GassmaGassmaUserCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "User">>>(createdData: T): GassmaGassmaUserFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
-  create<T extends GassmaGassmaUserCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "User">>>(createdData: T): GassmaGassmaUserFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
-  findFirst<T extends GassmaGassmaUserFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "User">>>(findData: T): GassmaGassmaUserFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  createManyAndReturn<T extends GassmaGassmaUserCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "User">>>(createdData: T & Gassma.Subset<T, GassmaGassmaUserCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "User">>>): GassmaGassmaUserFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  create<T extends GassmaGassmaUserCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "User">>>(createdData: T & Gassma.Subset<T, GassmaGassmaUserCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "User">>>): GassmaGassmaUserFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  findFirst<T extends GassmaGassmaUserFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "User">>>(findData: T & Gassma.Subset<T, GassmaGassmaUserFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "User">>>): GassmaGassmaUserFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
   findFirst(): GassmaGassmaUserFindResult<unknown, unknown, unknown, GO, O, CMap> | null;
-  findFirstOrThrow<T extends GassmaGassmaUserFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "User">>>(findData: T): GassmaGassmaUserFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  findFirstOrThrow<T extends GassmaGassmaUserFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "User">>>(findData: T & Gassma.Subset<T, GassmaGassmaUserFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "User">>>): GassmaGassmaUserFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
   findFirstOrThrow(): GassmaGassmaUserFindResult<unknown, unknown, unknown, GO, O, CMap>;
-  findMany<T extends GassmaGassmaUserFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "User">>>(findData: T): GassmaGassmaUserFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  findMany<T extends GassmaGassmaUserFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "User">>>(findData: T & Gassma.Subset<T, GassmaGassmaUserFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "User">>>): GassmaGassmaUserFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
   findMany(): GassmaGassmaUserFindResult<unknown, unknown, unknown, GO, O, CMap>[];
-  update<T extends GassmaGassmaUserUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "User">>>(updateData: T): GassmaGassmaUserFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  update<T extends GassmaGassmaUserUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "User">>>(updateData: T & Gassma.Subset<T, GassmaGassmaUserUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "User">>>): GassmaGassmaUserFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
   updateMany(updateData: GassmaGassmaUserUpdateData): UpdateManyReturn;
-  updateManyAndReturn(updateData: GassmaGassmaUserUpdateData): GassmaGassmaUserFindResult<undefined, undefined, undefined, GO, O, CMap>[];
-  upsert<T extends GassmaGassmaUserUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "User">>>(upsertData: T): GassmaGassmaUserFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
-  delete<T extends GassmaGassmaUserDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "User">>>(deleteData: T): GassmaGassmaUserFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  updateManyAndReturn<T extends GassmaGassmaUserUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "User">>>(updateData: T & Gassma.Subset<T, GassmaGassmaUserUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "User">>>): GassmaGassmaUserFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  upsert<T extends GassmaGassmaUserUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "User">>>(upsertData: T & Gassma.Subset<T, GassmaGassmaUserUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "User">>>): GassmaGassmaUserFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  delete<T extends GassmaGassmaUserDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "User">>>(deleteData: T & Gassma.Subset<T, GassmaGassmaUserDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "User">>>): GassmaGassmaUserFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
   deleteMany(deleteData: GassmaGassmaUserDeleteData): DeleteManyReturn;
   deleteMany(): DeleteManyReturn;
-  aggregate<T extends GassmaGassmaUserAggregateData>(aggregateData: T): GassmaGassmaUserAggregateResult<T>;
-  count(coutData: GassmaGassmaUserCountData): number;
+  aggregate<T extends GassmaGassmaUserAggregateData>(aggregateData: T & Gassma.Subset<T, GassmaGassmaUserAggregateData>): GassmaGassmaUserAggregateResult<T>;
+  count<T extends GassmaGassmaUserCountData>(coutData: T & Gassma.Subset<T, GassmaGassmaUserCountData>): GassmaGassmaUserCountResult<T>;
   count(): number;
-  groupBy<T extends GassmaGassmaUserGroupByData>(groupByData: T): GassmaGassmaUserGroupByResult<T>[];
+  groupBy<T extends GassmaGassmaUserGroupByData>(groupByData: T & Gassma.Subset<T, GassmaGassmaUserGroupByData>): GassmaGassmaUserGroupByResult<T>[];
 }
 
 export declare class GassmaGassmaProfileController<GO extends GassmaGassmaProfileOmit = {}, O = {}, CMap = {}> {
@@ -942,25 +964,25 @@ export declare class GassmaGassmaProfileController<GO extends GassmaGassmaProfil
     endColumnValue: number | string
   ): void;
   createMany(createdData: GassmaGassmaProfileCreateManyData): CreateManyReturn;
-  createManyAndReturn<T extends GassmaGassmaProfileCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Profile">>>(createdData: T): GassmaGassmaProfileFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
-  create<T extends GassmaGassmaProfileCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "Profile">>>(createdData: T): GassmaGassmaProfileFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
-  findFirst<T extends GassmaGassmaProfileFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Profile">>>(findData: T): GassmaGassmaProfileFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  createManyAndReturn<T extends GassmaGassmaProfileCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Profile">>>(createdData: T & Gassma.Subset<T, GassmaGassmaProfileCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Profile">>>): GassmaGassmaProfileFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  create<T extends GassmaGassmaProfileCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "Profile">>>(createdData: T & Gassma.Subset<T, GassmaGassmaProfileCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "Profile">>>): GassmaGassmaProfileFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  findFirst<T extends GassmaGassmaProfileFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Profile">>>(findData: T & Gassma.Subset<T, GassmaGassmaProfileFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Profile">>>): GassmaGassmaProfileFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
   findFirst(): GassmaGassmaProfileFindResult<unknown, unknown, unknown, GO, O, CMap> | null;
-  findFirstOrThrow<T extends GassmaGassmaProfileFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Profile">>>(findData: T): GassmaGassmaProfileFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  findFirstOrThrow<T extends GassmaGassmaProfileFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Profile">>>(findData: T & Gassma.Subset<T, GassmaGassmaProfileFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Profile">>>): GassmaGassmaProfileFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
   findFirstOrThrow(): GassmaGassmaProfileFindResult<unknown, unknown, unknown, GO, O, CMap>;
-  findMany<T extends GassmaGassmaProfileFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "Profile">>>(findData: T): GassmaGassmaProfileFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  findMany<T extends GassmaGassmaProfileFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "Profile">>>(findData: T & Gassma.Subset<T, GassmaGassmaProfileFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "Profile">>>): GassmaGassmaProfileFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
   findMany(): GassmaGassmaProfileFindResult<unknown, unknown, unknown, GO, O, CMap>[];
-  update<T extends GassmaGassmaProfileUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Profile">>>(updateData: T): GassmaGassmaProfileFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  update<T extends GassmaGassmaProfileUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Profile">>>(updateData: T & Gassma.Subset<T, GassmaGassmaProfileUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Profile">>>): GassmaGassmaProfileFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
   updateMany(updateData: GassmaGassmaProfileUpdateData): UpdateManyReturn;
-  updateManyAndReturn(updateData: GassmaGassmaProfileUpdateData): GassmaGassmaProfileFindResult<undefined, undefined, undefined, GO, O, CMap>[];
-  upsert<T extends GassmaGassmaProfileUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Profile">>>(upsertData: T): GassmaGassmaProfileFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
-  delete<T extends GassmaGassmaProfileDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Profile">>>(deleteData: T): GassmaGassmaProfileFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  updateManyAndReturn<T extends GassmaGassmaProfileUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Profile">>>(updateData: T & Gassma.Subset<T, GassmaGassmaProfileUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Profile">>>): GassmaGassmaProfileFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  upsert<T extends GassmaGassmaProfileUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Profile">>>(upsertData: T & Gassma.Subset<T, GassmaGassmaProfileUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Profile">>>): GassmaGassmaProfileFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  delete<T extends GassmaGassmaProfileDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Profile">>>(deleteData: T & Gassma.Subset<T, GassmaGassmaProfileDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Profile">>>): GassmaGassmaProfileFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
   deleteMany(deleteData: GassmaGassmaProfileDeleteData): DeleteManyReturn;
   deleteMany(): DeleteManyReturn;
-  aggregate<T extends GassmaGassmaProfileAggregateData>(aggregateData: T): GassmaGassmaProfileAggregateResult<T>;
-  count(coutData: GassmaGassmaProfileCountData): number;
+  aggregate<T extends GassmaGassmaProfileAggregateData>(aggregateData: T & Gassma.Subset<T, GassmaGassmaProfileAggregateData>): GassmaGassmaProfileAggregateResult<T>;
+  count<T extends GassmaGassmaProfileCountData>(coutData: T & Gassma.Subset<T, GassmaGassmaProfileCountData>): GassmaGassmaProfileCountResult<T>;
   count(): number;
-  groupBy<T extends GassmaGassmaProfileGroupByData>(groupByData: T): GassmaGassmaProfileGroupByResult<T>[];
+  groupBy<T extends GassmaGassmaProfileGroupByData>(groupByData: T & Gassma.Subset<T, GassmaGassmaProfileGroupByData>): GassmaGassmaProfileGroupByResult<T>[];
 }
 
 export type ManyReturn = {
@@ -3659,6 +3681,111 @@ export type GassmaGassmaProfileUpdateData = {
   limit?: number;
 };
 
+export type GassmaGassmaPostUpdateManyAndReturnData = {
+  where?: GassmaGassmaPostWhereUse;
+  data: Partial<{ [K in keyof GassmaGassmaPostUse]: GassmaGassmaPostUse[K] | (K extends "id" | "content" | "viewCount" | "rating" | "authorId" | "categoryId" ? Gassma.NumberOperation : never) | Gassma.RawValue }>;
+  limit?: number;
+  include?: GassmaGassmaPostInclude;
+} & ({ select?: GassmaGassmaPostSelect; omit?: never } | { select?: never; omit?: GassmaGassmaPostOmit });
+
+export type GassmaGassmaCommentUpdateManyAndReturnData = {
+  where?: GassmaGassmaCommentWhereUse;
+  data: Partial<{ [K in keyof GassmaGassmaCommentUse]: GassmaGassmaCommentUse[K] | (K extends "id" | "authorId" | "postId" ? Gassma.NumberOperation : never) | Gassma.RawValue }>;
+  limit?: number;
+  include?: GassmaGassmaCommentInclude;
+} & ({ select?: GassmaGassmaCommentSelect; omit?: never } | { select?: never; omit?: GassmaGassmaCommentOmit });
+
+export type GassmaGassmaCategoryUpdateManyAndReturnData = {
+  where?: GassmaGassmaCategoryWhereUse;
+  data: Partial<{ [K in keyof GassmaGassmaCategoryUse]: GassmaGassmaCategoryUse[K] | (K extends "id" | "parentId" ? Gassma.NumberOperation : never) | Gassma.RawValue }>;
+  limit?: number;
+  include?: GassmaGassmaCategoryInclude;
+} & ({ select?: GassmaGassmaCategorySelect; omit?: never } | { select?: never; omit?: GassmaGassmaCategoryOmit });
+
+export type GassmaGassmaTagUpdateManyAndReturnData = {
+  where?: GassmaGassmaTagWhereUse;
+  data: Partial<{ [K in keyof GassmaGassmaTagUse]: GassmaGassmaTagUse[K] | (K extends "id" ? Gassma.NumberOperation : never) | Gassma.RawValue }>;
+  limit?: number;
+  include?: GassmaGassmaTagInclude;
+} & ({ select?: GassmaGassmaTagSelect; omit?: never } | { select?: never; omit?: GassmaGassmaTagOmit });
+
+export type GassmaGassmaSensorReadingUpdateManyAndReturnData = {
+  where?: GassmaGassmaSensorReadingWhereUse;
+  data: Partial<{ [K in keyof GassmaGassmaSensorReadingUse]: GassmaGassmaSensorReadingUse[K] | (K extends "id" ? Gassma.NumberOperation : never) | Gassma.RawValue }>;
+  limit?: number;
+  include?: GassmaGassmaSensorReadingInclude;
+} & ({ select?: GassmaGassmaSensorReadingSelect; omit?: never } | { select?: never; omit?: GassmaGassmaSensorReadingOmit });
+
+export type GassmaGassmaTimeSlotUpdateManyAndReturnData = {
+  where?: GassmaGassmaTimeSlotWhereUse;
+  data: Partial<{ [K in keyof GassmaGassmaTimeSlotUse]: GassmaGassmaTimeSlotUse[K] | (K extends "id" ? Gassma.NumberOperation : never) | Gassma.RawValue }>;
+  limit?: number;
+  include?: GassmaGassmaTimeSlotInclude;
+} & ({ select?: GassmaGassmaTimeSlotSelect; omit?: never } | { select?: never; omit?: GassmaGassmaTimeSlotOmit });
+
+export type GassmaGassmaReservationUpdateManyAndReturnData = {
+  where?: GassmaGassmaReservationWhereUse;
+  data: Partial<{ [K in keyof GassmaGassmaReservationUse]: GassmaGassmaReservationUse[K] | (K extends "id" ? Gassma.NumberOperation : never) | Gassma.RawValue }>;
+  limit?: number;
+  include?: GassmaGassmaReservationInclude;
+} & ({ select?: GassmaGassmaReservationSelect; omit?: never } | { select?: never; omit?: GassmaGassmaReservationOmit });
+
+export type GassmaGassmaProductUpdateManyAndReturnData = {
+  where?: GassmaGassmaProductWhereUse;
+  data: Partial<{ [K in keyof GassmaGassmaProductUse]: GassmaGassmaProductUse[K] | (K extends "id" | "price" | "stock" ? Gassma.NumberOperation : never) | Gassma.RawValue }>;
+  limit?: number;
+  include?: GassmaGassmaProductInclude;
+} & ({ select?: GassmaGassmaProductSelect; omit?: never } | { select?: never; omit?: GassmaGassmaProductOmit });
+
+export type GassmaGassmaOrderUpdateManyAndReturnData = {
+  where?: GassmaGassmaOrderWhereUse;
+  data: Partial<{ [K in keyof GassmaGassmaOrderUse]: GassmaGassmaOrderUse[K] | (K extends "id" | "userId" | "totalAmount" | "quantity" ? Gassma.NumberOperation : never) | Gassma.RawValue }>;
+  limit?: number;
+  include?: GassmaGassmaOrderInclude;
+} & ({ select?: GassmaGassmaOrderSelect; omit?: never } | { select?: never; omit?: GassmaGassmaOrderOmit });
+
+export type GassmaGassmaOrderItemUpdateManyAndReturnData = {
+  where?: GassmaGassmaOrderItemWhereUse;
+  data: Partial<{ [K in keyof GassmaGassmaOrderItemUse]: GassmaGassmaOrderItemUse[K] | (K extends "id" | "orderId" | "productId" | "quantity" | "unitPrice" ? Gassma.NumberOperation : never) | Gassma.RawValue }>;
+  limit?: number;
+  include?: GassmaGassmaOrderItemInclude;
+} & ({ select?: GassmaGassmaOrderItemSelect; omit?: never } | { select?: never; omit?: GassmaGassmaOrderItemOmit });
+
+export type GassmaGassmaFormulaCellUpdateManyAndReturnData = {
+  where?: GassmaGassmaFormulaCellWhereUse;
+  data: Partial<{ [K in keyof GassmaGassmaFormulaCellUse]: GassmaGassmaFormulaCellUse[K] | (K extends "id" | "amount" | "total" ? Gassma.NumberOperation : never) | Gassma.RawValue }>;
+  limit?: number;
+  include?: GassmaGassmaFormulaCellInclude;
+} & ({ select?: GassmaGassmaFormulaCellSelect; omit?: never } | { select?: never; omit?: GassmaGassmaFormulaCellOmit });
+
+export type GassmaGassmaNotificationUpdateManyAndReturnData = {
+  where?: GassmaGassmaNotificationWhereUse;
+  data: Partial<{ [K in keyof GassmaGassmaNotificationUse]: GassmaGassmaNotificationUse[K] | (K extends "id" | "userId" ? Gassma.NumberOperation : never) | Gassma.RawValue }>;
+  limit?: number;
+  include?: GassmaGassmaNotificationInclude;
+} & ({ select?: GassmaGassmaNotificationSelect; omit?: never } | { select?: never; omit?: GassmaGassmaNotificationOmit });
+
+export type GassmaGassmaOffsetNoteUpdateManyAndReturnData = {
+  where?: GassmaGassmaOffsetNoteWhereUse;
+  data: Partial<{ [K in keyof GassmaGassmaOffsetNoteUse]: GassmaGassmaOffsetNoteUse[K] | (K extends "id" | "value" ? Gassma.NumberOperation : never) | Gassma.RawValue }>;
+  limit?: number;
+  include?: GassmaGassmaOffsetNoteInclude;
+} & ({ select?: GassmaGassmaOffsetNoteSelect; omit?: never } | { select?: never; omit?: GassmaGassmaOffsetNoteOmit });
+
+export type GassmaGassmaUserUpdateManyAndReturnData = {
+  where?: GassmaGassmaUserWhereUse;
+  data: Partial<{ [K in keyof GassmaGassmaUserUse]: GassmaGassmaUserUse[K] | (K extends "id" | "age" ? Gassma.NumberOperation : never) | Gassma.RawValue }>;
+  limit?: number;
+  include?: GassmaGassmaUserInclude;
+} & ({ select?: GassmaGassmaUserSelect; omit?: never } | { select?: never; omit?: GassmaGassmaUserOmit });
+
+export type GassmaGassmaProfileUpdateManyAndReturnData = {
+  where?: GassmaGassmaProfileWhereUse;
+  data: Partial<{ [K in keyof GassmaGassmaProfileUse]: GassmaGassmaProfileUse[K] | (K extends "id" | "userId" ? Gassma.NumberOperation : never) | Gassma.RawValue }>;
+  limit?: number;
+  include?: GassmaGassmaProfileInclude;
+} & ({ select?: GassmaGassmaProfileSelect; omit?: never } | { select?: never; omit?: GassmaGassmaProfileOmit });
+
 export type GassmaGassmaPostUpdateSingleData = {
   where: GassmaGassmaPostWhereUse;
   data: Partial<{ [K in keyof GassmaGassmaPostUse]: GassmaGassmaPostUse[K] | (K extends "id" | "content" | "viewCount" | "rating" | "authorId" | "categoryId" ? Gassma.NumberOperation : never) | Gassma.RawValue }> & {
@@ -4096,7 +4223,7 @@ export type GassmaGassmaPostAggregateData = {
   skip?: number;
   cursor?: Partial<GassmaGassmaPostUse>;
   _avg?: GassmaGassmaPostNumberSelect;
-  _count?: GassmaGassmaPostSelect;
+  _count?: GassmaGassmaPostCountSelect | true;
   _max?: GassmaGassmaPostSelect;
   _min?: GassmaGassmaPostSelect;
   _sum?: GassmaGassmaPostNumberSelect;
@@ -4109,7 +4236,7 @@ export type GassmaGassmaCommentAggregateData = {
   skip?: number;
   cursor?: Partial<GassmaGassmaCommentUse>;
   _avg?: GassmaGassmaCommentNumberSelect;
-  _count?: GassmaGassmaCommentSelect;
+  _count?: GassmaGassmaCommentCountSelect | true;
   _max?: GassmaGassmaCommentSelect;
   _min?: GassmaGassmaCommentSelect;
   _sum?: GassmaGassmaCommentNumberSelect;
@@ -4122,7 +4249,7 @@ export type GassmaGassmaCategoryAggregateData = {
   skip?: number;
   cursor?: Partial<GassmaGassmaCategoryUse>;
   _avg?: GassmaGassmaCategoryNumberSelect;
-  _count?: GassmaGassmaCategorySelect;
+  _count?: GassmaGassmaCategoryCountSelect | true;
   _max?: GassmaGassmaCategorySelect;
   _min?: GassmaGassmaCategorySelect;
   _sum?: GassmaGassmaCategoryNumberSelect;
@@ -4135,7 +4262,7 @@ export type GassmaGassmaTagAggregateData = {
   skip?: number;
   cursor?: Partial<GassmaGassmaTagUse>;
   _avg?: GassmaGassmaTagNumberSelect;
-  _count?: GassmaGassmaTagSelect;
+  _count?: GassmaGassmaTagCountSelect | true;
   _max?: GassmaGassmaTagSelect;
   _min?: GassmaGassmaTagSelect;
   _sum?: GassmaGassmaTagNumberSelect;
@@ -4148,7 +4275,7 @@ export type GassmaGassmaSensorReadingAggregateData = {
   skip?: number;
   cursor?: Partial<GassmaGassmaSensorReadingUse>;
   _avg?: GassmaGassmaSensorReadingNumberSelect;
-  _count?: GassmaGassmaSensorReadingSelect;
+  _count?: GassmaGassmaSensorReadingCountSelect | true;
   _max?: GassmaGassmaSensorReadingSelect;
   _min?: GassmaGassmaSensorReadingSelect;
   _sum?: GassmaGassmaSensorReadingNumberSelect;
@@ -4161,7 +4288,7 @@ export type GassmaGassmaTimeSlotAggregateData = {
   skip?: number;
   cursor?: Partial<GassmaGassmaTimeSlotUse>;
   _avg?: GassmaGassmaTimeSlotNumberSelect;
-  _count?: GassmaGassmaTimeSlotSelect;
+  _count?: GassmaGassmaTimeSlotCountSelect | true;
   _max?: GassmaGassmaTimeSlotSelect;
   _min?: GassmaGassmaTimeSlotSelect;
   _sum?: GassmaGassmaTimeSlotNumberSelect;
@@ -4174,7 +4301,7 @@ export type GassmaGassmaReservationAggregateData = {
   skip?: number;
   cursor?: Partial<GassmaGassmaReservationUse>;
   _avg?: GassmaGassmaReservationNumberSelect;
-  _count?: GassmaGassmaReservationSelect;
+  _count?: GassmaGassmaReservationCountSelect | true;
   _max?: GassmaGassmaReservationSelect;
   _min?: GassmaGassmaReservationSelect;
   _sum?: GassmaGassmaReservationNumberSelect;
@@ -4187,7 +4314,7 @@ export type GassmaGassmaProductAggregateData = {
   skip?: number;
   cursor?: Partial<GassmaGassmaProductUse>;
   _avg?: GassmaGassmaProductNumberSelect;
-  _count?: GassmaGassmaProductSelect;
+  _count?: GassmaGassmaProductCountSelect | true;
   _max?: GassmaGassmaProductSelect;
   _min?: GassmaGassmaProductSelect;
   _sum?: GassmaGassmaProductNumberSelect;
@@ -4200,7 +4327,7 @@ export type GassmaGassmaOrderAggregateData = {
   skip?: number;
   cursor?: Partial<GassmaGassmaOrderUse>;
   _avg?: GassmaGassmaOrderNumberSelect;
-  _count?: GassmaGassmaOrderSelect;
+  _count?: GassmaGassmaOrderCountSelect | true;
   _max?: GassmaGassmaOrderSelect;
   _min?: GassmaGassmaOrderSelect;
   _sum?: GassmaGassmaOrderNumberSelect;
@@ -4213,7 +4340,7 @@ export type GassmaGassmaOrderItemAggregateData = {
   skip?: number;
   cursor?: Partial<GassmaGassmaOrderItemUse>;
   _avg?: GassmaGassmaOrderItemNumberSelect;
-  _count?: GassmaGassmaOrderItemSelect;
+  _count?: GassmaGassmaOrderItemCountSelect | true;
   _max?: GassmaGassmaOrderItemSelect;
   _min?: GassmaGassmaOrderItemSelect;
   _sum?: GassmaGassmaOrderItemNumberSelect;
@@ -4226,7 +4353,7 @@ export type GassmaGassmaFormulaCellAggregateData = {
   skip?: number;
   cursor?: Partial<GassmaGassmaFormulaCellUse>;
   _avg?: GassmaGassmaFormulaCellNumberSelect;
-  _count?: GassmaGassmaFormulaCellSelect;
+  _count?: GassmaGassmaFormulaCellCountSelect | true;
   _max?: GassmaGassmaFormulaCellSelect;
   _min?: GassmaGassmaFormulaCellSelect;
   _sum?: GassmaGassmaFormulaCellNumberSelect;
@@ -4239,7 +4366,7 @@ export type GassmaGassmaNotificationAggregateData = {
   skip?: number;
   cursor?: Partial<GassmaGassmaNotificationUse>;
   _avg?: GassmaGassmaNotificationNumberSelect;
-  _count?: GassmaGassmaNotificationSelect;
+  _count?: GassmaGassmaNotificationCountSelect | true;
   _max?: GassmaGassmaNotificationSelect;
   _min?: GassmaGassmaNotificationSelect;
   _sum?: GassmaGassmaNotificationNumberSelect;
@@ -4252,7 +4379,7 @@ export type GassmaGassmaOffsetNoteAggregateData = {
   skip?: number;
   cursor?: Partial<GassmaGassmaOffsetNoteUse>;
   _avg?: GassmaGassmaOffsetNoteNumberSelect;
-  _count?: GassmaGassmaOffsetNoteSelect;
+  _count?: GassmaGassmaOffsetNoteCountSelect | true;
   _max?: GassmaGassmaOffsetNoteSelect;
   _min?: GassmaGassmaOffsetNoteSelect;
   _sum?: GassmaGassmaOffsetNoteNumberSelect;
@@ -4265,7 +4392,7 @@ export type GassmaGassmaUserAggregateData = {
   skip?: number;
   cursor?: Partial<GassmaGassmaUserUse>;
   _avg?: GassmaGassmaUserNumberSelect;
-  _count?: GassmaGassmaUserSelect;
+  _count?: GassmaGassmaUserCountSelect | true;
   _max?: GassmaGassmaUserSelect;
   _min?: GassmaGassmaUserSelect;
   _sum?: GassmaGassmaUserNumberSelect;
@@ -4278,7 +4405,7 @@ export type GassmaGassmaProfileAggregateData = {
   skip?: number;
   cursor?: Partial<GassmaGassmaProfileUse>;
   _avg?: GassmaGassmaProfileNumberSelect;
-  _count?: GassmaGassmaProfileSelect;
+  _count?: GassmaGassmaProfileCountSelect | true;
   _max?: GassmaGassmaProfileSelect;
   _min?: GassmaGassmaProfileSelect;
   _sum?: GassmaGassmaProfileNumberSelect;
@@ -4665,6 +4792,10 @@ export type GassmaGassmaPostNumberSelect = {
   "categoryId"?: true;
 };
 
+export type GassmaGassmaPostCountSelect = GassmaGassmaPostSelect & {
+  "_all"?: true;
+};
+
 export type GassmaGassmaPostFindSelect = {
   "id"?: true;
   "title"?: true;
@@ -4697,6 +4828,10 @@ export type GassmaGassmaCommentNumberSelect = {
   "postId"?: true;
 };
 
+export type GassmaGassmaCommentCountSelect = GassmaGassmaCommentSelect & {
+  "_all"?: true;
+};
+
 export type GassmaGassmaCommentFindSelect = {
   "id"?: true;
   "text"?: true;
@@ -4719,6 +4854,10 @@ export type GassmaGassmaCategoryNumberSelect = {
   "parentId"?: true;
 };
 
+export type GassmaGassmaCategoryCountSelect = GassmaGassmaCategorySelect & {
+  "_all"?: true;
+};
+
 export type GassmaGassmaCategoryFindSelect = {
   "id"?: true;
   "name"?: true;
@@ -4738,6 +4877,10 @@ export type GassmaGassmaTagNumberSelect = {
   "id"?: true;
 };
 
+export type GassmaGassmaTagCountSelect = GassmaGassmaTagSelect & {
+  "_all"?: true;
+};
+
 export type GassmaGassmaTagFindSelect = {
   "id"?: true;
   "name"?: true;
@@ -4753,6 +4896,10 @@ export type GassmaGassmaSensorReadingSelect = {
 
 export type GassmaGassmaSensorReadingNumberSelect = {
   "id"?: true;
+};
+
+export type GassmaGassmaSensorReadingCountSelect = GassmaGassmaSensorReadingSelect & {
+  "_all"?: true;
 };
 
 export type GassmaGassmaSensorReadingFindSelect = {
@@ -4771,6 +4918,10 @@ export type GassmaGassmaTimeSlotNumberSelect = {
   "id"?: true;
 };
 
+export type GassmaGassmaTimeSlotCountSelect = GassmaGassmaTimeSlotSelect & {
+  "_all"?: true;
+};
+
 export type GassmaGassmaTimeSlotFindSelect = {
   "id"?: true;
   "label"?: true;
@@ -4787,6 +4938,10 @@ export type GassmaGassmaReservationSelect = {
 
 export type GassmaGassmaReservationNumberSelect = {
   "id"?: true;
+};
+
+export type GassmaGassmaReservationCountSelect = GassmaGassmaReservationSelect & {
+  "_all"?: true;
 };
 
 export type GassmaGassmaReservationFindSelect = {
@@ -4811,6 +4966,10 @@ export type GassmaGassmaProductNumberSelect = {
   "id"?: true;
   "price"?: true;
   "stock"?: true;
+};
+
+export type GassmaGassmaProductCountSelect = GassmaGassmaProductSelect & {
+  "_all"?: true;
 };
 
 export type GassmaGassmaProductFindSelect = {
@@ -4841,6 +5000,10 @@ export type GassmaGassmaOrderNumberSelect = {
   "quantity"?: true;
 };
 
+export type GassmaGassmaOrderCountSelect = GassmaGassmaOrderSelect & {
+  "_all"?: true;
+};
+
 export type GassmaGassmaOrderFindSelect = {
   "id"?: true;
   "userId"?: true;
@@ -4869,6 +5032,10 @@ export type GassmaGassmaOrderItemNumberSelect = {
   "unitPrice"?: true;
 };
 
+export type GassmaGassmaOrderItemCountSelect = GassmaGassmaOrderItemSelect & {
+  "_all"?: true;
+};
+
 export type GassmaGassmaOrderItemFindSelect = {
   "id"?: true;
   "orderId"?: true;
@@ -4893,6 +5060,10 @@ export type GassmaGassmaFormulaCellNumberSelect = {
   "total"?: true;
 };
 
+export type GassmaGassmaFormulaCellCountSelect = GassmaGassmaFormulaCellSelect & {
+  "_all"?: true;
+};
+
 export type GassmaGassmaFormulaCellFindSelect = {
   "id"?: true;
   "label"?: true;
@@ -4912,6 +5083,10 @@ export type GassmaGassmaNotificationNumberSelect = {
   "userId"?: true;
 };
 
+export type GassmaGassmaNotificationCountSelect = GassmaGassmaNotificationSelect & {
+  "_all"?: true;
+};
+
 export type GassmaGassmaNotificationFindSelect = {
   "id"?: true;
   "userId"?: true;
@@ -4928,6 +5103,10 @@ export type GassmaGassmaOffsetNoteSelect = {
 export type GassmaGassmaOffsetNoteNumberSelect = {
   "id"?: true;
   "value"?: true;
+};
+
+export type GassmaGassmaOffsetNoteCountSelect = GassmaGassmaOffsetNoteSelect & {
+  "_all"?: true;
 };
 
 export type GassmaGassmaOffsetNoteFindSelect = {
@@ -4949,6 +5128,10 @@ export type GassmaGassmaUserSelect = {
 export type GassmaGassmaUserNumberSelect = {
   "id"?: true;
   "age"?: true;
+};
+
+export type GassmaGassmaUserCountSelect = GassmaGassmaUserSelect & {
+  "_all"?: true;
 };
 
 export type GassmaGassmaUserFindSelect = {
@@ -4976,6 +5159,10 @@ export type GassmaGassmaProfileSelect = {
 export type GassmaGassmaProfileNumberSelect = {
   "id"?: true;
   "userId"?: true;
+};
+
+export type GassmaGassmaProfileCountSelect = GassmaGassmaProfileSelect & {
+  "_all"?: true;
 };
 
 export type GassmaGassmaProfileFindSelect = {
@@ -5107,6 +5294,7 @@ export type GassmaGassmaPostCountData = {
   take?: number;
   skip?: number;
   cursor?: Partial<GassmaGassmaPostUse>;
+  select?: GassmaGassmaPostCountSelect | true;
 };
 
 export type GassmaGassmaCommentCountData = {
@@ -5115,6 +5303,7 @@ export type GassmaGassmaCommentCountData = {
   take?: number;
   skip?: number;
   cursor?: Partial<GassmaGassmaCommentUse>;
+  select?: GassmaGassmaCommentCountSelect | true;
 };
 
 export type GassmaGassmaCategoryCountData = {
@@ -5123,6 +5312,7 @@ export type GassmaGassmaCategoryCountData = {
   take?: number;
   skip?: number;
   cursor?: Partial<GassmaGassmaCategoryUse>;
+  select?: GassmaGassmaCategoryCountSelect | true;
 };
 
 export type GassmaGassmaTagCountData = {
@@ -5131,6 +5321,7 @@ export type GassmaGassmaTagCountData = {
   take?: number;
   skip?: number;
   cursor?: Partial<GassmaGassmaTagUse>;
+  select?: GassmaGassmaTagCountSelect | true;
 };
 
 export type GassmaGassmaSensorReadingCountData = {
@@ -5139,6 +5330,7 @@ export type GassmaGassmaSensorReadingCountData = {
   take?: number;
   skip?: number;
   cursor?: Partial<GassmaGassmaSensorReadingUse>;
+  select?: GassmaGassmaSensorReadingCountSelect | true;
 };
 
 export type GassmaGassmaTimeSlotCountData = {
@@ -5147,6 +5339,7 @@ export type GassmaGassmaTimeSlotCountData = {
   take?: number;
   skip?: number;
   cursor?: Partial<GassmaGassmaTimeSlotUse>;
+  select?: GassmaGassmaTimeSlotCountSelect | true;
 };
 
 export type GassmaGassmaReservationCountData = {
@@ -5155,6 +5348,7 @@ export type GassmaGassmaReservationCountData = {
   take?: number;
   skip?: number;
   cursor?: Partial<GassmaGassmaReservationUse>;
+  select?: GassmaGassmaReservationCountSelect | true;
 };
 
 export type GassmaGassmaProductCountData = {
@@ -5163,6 +5357,7 @@ export type GassmaGassmaProductCountData = {
   take?: number;
   skip?: number;
   cursor?: Partial<GassmaGassmaProductUse>;
+  select?: GassmaGassmaProductCountSelect | true;
 };
 
 export type GassmaGassmaOrderCountData = {
@@ -5171,6 +5366,7 @@ export type GassmaGassmaOrderCountData = {
   take?: number;
   skip?: number;
   cursor?: Partial<GassmaGassmaOrderUse>;
+  select?: GassmaGassmaOrderCountSelect | true;
 };
 
 export type GassmaGassmaOrderItemCountData = {
@@ -5179,6 +5375,7 @@ export type GassmaGassmaOrderItemCountData = {
   take?: number;
   skip?: number;
   cursor?: Partial<GassmaGassmaOrderItemUse>;
+  select?: GassmaGassmaOrderItemCountSelect | true;
 };
 
 export type GassmaGassmaFormulaCellCountData = {
@@ -5187,6 +5384,7 @@ export type GassmaGassmaFormulaCellCountData = {
   take?: number;
   skip?: number;
   cursor?: Partial<GassmaGassmaFormulaCellUse>;
+  select?: GassmaGassmaFormulaCellCountSelect | true;
 };
 
 export type GassmaGassmaNotificationCountData = {
@@ -5195,6 +5393,7 @@ export type GassmaGassmaNotificationCountData = {
   take?: number;
   skip?: number;
   cursor?: Partial<GassmaGassmaNotificationUse>;
+  select?: GassmaGassmaNotificationCountSelect | true;
 };
 
 export type GassmaGassmaOffsetNoteCountData = {
@@ -5203,6 +5402,7 @@ export type GassmaGassmaOffsetNoteCountData = {
   take?: number;
   skip?: number;
   cursor?: Partial<GassmaGassmaOffsetNoteUse>;
+  select?: GassmaGassmaOffsetNoteCountSelect | true;
 };
 
 export type GassmaGassmaUserCountData = {
@@ -5211,6 +5411,7 @@ export type GassmaGassmaUserCountData = {
   take?: number;
   skip?: number;
   cursor?: Partial<GassmaGassmaUserUse>;
+  select?: GassmaGassmaUserCountSelect | true;
 };
 
 export type GassmaGassmaProfileCountData = {
@@ -5219,7 +5420,98 @@ export type GassmaGassmaProfileCountData = {
   take?: number;
   skip?: number;
   cursor?: Partial<GassmaGassmaProfileUse>;
+  select?: GassmaGassmaProfileCountSelect | true;
 };
+
+export type GassmaGassmaPostCountResult<T extends GassmaGassmaPostCountData> = T extends { select: infer S }
+  ? S extends true
+    ? number
+    : { [K in keyof S]: number }
+  : number;
+
+export type GassmaGassmaCommentCountResult<T extends GassmaGassmaCommentCountData> = T extends { select: infer S }
+  ? S extends true
+    ? number
+    : { [K in keyof S]: number }
+  : number;
+
+export type GassmaGassmaCategoryCountResult<T extends GassmaGassmaCategoryCountData> = T extends { select: infer S }
+  ? S extends true
+    ? number
+    : { [K in keyof S]: number }
+  : number;
+
+export type GassmaGassmaTagCountResult<T extends GassmaGassmaTagCountData> = T extends { select: infer S }
+  ? S extends true
+    ? number
+    : { [K in keyof S]: number }
+  : number;
+
+export type GassmaGassmaSensorReadingCountResult<T extends GassmaGassmaSensorReadingCountData> = T extends { select: infer S }
+  ? S extends true
+    ? number
+    : { [K in keyof S]: number }
+  : number;
+
+export type GassmaGassmaTimeSlotCountResult<T extends GassmaGassmaTimeSlotCountData> = T extends { select: infer S }
+  ? S extends true
+    ? number
+    : { [K in keyof S]: number }
+  : number;
+
+export type GassmaGassmaReservationCountResult<T extends GassmaGassmaReservationCountData> = T extends { select: infer S }
+  ? S extends true
+    ? number
+    : { [K in keyof S]: number }
+  : number;
+
+export type GassmaGassmaProductCountResult<T extends GassmaGassmaProductCountData> = T extends { select: infer S }
+  ? S extends true
+    ? number
+    : { [K in keyof S]: number }
+  : number;
+
+export type GassmaGassmaOrderCountResult<T extends GassmaGassmaOrderCountData> = T extends { select: infer S }
+  ? S extends true
+    ? number
+    : { [K in keyof S]: number }
+  : number;
+
+export type GassmaGassmaOrderItemCountResult<T extends GassmaGassmaOrderItemCountData> = T extends { select: infer S }
+  ? S extends true
+    ? number
+    : { [K in keyof S]: number }
+  : number;
+
+export type GassmaGassmaFormulaCellCountResult<T extends GassmaGassmaFormulaCellCountData> = T extends { select: infer S }
+  ? S extends true
+    ? number
+    : { [K in keyof S]: number }
+  : number;
+
+export type GassmaGassmaNotificationCountResult<T extends GassmaGassmaNotificationCountData> = T extends { select: infer S }
+  ? S extends true
+    ? number
+    : { [K in keyof S]: number }
+  : number;
+
+export type GassmaGassmaOffsetNoteCountResult<T extends GassmaGassmaOffsetNoteCountData> = T extends { select: infer S }
+  ? S extends true
+    ? number
+    : { [K in keyof S]: number }
+  : number;
+
+export type GassmaGassmaUserCountResult<T extends GassmaGassmaUserCountData> = T extends { select: infer S }
+  ? S extends true
+    ? number
+    : { [K in keyof S]: number }
+  : number;
+
+export type GassmaGassmaProfileCountResult<T extends GassmaGassmaProfileCountData> = T extends { select: infer S }
+  ? S extends true
+    ? number
+    : { [K in keyof S]: number }
+  : number;
 
 export type GassmaGassmaPostCreateReturn = {
  "id": number;
@@ -5370,10 +5662,12 @@ export type GassmaGassmaPostFindResultBase<S, I = undefined, QO = undefined, GO 
       [K in keyof S as S[K] extends false | undefined
         ? never
         : K & (keyof GassmaGassmaPostDefaultFindResult | "author" | "category" | "comments" | "tags" | "_count")]:
-          K extends "author" ? GassmaGassmaUserFindResultBase<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "User": infer TO } ? TO extends GassmaGassmaUserOmit ? TO : {} : {}, O> | null :
-          K extends "category" ? GassmaGassmaCategoryFindResultBase<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "Category": infer TO } ? TO extends GassmaGassmaCategoryOmit ? TO : {} : {}, O> | null :
-          K extends "comments" ? GassmaGassmaCommentFindResultBase<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "Comment": infer TO } ? TO extends GassmaGassmaCommentOmit ? TO : {} : {}, O>[] :
-          K extends "tags" ? GassmaGassmaTagFindResultBase<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "Tag": infer TO } ? TO extends GassmaGassmaTagOmit ? TO : {} : {}, O>[] :
+          K extends "author" | "category" | "comments" | "tags" ? {
+            "author": GassmaGassmaUserFindResultBase<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "User": infer TO } ? TO extends GassmaGassmaUserOmit ? TO : {} : {}, O> | null;
+            "category": GassmaGassmaCategoryFindResultBase<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "Category": infer TO } ? TO extends GassmaGassmaCategoryOmit ? TO : {} : {}, O> | null;
+            "comments": GassmaGassmaCommentFindResultBase<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "Comment": infer TO } ? TO extends GassmaGassmaCommentOmit ? TO : {} : {}, O>[];
+            "tags": GassmaGassmaTagFindResultBase<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "Tag": infer TO } ? TO extends GassmaGassmaTagOmit ? TO : {} : {}, O>[];
+          }[K] :
           K extends "_count" ? Gassma.CountResult<S[K]> :
           GassmaGassmaPostDefaultFindResult[K & keyof GassmaGassmaPostDefaultFindResult];
     }
@@ -5386,10 +5680,12 @@ export type GassmaGassmaPostFindResultBase<S, I = undefined, QO = undefined, GO 
     ? {}
     : {
         [K in keyof I as K extends "author" | "category" | "comments" | "tags" | "_count" ? K : never]:
-          K extends "author" ? GassmaGassmaUserFindResultBase<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "User": infer TO } ? TO extends GassmaGassmaUserOmit ? TO : {} : {}, O> | null :
-          K extends "category" ? GassmaGassmaCategoryFindResultBase<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "Category": infer TO } ? TO extends GassmaGassmaCategoryOmit ? TO : {} : {}, O> | null :
-          K extends "comments" ? GassmaGassmaCommentFindResultBase<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "Comment": infer TO } ? TO extends GassmaGassmaCommentOmit ? TO : {} : {}, O>[] :
-          K extends "tags" ? GassmaGassmaTagFindResultBase<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "Tag": infer TO } ? TO extends GassmaGassmaTagOmit ? TO : {} : {}, O>[] :
+          K extends "author" | "category" | "comments" | "tags" ? {
+            "author": GassmaGassmaUserFindResultBase<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "User": infer TO } ? TO extends GassmaGassmaUserOmit ? TO : {} : {}, O> | null;
+            "category": GassmaGassmaCategoryFindResultBase<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "Category": infer TO } ? TO extends GassmaGassmaCategoryOmit ? TO : {} : {}, O> | null;
+            "comments": GassmaGassmaCommentFindResultBase<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "Comment": infer TO } ? TO extends GassmaGassmaCommentOmit ? TO : {} : {}, O>[];
+            "tags": GassmaGassmaTagFindResultBase<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "Tag": infer TO } ? TO extends GassmaGassmaTagOmit ? TO : {} : {}, O>[];
+          }[K] :
           K extends "_count" ? Gassma.CountResult<I[K]> :
           never;
       });
@@ -5399,10 +5695,12 @@ export type GassmaGassmaPostFindResultCore<S, I = undefined, QO = undefined, GO 
       [K in keyof S as S[K] extends false | undefined
         ? never
         : K & (keyof GassmaGassmaPostDefaultFindResult | "author" | "category" | "comments" | "tags" | "_count")]:
-          K extends "author" ? GassmaGassmaUserFindResult<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "User": infer TO } ? TO extends GassmaGassmaUserOmit ? TO : {} : {}, O, CMap> | null :
-          K extends "category" ? GassmaGassmaCategoryFindResult<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "Category": infer TO } ? TO extends GassmaGassmaCategoryOmit ? TO : {} : {}, O, CMap> | null :
-          K extends "comments" ? GassmaGassmaCommentFindResult<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "Comment": infer TO } ? TO extends GassmaGassmaCommentOmit ? TO : {} : {}, O, CMap>[] :
-          K extends "tags" ? GassmaGassmaTagFindResult<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "Tag": infer TO } ? TO extends GassmaGassmaTagOmit ? TO : {} : {}, O, CMap>[] :
+          K extends "author" | "category" | "comments" | "tags" ? {
+            "author": GassmaGassmaUserFindResult<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "User": infer TO } ? TO extends GassmaGassmaUserOmit ? TO : {} : {}, O, CMap> | null;
+            "category": GassmaGassmaCategoryFindResult<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "Category": infer TO } ? TO extends GassmaGassmaCategoryOmit ? TO : {} : {}, O, CMap> | null;
+            "comments": GassmaGassmaCommentFindResult<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "Comment": infer TO } ? TO extends GassmaGassmaCommentOmit ? TO : {} : {}, O, CMap>[];
+            "tags": GassmaGassmaTagFindResult<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "Tag": infer TO } ? TO extends GassmaGassmaTagOmit ? TO : {} : {}, O, CMap>[];
+          }[K] :
           K extends "_count" ? Gassma.CountResult<S[K]> :
           GassmaGassmaPostDefaultFindResult[K & keyof GassmaGassmaPostDefaultFindResult];
     }
@@ -5415,10 +5713,12 @@ export type GassmaGassmaPostFindResultCore<S, I = undefined, QO = undefined, GO 
     ? {}
     : {
         [K in keyof I as K extends "author" | "category" | "comments" | "tags" | "_count" ? K : never]:
-          K extends "author" ? GassmaGassmaUserFindResult<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "User": infer TO } ? TO extends GassmaGassmaUserOmit ? TO : {} : {}, O, CMap> | null :
-          K extends "category" ? GassmaGassmaCategoryFindResult<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "Category": infer TO } ? TO extends GassmaGassmaCategoryOmit ? TO : {} : {}, O, CMap> | null :
-          K extends "comments" ? GassmaGassmaCommentFindResult<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "Comment": infer TO } ? TO extends GassmaGassmaCommentOmit ? TO : {} : {}, O, CMap>[] :
-          K extends "tags" ? GassmaGassmaTagFindResult<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "Tag": infer TO } ? TO extends GassmaGassmaTagOmit ? TO : {} : {}, O, CMap>[] :
+          K extends "author" | "category" | "comments" | "tags" ? {
+            "author": GassmaGassmaUserFindResult<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "User": infer TO } ? TO extends GassmaGassmaUserOmit ? TO : {} : {}, O, CMap> | null;
+            "category": GassmaGassmaCategoryFindResult<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "Category": infer TO } ? TO extends GassmaGassmaCategoryOmit ? TO : {} : {}, O, CMap> | null;
+            "comments": GassmaGassmaCommentFindResult<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "Comment": infer TO } ? TO extends GassmaGassmaCommentOmit ? TO : {} : {}, O, CMap>[];
+            "tags": GassmaGassmaTagFindResult<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "Tag": infer TO } ? TO extends GassmaGassmaTagOmit ? TO : {} : {}, O, CMap>[];
+          }[K] :
           K extends "_count" ? Gassma.CountResult<I[K]> :
           never;
       });
@@ -5435,8 +5735,10 @@ export type GassmaGassmaCommentFindResultBase<S, I = undefined, QO = undefined, 
       [K in keyof S as S[K] extends false | undefined
         ? never
         : K & (keyof GassmaGassmaCommentDefaultFindResult | "author" | "post" | "_count")]:
-          K extends "author" ? GassmaGassmaUserFindResultBase<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "User": infer TO } ? TO extends GassmaGassmaUserOmit ? TO : {} : {}, O> | null :
-          K extends "post" ? GassmaGassmaPostFindResultBase<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "Post": infer TO } ? TO extends GassmaGassmaPostOmit ? TO : {} : {}, O> | null :
+          K extends "author" | "post" ? {
+            "author": GassmaGassmaUserFindResultBase<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "User": infer TO } ? TO extends GassmaGassmaUserOmit ? TO : {} : {}, O> | null;
+            "post": GassmaGassmaPostFindResultBase<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "Post": infer TO } ? TO extends GassmaGassmaPostOmit ? TO : {} : {}, O> | null;
+          }[K] :
           K extends "_count" ? Gassma.CountResult<S[K]> :
           GassmaGassmaCommentDefaultFindResult[K & keyof GassmaGassmaCommentDefaultFindResult];
     }
@@ -5449,8 +5751,10 @@ export type GassmaGassmaCommentFindResultBase<S, I = undefined, QO = undefined, 
     ? {}
     : {
         [K in keyof I as K extends "author" | "post" | "_count" ? K : never]:
-          K extends "author" ? GassmaGassmaUserFindResultBase<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "User": infer TO } ? TO extends GassmaGassmaUserOmit ? TO : {} : {}, O> | null :
-          K extends "post" ? GassmaGassmaPostFindResultBase<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "Post": infer TO } ? TO extends GassmaGassmaPostOmit ? TO : {} : {}, O> | null :
+          K extends "author" | "post" ? {
+            "author": GassmaGassmaUserFindResultBase<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "User": infer TO } ? TO extends GassmaGassmaUserOmit ? TO : {} : {}, O> | null;
+            "post": GassmaGassmaPostFindResultBase<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "Post": infer TO } ? TO extends GassmaGassmaPostOmit ? TO : {} : {}, O> | null;
+          }[K] :
           K extends "_count" ? Gassma.CountResult<I[K]> :
           never;
       });
@@ -5460,8 +5764,10 @@ export type GassmaGassmaCommentFindResultCore<S, I = undefined, QO = undefined, 
       [K in keyof S as S[K] extends false | undefined
         ? never
         : K & (keyof GassmaGassmaCommentDefaultFindResult | "author" | "post" | "_count")]:
-          K extends "author" ? GassmaGassmaUserFindResult<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "User": infer TO } ? TO extends GassmaGassmaUserOmit ? TO : {} : {}, O, CMap> | null :
-          K extends "post" ? GassmaGassmaPostFindResult<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "Post": infer TO } ? TO extends GassmaGassmaPostOmit ? TO : {} : {}, O, CMap> | null :
+          K extends "author" | "post" ? {
+            "author": GassmaGassmaUserFindResult<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "User": infer TO } ? TO extends GassmaGassmaUserOmit ? TO : {} : {}, O, CMap> | null;
+            "post": GassmaGassmaPostFindResult<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "Post": infer TO } ? TO extends GassmaGassmaPostOmit ? TO : {} : {}, O, CMap> | null;
+          }[K] :
           K extends "_count" ? Gassma.CountResult<S[K]> :
           GassmaGassmaCommentDefaultFindResult[K & keyof GassmaGassmaCommentDefaultFindResult];
     }
@@ -5474,8 +5780,10 @@ export type GassmaGassmaCommentFindResultCore<S, I = undefined, QO = undefined, 
     ? {}
     : {
         [K in keyof I as K extends "author" | "post" | "_count" ? K : never]:
-          K extends "author" ? GassmaGassmaUserFindResult<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "User": infer TO } ? TO extends GassmaGassmaUserOmit ? TO : {} : {}, O, CMap> | null :
-          K extends "post" ? GassmaGassmaPostFindResult<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "Post": infer TO } ? TO extends GassmaGassmaPostOmit ? TO : {} : {}, O, CMap> | null :
+          K extends "author" | "post" ? {
+            "author": GassmaGassmaUserFindResult<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "User": infer TO } ? TO extends GassmaGassmaUserOmit ? TO : {} : {}, O, CMap> | null;
+            "post": GassmaGassmaPostFindResult<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "Post": infer TO } ? TO extends GassmaGassmaPostOmit ? TO : {} : {}, O, CMap> | null;
+          }[K] :
           K extends "_count" ? Gassma.CountResult<I[K]> :
           never;
       });
@@ -5492,9 +5800,11 @@ export type GassmaGassmaCategoryFindResultBase<S, I = undefined, QO = undefined,
       [K in keyof S as S[K] extends false | undefined
         ? never
         : K & (keyof GassmaGassmaCategoryDefaultFindResult | "posts" | "parent" | "children" | "_count")]:
-          K extends "posts" ? GassmaGassmaPostFindResultBase<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "Post": infer TO } ? TO extends GassmaGassmaPostOmit ? TO : {} : {}, O>[] :
-          K extends "parent" ? GassmaGassmaCategoryFindResultBase<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "Category": infer TO } ? TO extends GassmaGassmaCategoryOmit ? TO : {} : {}, O> | null :
-          K extends "children" ? GassmaGassmaCategoryFindResultBase<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "Category": infer TO } ? TO extends GassmaGassmaCategoryOmit ? TO : {} : {}, O>[] :
+          K extends "posts" | "parent" | "children" ? {
+            "posts": GassmaGassmaPostFindResultBase<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "Post": infer TO } ? TO extends GassmaGassmaPostOmit ? TO : {} : {}, O>[];
+            "parent": GassmaGassmaCategoryFindResultBase<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "Category": infer TO } ? TO extends GassmaGassmaCategoryOmit ? TO : {} : {}, O> | null;
+            "children": GassmaGassmaCategoryFindResultBase<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "Category": infer TO } ? TO extends GassmaGassmaCategoryOmit ? TO : {} : {}, O>[];
+          }[K] :
           K extends "_count" ? Gassma.CountResult<S[K]> :
           GassmaGassmaCategoryDefaultFindResult[K & keyof GassmaGassmaCategoryDefaultFindResult];
     }
@@ -5507,9 +5817,11 @@ export type GassmaGassmaCategoryFindResultBase<S, I = undefined, QO = undefined,
     ? {}
     : {
         [K in keyof I as K extends "posts" | "parent" | "children" | "_count" ? K : never]:
-          K extends "posts" ? GassmaGassmaPostFindResultBase<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "Post": infer TO } ? TO extends GassmaGassmaPostOmit ? TO : {} : {}, O>[] :
-          K extends "parent" ? GassmaGassmaCategoryFindResultBase<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "Category": infer TO } ? TO extends GassmaGassmaCategoryOmit ? TO : {} : {}, O> | null :
-          K extends "children" ? GassmaGassmaCategoryFindResultBase<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "Category": infer TO } ? TO extends GassmaGassmaCategoryOmit ? TO : {} : {}, O>[] :
+          K extends "posts" | "parent" | "children" ? {
+            "posts": GassmaGassmaPostFindResultBase<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "Post": infer TO } ? TO extends GassmaGassmaPostOmit ? TO : {} : {}, O>[];
+            "parent": GassmaGassmaCategoryFindResultBase<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "Category": infer TO } ? TO extends GassmaGassmaCategoryOmit ? TO : {} : {}, O> | null;
+            "children": GassmaGassmaCategoryFindResultBase<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "Category": infer TO } ? TO extends GassmaGassmaCategoryOmit ? TO : {} : {}, O>[];
+          }[K] :
           K extends "_count" ? Gassma.CountResult<I[K]> :
           never;
       });
@@ -5519,9 +5831,11 @@ export type GassmaGassmaCategoryFindResultCore<S, I = undefined, QO = undefined,
       [K in keyof S as S[K] extends false | undefined
         ? never
         : K & (keyof GassmaGassmaCategoryDefaultFindResult | "posts" | "parent" | "children" | "_count")]:
-          K extends "posts" ? GassmaGassmaPostFindResult<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "Post": infer TO } ? TO extends GassmaGassmaPostOmit ? TO : {} : {}, O, CMap>[] :
-          K extends "parent" ? GassmaGassmaCategoryFindResult<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "Category": infer TO } ? TO extends GassmaGassmaCategoryOmit ? TO : {} : {}, O, CMap> | null :
-          K extends "children" ? GassmaGassmaCategoryFindResult<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "Category": infer TO } ? TO extends GassmaGassmaCategoryOmit ? TO : {} : {}, O, CMap>[] :
+          K extends "posts" | "parent" | "children" ? {
+            "posts": GassmaGassmaPostFindResult<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "Post": infer TO } ? TO extends GassmaGassmaPostOmit ? TO : {} : {}, O, CMap>[];
+            "parent": GassmaGassmaCategoryFindResult<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "Category": infer TO } ? TO extends GassmaGassmaCategoryOmit ? TO : {} : {}, O, CMap> | null;
+            "children": GassmaGassmaCategoryFindResult<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "Category": infer TO } ? TO extends GassmaGassmaCategoryOmit ? TO : {} : {}, O, CMap>[];
+          }[K] :
           K extends "_count" ? Gassma.CountResult<S[K]> :
           GassmaGassmaCategoryDefaultFindResult[K & keyof GassmaGassmaCategoryDefaultFindResult];
     }
@@ -5534,9 +5848,11 @@ export type GassmaGassmaCategoryFindResultCore<S, I = undefined, QO = undefined,
     ? {}
     : {
         [K in keyof I as K extends "posts" | "parent" | "children" | "_count" ? K : never]:
-          K extends "posts" ? GassmaGassmaPostFindResult<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "Post": infer TO } ? TO extends GassmaGassmaPostOmit ? TO : {} : {}, O, CMap>[] :
-          K extends "parent" ? GassmaGassmaCategoryFindResult<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "Category": infer TO } ? TO extends GassmaGassmaCategoryOmit ? TO : {} : {}, O, CMap> | null :
-          K extends "children" ? GassmaGassmaCategoryFindResult<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "Category": infer TO } ? TO extends GassmaGassmaCategoryOmit ? TO : {} : {}, O, CMap>[] :
+          K extends "posts" | "parent" | "children" ? {
+            "posts": GassmaGassmaPostFindResult<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "Post": infer TO } ? TO extends GassmaGassmaPostOmit ? TO : {} : {}, O, CMap>[];
+            "parent": GassmaGassmaCategoryFindResult<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "Category": infer TO } ? TO extends GassmaGassmaCategoryOmit ? TO : {} : {}, O, CMap> | null;
+            "children": GassmaGassmaCategoryFindResult<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "Category": infer TO } ? TO extends GassmaGassmaCategoryOmit ? TO : {} : {}, O, CMap>[];
+          }[K] :
           K extends "_count" ? Gassma.CountResult<I[K]> :
           never;
       });
@@ -5553,7 +5869,9 @@ export type GassmaGassmaTagFindResultBase<S, I = undefined, QO = undefined, GO =
       [K in keyof S as S[K] extends false | undefined
         ? never
         : K & (keyof GassmaGassmaTagDefaultFindResult | "posts" | "_count")]:
-          K extends "posts" ? GassmaGassmaPostFindResultBase<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "Post": infer TO } ? TO extends GassmaGassmaPostOmit ? TO : {} : {}, O>[] :
+          K extends "posts" ? {
+            "posts": GassmaGassmaPostFindResultBase<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "Post": infer TO } ? TO extends GassmaGassmaPostOmit ? TO : {} : {}, O>[];
+          }[K] :
           K extends "_count" ? Gassma.CountResult<S[K]> :
           GassmaGassmaTagDefaultFindResult[K & keyof GassmaGassmaTagDefaultFindResult];
     }
@@ -5566,7 +5884,9 @@ export type GassmaGassmaTagFindResultBase<S, I = undefined, QO = undefined, GO =
     ? {}
     : {
         [K in keyof I as K extends "posts" | "_count" ? K : never]:
-          K extends "posts" ? GassmaGassmaPostFindResultBase<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "Post": infer TO } ? TO extends GassmaGassmaPostOmit ? TO : {} : {}, O>[] :
+          K extends "posts" ? {
+            "posts": GassmaGassmaPostFindResultBase<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "Post": infer TO } ? TO extends GassmaGassmaPostOmit ? TO : {} : {}, O>[];
+          }[K] :
           K extends "_count" ? Gassma.CountResult<I[K]> :
           never;
       });
@@ -5576,7 +5896,9 @@ export type GassmaGassmaTagFindResultCore<S, I = undefined, QO = undefined, GO =
       [K in keyof S as S[K] extends false | undefined
         ? never
         : K & (keyof GassmaGassmaTagDefaultFindResult | "posts" | "_count")]:
-          K extends "posts" ? GassmaGassmaPostFindResult<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "Post": infer TO } ? TO extends GassmaGassmaPostOmit ? TO : {} : {}, O, CMap>[] :
+          K extends "posts" ? {
+            "posts": GassmaGassmaPostFindResult<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "Post": infer TO } ? TO extends GassmaGassmaPostOmit ? TO : {} : {}, O, CMap>[];
+          }[K] :
           K extends "_count" ? Gassma.CountResult<S[K]> :
           GassmaGassmaTagDefaultFindResult[K & keyof GassmaGassmaTagDefaultFindResult];
     }
@@ -5589,7 +5911,9 @@ export type GassmaGassmaTagFindResultCore<S, I = undefined, QO = undefined, GO =
     ? {}
     : {
         [K in keyof I as K extends "posts" | "_count" ? K : never]:
-          K extends "posts" ? GassmaGassmaPostFindResult<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "Post": infer TO } ? TO extends GassmaGassmaPostOmit ? TO : {} : {}, O, CMap>[] :
+          K extends "posts" ? {
+            "posts": GassmaGassmaPostFindResult<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "Post": infer TO } ? TO extends GassmaGassmaPostOmit ? TO : {} : {}, O, CMap>[];
+          }[K] :
           K extends "_count" ? Gassma.CountResult<I[K]> :
           never;
       });
@@ -5659,7 +5983,9 @@ export type GassmaGassmaTimeSlotFindResultBase<S, I = undefined, QO = undefined,
       [K in keyof S as S[K] extends false | undefined
         ? never
         : K & (keyof GassmaGassmaTimeSlotDefaultFindResult | "reservations" | "_count")]:
-          K extends "reservations" ? GassmaGassmaReservationFindResultBase<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "Reservation": infer TO } ? TO extends GassmaGassmaReservationOmit ? TO : {} : {}, O>[] :
+          K extends "reservations" ? {
+            "reservations": GassmaGassmaReservationFindResultBase<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "Reservation": infer TO } ? TO extends GassmaGassmaReservationOmit ? TO : {} : {}, O>[];
+          }[K] :
           K extends "_count" ? Gassma.CountResult<S[K]> :
           GassmaGassmaTimeSlotDefaultFindResult[K & keyof GassmaGassmaTimeSlotDefaultFindResult];
     }
@@ -5672,7 +5998,9 @@ export type GassmaGassmaTimeSlotFindResultBase<S, I = undefined, QO = undefined,
     ? {}
     : {
         [K in keyof I as K extends "reservations" | "_count" ? K : never]:
-          K extends "reservations" ? GassmaGassmaReservationFindResultBase<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "Reservation": infer TO } ? TO extends GassmaGassmaReservationOmit ? TO : {} : {}, O>[] :
+          K extends "reservations" ? {
+            "reservations": GassmaGassmaReservationFindResultBase<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "Reservation": infer TO } ? TO extends GassmaGassmaReservationOmit ? TO : {} : {}, O>[];
+          }[K] :
           K extends "_count" ? Gassma.CountResult<I[K]> :
           never;
       });
@@ -5682,7 +6010,9 @@ export type GassmaGassmaTimeSlotFindResultCore<S, I = undefined, QO = undefined,
       [K in keyof S as S[K] extends false | undefined
         ? never
         : K & (keyof GassmaGassmaTimeSlotDefaultFindResult | "reservations" | "_count")]:
-          K extends "reservations" ? GassmaGassmaReservationFindResult<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "Reservation": infer TO } ? TO extends GassmaGassmaReservationOmit ? TO : {} : {}, O, CMap>[] :
+          K extends "reservations" ? {
+            "reservations": GassmaGassmaReservationFindResult<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "Reservation": infer TO } ? TO extends GassmaGassmaReservationOmit ? TO : {} : {}, O, CMap>[];
+          }[K] :
           K extends "_count" ? Gassma.CountResult<S[K]> :
           GassmaGassmaTimeSlotDefaultFindResult[K & keyof GassmaGassmaTimeSlotDefaultFindResult];
     }
@@ -5695,7 +6025,9 @@ export type GassmaGassmaTimeSlotFindResultCore<S, I = undefined, QO = undefined,
     ? {}
     : {
         [K in keyof I as K extends "reservations" | "_count" ? K : never]:
-          K extends "reservations" ? GassmaGassmaReservationFindResult<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "Reservation": infer TO } ? TO extends GassmaGassmaReservationOmit ? TO : {} : {}, O, CMap>[] :
+          K extends "reservations" ? {
+            "reservations": GassmaGassmaReservationFindResult<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "Reservation": infer TO } ? TO extends GassmaGassmaReservationOmit ? TO : {} : {}, O, CMap>[];
+          }[K] :
           K extends "_count" ? Gassma.CountResult<I[K]> :
           never;
       });
@@ -5712,7 +6044,9 @@ export type GassmaGassmaReservationFindResultBase<S, I = undefined, QO = undefin
       [K in keyof S as S[K] extends false | undefined
         ? never
         : K & (keyof GassmaGassmaReservationDefaultFindResult | "timeSlot" | "_count")]:
-          K extends "timeSlot" ? GassmaGassmaTimeSlotFindResultBase<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "TimeSlot": infer TO } ? TO extends GassmaGassmaTimeSlotOmit ? TO : {} : {}, O> | null :
+          K extends "timeSlot" ? {
+            "timeSlot": GassmaGassmaTimeSlotFindResultBase<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "TimeSlot": infer TO } ? TO extends GassmaGassmaTimeSlotOmit ? TO : {} : {}, O> | null;
+          }[K] :
           K extends "_count" ? Gassma.CountResult<S[K]> :
           GassmaGassmaReservationDefaultFindResult[K & keyof GassmaGassmaReservationDefaultFindResult];
     }
@@ -5725,7 +6059,9 @@ export type GassmaGassmaReservationFindResultBase<S, I = undefined, QO = undefin
     ? {}
     : {
         [K in keyof I as K extends "timeSlot" | "_count" ? K : never]:
-          K extends "timeSlot" ? GassmaGassmaTimeSlotFindResultBase<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "TimeSlot": infer TO } ? TO extends GassmaGassmaTimeSlotOmit ? TO : {} : {}, O> | null :
+          K extends "timeSlot" ? {
+            "timeSlot": GassmaGassmaTimeSlotFindResultBase<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "TimeSlot": infer TO } ? TO extends GassmaGassmaTimeSlotOmit ? TO : {} : {}, O> | null;
+          }[K] :
           K extends "_count" ? Gassma.CountResult<I[K]> :
           never;
       });
@@ -5735,7 +6071,9 @@ export type GassmaGassmaReservationFindResultCore<S, I = undefined, QO = undefin
       [K in keyof S as S[K] extends false | undefined
         ? never
         : K & (keyof GassmaGassmaReservationDefaultFindResult | "timeSlot" | "_count")]:
-          K extends "timeSlot" ? GassmaGassmaTimeSlotFindResult<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "TimeSlot": infer TO } ? TO extends GassmaGassmaTimeSlotOmit ? TO : {} : {}, O, CMap> | null :
+          K extends "timeSlot" ? {
+            "timeSlot": GassmaGassmaTimeSlotFindResult<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "TimeSlot": infer TO } ? TO extends GassmaGassmaTimeSlotOmit ? TO : {} : {}, O, CMap> | null;
+          }[K] :
           K extends "_count" ? Gassma.CountResult<S[K]> :
           GassmaGassmaReservationDefaultFindResult[K & keyof GassmaGassmaReservationDefaultFindResult];
     }
@@ -5748,7 +6086,9 @@ export type GassmaGassmaReservationFindResultCore<S, I = undefined, QO = undefin
     ? {}
     : {
         [K in keyof I as K extends "timeSlot" | "_count" ? K : never]:
-          K extends "timeSlot" ? GassmaGassmaTimeSlotFindResult<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "TimeSlot": infer TO } ? TO extends GassmaGassmaTimeSlotOmit ? TO : {} : {}, O, CMap> | null :
+          K extends "timeSlot" ? {
+            "timeSlot": GassmaGassmaTimeSlotFindResult<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "TimeSlot": infer TO } ? TO extends GassmaGassmaTimeSlotOmit ? TO : {} : {}, O, CMap> | null;
+          }[K] :
           K extends "_count" ? Gassma.CountResult<I[K]> :
           never;
       });
@@ -5765,7 +6105,9 @@ export type GassmaGassmaProductFindResultBase<S, I = undefined, QO = undefined, 
       [K in keyof S as S[K] extends false | undefined
         ? never
         : K & (keyof GassmaGassmaProductDefaultFindResult | "orderItems" | "_count")]:
-          K extends "orderItems" ? GassmaGassmaOrderItemFindResultBase<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "OrderItem": infer TO } ? TO extends GassmaGassmaOrderItemOmit ? TO : {} : {}, O>[] :
+          K extends "orderItems" ? {
+            "orderItems": GassmaGassmaOrderItemFindResultBase<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "OrderItem": infer TO } ? TO extends GassmaGassmaOrderItemOmit ? TO : {} : {}, O>[];
+          }[K] :
           K extends "_count" ? Gassma.CountResult<S[K]> :
           GassmaGassmaProductDefaultFindResult[K & keyof GassmaGassmaProductDefaultFindResult];
     }
@@ -5778,7 +6120,9 @@ export type GassmaGassmaProductFindResultBase<S, I = undefined, QO = undefined, 
     ? {}
     : {
         [K in keyof I as K extends "orderItems" | "_count" ? K : never]:
-          K extends "orderItems" ? GassmaGassmaOrderItemFindResultBase<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "OrderItem": infer TO } ? TO extends GassmaGassmaOrderItemOmit ? TO : {} : {}, O>[] :
+          K extends "orderItems" ? {
+            "orderItems": GassmaGassmaOrderItemFindResultBase<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "OrderItem": infer TO } ? TO extends GassmaGassmaOrderItemOmit ? TO : {} : {}, O>[];
+          }[K] :
           K extends "_count" ? Gassma.CountResult<I[K]> :
           never;
       });
@@ -5788,7 +6132,9 @@ export type GassmaGassmaProductFindResultCore<S, I = undefined, QO = undefined, 
       [K in keyof S as S[K] extends false | undefined
         ? never
         : K & (keyof GassmaGassmaProductDefaultFindResult | "orderItems" | "_count")]:
-          K extends "orderItems" ? GassmaGassmaOrderItemFindResult<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "OrderItem": infer TO } ? TO extends GassmaGassmaOrderItemOmit ? TO : {} : {}, O, CMap>[] :
+          K extends "orderItems" ? {
+            "orderItems": GassmaGassmaOrderItemFindResult<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "OrderItem": infer TO } ? TO extends GassmaGassmaOrderItemOmit ? TO : {} : {}, O, CMap>[];
+          }[K] :
           K extends "_count" ? Gassma.CountResult<S[K]> :
           GassmaGassmaProductDefaultFindResult[K & keyof GassmaGassmaProductDefaultFindResult];
     }
@@ -5801,7 +6147,9 @@ export type GassmaGassmaProductFindResultCore<S, I = undefined, QO = undefined, 
     ? {}
     : {
         [K in keyof I as K extends "orderItems" | "_count" ? K : never]:
-          K extends "orderItems" ? GassmaGassmaOrderItemFindResult<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "OrderItem": infer TO } ? TO extends GassmaGassmaOrderItemOmit ? TO : {} : {}, O, CMap>[] :
+          K extends "orderItems" ? {
+            "orderItems": GassmaGassmaOrderItemFindResult<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "OrderItem": infer TO } ? TO extends GassmaGassmaOrderItemOmit ? TO : {} : {}, O, CMap>[];
+          }[K] :
           K extends "_count" ? Gassma.CountResult<I[K]> :
           never;
       });
@@ -5818,8 +6166,10 @@ export type GassmaGassmaOrderFindResultBase<S, I = undefined, QO = undefined, GO
       [K in keyof S as S[K] extends false | undefined
         ? never
         : K & (keyof GassmaGassmaOrderDefaultFindResult | "user" | "items" | "_count")]:
-          K extends "user" ? GassmaGassmaUserFindResultBase<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "User": infer TO } ? TO extends GassmaGassmaUserOmit ? TO : {} : {}, O> | null :
-          K extends "items" ? GassmaGassmaOrderItemFindResultBase<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "OrderItem": infer TO } ? TO extends GassmaGassmaOrderItemOmit ? TO : {} : {}, O>[] :
+          K extends "user" | "items" ? {
+            "user": GassmaGassmaUserFindResultBase<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "User": infer TO } ? TO extends GassmaGassmaUserOmit ? TO : {} : {}, O> | null;
+            "items": GassmaGassmaOrderItemFindResultBase<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "OrderItem": infer TO } ? TO extends GassmaGassmaOrderItemOmit ? TO : {} : {}, O>[];
+          }[K] :
           K extends "_count" ? Gassma.CountResult<S[K]> :
           GassmaGassmaOrderDefaultFindResult[K & keyof GassmaGassmaOrderDefaultFindResult];
     }
@@ -5832,8 +6182,10 @@ export type GassmaGassmaOrderFindResultBase<S, I = undefined, QO = undefined, GO
     ? {}
     : {
         [K in keyof I as K extends "user" | "items" | "_count" ? K : never]:
-          K extends "user" ? GassmaGassmaUserFindResultBase<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "User": infer TO } ? TO extends GassmaGassmaUserOmit ? TO : {} : {}, O> | null :
-          K extends "items" ? GassmaGassmaOrderItemFindResultBase<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "OrderItem": infer TO } ? TO extends GassmaGassmaOrderItemOmit ? TO : {} : {}, O>[] :
+          K extends "user" | "items" ? {
+            "user": GassmaGassmaUserFindResultBase<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "User": infer TO } ? TO extends GassmaGassmaUserOmit ? TO : {} : {}, O> | null;
+            "items": GassmaGassmaOrderItemFindResultBase<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "OrderItem": infer TO } ? TO extends GassmaGassmaOrderItemOmit ? TO : {} : {}, O>[];
+          }[K] :
           K extends "_count" ? Gassma.CountResult<I[K]> :
           never;
       });
@@ -5843,8 +6195,10 @@ export type GassmaGassmaOrderFindResultCore<S, I = undefined, QO = undefined, GO
       [K in keyof S as S[K] extends false | undefined
         ? never
         : K & (keyof GassmaGassmaOrderDefaultFindResult | "user" | "items" | "_count")]:
-          K extends "user" ? GassmaGassmaUserFindResult<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "User": infer TO } ? TO extends GassmaGassmaUserOmit ? TO : {} : {}, O, CMap> | null :
-          K extends "items" ? GassmaGassmaOrderItemFindResult<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "OrderItem": infer TO } ? TO extends GassmaGassmaOrderItemOmit ? TO : {} : {}, O, CMap>[] :
+          K extends "user" | "items" ? {
+            "user": GassmaGassmaUserFindResult<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "User": infer TO } ? TO extends GassmaGassmaUserOmit ? TO : {} : {}, O, CMap> | null;
+            "items": GassmaGassmaOrderItemFindResult<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "OrderItem": infer TO } ? TO extends GassmaGassmaOrderItemOmit ? TO : {} : {}, O, CMap>[];
+          }[K] :
           K extends "_count" ? Gassma.CountResult<S[K]> :
           GassmaGassmaOrderDefaultFindResult[K & keyof GassmaGassmaOrderDefaultFindResult];
     }
@@ -5857,8 +6211,10 @@ export type GassmaGassmaOrderFindResultCore<S, I = undefined, QO = undefined, GO
     ? {}
     : {
         [K in keyof I as K extends "user" | "items" | "_count" ? K : never]:
-          K extends "user" ? GassmaGassmaUserFindResult<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "User": infer TO } ? TO extends GassmaGassmaUserOmit ? TO : {} : {}, O, CMap> | null :
-          K extends "items" ? GassmaGassmaOrderItemFindResult<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "OrderItem": infer TO } ? TO extends GassmaGassmaOrderItemOmit ? TO : {} : {}, O, CMap>[] :
+          K extends "user" | "items" ? {
+            "user": GassmaGassmaUserFindResult<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "User": infer TO } ? TO extends GassmaGassmaUserOmit ? TO : {} : {}, O, CMap> | null;
+            "items": GassmaGassmaOrderItemFindResult<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "OrderItem": infer TO } ? TO extends GassmaGassmaOrderItemOmit ? TO : {} : {}, O, CMap>[];
+          }[K] :
           K extends "_count" ? Gassma.CountResult<I[K]> :
           never;
       });
@@ -5875,8 +6231,10 @@ export type GassmaGassmaOrderItemFindResultBase<S, I = undefined, QO = undefined
       [K in keyof S as S[K] extends false | undefined
         ? never
         : K & (keyof GassmaGassmaOrderItemDefaultFindResult | "order" | "product" | "_count")]:
-          K extends "order" ? GassmaGassmaOrderFindResultBase<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "Order": infer TO } ? TO extends GassmaGassmaOrderOmit ? TO : {} : {}, O> | null :
-          K extends "product" ? GassmaGassmaProductFindResultBase<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "Product": infer TO } ? TO extends GassmaGassmaProductOmit ? TO : {} : {}, O> | null :
+          K extends "order" | "product" ? {
+            "order": GassmaGassmaOrderFindResultBase<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "Order": infer TO } ? TO extends GassmaGassmaOrderOmit ? TO : {} : {}, O> | null;
+            "product": GassmaGassmaProductFindResultBase<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "Product": infer TO } ? TO extends GassmaGassmaProductOmit ? TO : {} : {}, O> | null;
+          }[K] :
           K extends "_count" ? Gassma.CountResult<S[K]> :
           GassmaGassmaOrderItemDefaultFindResult[K & keyof GassmaGassmaOrderItemDefaultFindResult];
     }
@@ -5889,8 +6247,10 @@ export type GassmaGassmaOrderItemFindResultBase<S, I = undefined, QO = undefined
     ? {}
     : {
         [K in keyof I as K extends "order" | "product" | "_count" ? K : never]:
-          K extends "order" ? GassmaGassmaOrderFindResultBase<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "Order": infer TO } ? TO extends GassmaGassmaOrderOmit ? TO : {} : {}, O> | null :
-          K extends "product" ? GassmaGassmaProductFindResultBase<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "Product": infer TO } ? TO extends GassmaGassmaProductOmit ? TO : {} : {}, O> | null :
+          K extends "order" | "product" ? {
+            "order": GassmaGassmaOrderFindResultBase<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "Order": infer TO } ? TO extends GassmaGassmaOrderOmit ? TO : {} : {}, O> | null;
+            "product": GassmaGassmaProductFindResultBase<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "Product": infer TO } ? TO extends GassmaGassmaProductOmit ? TO : {} : {}, O> | null;
+          }[K] :
           K extends "_count" ? Gassma.CountResult<I[K]> :
           never;
       });
@@ -5900,8 +6260,10 @@ export type GassmaGassmaOrderItemFindResultCore<S, I = undefined, QO = undefined
       [K in keyof S as S[K] extends false | undefined
         ? never
         : K & (keyof GassmaGassmaOrderItemDefaultFindResult | "order" | "product" | "_count")]:
-          K extends "order" ? GassmaGassmaOrderFindResult<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "Order": infer TO } ? TO extends GassmaGassmaOrderOmit ? TO : {} : {}, O, CMap> | null :
-          K extends "product" ? GassmaGassmaProductFindResult<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "Product": infer TO } ? TO extends GassmaGassmaProductOmit ? TO : {} : {}, O, CMap> | null :
+          K extends "order" | "product" ? {
+            "order": GassmaGassmaOrderFindResult<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "Order": infer TO } ? TO extends GassmaGassmaOrderOmit ? TO : {} : {}, O, CMap> | null;
+            "product": GassmaGassmaProductFindResult<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "Product": infer TO } ? TO extends GassmaGassmaProductOmit ? TO : {} : {}, O, CMap> | null;
+          }[K] :
           K extends "_count" ? Gassma.CountResult<S[K]> :
           GassmaGassmaOrderItemDefaultFindResult[K & keyof GassmaGassmaOrderItemDefaultFindResult];
     }
@@ -5914,8 +6276,10 @@ export type GassmaGassmaOrderItemFindResultCore<S, I = undefined, QO = undefined
     ? {}
     : {
         [K in keyof I as K extends "order" | "product" | "_count" ? K : never]:
-          K extends "order" ? GassmaGassmaOrderFindResult<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "Order": infer TO } ? TO extends GassmaGassmaOrderOmit ? TO : {} : {}, O, CMap> | null :
-          K extends "product" ? GassmaGassmaProductFindResult<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "Product": infer TO } ? TO extends GassmaGassmaProductOmit ? TO : {} : {}, O, CMap> | null :
+          K extends "order" | "product" ? {
+            "order": GassmaGassmaOrderFindResult<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "Order": infer TO } ? TO extends GassmaGassmaOrderOmit ? TO : {} : {}, O, CMap> | null;
+            "product": GassmaGassmaProductFindResult<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "Product": infer TO } ? TO extends GassmaGassmaProductOmit ? TO : {} : {}, O, CMap> | null;
+          }[K] :
           K extends "_count" ? Gassma.CountResult<I[K]> :
           never;
       });
@@ -6091,10 +6455,12 @@ export type GassmaGassmaUserFindResultBase<S, I = undefined, QO = undefined, GO 
       [K in keyof S as S[K] extends false | undefined
         ? never
         : K & (keyof GassmaGassmaUserDefaultFindResult | "posts" | "comments" | "orders" | "profile" | "_count")]:
-          K extends "posts" ? GassmaGassmaPostFindResultBase<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "Post": infer TO } ? TO extends GassmaGassmaPostOmit ? TO : {} : {}, O>[] :
-          K extends "comments" ? GassmaGassmaCommentFindResultBase<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "Comment": infer TO } ? TO extends GassmaGassmaCommentOmit ? TO : {} : {}, O>[] :
-          K extends "orders" ? GassmaGassmaOrderFindResultBase<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "Order": infer TO } ? TO extends GassmaGassmaOrderOmit ? TO : {} : {}, O>[] :
-          K extends "profile" ? GassmaGassmaProfileFindResultBase<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "Profile": infer TO } ? TO extends GassmaGassmaProfileOmit ? TO : {} : {}, O> | null :
+          K extends "posts" | "comments" | "orders" | "profile" ? {
+            "posts": GassmaGassmaPostFindResultBase<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "Post": infer TO } ? TO extends GassmaGassmaPostOmit ? TO : {} : {}, O>[];
+            "comments": GassmaGassmaCommentFindResultBase<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "Comment": infer TO } ? TO extends GassmaGassmaCommentOmit ? TO : {} : {}, O>[];
+            "orders": GassmaGassmaOrderFindResultBase<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "Order": infer TO } ? TO extends GassmaGassmaOrderOmit ? TO : {} : {}, O>[];
+            "profile": GassmaGassmaProfileFindResultBase<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "Profile": infer TO } ? TO extends GassmaGassmaProfileOmit ? TO : {} : {}, O> | null;
+          }[K] :
           K extends "_count" ? Gassma.CountResult<S[K]> :
           GassmaGassmaUserDefaultFindResult[K & keyof GassmaGassmaUserDefaultFindResult];
     }
@@ -6107,10 +6473,12 @@ export type GassmaGassmaUserFindResultBase<S, I = undefined, QO = undefined, GO 
     ? {}
     : {
         [K in keyof I as K extends "posts" | "comments" | "orders" | "profile" | "_count" ? K : never]:
-          K extends "posts" ? GassmaGassmaPostFindResultBase<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "Post": infer TO } ? TO extends GassmaGassmaPostOmit ? TO : {} : {}, O>[] :
-          K extends "comments" ? GassmaGassmaCommentFindResultBase<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "Comment": infer TO } ? TO extends GassmaGassmaCommentOmit ? TO : {} : {}, O>[] :
-          K extends "orders" ? GassmaGassmaOrderFindResultBase<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "Order": infer TO } ? TO extends GassmaGassmaOrderOmit ? TO : {} : {}, O>[] :
-          K extends "profile" ? GassmaGassmaProfileFindResultBase<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "Profile": infer TO } ? TO extends GassmaGassmaProfileOmit ? TO : {} : {}, O> | null :
+          K extends "posts" | "comments" | "orders" | "profile" ? {
+            "posts": GassmaGassmaPostFindResultBase<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "Post": infer TO } ? TO extends GassmaGassmaPostOmit ? TO : {} : {}, O>[];
+            "comments": GassmaGassmaCommentFindResultBase<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "Comment": infer TO } ? TO extends GassmaGassmaCommentOmit ? TO : {} : {}, O>[];
+            "orders": GassmaGassmaOrderFindResultBase<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "Order": infer TO } ? TO extends GassmaGassmaOrderOmit ? TO : {} : {}, O>[];
+            "profile": GassmaGassmaProfileFindResultBase<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "Profile": infer TO } ? TO extends GassmaGassmaProfileOmit ? TO : {} : {}, O> | null;
+          }[K] :
           K extends "_count" ? Gassma.CountResult<I[K]> :
           never;
       });
@@ -6120,10 +6488,12 @@ export type GassmaGassmaUserFindResultCore<S, I = undefined, QO = undefined, GO 
       [K in keyof S as S[K] extends false | undefined
         ? never
         : K & (keyof GassmaGassmaUserDefaultFindResult | "posts" | "comments" | "orders" | "profile" | "_count")]:
-          K extends "posts" ? GassmaGassmaPostFindResult<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "Post": infer TO } ? TO extends GassmaGassmaPostOmit ? TO : {} : {}, O, CMap>[] :
-          K extends "comments" ? GassmaGassmaCommentFindResult<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "Comment": infer TO } ? TO extends GassmaGassmaCommentOmit ? TO : {} : {}, O, CMap>[] :
-          K extends "orders" ? GassmaGassmaOrderFindResult<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "Order": infer TO } ? TO extends GassmaGassmaOrderOmit ? TO : {} : {}, O, CMap>[] :
-          K extends "profile" ? GassmaGassmaProfileFindResult<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "Profile": infer TO } ? TO extends GassmaGassmaProfileOmit ? TO : {} : {}, O, CMap> | null :
+          K extends "posts" | "comments" | "orders" | "profile" ? {
+            "posts": GassmaGassmaPostFindResult<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "Post": infer TO } ? TO extends GassmaGassmaPostOmit ? TO : {} : {}, O, CMap>[];
+            "comments": GassmaGassmaCommentFindResult<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "Comment": infer TO } ? TO extends GassmaGassmaCommentOmit ? TO : {} : {}, O, CMap>[];
+            "orders": GassmaGassmaOrderFindResult<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "Order": infer TO } ? TO extends GassmaGassmaOrderOmit ? TO : {} : {}, O, CMap>[];
+            "profile": GassmaGassmaProfileFindResult<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "Profile": infer TO } ? TO extends GassmaGassmaProfileOmit ? TO : {} : {}, O, CMap> | null;
+          }[K] :
           K extends "_count" ? Gassma.CountResult<S[K]> :
           GassmaGassmaUserDefaultFindResult[K & keyof GassmaGassmaUserDefaultFindResult];
     }
@@ -6136,10 +6506,12 @@ export type GassmaGassmaUserFindResultCore<S, I = undefined, QO = undefined, GO 
     ? {}
     : {
         [K in keyof I as K extends "posts" | "comments" | "orders" | "profile" | "_count" ? K : never]:
-          K extends "posts" ? GassmaGassmaPostFindResult<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "Post": infer TO } ? TO extends GassmaGassmaPostOmit ? TO : {} : {}, O, CMap>[] :
-          K extends "comments" ? GassmaGassmaCommentFindResult<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "Comment": infer TO } ? TO extends GassmaGassmaCommentOmit ? TO : {} : {}, O, CMap>[] :
-          K extends "orders" ? GassmaGassmaOrderFindResult<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "Order": infer TO } ? TO extends GassmaGassmaOrderOmit ? TO : {} : {}, O, CMap>[] :
-          K extends "profile" ? GassmaGassmaProfileFindResult<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "Profile": infer TO } ? TO extends GassmaGassmaProfileOmit ? TO : {} : {}, O, CMap> | null :
+          K extends "posts" | "comments" | "orders" | "profile" ? {
+            "posts": GassmaGassmaPostFindResult<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "Post": infer TO } ? TO extends GassmaGassmaPostOmit ? TO : {} : {}, O, CMap>[];
+            "comments": GassmaGassmaCommentFindResult<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "Comment": infer TO } ? TO extends GassmaGassmaCommentOmit ? TO : {} : {}, O, CMap>[];
+            "orders": GassmaGassmaOrderFindResult<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "Order": infer TO } ? TO extends GassmaGassmaOrderOmit ? TO : {} : {}, O, CMap>[];
+            "profile": GassmaGassmaProfileFindResult<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "Profile": infer TO } ? TO extends GassmaGassmaProfileOmit ? TO : {} : {}, O, CMap> | null;
+          }[K] :
           K extends "_count" ? Gassma.CountResult<I[K]> :
           never;
       });
@@ -6156,7 +6528,9 @@ export type GassmaGassmaProfileFindResultBase<S, I = undefined, QO = undefined, 
       [K in keyof S as S[K] extends false | undefined
         ? never
         : K & (keyof GassmaGassmaProfileDefaultFindResult | "user" | "_count")]:
-          K extends "user" ? GassmaGassmaUserFindResultBase<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "User": infer TO } ? TO extends GassmaGassmaUserOmit ? TO : {} : {}, O> | null :
+          K extends "user" ? {
+            "user": GassmaGassmaUserFindResultBase<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "User": infer TO } ? TO extends GassmaGassmaUserOmit ? TO : {} : {}, O> | null;
+          }[K] :
           K extends "_count" ? Gassma.CountResult<S[K]> :
           GassmaGassmaProfileDefaultFindResult[K & keyof GassmaGassmaProfileDefaultFindResult];
     }
@@ -6169,7 +6543,9 @@ export type GassmaGassmaProfileFindResultBase<S, I = undefined, QO = undefined, 
     ? {}
     : {
         [K in keyof I as K extends "user" | "_count" ? K : never]:
-          K extends "user" ? GassmaGassmaUserFindResultBase<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "User": infer TO } ? TO extends GassmaGassmaUserOmit ? TO : {} : {}, O> | null :
+          K extends "user" ? {
+            "user": GassmaGassmaUserFindResultBase<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "User": infer TO } ? TO extends GassmaGassmaUserOmit ? TO : {} : {}, O> | null;
+          }[K] :
           K extends "_count" ? Gassma.CountResult<I[K]> :
           never;
       });
@@ -6179,7 +6555,9 @@ export type GassmaGassmaProfileFindResultCore<S, I = undefined, QO = undefined, 
       [K in keyof S as S[K] extends false | undefined
         ? never
         : K & (keyof GassmaGassmaProfileDefaultFindResult | "user" | "_count")]:
-          K extends "user" ? GassmaGassmaUserFindResult<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "User": infer TO } ? TO extends GassmaGassmaUserOmit ? TO : {} : {}, O, CMap> | null :
+          K extends "user" ? {
+            "user": GassmaGassmaUserFindResult<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "User": infer TO } ? TO extends GassmaGassmaUserOmit ? TO : {} : {}, O, CMap> | null;
+          }[K] :
           K extends "_count" ? Gassma.CountResult<S[K]> :
           GassmaGassmaProfileDefaultFindResult[K & keyof GassmaGassmaProfileDefaultFindResult];
     }
@@ -6192,7 +6570,9 @@ export type GassmaGassmaProfileFindResultCore<S, I = undefined, QO = undefined, 
     ? {}
     : {
         [K in keyof I as K extends "user" | "_count" ? K : never]:
-          K extends "user" ? GassmaGassmaUserFindResult<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "User": infer TO } ? TO extends GassmaGassmaUserOmit ? TO : {} : {}, O, CMap> | null :
+          K extends "user" ? {
+            "user": GassmaGassmaUserFindResult<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "User": infer TO } ? TO extends GassmaGassmaUserOmit ? TO : {} : {}, O, CMap> | null;
+          }[K] :
           K extends "_count" ? Gassma.CountResult<I[K]> :
           never;
       });
@@ -6321,7 +6701,9 @@ export type GassmaGassmaProfileAggregateBaseReturn = {
 export type GassmaGassmaPostAggregateField<T, K extends string> = T extends undefined
   ? never
   : K extends "_count"
-    ? { [P in keyof T as T[P] extends true ? P : never]: number }
+    ? T extends true
+      ? number
+      : { [P in keyof T as T[P] extends true ? P : never]: number }
     : K extends "_avg" | "_sum"
       ? { [P in keyof T as T[P] extends true ? P : never]: number | null }
       : {
@@ -6333,7 +6715,9 @@ export type GassmaGassmaPostAggregateField<T, K extends string> = T extends unde
 export type GassmaGassmaCommentAggregateField<T, K extends string> = T extends undefined
   ? never
   : K extends "_count"
-    ? { [P in keyof T as T[P] extends true ? P : never]: number }
+    ? T extends true
+      ? number
+      : { [P in keyof T as T[P] extends true ? P : never]: number }
     : K extends "_avg" | "_sum"
       ? { [P in keyof T as T[P] extends true ? P : never]: number | null }
       : {
@@ -6345,7 +6729,9 @@ export type GassmaGassmaCommentAggregateField<T, K extends string> = T extends u
 export type GassmaGassmaCategoryAggregateField<T, K extends string> = T extends undefined
   ? never
   : K extends "_count"
-    ? { [P in keyof T as T[P] extends true ? P : never]: number }
+    ? T extends true
+      ? number
+      : { [P in keyof T as T[P] extends true ? P : never]: number }
     : K extends "_avg" | "_sum"
       ? { [P in keyof T as T[P] extends true ? P : never]: number | null }
       : {
@@ -6357,7 +6743,9 @@ export type GassmaGassmaCategoryAggregateField<T, K extends string> = T extends 
 export type GassmaGassmaTagAggregateField<T, K extends string> = T extends undefined
   ? never
   : K extends "_count"
-    ? { [P in keyof T as T[P] extends true ? P : never]: number }
+    ? T extends true
+      ? number
+      : { [P in keyof T as T[P] extends true ? P : never]: number }
     : K extends "_avg" | "_sum"
       ? { [P in keyof T as T[P] extends true ? P : never]: number | null }
       : {
@@ -6369,7 +6757,9 @@ export type GassmaGassmaTagAggregateField<T, K extends string> = T extends undef
 export type GassmaGassmaSensorReadingAggregateField<T, K extends string> = T extends undefined
   ? never
   : K extends "_count"
-    ? { [P in keyof T as T[P] extends true ? P : never]: number }
+    ? T extends true
+      ? number
+      : { [P in keyof T as T[P] extends true ? P : never]: number }
     : K extends "_avg" | "_sum"
       ? { [P in keyof T as T[P] extends true ? P : never]: number | null }
       : {
@@ -6381,7 +6771,9 @@ export type GassmaGassmaSensorReadingAggregateField<T, K extends string> = T ext
 export type GassmaGassmaTimeSlotAggregateField<T, K extends string> = T extends undefined
   ? never
   : K extends "_count"
-    ? { [P in keyof T as T[P] extends true ? P : never]: number }
+    ? T extends true
+      ? number
+      : { [P in keyof T as T[P] extends true ? P : never]: number }
     : K extends "_avg" | "_sum"
       ? { [P in keyof T as T[P] extends true ? P : never]: number | null }
       : {
@@ -6393,7 +6785,9 @@ export type GassmaGassmaTimeSlotAggregateField<T, K extends string> = T extends 
 export type GassmaGassmaReservationAggregateField<T, K extends string> = T extends undefined
   ? never
   : K extends "_count"
-    ? { [P in keyof T as T[P] extends true ? P : never]: number }
+    ? T extends true
+      ? number
+      : { [P in keyof T as T[P] extends true ? P : never]: number }
     : K extends "_avg" | "_sum"
       ? { [P in keyof T as T[P] extends true ? P : never]: number | null }
       : {
@@ -6405,7 +6799,9 @@ export type GassmaGassmaReservationAggregateField<T, K extends string> = T exten
 export type GassmaGassmaProductAggregateField<T, K extends string> = T extends undefined
   ? never
   : K extends "_count"
-    ? { [P in keyof T as T[P] extends true ? P : never]: number }
+    ? T extends true
+      ? number
+      : { [P in keyof T as T[P] extends true ? P : never]: number }
     : K extends "_avg" | "_sum"
       ? { [P in keyof T as T[P] extends true ? P : never]: number | null }
       : {
@@ -6417,7 +6813,9 @@ export type GassmaGassmaProductAggregateField<T, K extends string> = T extends u
 export type GassmaGassmaOrderAggregateField<T, K extends string> = T extends undefined
   ? never
   : K extends "_count"
-    ? { [P in keyof T as T[P] extends true ? P : never]: number }
+    ? T extends true
+      ? number
+      : { [P in keyof T as T[P] extends true ? P : never]: number }
     : K extends "_avg" | "_sum"
       ? { [P in keyof T as T[P] extends true ? P : never]: number | null }
       : {
@@ -6429,7 +6827,9 @@ export type GassmaGassmaOrderAggregateField<T, K extends string> = T extends und
 export type GassmaGassmaOrderItemAggregateField<T, K extends string> = T extends undefined
   ? never
   : K extends "_count"
-    ? { [P in keyof T as T[P] extends true ? P : never]: number }
+    ? T extends true
+      ? number
+      : { [P in keyof T as T[P] extends true ? P : never]: number }
     : K extends "_avg" | "_sum"
       ? { [P in keyof T as T[P] extends true ? P : never]: number | null }
       : {
@@ -6441,7 +6841,9 @@ export type GassmaGassmaOrderItemAggregateField<T, K extends string> = T extends
 export type GassmaGassmaFormulaCellAggregateField<T, K extends string> = T extends undefined
   ? never
   : K extends "_count"
-    ? { [P in keyof T as T[P] extends true ? P : never]: number }
+    ? T extends true
+      ? number
+      : { [P in keyof T as T[P] extends true ? P : never]: number }
     : K extends "_avg" | "_sum"
       ? { [P in keyof T as T[P] extends true ? P : never]: number | null }
       : {
@@ -6453,7 +6855,9 @@ export type GassmaGassmaFormulaCellAggregateField<T, K extends string> = T exten
 export type GassmaGassmaNotificationAggregateField<T, K extends string> = T extends undefined
   ? never
   : K extends "_count"
-    ? { [P in keyof T as T[P] extends true ? P : never]: number }
+    ? T extends true
+      ? number
+      : { [P in keyof T as T[P] extends true ? P : never]: number }
     : K extends "_avg" | "_sum"
       ? { [P in keyof T as T[P] extends true ? P : never]: number | null }
       : {
@@ -6465,7 +6869,9 @@ export type GassmaGassmaNotificationAggregateField<T, K extends string> = T exte
 export type GassmaGassmaOffsetNoteAggregateField<T, K extends string> = T extends undefined
   ? never
   : K extends "_count"
-    ? { [P in keyof T as T[P] extends true ? P : never]: number }
+    ? T extends true
+      ? number
+      : { [P in keyof T as T[P] extends true ? P : never]: number }
     : K extends "_avg" | "_sum"
       ? { [P in keyof T as T[P] extends true ? P : never]: number | null }
       : {
@@ -6477,7 +6883,9 @@ export type GassmaGassmaOffsetNoteAggregateField<T, K extends string> = T extend
 export type GassmaGassmaUserAggregateField<T, K extends string> = T extends undefined
   ? never
   : K extends "_count"
-    ? { [P in keyof T as T[P] extends true ? P : never]: number }
+    ? T extends true
+      ? number
+      : { [P in keyof T as T[P] extends true ? P : never]: number }
     : K extends "_avg" | "_sum"
       ? { [P in keyof T as T[P] extends true ? P : never]: number | null }
       : {
@@ -6489,7 +6897,9 @@ export type GassmaGassmaUserAggregateField<T, K extends string> = T extends unde
 export type GassmaGassmaProfileAggregateField<T, K extends string> = T extends undefined
   ? never
   : K extends "_count"
-    ? { [P in keyof T as T[P] extends true ? P : never]: number }
+    ? T extends true
+      ? number
+      : { [P in keyof T as T[P] extends true ? P : never]: number }
     : K extends "_avg" | "_sum"
       ? { [P in keyof T as T[P] extends true ? P : never]: number | null }
       : {
@@ -6975,6 +7385,7 @@ export type GassmaGassmaPostQueryArgs =
   | GassmaGassmaPostCreateManyAndReturnData
   | GassmaGassmaPostUpdateSingleData
   | GassmaGassmaPostUpdateData
+  | GassmaGassmaPostUpdateManyAndReturnData
   | GassmaGassmaPostUpsertSingleData
   | GassmaGassmaPostDeleteSingleData
   | GassmaGassmaPostDeleteData
@@ -7031,12 +7442,12 @@ export type GassmaGassmaPostQueryHooks<GO extends GassmaGassmaPostOmit = {}, O =
     args: GassmaGassmaPostUpdateData;
     query: (args: GassmaGassmaPostUpdateData) => UpdateManyReturn;
   }) => UpdateManyReturn;
-  updateManyAndReturn?: (params: {
+  updateManyAndReturn?: <T extends GassmaGassmaPostUpdateManyAndReturnData>(params: {
     model: "Post";
     operation: "updateManyAndReturn";
-    args: GassmaGassmaPostUpdateData;
-    query: (args: GassmaGassmaPostUpdateData) => GassmaGassmaPostFindResultBase<undefined, undefined, undefined, GO, O>[];
-  }) => GassmaGassmaPostFindResultBase<undefined, undefined, undefined, GO, O>[];
+    args: T;
+    query: (args: T) => GassmaGassmaPostFindResultBase<T["select"], T["include"], T["omit"], GO, O>[];
+  }) => GassmaGassmaPostFindResultBase<T["select"], T["include"], T["omit"], GO, O>[];
   upsert?: <T extends GassmaGassmaPostUpsertSingleData>(params: {
     model: "Post";
     operation: "upsert";
@@ -7055,12 +7466,12 @@ export type GassmaGassmaPostQueryHooks<GO extends GassmaGassmaPostOmit = {}, O =
     args: GassmaGassmaPostDeleteData;
     query: (args: GassmaGassmaPostDeleteData) => DeleteManyReturn;
   }) => DeleteManyReturn;
-  count?: (params: {
+  count?: <T extends GassmaGassmaPostCountData>(params: {
     model: "Post";
     operation: "count";
-    args: GassmaGassmaPostCountData;
-    query: (args: GassmaGassmaPostCountData) => number;
-  }) => number;
+    args: T;
+    query: (args: T) => GassmaGassmaPostCountResult<T>;
+  }) => GassmaGassmaPostCountResult<T>;
   aggregate?: <T extends GassmaGassmaPostAggregateData>(params: {
     model: "Post";
     operation: "aggregate";
@@ -7089,6 +7500,7 @@ export type GassmaGassmaCommentQueryArgs =
   | GassmaGassmaCommentCreateManyAndReturnData
   | GassmaGassmaCommentUpdateSingleData
   | GassmaGassmaCommentUpdateData
+  | GassmaGassmaCommentUpdateManyAndReturnData
   | GassmaGassmaCommentUpsertSingleData
   | GassmaGassmaCommentDeleteSingleData
   | GassmaGassmaCommentDeleteData
@@ -7145,12 +7557,12 @@ export type GassmaGassmaCommentQueryHooks<GO extends GassmaGassmaCommentOmit = {
     args: GassmaGassmaCommentUpdateData;
     query: (args: GassmaGassmaCommentUpdateData) => UpdateManyReturn;
   }) => UpdateManyReturn;
-  updateManyAndReturn?: (params: {
+  updateManyAndReturn?: <T extends GassmaGassmaCommentUpdateManyAndReturnData>(params: {
     model: "Comment";
     operation: "updateManyAndReturn";
-    args: GassmaGassmaCommentUpdateData;
-    query: (args: GassmaGassmaCommentUpdateData) => GassmaGassmaCommentFindResultBase<undefined, undefined, undefined, GO, O>[];
-  }) => GassmaGassmaCommentFindResultBase<undefined, undefined, undefined, GO, O>[];
+    args: T;
+    query: (args: T) => GassmaGassmaCommentFindResultBase<T["select"], T["include"], T["omit"], GO, O>[];
+  }) => GassmaGassmaCommentFindResultBase<T["select"], T["include"], T["omit"], GO, O>[];
   upsert?: <T extends GassmaGassmaCommentUpsertSingleData>(params: {
     model: "Comment";
     operation: "upsert";
@@ -7169,12 +7581,12 @@ export type GassmaGassmaCommentQueryHooks<GO extends GassmaGassmaCommentOmit = {
     args: GassmaGassmaCommentDeleteData;
     query: (args: GassmaGassmaCommentDeleteData) => DeleteManyReturn;
   }) => DeleteManyReturn;
-  count?: (params: {
+  count?: <T extends GassmaGassmaCommentCountData>(params: {
     model: "Comment";
     operation: "count";
-    args: GassmaGassmaCommentCountData;
-    query: (args: GassmaGassmaCommentCountData) => number;
-  }) => number;
+    args: T;
+    query: (args: T) => GassmaGassmaCommentCountResult<T>;
+  }) => GassmaGassmaCommentCountResult<T>;
   aggregate?: <T extends GassmaGassmaCommentAggregateData>(params: {
     model: "Comment";
     operation: "aggregate";
@@ -7203,6 +7615,7 @@ export type GassmaGassmaCategoryQueryArgs =
   | GassmaGassmaCategoryCreateManyAndReturnData
   | GassmaGassmaCategoryUpdateSingleData
   | GassmaGassmaCategoryUpdateData
+  | GassmaGassmaCategoryUpdateManyAndReturnData
   | GassmaGassmaCategoryUpsertSingleData
   | GassmaGassmaCategoryDeleteSingleData
   | GassmaGassmaCategoryDeleteData
@@ -7259,12 +7672,12 @@ export type GassmaGassmaCategoryQueryHooks<GO extends GassmaGassmaCategoryOmit =
     args: GassmaGassmaCategoryUpdateData;
     query: (args: GassmaGassmaCategoryUpdateData) => UpdateManyReturn;
   }) => UpdateManyReturn;
-  updateManyAndReturn?: (params: {
+  updateManyAndReturn?: <T extends GassmaGassmaCategoryUpdateManyAndReturnData>(params: {
     model: "Category";
     operation: "updateManyAndReturn";
-    args: GassmaGassmaCategoryUpdateData;
-    query: (args: GassmaGassmaCategoryUpdateData) => GassmaGassmaCategoryFindResultBase<undefined, undefined, undefined, GO, O>[];
-  }) => GassmaGassmaCategoryFindResultBase<undefined, undefined, undefined, GO, O>[];
+    args: T;
+    query: (args: T) => GassmaGassmaCategoryFindResultBase<T["select"], T["include"], T["omit"], GO, O>[];
+  }) => GassmaGassmaCategoryFindResultBase<T["select"], T["include"], T["omit"], GO, O>[];
   upsert?: <T extends GassmaGassmaCategoryUpsertSingleData>(params: {
     model: "Category";
     operation: "upsert";
@@ -7283,12 +7696,12 @@ export type GassmaGassmaCategoryQueryHooks<GO extends GassmaGassmaCategoryOmit =
     args: GassmaGassmaCategoryDeleteData;
     query: (args: GassmaGassmaCategoryDeleteData) => DeleteManyReturn;
   }) => DeleteManyReturn;
-  count?: (params: {
+  count?: <T extends GassmaGassmaCategoryCountData>(params: {
     model: "Category";
     operation: "count";
-    args: GassmaGassmaCategoryCountData;
-    query: (args: GassmaGassmaCategoryCountData) => number;
-  }) => number;
+    args: T;
+    query: (args: T) => GassmaGassmaCategoryCountResult<T>;
+  }) => GassmaGassmaCategoryCountResult<T>;
   aggregate?: <T extends GassmaGassmaCategoryAggregateData>(params: {
     model: "Category";
     operation: "aggregate";
@@ -7317,6 +7730,7 @@ export type GassmaGassmaTagQueryArgs =
   | GassmaGassmaTagCreateManyAndReturnData
   | GassmaGassmaTagUpdateSingleData
   | GassmaGassmaTagUpdateData
+  | GassmaGassmaTagUpdateManyAndReturnData
   | GassmaGassmaTagUpsertSingleData
   | GassmaGassmaTagDeleteSingleData
   | GassmaGassmaTagDeleteData
@@ -7373,12 +7787,12 @@ export type GassmaGassmaTagQueryHooks<GO extends GassmaGassmaTagOmit = {}, O = {
     args: GassmaGassmaTagUpdateData;
     query: (args: GassmaGassmaTagUpdateData) => UpdateManyReturn;
   }) => UpdateManyReturn;
-  updateManyAndReturn?: (params: {
+  updateManyAndReturn?: <T extends GassmaGassmaTagUpdateManyAndReturnData>(params: {
     model: "Tag";
     operation: "updateManyAndReturn";
-    args: GassmaGassmaTagUpdateData;
-    query: (args: GassmaGassmaTagUpdateData) => GassmaGassmaTagFindResultBase<undefined, undefined, undefined, GO, O>[];
-  }) => GassmaGassmaTagFindResultBase<undefined, undefined, undefined, GO, O>[];
+    args: T;
+    query: (args: T) => GassmaGassmaTagFindResultBase<T["select"], T["include"], T["omit"], GO, O>[];
+  }) => GassmaGassmaTagFindResultBase<T["select"], T["include"], T["omit"], GO, O>[];
   upsert?: <T extends GassmaGassmaTagUpsertSingleData>(params: {
     model: "Tag";
     operation: "upsert";
@@ -7397,12 +7811,12 @@ export type GassmaGassmaTagQueryHooks<GO extends GassmaGassmaTagOmit = {}, O = {
     args: GassmaGassmaTagDeleteData;
     query: (args: GassmaGassmaTagDeleteData) => DeleteManyReturn;
   }) => DeleteManyReturn;
-  count?: (params: {
+  count?: <T extends GassmaGassmaTagCountData>(params: {
     model: "Tag";
     operation: "count";
-    args: GassmaGassmaTagCountData;
-    query: (args: GassmaGassmaTagCountData) => number;
-  }) => number;
+    args: T;
+    query: (args: T) => GassmaGassmaTagCountResult<T>;
+  }) => GassmaGassmaTagCountResult<T>;
   aggregate?: <T extends GassmaGassmaTagAggregateData>(params: {
     model: "Tag";
     operation: "aggregate";
@@ -7431,6 +7845,7 @@ export type GassmaGassmaSensorReadingQueryArgs =
   | GassmaGassmaSensorReadingCreateManyAndReturnData
   | GassmaGassmaSensorReadingUpdateSingleData
   | GassmaGassmaSensorReadingUpdateData
+  | GassmaGassmaSensorReadingUpdateManyAndReturnData
   | GassmaGassmaSensorReadingUpsertSingleData
   | GassmaGassmaSensorReadingDeleteSingleData
   | GassmaGassmaSensorReadingDeleteData
@@ -7487,12 +7902,12 @@ export type GassmaGassmaSensorReadingQueryHooks<GO extends GassmaGassmaSensorRea
     args: GassmaGassmaSensorReadingUpdateData;
     query: (args: GassmaGassmaSensorReadingUpdateData) => UpdateManyReturn;
   }) => UpdateManyReturn;
-  updateManyAndReturn?: (params: {
+  updateManyAndReturn?: <T extends GassmaGassmaSensorReadingUpdateManyAndReturnData>(params: {
     model: "SensorReading";
     operation: "updateManyAndReturn";
-    args: GassmaGassmaSensorReadingUpdateData;
-    query: (args: GassmaGassmaSensorReadingUpdateData) => GassmaGassmaSensorReadingFindResultBase<undefined, undefined, undefined, GO, O>[];
-  }) => GassmaGassmaSensorReadingFindResultBase<undefined, undefined, undefined, GO, O>[];
+    args: T;
+    query: (args: T) => GassmaGassmaSensorReadingFindResultBase<T["select"], T["include"], T["omit"], GO, O>[];
+  }) => GassmaGassmaSensorReadingFindResultBase<T["select"], T["include"], T["omit"], GO, O>[];
   upsert?: <T extends GassmaGassmaSensorReadingUpsertSingleData>(params: {
     model: "SensorReading";
     operation: "upsert";
@@ -7511,12 +7926,12 @@ export type GassmaGassmaSensorReadingQueryHooks<GO extends GassmaGassmaSensorRea
     args: GassmaGassmaSensorReadingDeleteData;
     query: (args: GassmaGassmaSensorReadingDeleteData) => DeleteManyReturn;
   }) => DeleteManyReturn;
-  count?: (params: {
+  count?: <T extends GassmaGassmaSensorReadingCountData>(params: {
     model: "SensorReading";
     operation: "count";
-    args: GassmaGassmaSensorReadingCountData;
-    query: (args: GassmaGassmaSensorReadingCountData) => number;
-  }) => number;
+    args: T;
+    query: (args: T) => GassmaGassmaSensorReadingCountResult<T>;
+  }) => GassmaGassmaSensorReadingCountResult<T>;
   aggregate?: <T extends GassmaGassmaSensorReadingAggregateData>(params: {
     model: "SensorReading";
     operation: "aggregate";
@@ -7545,6 +7960,7 @@ export type GassmaGassmaTimeSlotQueryArgs =
   | GassmaGassmaTimeSlotCreateManyAndReturnData
   | GassmaGassmaTimeSlotUpdateSingleData
   | GassmaGassmaTimeSlotUpdateData
+  | GassmaGassmaTimeSlotUpdateManyAndReturnData
   | GassmaGassmaTimeSlotUpsertSingleData
   | GassmaGassmaTimeSlotDeleteSingleData
   | GassmaGassmaTimeSlotDeleteData
@@ -7601,12 +8017,12 @@ export type GassmaGassmaTimeSlotQueryHooks<GO extends GassmaGassmaTimeSlotOmit =
     args: GassmaGassmaTimeSlotUpdateData;
     query: (args: GassmaGassmaTimeSlotUpdateData) => UpdateManyReturn;
   }) => UpdateManyReturn;
-  updateManyAndReturn?: (params: {
+  updateManyAndReturn?: <T extends GassmaGassmaTimeSlotUpdateManyAndReturnData>(params: {
     model: "TimeSlot";
     operation: "updateManyAndReturn";
-    args: GassmaGassmaTimeSlotUpdateData;
-    query: (args: GassmaGassmaTimeSlotUpdateData) => GassmaGassmaTimeSlotFindResultBase<undefined, undefined, undefined, GO, O>[];
-  }) => GassmaGassmaTimeSlotFindResultBase<undefined, undefined, undefined, GO, O>[];
+    args: T;
+    query: (args: T) => GassmaGassmaTimeSlotFindResultBase<T["select"], T["include"], T["omit"], GO, O>[];
+  }) => GassmaGassmaTimeSlotFindResultBase<T["select"], T["include"], T["omit"], GO, O>[];
   upsert?: <T extends GassmaGassmaTimeSlotUpsertSingleData>(params: {
     model: "TimeSlot";
     operation: "upsert";
@@ -7625,12 +8041,12 @@ export type GassmaGassmaTimeSlotQueryHooks<GO extends GassmaGassmaTimeSlotOmit =
     args: GassmaGassmaTimeSlotDeleteData;
     query: (args: GassmaGassmaTimeSlotDeleteData) => DeleteManyReturn;
   }) => DeleteManyReturn;
-  count?: (params: {
+  count?: <T extends GassmaGassmaTimeSlotCountData>(params: {
     model: "TimeSlot";
     operation: "count";
-    args: GassmaGassmaTimeSlotCountData;
-    query: (args: GassmaGassmaTimeSlotCountData) => number;
-  }) => number;
+    args: T;
+    query: (args: T) => GassmaGassmaTimeSlotCountResult<T>;
+  }) => GassmaGassmaTimeSlotCountResult<T>;
   aggregate?: <T extends GassmaGassmaTimeSlotAggregateData>(params: {
     model: "TimeSlot";
     operation: "aggregate";
@@ -7659,6 +8075,7 @@ export type GassmaGassmaReservationQueryArgs =
   | GassmaGassmaReservationCreateManyAndReturnData
   | GassmaGassmaReservationUpdateSingleData
   | GassmaGassmaReservationUpdateData
+  | GassmaGassmaReservationUpdateManyAndReturnData
   | GassmaGassmaReservationUpsertSingleData
   | GassmaGassmaReservationDeleteSingleData
   | GassmaGassmaReservationDeleteData
@@ -7715,12 +8132,12 @@ export type GassmaGassmaReservationQueryHooks<GO extends GassmaGassmaReservation
     args: GassmaGassmaReservationUpdateData;
     query: (args: GassmaGassmaReservationUpdateData) => UpdateManyReturn;
   }) => UpdateManyReturn;
-  updateManyAndReturn?: (params: {
+  updateManyAndReturn?: <T extends GassmaGassmaReservationUpdateManyAndReturnData>(params: {
     model: "Reservation";
     operation: "updateManyAndReturn";
-    args: GassmaGassmaReservationUpdateData;
-    query: (args: GassmaGassmaReservationUpdateData) => GassmaGassmaReservationFindResultBase<undefined, undefined, undefined, GO, O>[];
-  }) => GassmaGassmaReservationFindResultBase<undefined, undefined, undefined, GO, O>[];
+    args: T;
+    query: (args: T) => GassmaGassmaReservationFindResultBase<T["select"], T["include"], T["omit"], GO, O>[];
+  }) => GassmaGassmaReservationFindResultBase<T["select"], T["include"], T["omit"], GO, O>[];
   upsert?: <T extends GassmaGassmaReservationUpsertSingleData>(params: {
     model: "Reservation";
     operation: "upsert";
@@ -7739,12 +8156,12 @@ export type GassmaGassmaReservationQueryHooks<GO extends GassmaGassmaReservation
     args: GassmaGassmaReservationDeleteData;
     query: (args: GassmaGassmaReservationDeleteData) => DeleteManyReturn;
   }) => DeleteManyReturn;
-  count?: (params: {
+  count?: <T extends GassmaGassmaReservationCountData>(params: {
     model: "Reservation";
     operation: "count";
-    args: GassmaGassmaReservationCountData;
-    query: (args: GassmaGassmaReservationCountData) => number;
-  }) => number;
+    args: T;
+    query: (args: T) => GassmaGassmaReservationCountResult<T>;
+  }) => GassmaGassmaReservationCountResult<T>;
   aggregate?: <T extends GassmaGassmaReservationAggregateData>(params: {
     model: "Reservation";
     operation: "aggregate";
@@ -7773,6 +8190,7 @@ export type GassmaGassmaProductQueryArgs =
   | GassmaGassmaProductCreateManyAndReturnData
   | GassmaGassmaProductUpdateSingleData
   | GassmaGassmaProductUpdateData
+  | GassmaGassmaProductUpdateManyAndReturnData
   | GassmaGassmaProductUpsertSingleData
   | GassmaGassmaProductDeleteSingleData
   | GassmaGassmaProductDeleteData
@@ -7829,12 +8247,12 @@ export type GassmaGassmaProductQueryHooks<GO extends GassmaGassmaProductOmit = {
     args: GassmaGassmaProductUpdateData;
     query: (args: GassmaGassmaProductUpdateData) => UpdateManyReturn;
   }) => UpdateManyReturn;
-  updateManyAndReturn?: (params: {
+  updateManyAndReturn?: <T extends GassmaGassmaProductUpdateManyAndReturnData>(params: {
     model: "Product";
     operation: "updateManyAndReturn";
-    args: GassmaGassmaProductUpdateData;
-    query: (args: GassmaGassmaProductUpdateData) => GassmaGassmaProductFindResultBase<undefined, undefined, undefined, GO, O>[];
-  }) => GassmaGassmaProductFindResultBase<undefined, undefined, undefined, GO, O>[];
+    args: T;
+    query: (args: T) => GassmaGassmaProductFindResultBase<T["select"], T["include"], T["omit"], GO, O>[];
+  }) => GassmaGassmaProductFindResultBase<T["select"], T["include"], T["omit"], GO, O>[];
   upsert?: <T extends GassmaGassmaProductUpsertSingleData>(params: {
     model: "Product";
     operation: "upsert";
@@ -7853,12 +8271,12 @@ export type GassmaGassmaProductQueryHooks<GO extends GassmaGassmaProductOmit = {
     args: GassmaGassmaProductDeleteData;
     query: (args: GassmaGassmaProductDeleteData) => DeleteManyReturn;
   }) => DeleteManyReturn;
-  count?: (params: {
+  count?: <T extends GassmaGassmaProductCountData>(params: {
     model: "Product";
     operation: "count";
-    args: GassmaGassmaProductCountData;
-    query: (args: GassmaGassmaProductCountData) => number;
-  }) => number;
+    args: T;
+    query: (args: T) => GassmaGassmaProductCountResult<T>;
+  }) => GassmaGassmaProductCountResult<T>;
   aggregate?: <T extends GassmaGassmaProductAggregateData>(params: {
     model: "Product";
     operation: "aggregate";
@@ -7887,6 +8305,7 @@ export type GassmaGassmaOrderQueryArgs =
   | GassmaGassmaOrderCreateManyAndReturnData
   | GassmaGassmaOrderUpdateSingleData
   | GassmaGassmaOrderUpdateData
+  | GassmaGassmaOrderUpdateManyAndReturnData
   | GassmaGassmaOrderUpsertSingleData
   | GassmaGassmaOrderDeleteSingleData
   | GassmaGassmaOrderDeleteData
@@ -7943,12 +8362,12 @@ export type GassmaGassmaOrderQueryHooks<GO extends GassmaGassmaOrderOmit = {}, O
     args: GassmaGassmaOrderUpdateData;
     query: (args: GassmaGassmaOrderUpdateData) => UpdateManyReturn;
   }) => UpdateManyReturn;
-  updateManyAndReturn?: (params: {
+  updateManyAndReturn?: <T extends GassmaGassmaOrderUpdateManyAndReturnData>(params: {
     model: "Order";
     operation: "updateManyAndReturn";
-    args: GassmaGassmaOrderUpdateData;
-    query: (args: GassmaGassmaOrderUpdateData) => GassmaGassmaOrderFindResultBase<undefined, undefined, undefined, GO, O>[];
-  }) => GassmaGassmaOrderFindResultBase<undefined, undefined, undefined, GO, O>[];
+    args: T;
+    query: (args: T) => GassmaGassmaOrderFindResultBase<T["select"], T["include"], T["omit"], GO, O>[];
+  }) => GassmaGassmaOrderFindResultBase<T["select"], T["include"], T["omit"], GO, O>[];
   upsert?: <T extends GassmaGassmaOrderUpsertSingleData>(params: {
     model: "Order";
     operation: "upsert";
@@ -7967,12 +8386,12 @@ export type GassmaGassmaOrderQueryHooks<GO extends GassmaGassmaOrderOmit = {}, O
     args: GassmaGassmaOrderDeleteData;
     query: (args: GassmaGassmaOrderDeleteData) => DeleteManyReturn;
   }) => DeleteManyReturn;
-  count?: (params: {
+  count?: <T extends GassmaGassmaOrderCountData>(params: {
     model: "Order";
     operation: "count";
-    args: GassmaGassmaOrderCountData;
-    query: (args: GassmaGassmaOrderCountData) => number;
-  }) => number;
+    args: T;
+    query: (args: T) => GassmaGassmaOrderCountResult<T>;
+  }) => GassmaGassmaOrderCountResult<T>;
   aggregate?: <T extends GassmaGassmaOrderAggregateData>(params: {
     model: "Order";
     operation: "aggregate";
@@ -8001,6 +8420,7 @@ export type GassmaGassmaOrderItemQueryArgs =
   | GassmaGassmaOrderItemCreateManyAndReturnData
   | GassmaGassmaOrderItemUpdateSingleData
   | GassmaGassmaOrderItemUpdateData
+  | GassmaGassmaOrderItemUpdateManyAndReturnData
   | GassmaGassmaOrderItemUpsertSingleData
   | GassmaGassmaOrderItemDeleteSingleData
   | GassmaGassmaOrderItemDeleteData
@@ -8057,12 +8477,12 @@ export type GassmaGassmaOrderItemQueryHooks<GO extends GassmaGassmaOrderItemOmit
     args: GassmaGassmaOrderItemUpdateData;
     query: (args: GassmaGassmaOrderItemUpdateData) => UpdateManyReturn;
   }) => UpdateManyReturn;
-  updateManyAndReturn?: (params: {
+  updateManyAndReturn?: <T extends GassmaGassmaOrderItemUpdateManyAndReturnData>(params: {
     model: "OrderItem";
     operation: "updateManyAndReturn";
-    args: GassmaGassmaOrderItemUpdateData;
-    query: (args: GassmaGassmaOrderItemUpdateData) => GassmaGassmaOrderItemFindResultBase<undefined, undefined, undefined, GO, O>[];
-  }) => GassmaGassmaOrderItemFindResultBase<undefined, undefined, undefined, GO, O>[];
+    args: T;
+    query: (args: T) => GassmaGassmaOrderItemFindResultBase<T["select"], T["include"], T["omit"], GO, O>[];
+  }) => GassmaGassmaOrderItemFindResultBase<T["select"], T["include"], T["omit"], GO, O>[];
   upsert?: <T extends GassmaGassmaOrderItemUpsertSingleData>(params: {
     model: "OrderItem";
     operation: "upsert";
@@ -8081,12 +8501,12 @@ export type GassmaGassmaOrderItemQueryHooks<GO extends GassmaGassmaOrderItemOmit
     args: GassmaGassmaOrderItemDeleteData;
     query: (args: GassmaGassmaOrderItemDeleteData) => DeleteManyReturn;
   }) => DeleteManyReturn;
-  count?: (params: {
+  count?: <T extends GassmaGassmaOrderItemCountData>(params: {
     model: "OrderItem";
     operation: "count";
-    args: GassmaGassmaOrderItemCountData;
-    query: (args: GassmaGassmaOrderItemCountData) => number;
-  }) => number;
+    args: T;
+    query: (args: T) => GassmaGassmaOrderItemCountResult<T>;
+  }) => GassmaGassmaOrderItemCountResult<T>;
   aggregate?: <T extends GassmaGassmaOrderItemAggregateData>(params: {
     model: "OrderItem";
     operation: "aggregate";
@@ -8115,6 +8535,7 @@ export type GassmaGassmaFormulaCellQueryArgs =
   | GassmaGassmaFormulaCellCreateManyAndReturnData
   | GassmaGassmaFormulaCellUpdateSingleData
   | GassmaGassmaFormulaCellUpdateData
+  | GassmaGassmaFormulaCellUpdateManyAndReturnData
   | GassmaGassmaFormulaCellUpsertSingleData
   | GassmaGassmaFormulaCellDeleteSingleData
   | GassmaGassmaFormulaCellDeleteData
@@ -8171,12 +8592,12 @@ export type GassmaGassmaFormulaCellQueryHooks<GO extends GassmaGassmaFormulaCell
     args: GassmaGassmaFormulaCellUpdateData;
     query: (args: GassmaGassmaFormulaCellUpdateData) => UpdateManyReturn;
   }) => UpdateManyReturn;
-  updateManyAndReturn?: (params: {
+  updateManyAndReturn?: <T extends GassmaGassmaFormulaCellUpdateManyAndReturnData>(params: {
     model: "FormulaCell";
     operation: "updateManyAndReturn";
-    args: GassmaGassmaFormulaCellUpdateData;
-    query: (args: GassmaGassmaFormulaCellUpdateData) => GassmaGassmaFormulaCellFindResultBase<undefined, undefined, undefined, GO, O>[];
-  }) => GassmaGassmaFormulaCellFindResultBase<undefined, undefined, undefined, GO, O>[];
+    args: T;
+    query: (args: T) => GassmaGassmaFormulaCellFindResultBase<T["select"], T["include"], T["omit"], GO, O>[];
+  }) => GassmaGassmaFormulaCellFindResultBase<T["select"], T["include"], T["omit"], GO, O>[];
   upsert?: <T extends GassmaGassmaFormulaCellUpsertSingleData>(params: {
     model: "FormulaCell";
     operation: "upsert";
@@ -8195,12 +8616,12 @@ export type GassmaGassmaFormulaCellQueryHooks<GO extends GassmaGassmaFormulaCell
     args: GassmaGassmaFormulaCellDeleteData;
     query: (args: GassmaGassmaFormulaCellDeleteData) => DeleteManyReturn;
   }) => DeleteManyReturn;
-  count?: (params: {
+  count?: <T extends GassmaGassmaFormulaCellCountData>(params: {
     model: "FormulaCell";
     operation: "count";
-    args: GassmaGassmaFormulaCellCountData;
-    query: (args: GassmaGassmaFormulaCellCountData) => number;
-  }) => number;
+    args: T;
+    query: (args: T) => GassmaGassmaFormulaCellCountResult<T>;
+  }) => GassmaGassmaFormulaCellCountResult<T>;
   aggregate?: <T extends GassmaGassmaFormulaCellAggregateData>(params: {
     model: "FormulaCell";
     operation: "aggregate";
@@ -8229,6 +8650,7 @@ export type GassmaGassmaNotificationQueryArgs =
   | GassmaGassmaNotificationCreateManyAndReturnData
   | GassmaGassmaNotificationUpdateSingleData
   | GassmaGassmaNotificationUpdateData
+  | GassmaGassmaNotificationUpdateManyAndReturnData
   | GassmaGassmaNotificationUpsertSingleData
   | GassmaGassmaNotificationDeleteSingleData
   | GassmaGassmaNotificationDeleteData
@@ -8285,12 +8707,12 @@ export type GassmaGassmaNotificationQueryHooks<GO extends GassmaGassmaNotificati
     args: GassmaGassmaNotificationUpdateData;
     query: (args: GassmaGassmaNotificationUpdateData) => UpdateManyReturn;
   }) => UpdateManyReturn;
-  updateManyAndReturn?: (params: {
+  updateManyAndReturn?: <T extends GassmaGassmaNotificationUpdateManyAndReturnData>(params: {
     model: "Notification";
     operation: "updateManyAndReturn";
-    args: GassmaGassmaNotificationUpdateData;
-    query: (args: GassmaGassmaNotificationUpdateData) => GassmaGassmaNotificationFindResultBase<undefined, undefined, undefined, GO, O>[];
-  }) => GassmaGassmaNotificationFindResultBase<undefined, undefined, undefined, GO, O>[];
+    args: T;
+    query: (args: T) => GassmaGassmaNotificationFindResultBase<T["select"], T["include"], T["omit"], GO, O>[];
+  }) => GassmaGassmaNotificationFindResultBase<T["select"], T["include"], T["omit"], GO, O>[];
   upsert?: <T extends GassmaGassmaNotificationUpsertSingleData>(params: {
     model: "Notification";
     operation: "upsert";
@@ -8309,12 +8731,12 @@ export type GassmaGassmaNotificationQueryHooks<GO extends GassmaGassmaNotificati
     args: GassmaGassmaNotificationDeleteData;
     query: (args: GassmaGassmaNotificationDeleteData) => DeleteManyReturn;
   }) => DeleteManyReturn;
-  count?: (params: {
+  count?: <T extends GassmaGassmaNotificationCountData>(params: {
     model: "Notification";
     operation: "count";
-    args: GassmaGassmaNotificationCountData;
-    query: (args: GassmaGassmaNotificationCountData) => number;
-  }) => number;
+    args: T;
+    query: (args: T) => GassmaGassmaNotificationCountResult<T>;
+  }) => GassmaGassmaNotificationCountResult<T>;
   aggregate?: <T extends GassmaGassmaNotificationAggregateData>(params: {
     model: "Notification";
     operation: "aggregate";
@@ -8343,6 +8765,7 @@ export type GassmaGassmaOffsetNoteQueryArgs =
   | GassmaGassmaOffsetNoteCreateManyAndReturnData
   | GassmaGassmaOffsetNoteUpdateSingleData
   | GassmaGassmaOffsetNoteUpdateData
+  | GassmaGassmaOffsetNoteUpdateManyAndReturnData
   | GassmaGassmaOffsetNoteUpsertSingleData
   | GassmaGassmaOffsetNoteDeleteSingleData
   | GassmaGassmaOffsetNoteDeleteData
@@ -8399,12 +8822,12 @@ export type GassmaGassmaOffsetNoteQueryHooks<GO extends GassmaGassmaOffsetNoteOm
     args: GassmaGassmaOffsetNoteUpdateData;
     query: (args: GassmaGassmaOffsetNoteUpdateData) => UpdateManyReturn;
   }) => UpdateManyReturn;
-  updateManyAndReturn?: (params: {
+  updateManyAndReturn?: <T extends GassmaGassmaOffsetNoteUpdateManyAndReturnData>(params: {
     model: "OffsetNote";
     operation: "updateManyAndReturn";
-    args: GassmaGassmaOffsetNoteUpdateData;
-    query: (args: GassmaGassmaOffsetNoteUpdateData) => GassmaGassmaOffsetNoteFindResultBase<undefined, undefined, undefined, GO, O>[];
-  }) => GassmaGassmaOffsetNoteFindResultBase<undefined, undefined, undefined, GO, O>[];
+    args: T;
+    query: (args: T) => GassmaGassmaOffsetNoteFindResultBase<T["select"], T["include"], T["omit"], GO, O>[];
+  }) => GassmaGassmaOffsetNoteFindResultBase<T["select"], T["include"], T["omit"], GO, O>[];
   upsert?: <T extends GassmaGassmaOffsetNoteUpsertSingleData>(params: {
     model: "OffsetNote";
     operation: "upsert";
@@ -8423,12 +8846,12 @@ export type GassmaGassmaOffsetNoteQueryHooks<GO extends GassmaGassmaOffsetNoteOm
     args: GassmaGassmaOffsetNoteDeleteData;
     query: (args: GassmaGassmaOffsetNoteDeleteData) => DeleteManyReturn;
   }) => DeleteManyReturn;
-  count?: (params: {
+  count?: <T extends GassmaGassmaOffsetNoteCountData>(params: {
     model: "OffsetNote";
     operation: "count";
-    args: GassmaGassmaOffsetNoteCountData;
-    query: (args: GassmaGassmaOffsetNoteCountData) => number;
-  }) => number;
+    args: T;
+    query: (args: T) => GassmaGassmaOffsetNoteCountResult<T>;
+  }) => GassmaGassmaOffsetNoteCountResult<T>;
   aggregate?: <T extends GassmaGassmaOffsetNoteAggregateData>(params: {
     model: "OffsetNote";
     operation: "aggregate";
@@ -8457,6 +8880,7 @@ export type GassmaGassmaUserQueryArgs =
   | GassmaGassmaUserCreateManyAndReturnData
   | GassmaGassmaUserUpdateSingleData
   | GassmaGassmaUserUpdateData
+  | GassmaGassmaUserUpdateManyAndReturnData
   | GassmaGassmaUserUpsertSingleData
   | GassmaGassmaUserDeleteSingleData
   | GassmaGassmaUserDeleteData
@@ -8513,12 +8937,12 @@ export type GassmaGassmaUserQueryHooks<GO extends GassmaGassmaUserOmit = {}, O =
     args: GassmaGassmaUserUpdateData;
     query: (args: GassmaGassmaUserUpdateData) => UpdateManyReturn;
   }) => UpdateManyReturn;
-  updateManyAndReturn?: (params: {
+  updateManyAndReturn?: <T extends GassmaGassmaUserUpdateManyAndReturnData>(params: {
     model: "User";
     operation: "updateManyAndReturn";
-    args: GassmaGassmaUserUpdateData;
-    query: (args: GassmaGassmaUserUpdateData) => GassmaGassmaUserFindResultBase<undefined, undefined, undefined, GO, O>[];
-  }) => GassmaGassmaUserFindResultBase<undefined, undefined, undefined, GO, O>[];
+    args: T;
+    query: (args: T) => GassmaGassmaUserFindResultBase<T["select"], T["include"], T["omit"], GO, O>[];
+  }) => GassmaGassmaUserFindResultBase<T["select"], T["include"], T["omit"], GO, O>[];
   upsert?: <T extends GassmaGassmaUserUpsertSingleData>(params: {
     model: "User";
     operation: "upsert";
@@ -8537,12 +8961,12 @@ export type GassmaGassmaUserQueryHooks<GO extends GassmaGassmaUserOmit = {}, O =
     args: GassmaGassmaUserDeleteData;
     query: (args: GassmaGassmaUserDeleteData) => DeleteManyReturn;
   }) => DeleteManyReturn;
-  count?: (params: {
+  count?: <T extends GassmaGassmaUserCountData>(params: {
     model: "User";
     operation: "count";
-    args: GassmaGassmaUserCountData;
-    query: (args: GassmaGassmaUserCountData) => number;
-  }) => number;
+    args: T;
+    query: (args: T) => GassmaGassmaUserCountResult<T>;
+  }) => GassmaGassmaUserCountResult<T>;
   aggregate?: <T extends GassmaGassmaUserAggregateData>(params: {
     model: "User";
     operation: "aggregate";
@@ -8571,6 +8995,7 @@ export type GassmaGassmaProfileQueryArgs =
   | GassmaGassmaProfileCreateManyAndReturnData
   | GassmaGassmaProfileUpdateSingleData
   | GassmaGassmaProfileUpdateData
+  | GassmaGassmaProfileUpdateManyAndReturnData
   | GassmaGassmaProfileUpsertSingleData
   | GassmaGassmaProfileDeleteSingleData
   | GassmaGassmaProfileDeleteData
@@ -8627,12 +9052,12 @@ export type GassmaGassmaProfileQueryHooks<GO extends GassmaGassmaProfileOmit = {
     args: GassmaGassmaProfileUpdateData;
     query: (args: GassmaGassmaProfileUpdateData) => UpdateManyReturn;
   }) => UpdateManyReturn;
-  updateManyAndReturn?: (params: {
+  updateManyAndReturn?: <T extends GassmaGassmaProfileUpdateManyAndReturnData>(params: {
     model: "Profile";
     operation: "updateManyAndReturn";
-    args: GassmaGassmaProfileUpdateData;
-    query: (args: GassmaGassmaProfileUpdateData) => GassmaGassmaProfileFindResultBase<undefined, undefined, undefined, GO, O>[];
-  }) => GassmaGassmaProfileFindResultBase<undefined, undefined, undefined, GO, O>[];
+    args: T;
+    query: (args: T) => GassmaGassmaProfileFindResultBase<T["select"], T["include"], T["omit"], GO, O>[];
+  }) => GassmaGassmaProfileFindResultBase<T["select"], T["include"], T["omit"], GO, O>[];
   upsert?: <T extends GassmaGassmaProfileUpsertSingleData>(params: {
     model: "Profile";
     operation: "upsert";
@@ -8651,12 +9076,12 @@ export type GassmaGassmaProfileQueryHooks<GO extends GassmaGassmaProfileOmit = {
     args: GassmaGassmaProfileDeleteData;
     query: (args: GassmaGassmaProfileDeleteData) => DeleteManyReturn;
   }) => DeleteManyReturn;
-  count?: (params: {
+  count?: <T extends GassmaGassmaProfileCountData>(params: {
     model: "Profile";
     operation: "count";
-    args: GassmaGassmaProfileCountData;
-    query: (args: GassmaGassmaProfileCountData) => number;
-  }) => number;
+    args: T;
+    query: (args: T) => GassmaGassmaProfileCountResult<T>;
+  }) => GassmaGassmaProfileCountResult<T>;
   aggregate?: <T extends GassmaGassmaProfileAggregateData>(params: {
     model: "Profile";
     operation: "aggregate";
@@ -8746,8 +9171,8 @@ export type GassmaGassmaAllModelsQueryHooks = {
   updateManyAndReturn?: (params: {
     model: GassmaGassmaModelName;
     operation: "updateManyAndReturn";
-    args: GassmaGassmaPostUpdateData | GassmaGassmaCommentUpdateData | GassmaGassmaCategoryUpdateData | GassmaGassmaTagUpdateData | GassmaGassmaSensorReadingUpdateData | GassmaGassmaTimeSlotUpdateData | GassmaGassmaReservationUpdateData | GassmaGassmaProductUpdateData | GassmaGassmaOrderUpdateData | GassmaGassmaOrderItemUpdateData | GassmaGassmaFormulaCellUpdateData | GassmaGassmaNotificationUpdateData | GassmaGassmaOffsetNoteUpdateData | GassmaGassmaUserUpdateData | GassmaGassmaProfileUpdateData;
-    query: (args: GassmaGassmaPostUpdateData | GassmaGassmaCommentUpdateData | GassmaGassmaCategoryUpdateData | GassmaGassmaTagUpdateData | GassmaGassmaSensorReadingUpdateData | GassmaGassmaTimeSlotUpdateData | GassmaGassmaReservationUpdateData | GassmaGassmaProductUpdateData | GassmaGassmaOrderUpdateData | GassmaGassmaOrderItemUpdateData | GassmaGassmaFormulaCellUpdateData | GassmaGassmaNotificationUpdateData | GassmaGassmaOffsetNoteUpdateData | GassmaGassmaUserUpdateData | GassmaGassmaProfileUpdateData) => unknown;
+    args: GassmaGassmaPostUpdateManyAndReturnData | GassmaGassmaCommentUpdateManyAndReturnData | GassmaGassmaCategoryUpdateManyAndReturnData | GassmaGassmaTagUpdateManyAndReturnData | GassmaGassmaSensorReadingUpdateManyAndReturnData | GassmaGassmaTimeSlotUpdateManyAndReturnData | GassmaGassmaReservationUpdateManyAndReturnData | GassmaGassmaProductUpdateManyAndReturnData | GassmaGassmaOrderUpdateManyAndReturnData | GassmaGassmaOrderItemUpdateManyAndReturnData | GassmaGassmaFormulaCellUpdateManyAndReturnData | GassmaGassmaNotificationUpdateManyAndReturnData | GassmaGassmaOffsetNoteUpdateManyAndReturnData | GassmaGassmaUserUpdateManyAndReturnData | GassmaGassmaProfileUpdateManyAndReturnData;
+    query: (args: GassmaGassmaPostUpdateManyAndReturnData | GassmaGassmaCommentUpdateManyAndReturnData | GassmaGassmaCategoryUpdateManyAndReturnData | GassmaGassmaTagUpdateManyAndReturnData | GassmaGassmaSensorReadingUpdateManyAndReturnData | GassmaGassmaTimeSlotUpdateManyAndReturnData | GassmaGassmaReservationUpdateManyAndReturnData | GassmaGassmaProductUpdateManyAndReturnData | GassmaGassmaOrderUpdateManyAndReturnData | GassmaGassmaOrderItemUpdateManyAndReturnData | GassmaGassmaFormulaCellUpdateManyAndReturnData | GassmaGassmaNotificationUpdateManyAndReturnData | GassmaGassmaOffsetNoteUpdateManyAndReturnData | GassmaGassmaUserUpdateManyAndReturnData | GassmaGassmaProfileUpdateManyAndReturnData) => unknown;
   }) => unknown;
   upsert?: (params: {
     model: GassmaGassmaModelName;
