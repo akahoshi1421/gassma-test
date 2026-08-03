@@ -1,35 +1,82 @@
 import { GassmaClient } from "../../generated/gassma/gassmaClient";
 import { assertEquals } from "../../assert/assertEquals";
+import { assertThrows } from "../../assert/assertThrows";
 import { getSheetSnapshot } from "../../assert/getSheetSnapshot";
 import { resetSheet } from "../../reset/resetSheet";
 import { tagData } from "../../consts/tagData";
+import { SPREADSHEET_ID_DB1 } from "../../consts/spreadsheetIds";
 
 function testUpdateFirstMatch() {
   const client = new GassmaClient();
 
-  testUpdateEmptyWhere(client);
+  testUpdateEmptyWhereThrows(client);
+  testUpdateWhereEmptiedBySkipThrows();
+  testUpdateWhereEmptiedByUndefinedThrows(client);
   testUpdateMultipleMatch(client);
 
   Logger.log("✅ testUpdateFirstMatch: all passed");
 }
 
-function testUpdateEmptyWhere(client: GassmaClient) {
-  // 空 where は全行にマッチし、最初の行のみ更新される
-  const result = client.Tag.update({
-    where: {},
-    data: { name: "FirstRowUpdated" },
-  });
-  if (!result) throw new Error("update empty where: expected result");
-  assertEquals(result.id, 1, "update empty where: id");
-  assertEquals(result.name, "FirstRowUpdated", "update empty where: name");
+// 空 where は単一行操作では条件ゼロとみなされエラー。シートは一切変更されない
+function testUpdateEmptyWhereThrows(client: GassmaClient) {
+  assertThrows(
+    () => {
+      client.Tag.update({
+        where: {},
+        data: { name: "FirstRowUpdated" },
+      });
+    },
+    "Invalid value for argument `where`. Expected at least one condition.",
+    "update empty where",
+  );
 
+  assertSheetUntouched("update empty where");
+}
+
+// Gassma.skip だけで where が空になった場合も同じ。先頭行が書き換わらないこと。
+// Gassma.skip は生成型の scalar where には現れないため、疎な型のライブラリ製クライアントを使う
+function testUpdateWhereEmptiedBySkipThrows() {
+  const rawClient = new Gassma.GassmaClient({ id: SPREADSHEET_ID_DB1 });
+  assertThrows(
+    () => {
+      rawClient.Tag.update({
+        where: { name: Gassma.skip },
+        data: { name: "SkipEmptiedWhere" },
+      });
+    },
+    "Invalid value for argument `where`. Expected at least one condition.",
+    "update where emptied by Gassma.skip",
+  );
+
+  assertSheetUntouched("update where emptied by Gassma.skip");
+}
+
+// undefined だけで where が空になった場合も同じ
+function testUpdateWhereEmptiedByUndefinedThrows(client: GassmaClient) {
+  assertThrows(
+    () => {
+      client.Tag.update({
+        where: { name: undefined },
+        data: { name: "UndefinedEmptiedWhere" },
+      });
+    },
+    "Invalid value for argument `where`. Expected at least one condition.",
+    "update where emptied by undefined",
+  );
+
+  assertSheetUntouched("update where emptied by undefined");
+}
+
+function assertSheetUntouched(label: string) {
   const snapshot = getSheetSnapshot("Tag");
-  snapshot.assertRowEquals({ id: 1 }, { name: "FirstRowUpdated" });
+  snapshot.assertCount(30);
+  snapshot.assertRowEquals({ id: 1 }, { name: "JavaScript" });
   snapshot.assertRowEquals({ id: 2 }, { name: "TypeScript" });
   snapshot.assertRowEquals({ id: 30 }, { name: "クラウド" });
-  snapshot.assertCount(30);
-
-  resetSheet("Tag", tagData);
+  snapshot.assertRowNotExists({ name: "FirstRowUpdated" });
+  snapshot.assertRowNotExists({ name: "SkipEmptiedWhere" });
+  snapshot.assertRowNotExists({ name: "UndefinedEmptiedWhere" });
+  assertEquals(true, true, `${label}: sheet untouched`);
 }
 
 function testUpdateMultipleMatch(client: GassmaClient) {

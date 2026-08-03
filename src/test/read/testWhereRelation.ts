@@ -14,6 +14,7 @@ function testWhereRelation() {
   testWhereRelationAggregate(client);
   testWhereIsNull(client);
   testWhereIsNotNull(client);
+  testWhereIsNotNullableFk(client);
 
   Logger.log("✅ testWhereRelation: all passed");
 }
@@ -129,6 +130,32 @@ function testWhereIsNull(client: GassmaClient) {
   if (ids.indexOf(9) === -1 || ids.indexOf(198) === -1) {
     throw new Error(`is null: expected ids 9 and 198 in ${JSON.stringify(ids)}`);
   }
+}
+
+// isNot は「条件に一致する関連を持たない」なので、関連を1つも持たない行(FK が null)も含む。
+// categoryId=1 の 15 件だけを除いた 185 件。null の 22 件も残ることが要点
+function testWhereIsNotNullableFk(client: GassmaClient) {
+  const posts = client.Post.findMany({
+    where: { category: { isNot: { name: "テクノロジー" } } },
+  });
+  assertEquals(posts.length, 185, "isNot nullable fk: length");
+
+  const ids = posts.map((post) => post.id);
+  if (ids.indexOf(9) === -1 || ids.indexOf(198) === -1) {
+    throw new Error(
+      `isNot nullable fk: expected null-category posts 9 and 198 in result`,
+    );
+  }
+
+  const nullCount = posts.filter((post) => post.categoryId === null).length;
+  assertEquals(nullCount, 22, "isNot nullable fk: null categoryId rows kept");
+
+  // isNot は「一致する関連を持つ 15 件」のちょうど補集合
+  const matching = client.Post.count({
+    where: { category: { is: { name: "テクノロジー" } } },
+  });
+  assertEquals(matching, 15, "isNot nullable fk: complement count");
+  assertEquals(matching + posts.length, 200, "isNot nullable fk: partition");
 }
 
 function testWhereIsNotNull(client: GassmaClient) {

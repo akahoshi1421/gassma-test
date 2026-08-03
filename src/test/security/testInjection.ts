@@ -1,5 +1,6 @@
 import { GassmaClient } from "../../generated/gassma/gassmaClient";
 import { assertEquals } from "../../assert/assertEquals";
+import { assertThrows } from "../../assert/assertThrows";
 import { getSheetSnapshot } from "../../assert/getSheetSnapshot";
 import { resetSheet } from "../../reset/resetSheet";
 import { productData } from "../../consts/productData";
@@ -468,120 +469,120 @@ function testPrototypePollutionUpdate(client: GassmaClient) {
   resetSheet("Product", productData);
 }
 
+const ARRAY_VALUE_MESSAGE =
+  "Invalid value for argument `name`. Expected a scalar value, but received an array.";
+
 function testCreateWithArrayFormulaInjection(client: GassmaClient) {
-  // 1次元配列で数式を渡す（GoogleFormのnamedValuesパターン）
+  // 1次元配列で数式を渡す（GoogleFormのnamedValuesパターン）。
+  // 配列はセルが保持できない値としてセル書き込み前に拒否される（以前は暗黙に平坦化して書き込んでいた）
   const formula = "=IMPORTRANGE(\"https://docs.google.com/spreadsheets/d/xxx\",\"A1\")";
-  client.Product.create({
-    data: {
-      id: 970,
-      name: [formula] as any,
-      price: 100,
-      stock: 1,
-      status: "available",
-      createdAt: new Date("2025-01-01T00:00:00"),
+  assertThrows(
+    () => {
+      client.Product.create({
+        data: {
+          id: 970,
+          name: [formula] as any,
+          price: 100,
+          stock: 1,
+          status: "available",
+          createdAt: new Date("2025-01-01T00:00:00"),
+        },
+      });
     },
-  });
+    ARRAY_VALUE_MESSAGE,
+    "array formula injection",
+  );
 
-  const result = client.Product.findFirstOrThrow({
-    where: { id: 970 },
-  });
-
-  // 数式として実行されず、元の文字列のまま保存されていること
-  // （エスケープが効いていれば数式実行されず、getValue() で元の文字列が返る）
-  if (typeof result.name !== "string") {
-    throw new Error(`array formula injection: name should be string, got ${typeof result.name}`);
-  }
-  assertEquals(result.name, formula, "array formula injection: should preserve formula string (not evaluated)");
-
-  resetSheet("Product", productData);
+  // throw 前に行が作られていないこと
+  const snapshot = getSheetSnapshot("Product");
+  snapshot.assertRowNotExists({ id: 970 });
 }
 
 function testCreateWithDeepArrayFormulaInjection(client: GassmaClient) {
-  // 深いネスト配列で数式を渡す
-  const deepArrays: { id: number; value: any; expected: string; label: string }[] = [
-    { id: 971, value: [["=1+1"]], expected: "=1+1", label: "2次元配列" },
-    { id: 972, value: [[["=SUM(A1:A10)"]]], expected: "=SUM(A1:A10)", label: "3次元配列" },
-    { id: 973, value: [[[["=IMAGE(\"https://evil.com\")"]]]], expected: "=IMAGE(\"https://evil.com\")", label: "4次元配列" },
+  // 深いネスト配列も同様に拒否される
+  const deepArrays: { id: number; value: any; label: string }[] = [
+    { id: 971, value: [["=1+1"]], label: "2次元配列" },
+    { id: 972, value: [[["=SUM(A1:A10)"]]], label: "3次元配列" },
+    { id: 973, value: [[[["=IMAGE(\"https://evil.com\")"]]]], label: "4次元配列" },
   ];
 
-  deepArrays.forEach(({ id, value, expected, label }) => {
-    client.Product.create({
-      data: {
-        id: id,
-        name: value,
-        price: 100,
-        stock: 1,
-        status: "available",
-        createdAt: new Date("2025-01-01T00:00:00"),
+  deepArrays.forEach(({ id, value, label }) => {
+    assertThrows(
+      () => {
+        client.Product.create({
+          data: {
+            id: id,
+            name: value,
+            price: 100,
+            stock: 1,
+            status: "available",
+            createdAt: new Date("2025-01-01T00:00:00"),
+          },
+        });
       },
-    });
+      ARRAY_VALUE_MESSAGE,
+      `deep array ${label}`,
+    );
 
-    const result = client.Product.findFirstOrThrow({
-      where: { id: id },
-    });
-
-    // 数式が実行されておらず、元の文字列のまま保存されていること
-    if (typeof result.name !== "string") {
-      throw new Error(`deep array ${label}: name should be string, got ${typeof result.name}`);
-    }
-    assertEquals(result.name, expected, `deep array ${label}: should preserve formula string (not evaluated)`);
+    const snapshot = getSheetSnapshot("Product");
+    snapshot.assertRowNotExists({ id: id });
   });
-
-  resetSheet("Product", productData);
 }
 
 function testUpdateWithArrayFormulaInjection(client: GassmaClient) {
-  // updateで配列数式を渡す
-  client.Product.update({
-    where: { id: 1 },
-    data: { name: ["=1+1"] as any },
-  });
+  // update で配列数式を渡しても拒否され、対象行のセルは元のまま
+  const before = getSheetSnapshot("Product");
+  const originalName = productData[1][1];
+  before.assertRowEquals({ id: 1 }, { name: originalName });
 
-  const result = client.Product.findFirstOrThrow({
-    where: { id: 1 },
-  });
+  assertThrows(
+    () => {
+      client.Product.update({
+        where: { id: 1 },
+        data: { name: ["=1+1"] as any },
+      });
+    },
+    ARRAY_VALUE_MESSAGE,
+    "update array formula",
+  );
 
-  // 数式が実行されず、文字列 "=1+1" のまま保存されていること（実行されたら 2 になる）
-  if (typeof result.name !== "string") {
-    throw new Error(`update array formula: name should be string, got ${typeof result.name}`);
-  }
-  assertEquals(result.name, "=1+1", "update array formula: should preserve formula string (not evaluated)");
-
-  resetSheet("Product", productData);
+  const after = getSheetSnapshot("Product");
+  after.assertRowEquals({ id: 1 }, { name: originalName });
 }
 
 function testCreateManyWithArrayFormulaInjection(client: GassmaClient) {
-  // createManyで配列数式を渡す
+  // createMany では 1 件目が正常でも、配列を含む 2 件目で全体が拒否され 1 件も書かれない
   const formula2 = "=IMPORTRANGE(\"url\",\"A1\")";
-  client.Product.createMany({
-    data: [
-      {
-        id: 980,
-        name: ["=1+1"] as any,
-        price: 100,
-        stock: 1,
-        status: "available",
-        createdAt: new Date("2025-01-01T00:00:00"),
-      },
-      {
-        id: 981,
-        name: [[formula2]] as any,
-        price: 200,
-        stock: 2,
-        status: "available",
-        createdAt: new Date("2025-01-01T00:00:00"),
-      },
-    ],
-  });
+  assertThrows(
+    () => {
+      client.Product.createMany({
+        data: [
+          {
+            id: 980,
+            name: "safe name",
+            price: 100,
+            stock: 1,
+            status: "available",
+            createdAt: new Date("2025-01-01T00:00:00"),
+          },
+          {
+            id: 981,
+            name: [[formula2]] as any,
+            price: 200,
+            stock: 2,
+            status: "available",
+            createdAt: new Date("2025-01-01T00:00:00"),
+          },
+        ],
+      });
+    },
+    ARRAY_VALUE_MESSAGE,
+    "createMany array formula",
+  );
 
-  const result1 = client.Product.findFirstOrThrow({ where: { id: 980 } });
-  const result2 = client.Product.findFirstOrThrow({ where: { id: 981 } });
-
-  // 数式が実行されず文字列のまま保存されていること
-  assertEquals(result1.name, "=1+1", "createMany array formula id=980: should preserve formula string");
-  assertEquals(result2.name, formula2, "createMany array formula id=981: should preserve formula string");
-
-  resetSheet("Product", productData);
+  const snapshot = getSheetSnapshot("Product");
+  snapshot.assertRowNotExists({ id: 980 });
+  snapshot.assertRowNotExists({ id: 981 });
 }
 
 export { testInjection };

@@ -1,13 +1,12 @@
 import { GassmaClient } from "../../generated/gassma/gassmaClient";
 import { SPREADSHEET_ID_DB1 } from "../../consts/spreadsheetIds";
-import { tagData } from "../../consts/tagData";
 import { assertEquals } from "../../assert/assertEquals";
 import { getSheetSnapshot } from "../../assert/getSheetSnapshot";
-import { resetSheet } from "../../reset/resetSheet";
 
 function testMissingArguments() {
   testUpdateWithoutWhereThrows();
-  testUpdateEmptyWhereUpdatesFirstRow();
+  testUpdateEmptyWhereThrows();
+  testDeleteAndUpsertEmptyWhereThrow();
   testDeleteWithoutArgThrows();
   testGroupByWithoutByThrows();
   testUpsertWithoutCreateThrows();
@@ -24,7 +23,7 @@ function captureError(fn: () => void, label: string): unknown {
   throw new Error(`${label}: expected to throw but did not`);
 }
 
-// where 省略は GassmaMissingArgumentError(where: {} とは区別される)
+// where 省略は GassmaMissingArgumentError(where: {} の GassmaInvalidValueError とは別クラス)
 function testUpdateWithoutWhereThrows() {
   const rawClient = new Gassma.GassmaClient({ id: SPREADSHEET_ID_DB1 });
   const error = captureError(() => {
@@ -51,30 +50,69 @@ function testUpdateWithoutWhereThrows() {
   snapshot.assertRowNotExists({ name: "NoWhereTag" });
 }
 
-// where: {} は従来どおり先頭行更新
-function testUpdateEmptyWhereUpdatesFirstRow() {
+// where: {} は GassmaInvalidValueError(where 省略の GassmaMissingArgumentError とは別クラス)。
+// 以前は先頭行を暗黙更新していたため、throw + シート無変更をピン留めして回帰を防ぐ。
+function testUpdateEmptyWhereThrows() {
   const client = new GassmaClient();
-  const updated = client.Tag.update({
-    where: {},
-    data: { name: "EmptyWhereFirstRow" },
-  });
+  const error = captureError(() => {
+    client.Tag.update({
+      where: {},
+      data: { name: "EmptyWhereFirstRow" },
+    });
+  }, "update empty where");
 
-  assertEquals(updated !== null, true, "update empty where returns record");
-  if (updated) {
-    assertEquals(updated.id, 1, "update empty where updates first row id");
-    assertEquals(
-      updated.name,
-      "EmptyWhereFirstRow",
-      "update empty where returned name",
-    );
-  }
+  assertEquals(
+    error instanceof Gassma.GassmaInvalidValueError,
+    true,
+    "update empty where instanceof Gassma.GassmaInvalidValueError",
+  );
+  const message = error instanceof Error ? error.message : String(error);
+  assertEquals(
+    message.indexOf(
+      "Invalid value for argument `where`. Expected at least one condition.",
+    ) !== -1,
+    true,
+    `update empty where message: "${message}"`,
+  );
+
+  // 以前は id:1 が書き換わっていた。件数・先頭行がともに無変更であること
+  const snapshot = getSheetSnapshot("Tag");
+  snapshot.assertCount(30);
+  snapshot.assertRowEquals({ id: 1 }, { name: "JavaScript" });
+  snapshot.assertRowEquals({ id: 2 }, { name: "TypeScript" });
+  snapshot.assertRowNotExists({ name: "EmptyWhereFirstRow" });
+}
+
+// delete / upsert の空 where も同じ扱い。シートが削除も作成もされないこと
+function testDeleteAndUpsertEmptyWhereThrow() {
+  const client = new GassmaClient();
+
+  const deleteError = captureError(() => {
+    client.Tag.delete({ where: {} });
+  }, "delete empty where");
+  assertEquals(
+    deleteError instanceof Gassma.GassmaInvalidValueError,
+    true,
+    "delete empty where instanceof Gassma.GassmaInvalidValueError",
+  );
+
+  const upsertError = captureError(() => {
+    client.Tag.upsert({
+      where: {},
+      update: { name: "EmptyWhereUpsert" },
+      create: { name: "EmptyWhereUpsert" },
+    });
+  }, "upsert empty where");
+  assertEquals(
+    upsertError instanceof Gassma.GassmaInvalidValueError,
+    true,
+    "upsert empty where instanceof Gassma.GassmaInvalidValueError",
+  );
 
   const snapshot = getSheetSnapshot("Tag");
   snapshot.assertCount(30);
-  snapshot.assertRowEquals({ id: 1 }, { name: "EmptyWhereFirstRow" });
-  snapshot.assertRowEquals({ id: 2 }, { name: "TypeScript" });
-
-  resetSheet("Tag", tagData);
+  snapshot.assertRowEquals({ id: 1 }, { name: "JavaScript" });
+  snapshot.assertRowNotExists({ name: "EmptyWhereUpsert" });
 }
 
 // delete({}) は #161 で GassmaMissingArgumentError 化。
