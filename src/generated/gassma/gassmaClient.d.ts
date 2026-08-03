@@ -1034,7 +1034,7 @@ export type GassmaGassmaSensorReadingUse = {
 export type GassmaGassmaTimeSlotUse = {
   "id"?: number;
   "label": string;
-  "slotAt": Date;
+  "slotAt"?: Date | null;
 };
 
 export type GassmaGassmaReservationUse = {
@@ -1712,8 +1712,8 @@ export type GassmaGassmaTimeSlotlabelFilterConditions = {
 };
 
 export type GassmaGassmaTimeSlotslotAtFilterConditions = {
-  equals?: Date | Gassma.FieldRef;
-  not?: Date;
+  equals?: Date | null | Gassma.FieldRef;
+  not?: Date | null;
   in?: Date[];
   notIn?: Date[];
   lt?: Date | Gassma.FieldRef;
@@ -2442,7 +2442,7 @@ export type GassmaGassmaSensorReadingWhereUse = {
 export type GassmaGassmaTimeSlotWhereUse = {
   "id"?: number | GassmaGassmaTimeSlotidFilterConditions;
   "label"?: string | GassmaGassmaTimeSlotlabelFilterConditions;
-  "slotAt"?: Date | GassmaGassmaTimeSlotslotAtFilterConditions;
+  "slotAt"?: Date | null | GassmaGassmaTimeSlotslotAtFilterConditions;
   "reservations"?: { some?: GassmaGassmaReservationWhereUse; every?: GassmaGassmaReservationWhereUse; none?: GassmaGassmaReservationWhereUse };
 
   AND?: GassmaGassmaTimeSlotWhereUse[] | GassmaGassmaTimeSlotWhereUse;
@@ -3118,7 +3118,7 @@ export type GassmaGassmaSensorReadingHavingUse = {
 export type GassmaGassmaTimeSlotHavingUse = {
   "id"?: number | GassmaGassmaTimeSlotidHavingCore;
   "label"?: string | GassmaGassmaTimeSlotlabelHavingCore;
-  "slotAt"?: Date | GassmaGassmaTimeSlotslotAtHavingCore;
+  "slotAt"?: Date | null | GassmaGassmaTimeSlotslotAtHavingCore;
 
   AND?: GassmaGassmaTimeSlotHavingUse[] | GassmaGassmaTimeSlotHavingUse;
   OR?: GassmaGassmaTimeSlotHavingUse[];
@@ -5554,7 +5554,7 @@ export type GassmaGassmaSensorReadingCreateReturn = {
 export type GassmaGassmaTimeSlotCreateReturn = {
  "id": number;
  "label": string;
- "slotAt": Date;
+ "slotAt": Date | null;
 };
 
 export type GassmaGassmaReservationCreateReturn = {

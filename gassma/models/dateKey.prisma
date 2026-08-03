@@ -9,10 +9,12 @@ model SensorReading {
 }
 
 /// 予約枠。slotAt（DateTime）をユニークキーとして Reservation から参照される。
+/// slotAt は nullable。日時未定の枠が被参照キー null の親となり、
+/// some / none / every が親自身のキー null をどう扱うかを検証できる。
 model TimeSlot {
   id           Int           @id @default(autoincrement())
   label        String
-  slotAt       DateTime      @unique
+  slotAt       DateTime?     @unique
   reservations Reservation[]
 }
 

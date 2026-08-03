@@ -32,6 +32,7 @@ import { testCountZeroRelation } from "./read/testCountZeroRelation";
 import { testIncludeNull } from "./read/testIncludeNull";
 import { testDateFilter } from "./read/testDateFilter";
 import { testDateKeyRelation } from "./read/testDateKeyRelation";
+import { testWhereRelationNullKey } from "./read/testWhereRelationNullKey";
 import { resetAllSheets } from "../reset/resetAllSheets";
 
 function testRead() {
@@ -70,6 +71,7 @@ function testRead() {
   testIncludeNull();
   testDateFilter();
   testDateKeyRelation();
+  testWhereRelationNullKey();
 
   Logger.log("🎉 All read tests passed!");
 }

@@ -39,11 +39,14 @@ function testIncludeOneToManyByInstantWithCount(client: GassmaClient) {
     },
   });
 
-  assertEquals(slots.length, 2, "include oneToMany by instant: slot count");
+  assertEquals(slots.length, 3, "include oneToMany by instant: slot count");
   assertEquals(slots[0].reservations.length, 2, "include oneToMany by instant: slot1 reservations");
   assertEquals(slots[0]._count.reservations, 2, "include oneToMany by instant: slot1 _count");
   assertEquals(slots[1].reservations.length, 1, "include oneToMany by instant: slot2 reservations");
   assertEquals(slots[1]._count.reservations, 1, "include oneToMany by instant: slot2 _count");
+  // slotAt が null の枠は関連 0 件として解決される
+  assertEquals(slots[2].reservations.length, 0, "include oneToMany by instant: null-key slot reservations");
+  assertEquals(slots[2]._count.reservations, 0, "include oneToMany by instant: null-key slot _count");
 }
 
 function testWhereRelationIsFilterByInstant(client: GassmaClient) {
@@ -81,8 +84,8 @@ function testRelationCountOrderByInstant(client: GassmaClient) {
 
   assertDeepEquals(
     slots.map((s) => s.id),
-    [1, 2],
-    "relation count orderBy by instant: slot1 (2 reservations) before slot2 (1)",
+    [1, 2, 3],
+    "relation count orderBy by instant: 2 reservations, then 1, then the null-key slot with 0",
   );
 }
 
