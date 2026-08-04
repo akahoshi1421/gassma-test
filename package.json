@@ -4,9 +4,10 @@
   "description": "GASsma test environment with clasp",
   "main": "index.js",
   "scripts": {
-    "build": "webpack",
-    "push": "npm run build && clasp push",
-    "push:watch": "npm run build --watch & clasp push --watch"
+    "build": "node esbuild.mjs",
+    "push": "clasp push",
+    "open": "clasp open-script",
+    "deploy": "npm run build && npm run push"
   },
   "author": "akahoshi1421",
   "license": "ISC",
@@ -15,13 +16,9 @@
     "gassma": "file:../gassma-cli/packages/cli"
   },
   "devDependencies": {
-    "@babel/core": "^7.29.0",
-    "@babel/preset-typescript": "^7.28.5",
+    "@gassma/gas-esbuild-plugin": "^0.1.0",
     "@types/google-apps-script": "^2.0.8",
-    "babel-loader": "^10.1.0",
-    "gas-webpack-plugin": "^2.6.0",
-    "typescript": "^7.0.2",
-    "webpack": "^5.105.4",
-    "webpack-cli": "^6.0.1"
+    "esbuild": "^0.28.1",
+    "typescript": "^7.0.2"
   }
 }
