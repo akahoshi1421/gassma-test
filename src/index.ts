@@ -14,6 +14,7 @@ import { testFormulaAll } from "./test/formula";
 import { testExtendsAll } from "./test/extends";
 import { testTransactionAll } from "./test/transaction";
 import { testMigrateAll } from "./test/migrate";
+import { testAutoincrementAll } from "./test/autoincrement";
 
 function main() {
   testRead();
@@ -29,6 +30,7 @@ function main() {
   testExtendsAll();
   testTransactionAll();
   testMigrateAll();
+  testAutoincrementAll();
 }
 
-export { main, getSheetSnapshot, resetAllSheets, resetSheet, testRead, testCreateAll, testDeleteAll, testUpdateAll, testUpsertAll, testErrorAll, testSecurityAll, testGlobalOmitWriteAll, testSettingsAll, testFormulaAll, testExtendsAll, testTransactionAll, testMigrateAll };
+export { main, getSheetSnapshot, resetAllSheets, resetSheet, testRead, testCreateAll, testDeleteAll, testUpdateAll, testUpsertAll, testErrorAll, testSecurityAll, testGlobalOmitWriteAll, testSettingsAll, testFormulaAll, testExtendsAll, testTransactionAll, testMigrateAll, testAutoincrementAll };

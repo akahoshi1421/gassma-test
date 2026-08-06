@@ -13,11 +13,12 @@ function testMigrateCreateSheet(spreadsheetId: string) {
 
   Gassma.migrateSheets({ spreadsheetId, models: [CREATE_MODEL] });
 
-  const namesAfter = getSheetNames(spreadsheetId);
-  assertEquals(
-    namesAfter.length,
-    namesBefore.length + 1,
-    "migrate create: exactly one sheet added",
+  // 使い捨てスプレッドシートへの最初の実行なので、空の既定シートも同時に消える
+  // (testMigratePristineDefaultSheet)
+  assertDeepEquals(
+    getSheetNames(spreadsheetId),
+    [CREATE_MODEL.name],
+    "migrate create: the model sheet replaces the empty default sheet",
   );
 
   const sheet = getSheet(spreadsheetId, CREATE_MODEL.name);

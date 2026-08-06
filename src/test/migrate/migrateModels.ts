@@ -52,6 +52,13 @@ const UNMANAGED_SHEET_NAME = "MigrateUnmanaged";
 const UNMANAGED_HEADERS = ["kept", "columns"];
 const UNMANAGED_ROWS: unknown[][] = [["stays", "here"]];
 
+// 新規スプレッドシートの空の既定シートが消えることを見る専用モデル。
+// 「最低1枚は残す」ガードと区別するため 2 枚以上にしている
+const PRISTINE_MODELS: Gassma.MigrateModel[] = [
+  { name: "MigratePristineA", columns: ["id", "name"] },
+  { name: "MigratePristineB", columns: ["id", "label"] },
+];
+
 const ALL_MODELS: Gassma.MigrateModel[] = [
   CREATE_MODEL,
   APPEND_MODEL,
@@ -78,5 +85,6 @@ export {
   UNMANAGED_SHEET_NAME,
   UNMANAGED_HEADERS,
   UNMANAGED_ROWS,
+  PRISTINE_MODELS,
   ALL_MODELS,
 };

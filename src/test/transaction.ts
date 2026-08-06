@@ -11,6 +11,7 @@ import { testTransactionTimeout } from "./transaction/testTransactionTimeout";
 import { testTransactionBackupCleanup } from "./transaction/testTransactionBackupCleanup";
 import { testTransactionRollbackDisabled } from "./transaction/testTransactionRollbackDisabled";
 import { testTransactionFormulaCell } from "./transaction/testTransactionFormulaCell";
+import { testTransactionLockRequired } from "./transaction/testTransactionLockRequired";
 import { resetAllSheets } from "../reset/resetAllSheets";
 
 function testTransactionAll() {
@@ -28,6 +29,7 @@ function testTransactionAll() {
   testTransactionBackupCleanup();
   testTransactionRollbackDisabled();
   testTransactionFormulaCell();
+  testTransactionLockRequired();
 
   Logger.log("🎉 All transaction tests passed!");
 }

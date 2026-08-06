@@ -74,6 +74,17 @@ const EMPTY_COLUMN_INITIAL_ROWS: unknown[][] = [[1], [2]];
 const EMPTY_SHEET_NAME = "MigrateDropEmptySheet";
 const EMPTY_SHEET_HEADERS = ["ghost"];
 
+// columns: [] のモデル。列を1つも管理しないので acceptDataLoss でも何も消えない
+const EMPTY_MODEL: Gassma.MigrateModel = {
+  name: "MigrateEmptyModel",
+  columns: [],
+};
+const EMPTY_MODEL_INITIAL_HEADERS = ["id", "name", "memo"];
+const EMPTY_MODEL_INITIAL_ROWS: unknown[][] = [
+  [1, "alice", "memo-1"],
+  [2, "bob", "memo-2"],
+];
+
 // データ入りのままシートごと落とす
 const DROP_SHEET_NAME = "MigrateDropSheet";
 const DROP_SHEET_HEADERS = ["id", "note"];
@@ -94,6 +105,9 @@ export {
   EMPTY_COLUMN_INITIAL_ROWS,
   EMPTY_SHEET_NAME,
   EMPTY_SHEET_HEADERS,
+  EMPTY_MODEL,
+  EMPTY_MODEL_INITIAL_HEADERS,
+  EMPTY_MODEL_INITIAL_ROWS,
   DROP_SHEET_NAME,
   DROP_SHEET_HEADERS,
   DROP_SHEET_ROWS,
