@@ -128,6 +128,9 @@ declare namespace Gassma {
         : { [K in keyof S]: number }
       : number;
     groupBy(groupByData: GroupByData): Record<string, any>[];
+    $getAutoincrement(field: string): number;
+    $setAutoincrement(field: string, next: number): void;
+    $syncAutoincrement(field: string): number;
     _setRelationContext(context: RelationContext): void;
     _setGlobalOmit(omit: Omit): void;
     _setDefaults(defaults: {
@@ -325,6 +328,12 @@ declare namespace Gassma {
     [codeName: string]: string;
   };
 
+  type Lock = {
+    waitLock(timeoutInMillis: number): void;
+    releaseLock(): void;
+    hasLock(): boolean;
+  };
+
   type GassmaClientOptions = {
     id?: string;
     relations?: RelationsConfig;
@@ -337,6 +346,7 @@ declare namespace Gassma {
     map?: MapConfig;
     mapSheets?: MapSheetsConfig;
     strictUndefinedChecks?: boolean;
+    lock?: Lock;
   };
 
   type MigrateModel = {
@@ -359,7 +369,11 @@ declare namespace Gassma {
    * with `acceptDataLoss: true` they are dropped after a warning that reports
    * how much data they still contain (silently when they are empty; the last
    * remaining sheet is kept, since a spreadsheet must contain at least one
-   * sheet). Never reorders existing columns, never writes to data rows.
+   * sheet). The empty sheet Google puts in every new spreadsheet is dropped
+   * regardless of `acceptDataLoss`, as it holds no data. A model without
+   * columns manages no column at all: an existing sheet keeps every column it
+   * has, even with `acceptDataLoss: true`. Never reorders existing columns,
+   * never writes to data rows.
    */
   function migrateSheets(options: MigrateSheetsOptions): void;
 
@@ -670,6 +684,9 @@ declare namespace Gassma {
   class GassmaGroupByHavingDontWriteByError extends Error {
     constructor();
   }
+  class GassmaGroupByOrderByRequiredError extends Error {
+    constructor(...paginationArguments: string[]);
+  }
   class GassmaAggregateMaxError extends Error {
     constructor();
   }
@@ -723,5 +740,16 @@ declare namespace Gassma {
     constructor(backupSheetNames: string[]);
     readonly backupSheetNames: string[];
   }
+  class GassmaTransactionLockRequiredError extends Error {
+    constructor();
+  }
+  class GassmaInvalidLockError extends Error {
+    constructor();
+  }
+  class GassmaAutoincrementNotConfiguredError extends Error {
+    constructor(sheetName: string, field: string, configuredFields: string[]);
+  }
+  class GassmaAutoincrementInTransactionError extends Error {
+    constructor(methodName: string);
+  }
 }
-

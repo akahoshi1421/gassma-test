@@ -249,7 +249,7 @@ const gassmaAutoincrement = {
 
 class GassmaClient {
   constructor(options) {
-    const mergedOptions = Object.assign({}, options, { id: "14yKHbIKdclxxYKkpvB9V04Ovpe8V7I_nHBnfbPmOqyU", relations: gassmaRelations, defaults: gassmaDefaults, updatedAt: gassmaUpdatedAt, ignore: gassmaIgnore, map: gassmaMap, ignoreSheets: gassmaIgnoreSheets, mapSheets: gassmaMapSheets, autoincrement: gassmaAutoincrement });
+    const mergedOptions = Object.assign({ lock: LockService.getScriptLock(), id: "14yKHbIKdclxxYKkpvB9V04Ovpe8V7I_nHBnfbPmOqyU" }, options, { relations: gassmaRelations, defaults: gassmaDefaults, updatedAt: gassmaUpdatedAt, ignore: gassmaIgnore, map: gassmaMap, ignoreSheets: gassmaIgnoreSheets, mapSheets: gassmaMapSheets, autoincrement: gassmaAutoincrement });
     const client = new Gassma.GassmaClient(mergedOptions);
     Object.assign(this, client);
     this.$extends = (extension) => client.$extends(extension);
@@ -258,6 +258,13 @@ class GassmaClient {
 }
 
 exports.GassmaClient = GassmaClient;
+Object.defineProperty(exports, "Gassma", {
+  enumerable: true,
+  configurable: true,
+  get: function () {
+    return Gassma;
+  },
+});
 
 const Role = {
   admin: "ADMIN",

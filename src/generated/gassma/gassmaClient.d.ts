@@ -71,12 +71,15 @@ export namespace Gassma {
     [K in keyof C as K extends keyof S ? (S[K] extends true ? K : never) : never]: C[K];
   };
   type ActiveComputed<C, QO> = { [K in keyof C as K extends TrueKeys<QO> ? never : K]: C[K] };
+  type SelectGiven<S> = (<T>() => T extends S ? 1 : 2) extends <T>() => T extends unknown ? 1 : 2
+    ? false
+    : [S] extends [undefined] ? false : true;
   type StripComputed<S, C> = [keyof C] extends [never]
     ? S
-    : S extends object ? { [K in Exclude<keyof S, keyof C>]: S[K] } : S;
+    : SelectGiven<S> extends true ? { [K in Exclude<keyof S, keyof C>]: S[K] } : S;
   type WithComputed<Base, C, S, QO> = [keyof C] extends [never]
     ? Base
-    : S extends object
+    : SelectGiven<S> extends true
       ? Omit<Base, keyof SelectedComputed<C, S>> & SelectedComputed<C, S>
       : Omit<Base, keyof ActiveComputed<C, QO>> & ActiveComputed<C, QO>;
 
@@ -94,6 +97,12 @@ export namespace Gassma {
   type CountResult<X> = X extends { select: infer S }
     ? { [P in keyof S]: number }
     : { [key: string]: number };
+
+  type Lock = {
+    waitLock(timeoutInMillis: number): void;
+    releaseLock(): void;
+    hasLock(): boolean;
+  };
 
   type GassmaTransactionOptions = {
     maxWait?: number;
@@ -141,6 +150,9 @@ export namespace Gassma {
   }
   class GassmaGroupByHavingDontWriteByError extends Error {
     constructor();
+  }
+  class GassmaGroupByOrderByRequiredError extends Error {
+    constructor(...paginationArguments: string[]);
   }
   class GassmaAggregateMaxError extends Error {
     constructor();
@@ -274,6 +286,18 @@ export namespace Gassma {
   class GassmaTransactionRollbackError extends Error {
     constructor(backupSheetNames: string[]);
     readonly backupSheetNames: string[];
+  }
+  class GassmaTransactionLockRequiredError extends Error {
+    constructor();
+  }
+  class GassmaInvalidLockError extends Error {
+    constructor();
+  }
+  class GassmaAutoincrementNotConfiguredError extends Error {
+    constructor(sheetName: string, field: string, configuredFields: string[]);
+  }
+  class GassmaAutoincrementInTransactionError extends Error {
+    constructor(methodName: string);
   }
 }
 
@@ -491,6 +515,16 @@ export type GassmaGassmaAutoincrementConfig = {
 
 export type GassmaGassmaClientOptions<O extends Gassma.StrictGlobalOmit<O, GassmaGassmaGlobalOmitConfig> = {}> = {
   id?: string;
+  /**
+   * Lock used to serialize `$transaction` and `autoincrement`.
+   * Defaults to `LockService.getScriptLock()` of the script using GASsma.
+   * Read more here: https://gassma.io/en/docs/reference/transaction
+   * @example
+   * ```
+   * const gassma = new GassmaClient({ lock: LockService.getDocumentLock() })
+   * ```
+   */
+  lock?: Gassma.Lock;
   relations?: Gassma.RelationsConfig;
   omit?: O;
   defaults?: GassmaGassmaDefaultsConfig;
@@ -503,486 +537,5374 @@ export type GassmaGassmaClientOptions<O extends Gassma.StrictGlobalOmit<O, Gassm
 };
 
 export type GassmaGassmaSheet<O extends GassmaGassmaGlobalOmitConfig = {}> = {
+  /**
+   * `gassma.Post`: Exposes CRUD operations for the **Post** model.
+   * Example usage:
+   * ```ts
+   * // Fetch zero or more Posts
+   * const posts = gassma.Post.findMany()
+   * ```
+   */
   "Post": GassmaGassmaPostController<O extends { "Post": infer UO } ? UO extends GassmaGassmaPostOmit ? UO : {} : {}, O>;
+  /**
+   * `gassma.Comment`: Exposes CRUD operations for the **Comment** model.
+   * Example usage:
+   * ```ts
+   * // Fetch zero or more Comments
+   * const comments = gassma.Comment.findMany()
+   * ```
+   */
   "Comment": GassmaGassmaCommentController<O extends { "Comment": infer UO } ? UO extends GassmaGassmaCommentOmit ? UO : {} : {}, O>;
+  /**
+   * `gassma.Category`: Exposes CRUD operations for the **Category** model.
+   * Example usage:
+   * ```ts
+   * // Fetch zero or more Categories
+   * const categories = gassma.Category.findMany()
+   * ```
+   */
   "Category": GassmaGassmaCategoryController<O extends { "Category": infer UO } ? UO extends GassmaGassmaCategoryOmit ? UO : {} : {}, O>;
+  /**
+   * `gassma.Tag`: Exposes CRUD operations for the **Tag** model.
+   * Example usage:
+   * ```ts
+   * // Fetch zero or more Tags
+   * const tags = gassma.Tag.findMany()
+   * ```
+   */
   "Tag": GassmaGassmaTagController<O extends { "Tag": infer UO } ? UO extends GassmaGassmaTagOmit ? UO : {} : {}, O>;
+  /**
+   * `gassma.SensorReading`: Exposes CRUD operations for the **SensorReading** model.
+   * Example usage:
+   * ```ts
+   * // Fetch zero or more SensorReadings
+   * const sensorReadings = gassma.SensorReading.findMany()
+   * ```
+   */
   "SensorReading": GassmaGassmaSensorReadingController<O extends { "SensorReading": infer UO } ? UO extends GassmaGassmaSensorReadingOmit ? UO : {} : {}, O>;
+  /**
+   * `gassma.TimeSlot`: Exposes CRUD operations for the **TimeSlot** model.
+   * Example usage:
+   * ```ts
+   * // Fetch zero or more TimeSlots
+   * const timeSlots = gassma.TimeSlot.findMany()
+   * ```
+   */
   "TimeSlot": GassmaGassmaTimeSlotController<O extends { "TimeSlot": infer UO } ? UO extends GassmaGassmaTimeSlotOmit ? UO : {} : {}, O>;
+  /**
+   * `gassma.Reservation`: Exposes CRUD operations for the **Reservation** model.
+   * Example usage:
+   * ```ts
+   * // Fetch zero or more Reservations
+   * const reservations = gassma.Reservation.findMany()
+   * ```
+   */
   "Reservation": GassmaGassmaReservationController<O extends { "Reservation": infer UO } ? UO extends GassmaGassmaReservationOmit ? UO : {} : {}, O>;
+  /**
+   * `gassma.Product`: Exposes CRUD operations for the **Product** model.
+   * Example usage:
+   * ```ts
+   * // Fetch zero or more Products
+   * const products = gassma.Product.findMany()
+   * ```
+   */
   "Product": GassmaGassmaProductController<O extends { "Product": infer UO } ? UO extends GassmaGassmaProductOmit ? UO : {} : {}, O>;
+  /**
+   * `gassma.Order`: Exposes CRUD operations for the **Order** model.
+   * Example usage:
+   * ```ts
+   * // Fetch zero or more Orders
+   * const orders = gassma.Order.findMany()
+   * ```
+   */
   "Order": GassmaGassmaOrderController<O extends { "Order": infer UO } ? UO extends GassmaGassmaOrderOmit ? UO : {} : {}, O>;
+  /**
+   * `gassma.OrderItem`: Exposes CRUD operations for the **OrderItem** model.
+   * Example usage:
+   * ```ts
+   * // Fetch zero or more OrderItems
+   * const orderItems = gassma.OrderItem.findMany()
+   * ```
+   */
   "OrderItem": GassmaGassmaOrderItemController<O extends { "OrderItem": infer UO } ? UO extends GassmaGassmaOrderItemOmit ? UO : {} : {}, O>;
+  /**
+   * `gassma.FormulaCell`: Exposes CRUD operations for the **FormulaCell** model.
+   * Example usage:
+   * ```ts
+   * // Fetch zero or more FormulaCells
+   * const formulaCells = gassma.FormulaCell.findMany()
+   * ```
+   */
   "FormulaCell": GassmaGassmaFormulaCellController<O extends { "FormulaCell": infer UO } ? UO extends GassmaGassmaFormulaCellOmit ? UO : {} : {}, O>;
+  /**
+   * `gassma.Notification`: Exposes CRUD operations for the **Notification** model.
+   * Example usage:
+   * ```ts
+   * // Fetch zero or more Notifications
+   * const notifications = gassma.Notification.findMany()
+   * ```
+   */
   "Notification": GassmaGassmaNotificationController<O extends { "Notification": infer UO } ? UO extends GassmaGassmaNotificationOmit ? UO : {} : {}, O>;
+  /**
+   * `gassma.OffsetNote`: Exposes CRUD operations for the **OffsetNote** model.
+   * Example usage:
+   * ```ts
+   * // Fetch zero or more OffsetNotes
+   * const offsetNotes = gassma.OffsetNote.findMany()
+   * ```
+   */
   "OffsetNote": GassmaGassmaOffsetNoteController<O extends { "OffsetNote": infer UO } ? UO extends GassmaGassmaOffsetNoteOmit ? UO : {} : {}, O>;
+  /**
+   * `gassma.User`: Exposes CRUD operations for the **User** model.
+   * Example usage:
+   * ```ts
+   * // Fetch zero or more Users
+   * const users = gassma.User.findMany()
+   * ```
+   */
   "User": GassmaGassmaUserController<O extends { "User": infer UO } ? UO extends GassmaGassmaUserOmit ? UO : {} : {}, O>;
+  /**
+   * `gassma.Profile`: Exposes CRUD operations for the **Profile** model.
+   * Example usage:
+   * ```ts
+   * // Fetch zero or more Profiles
+   * const profiles = gassma.Profile.findMany()
+   * ```
+   */
   "Profile": GassmaGassmaProfileController<O extends { "Profile": infer UO } ? UO extends GassmaGassmaProfileOmit ? UO : {} : {}, O>;
 };
 
+/**
+ * The delegate class that exposes CRUD operations for the **Post** model.
+ */
 export declare class GassmaGassmaPostController<GO extends GassmaGassmaPostOmit = {}, O = {}, CMap = {}> {
   constructor(sheetName: string, id?: string);
 
+  /**
+   * Fields of the Post model
+   */
   readonly fields: Record<string, Gassma.FieldRef>;
+  /**
+   * Change the range this model reads and writes on the spreadsheet.
+   * Read more here: https://gassma.io/en/docs/reference/settings/changeSettings
+   * @param {number} startRowNumber - The row number the header row lives on.
+   * @param {number | string} startColumnValue - The first column of the range.
+   * @param {number | string} endColumnValue - The last column of the range.
+   */
   changeSettings(
     startRowNumber: number,
     startColumnValue: number | string,
     endColumnValue: number | string
   ): void;
+  /**
+   * Create many Posts.
+   * Read more here: https://gassma.io/en/docs/reference/crud/create/createMany
+   * @param {GassmaGassmaPostCreateManyData} createdData - Arguments to create many Posts.
+   * @example
+   * // Create many Posts
+   * const post = gassma.Post.createMany({
+   *   data: [
+   *     // ... provide data here
+   *   ]
+   * })
+   * 
+   */
   createMany(createdData: GassmaGassmaPostCreateManyData): CreateManyReturn;
+  /**
+   * Create many Posts and returns the data saved in the spreadsheet.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/crud/create/createManyAndReturn
+   * @param {GassmaGassmaPostCreateManyAndReturnData} createdData - Arguments to create many Posts.
+   * @example
+   * // Create many Posts
+   * const post = gassma.Post.createManyAndReturn({
+   *   data: [
+   *     // ... provide data here
+   *   ]
+   * })
+   * 
+   * // Create many Posts and only return the `id`
+   * const postWithIdOnly = gassma.Post.createManyAndReturn({
+   *   select: { id: true },
+   *   data: [
+   *     // ... provide data here
+   *   ]
+   * })
+   * 
+   */
   createManyAndReturn<T extends GassmaGassmaPostCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Post">>>(createdData: T & Gassma.Subset<T, GassmaGassmaPostCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Post">>>): GassmaGassmaPostFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  /**
+   * Create a Post.
+   * Read more here: https://gassma.io/en/docs/reference/crud/create/create
+   * @param {GassmaGassmaPostCreateData} createdData - Arguments to create a Post.
+   * @example
+   * // Create one Post
+   * const Post = gassma.Post.create({
+   *   data: {
+   *     // ... data to create a Post
+   *   }
+   * })
+   * 
+   */
   create<T extends GassmaGassmaPostCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "Post">>>(createdData: T & Gassma.Subset<T, GassmaGassmaPostCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "Post">>>): GassmaGassmaPostFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  /**
+   * Find the first Post that matches the filter.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/crud/read/findFirst
+   * @param {GassmaGassmaPostFindFirstData} findData - Arguments to find a Post
+   * @example
+   * // Get one Post
+   * const post = gassma.Post.findFirst({
+   *   where: {
+   *     // ... provide filter here
+   *   }
+   * })
+   */
   findFirst<T extends GassmaGassmaPostFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Post">>>(findData: T & Gassma.Subset<T, GassmaGassmaPostFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Post">>>): GassmaGassmaPostFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  /**
+   * Find the first Post.
+   * Read more here: https://gassma.io/en/docs/reference/crud/read/findFirst
+   * @example
+   * // Get the first Post
+   * const post = gassma.Post.findFirst()
+   */
   findFirst(): GassmaGassmaPostFindResult<unknown, unknown, unknown, GO, O, CMap> | null;
+  /**
+   * Find the first Post that matches the filter or
+   * throw `NotFoundError` if no matches were found.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/crud/read/findFirstOrThrow
+   * @param {GassmaGassmaPostFindFirstData} findData - Arguments to find a Post
+   * @example
+   * // Get one Post
+   * const post = gassma.Post.findFirstOrThrow({
+   *   where: {
+   *     // ... provide filter here
+   *   }
+   * })
+   */
   findFirstOrThrow<T extends GassmaGassmaPostFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Post">>>(findData: T & Gassma.Subset<T, GassmaGassmaPostFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Post">>>): GassmaGassmaPostFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  /**
+   * Find the first Post or throw `NotFoundError` if no Posts exist.
+   * Read more here: https://gassma.io/en/docs/reference/crud/read/findFirstOrThrow
+   * @example
+   * // Get the first Post
+   * const post = gassma.Post.findFirstOrThrow()
+   */
   findFirstOrThrow(): GassmaGassmaPostFindResult<unknown, unknown, unknown, GO, O, CMap>;
+  /**
+   * Find zero or more Posts that matches the filter.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/crud/read/findMany
+   * @param {GassmaGassmaPostFindManyData} findData - Arguments to filter and select certain fields only.
+   * @example
+   * // Get all Posts
+   * const posts = gassma.Post.findMany()
+   * 
+   * // Get first 10 Posts
+   * const posts = gassma.Post.findMany({ take: 10 })
+   * 
+   * // Only select the `id`
+   * const postWithIdOnly = gassma.Post.findMany({ select: { id: true } })
+   * 
+   */
   findMany<T extends GassmaGassmaPostFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "Post">>>(findData: T & Gassma.Subset<T, GassmaGassmaPostFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "Post">>>): GassmaGassmaPostFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  /**
+   * Find all Posts.
+   * Read more here: https://gassma.io/en/docs/reference/crud/read/findMany
+   * @example
+   * // Get all Posts
+   * const posts = gassma.Post.findMany()
+   */
   findMany(): GassmaGassmaPostFindResult<unknown, unknown, unknown, GO, O, CMap>[];
+  /**
+   * Update one Post.
+   * Read more here: https://gassma.io/en/docs/reference/crud/update/update
+   * @param {GassmaGassmaPostUpdateSingleData} updateData - Arguments to update one Post.
+   * @example
+   * // Update one Post
+   * const post = gassma.Post.update({
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   data: {
+   *     // ... provide data here
+   *   }
+   * })
+   * 
+   */
   update<T extends GassmaGassmaPostUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Post">>>(updateData: T & Gassma.Subset<T, GassmaGassmaPostUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Post">>>): GassmaGassmaPostFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  /**
+   * Update zero or more Posts.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/crud/update/updateMany
+   * @param {GassmaGassmaPostUpdateData} updateData - Arguments to update one or more rows.
+   * @example
+   * // Update many Posts
+   * const { count } = gassma.Post.updateMany({
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   data: {
+   *     // ... provide data here
+   *   }
+   * })
+   * 
+   */
   updateMany(updateData: GassmaGassmaPostUpdateData): UpdateManyReturn;
+  /**
+   * Update zero or more Posts and returns the data updated in the spreadsheet.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/crud/update/updateManyAndReturn
+   * @param {GassmaGassmaPostUpdateManyAndReturnData} updateData - Arguments to update many Posts.
+   * @example
+   * // Update many Posts
+   * const posts = gassma.Post.updateManyAndReturn({
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   data: {
+   *     // ... provide data here
+   *   }
+   * })
+   * 
+   * // Update zero or more Posts and only return the `id`
+   * const postWithIdOnly = gassma.Post.updateManyAndReturn({
+   *   select: { id: true },
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   data: {
+   *     // ... provide data here
+   *   }
+   * })
+   * 
+   */
   updateManyAndReturn<T extends GassmaGassmaPostUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Post">>>(updateData: T & Gassma.Subset<T, GassmaGassmaPostUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Post">>>): GassmaGassmaPostFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  /**
+   * Create or update one Post.
+   * Read more here: https://gassma.io/en/docs/reference/crud/update/upsert
+   * @param {GassmaGassmaPostUpsertSingleData} upsertData - Arguments to update or create a Post.
+   * @example
+   * // Update or create a Post
+   * const post = gassma.Post.upsert({
+   *   create: {
+   *     // ... data to create a Post
+   *   },
+   *   update: {
+   *     // ... in case it already exists, update
+   *   },
+   *   where: {
+   *     // ... the filter for the Post we want to update
+   *   }
+   * })
+   */
   upsert<T extends GassmaGassmaPostUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Post">>>(upsertData: T & Gassma.Subset<T, GassmaGassmaPostUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Post">>>): GassmaGassmaPostFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  /**
+   * Delete a Post.
+   * Read more here: https://gassma.io/en/docs/reference/crud/delete/delete
+   * @param {GassmaGassmaPostDeleteSingleData} deleteData - Arguments to delete one Post.
+   * @example
+   * // Delete one Post
+   * const Post = gassma.Post.delete({
+   *   where: {
+   *     // ... filter to delete one Post
+   *   }
+   * })
+   * 
+   */
   delete<T extends GassmaGassmaPostDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Post">>>(deleteData: T & Gassma.Subset<T, GassmaGassmaPostDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Post">>>): GassmaGassmaPostFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  /**
+   * Delete zero or more Posts.
+   * Read more here: https://gassma.io/en/docs/reference/crud/delete/deleteMany
+   * @param {GassmaGassmaPostDeleteData} deleteData - Arguments to filter Posts to delete.
+   * @example
+   * // Delete a few Posts
+   * const { count } = gassma.Post.deleteMany({
+   *   where: {
+   *     // ... provide filter here
+   *   }
+   * })
+   * 
+   */
   deleteMany(deleteData: GassmaGassmaPostDeleteData): DeleteManyReturn;
+  /**
+   * Delete every Post.
+   * Calling `deleteMany` without arguments deletes **all** rows in the sheet. This cannot be undone.
+   * Read more here: https://gassma.io/en/docs/reference/crud/delete/deleteMany
+   * @example
+   * // Delete every Post in the sheet
+   * const { count } = gassma.Post.deleteMany()
+   */
   deleteMany(): DeleteManyReturn;
+  /**
+   * Allows you to perform aggregations operations on a Post.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/statistics/aggregate
+   * @param {GassmaGassmaPostAggregateData} aggregateData - Select which aggregations you would like to apply and on what fields.
+   * @example
+   * // Count the Posts that match the filter
+   * const aggregations = gassma.Post.aggregate({
+   *   _count: true,
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   take: 10,
+   * })
+   */
   aggregate<T extends GassmaGassmaPostAggregateData>(aggregateData: T & Gassma.Subset<T, GassmaGassmaPostAggregateData>): GassmaGassmaPostAggregateResult<T>;
-  count<T extends GassmaGassmaPostCountData>(coutData: T & Gassma.Subset<T, GassmaGassmaPostCountData>): GassmaGassmaPostCountResult<T>;
+  /**
+   * Count the number of Posts.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/statistics/count
+   * @param {GassmaGassmaPostCountData} countData - Arguments to filter Posts to count.
+   * @example
+   * // Count the number of Posts
+   * const count = gassma.Post.count({
+   *   where: {
+   *     // ... the filter for the Posts we want to count
+   *   }
+   * })
+   */
+  count<T extends GassmaGassmaPostCountData>(countData: T & Gassma.Subset<T, GassmaGassmaPostCountData>): GassmaGassmaPostCountResult<T>;
+  /**
+   * Count every Post.
+   * Read more here: https://gassma.io/en/docs/reference/statistics/count
+   * @example
+   * // Count every Post
+   * const count = gassma.Post.count()
+   */
   count(): number;
+  /**
+   * Group by Post.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/statistics/groupBy
+   * @param {GassmaGassmaPostGroupByData} groupByData - Group by arguments.
+   * @example
+   * // Group by id, get count
+   * const result = gassma.Post.groupBy({
+   *   by: ['id'],
+   *   _count: true,
+   * })
+   * 
+   */
   groupBy<T extends GassmaGassmaPostGroupByData>(groupByData: T & Gassma.Subset<T, GassmaGassmaPostGroupByData>): GassmaGassmaPostGroupByResult<T>[];
+  /**
+   * Get the value the next `create` will issue for an autoincrement field of Post.
+   * Reading the counter is allowed inside `$transaction`.
+   * Throws `GassmaAutoincrementNotConfiguredError` when the field is not an autoincrement field.
+   * Read more here: https://gassma.io/en/docs/reference/config/autoincrement
+   * @param {string} field - An autoincrement field of Post.
+   * @example
+   * // The id the next Post will get
+   * const next = gassma.Post.$getAutoincrement("id")
+   */
+  $getAutoincrement(field: "id"): number;
+  /**
+   * Set the value the next `create` will issue for an autoincrement field of Post.
+   * `next` is the value that will be issued next, so it must be an integer of 1 or more.
+   * Throws `GassmaAutoincrementInTransactionError` inside `$transaction`, because the counter is never rolled back.
+   * Read more here: https://gassma.io/en/docs/reference/config/autoincrement
+   * @param {string} field - An autoincrement field of Post.
+   * @param {number} next - The value the next `create` will issue.
+   * @example
+   * // Let the next Post continue from 1000
+   * gassma.Post.$setAutoincrement("id", 1000)
+   */
+  $setAutoincrement(field: "id", next: number): void;
+  /**
+   * Line the counter of Post up with the rows already in the sheet.
+   * The counter becomes the largest value in the column plus one, which is also the return value.
+   * Throws `GassmaAutoincrementInTransactionError` inside `$transaction`, because the counter is never rolled back.
+   * Read more here: https://gassma.io/en/docs/reference/config/autoincrement
+   * @param {string} field - An autoincrement field of Post.
+   * @example
+   * // Adopt a sheet that already has rows
+   * const next = gassma.Post.$syncAutoincrement("id")
+   */
+  $syncAutoincrement(field: "id"): number;
 }
 
+/**
+ * The delegate class that exposes CRUD operations for the **Comment** model.
+ */
 export declare class GassmaGassmaCommentController<GO extends GassmaGassmaCommentOmit = {}, O = {}, CMap = {}> {
   constructor(sheetName: string, id?: string);
 
+  /**
+   * Fields of the Comment model
+   */
   readonly fields: Record<string, Gassma.FieldRef>;
+  /**
+   * Change the range this model reads and writes on the spreadsheet.
+   * Read more here: https://gassma.io/en/docs/reference/settings/changeSettings
+   * @param {number} startRowNumber - The row number the header row lives on.
+   * @param {number | string} startColumnValue - The first column of the range.
+   * @param {number | string} endColumnValue - The last column of the range.
+   */
   changeSettings(
     startRowNumber: number,
     startColumnValue: number | string,
     endColumnValue: number | string
   ): void;
+  /**
+   * Create many Comments.
+   * Read more here: https://gassma.io/en/docs/reference/crud/create/createMany
+   * @param {GassmaGassmaCommentCreateManyData} createdData - Arguments to create many Comments.
+   * @example
+   * // Create many Comments
+   * const comment = gassma.Comment.createMany({
+   *   data: [
+   *     // ... provide data here
+   *   ]
+   * })
+   * 
+   */
   createMany(createdData: GassmaGassmaCommentCreateManyData): CreateManyReturn;
+  /**
+   * Create many Comments and returns the data saved in the spreadsheet.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/crud/create/createManyAndReturn
+   * @param {GassmaGassmaCommentCreateManyAndReturnData} createdData - Arguments to create many Comments.
+   * @example
+   * // Create many Comments
+   * const comment = gassma.Comment.createManyAndReturn({
+   *   data: [
+   *     // ... provide data here
+   *   ]
+   * })
+   * 
+   * // Create many Comments and only return the `id`
+   * const commentWithIdOnly = gassma.Comment.createManyAndReturn({
+   *   select: { id: true },
+   *   data: [
+   *     // ... provide data here
+   *   ]
+   * })
+   * 
+   */
   createManyAndReturn<T extends GassmaGassmaCommentCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Comment">>>(createdData: T & Gassma.Subset<T, GassmaGassmaCommentCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Comment">>>): GassmaGassmaCommentFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  /**
+   * Create a Comment.
+   * Read more here: https://gassma.io/en/docs/reference/crud/create/create
+   * @param {GassmaGassmaCommentCreateData} createdData - Arguments to create a Comment.
+   * @example
+   * // Create one Comment
+   * const Comment = gassma.Comment.create({
+   *   data: {
+   *     // ... data to create a Comment
+   *   }
+   * })
+   * 
+   */
   create<T extends GassmaGassmaCommentCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "Comment">>>(createdData: T & Gassma.Subset<T, GassmaGassmaCommentCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "Comment">>>): GassmaGassmaCommentFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  /**
+   * Find the first Comment that matches the filter.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/crud/read/findFirst
+   * @param {GassmaGassmaCommentFindFirstData} findData - Arguments to find a Comment
+   * @example
+   * // Get one Comment
+   * const comment = gassma.Comment.findFirst({
+   *   where: {
+   *     // ... provide filter here
+   *   }
+   * })
+   */
   findFirst<T extends GassmaGassmaCommentFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Comment">>>(findData: T & Gassma.Subset<T, GassmaGassmaCommentFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Comment">>>): GassmaGassmaCommentFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  /**
+   * Find the first Comment.
+   * Read more here: https://gassma.io/en/docs/reference/crud/read/findFirst
+   * @example
+   * // Get the first Comment
+   * const comment = gassma.Comment.findFirst()
+   */
   findFirst(): GassmaGassmaCommentFindResult<unknown, unknown, unknown, GO, O, CMap> | null;
+  /**
+   * Find the first Comment that matches the filter or
+   * throw `NotFoundError` if no matches were found.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/crud/read/findFirstOrThrow
+   * @param {GassmaGassmaCommentFindFirstData} findData - Arguments to find a Comment
+   * @example
+   * // Get one Comment
+   * const comment = gassma.Comment.findFirstOrThrow({
+   *   where: {
+   *     // ... provide filter here
+   *   }
+   * })
+   */
   findFirstOrThrow<T extends GassmaGassmaCommentFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Comment">>>(findData: T & Gassma.Subset<T, GassmaGassmaCommentFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Comment">>>): GassmaGassmaCommentFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  /**
+   * Find the first Comment or throw `NotFoundError` if no Comments exist.
+   * Read more here: https://gassma.io/en/docs/reference/crud/read/findFirstOrThrow
+   * @example
+   * // Get the first Comment
+   * const comment = gassma.Comment.findFirstOrThrow()
+   */
   findFirstOrThrow(): GassmaGassmaCommentFindResult<unknown, unknown, unknown, GO, O, CMap>;
+  /**
+   * Find zero or more Comments that matches the filter.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/crud/read/findMany
+   * @param {GassmaGassmaCommentFindManyData} findData - Arguments to filter and select certain fields only.
+   * @example
+   * // Get all Comments
+   * const comments = gassma.Comment.findMany()
+   * 
+   * // Get first 10 Comments
+   * const comments = gassma.Comment.findMany({ take: 10 })
+   * 
+   * // Only select the `id`
+   * const commentWithIdOnly = gassma.Comment.findMany({ select: { id: true } })
+   * 
+   */
   findMany<T extends GassmaGassmaCommentFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "Comment">>>(findData: T & Gassma.Subset<T, GassmaGassmaCommentFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "Comment">>>): GassmaGassmaCommentFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  /**
+   * Find all Comments.
+   * Read more here: https://gassma.io/en/docs/reference/crud/read/findMany
+   * @example
+   * // Get all Comments
+   * const comments = gassma.Comment.findMany()
+   */
   findMany(): GassmaGassmaCommentFindResult<unknown, unknown, unknown, GO, O, CMap>[];
+  /**
+   * Update one Comment.
+   * Read more here: https://gassma.io/en/docs/reference/crud/update/update
+   * @param {GassmaGassmaCommentUpdateSingleData} updateData - Arguments to update one Comment.
+   * @example
+   * // Update one Comment
+   * const comment = gassma.Comment.update({
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   data: {
+   *     // ... provide data here
+   *   }
+   * })
+   * 
+   */
   update<T extends GassmaGassmaCommentUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Comment">>>(updateData: T & Gassma.Subset<T, GassmaGassmaCommentUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Comment">>>): GassmaGassmaCommentFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  /**
+   * Update zero or more Comments.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/crud/update/updateMany
+   * @param {GassmaGassmaCommentUpdateData} updateData - Arguments to update one or more rows.
+   * @example
+   * // Update many Comments
+   * const { count } = gassma.Comment.updateMany({
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   data: {
+   *     // ... provide data here
+   *   }
+   * })
+   * 
+   */
   updateMany(updateData: GassmaGassmaCommentUpdateData): UpdateManyReturn;
+  /**
+   * Update zero or more Comments and returns the data updated in the spreadsheet.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/crud/update/updateManyAndReturn
+   * @param {GassmaGassmaCommentUpdateManyAndReturnData} updateData - Arguments to update many Comments.
+   * @example
+   * // Update many Comments
+   * const comments = gassma.Comment.updateManyAndReturn({
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   data: {
+   *     // ... provide data here
+   *   }
+   * })
+   * 
+   * // Update zero or more Comments and only return the `id`
+   * const commentWithIdOnly = gassma.Comment.updateManyAndReturn({
+   *   select: { id: true },
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   data: {
+   *     // ... provide data here
+   *   }
+   * })
+   * 
+   */
   updateManyAndReturn<T extends GassmaGassmaCommentUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Comment">>>(updateData: T & Gassma.Subset<T, GassmaGassmaCommentUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Comment">>>): GassmaGassmaCommentFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  /**
+   * Create or update one Comment.
+   * Read more here: https://gassma.io/en/docs/reference/crud/update/upsert
+   * @param {GassmaGassmaCommentUpsertSingleData} upsertData - Arguments to update or create a Comment.
+   * @example
+   * // Update or create a Comment
+   * const comment = gassma.Comment.upsert({
+   *   create: {
+   *     // ... data to create a Comment
+   *   },
+   *   update: {
+   *     // ... in case it already exists, update
+   *   },
+   *   where: {
+   *     // ... the filter for the Comment we want to update
+   *   }
+   * })
+   */
   upsert<T extends GassmaGassmaCommentUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Comment">>>(upsertData: T & Gassma.Subset<T, GassmaGassmaCommentUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Comment">>>): GassmaGassmaCommentFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  /**
+   * Delete a Comment.
+   * Read more here: https://gassma.io/en/docs/reference/crud/delete/delete
+   * @param {GassmaGassmaCommentDeleteSingleData} deleteData - Arguments to delete one Comment.
+   * @example
+   * // Delete one Comment
+   * const Comment = gassma.Comment.delete({
+   *   where: {
+   *     // ... filter to delete one Comment
+   *   }
+   * })
+   * 
+   */
   delete<T extends GassmaGassmaCommentDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Comment">>>(deleteData: T & Gassma.Subset<T, GassmaGassmaCommentDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Comment">>>): GassmaGassmaCommentFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  /**
+   * Delete zero or more Comments.
+   * Read more here: https://gassma.io/en/docs/reference/crud/delete/deleteMany
+   * @param {GassmaGassmaCommentDeleteData} deleteData - Arguments to filter Comments to delete.
+   * @example
+   * // Delete a few Comments
+   * const { count } = gassma.Comment.deleteMany({
+   *   where: {
+   *     // ... provide filter here
+   *   }
+   * })
+   * 
+   */
   deleteMany(deleteData: GassmaGassmaCommentDeleteData): DeleteManyReturn;
+  /**
+   * Delete every Comment.
+   * Calling `deleteMany` without arguments deletes **all** rows in the sheet. This cannot be undone.
+   * Read more here: https://gassma.io/en/docs/reference/crud/delete/deleteMany
+   * @example
+   * // Delete every Comment in the sheet
+   * const { count } = gassma.Comment.deleteMany()
+   */
   deleteMany(): DeleteManyReturn;
+  /**
+   * Allows you to perform aggregations operations on a Comment.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/statistics/aggregate
+   * @param {GassmaGassmaCommentAggregateData} aggregateData - Select which aggregations you would like to apply and on what fields.
+   * @example
+   * // Count the Comments that match the filter
+   * const aggregations = gassma.Comment.aggregate({
+   *   _count: true,
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   take: 10,
+   * })
+   */
   aggregate<T extends GassmaGassmaCommentAggregateData>(aggregateData: T & Gassma.Subset<T, GassmaGassmaCommentAggregateData>): GassmaGassmaCommentAggregateResult<T>;
-  count<T extends GassmaGassmaCommentCountData>(coutData: T & Gassma.Subset<T, GassmaGassmaCommentCountData>): GassmaGassmaCommentCountResult<T>;
+  /**
+   * Count the number of Comments.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/statistics/count
+   * @param {GassmaGassmaCommentCountData} countData - Arguments to filter Comments to count.
+   * @example
+   * // Count the number of Comments
+   * const count = gassma.Comment.count({
+   *   where: {
+   *     // ... the filter for the Comments we want to count
+   *   }
+   * })
+   */
+  count<T extends GassmaGassmaCommentCountData>(countData: T & Gassma.Subset<T, GassmaGassmaCommentCountData>): GassmaGassmaCommentCountResult<T>;
+  /**
+   * Count every Comment.
+   * Read more here: https://gassma.io/en/docs/reference/statistics/count
+   * @example
+   * // Count every Comment
+   * const count = gassma.Comment.count()
+   */
   count(): number;
+  /**
+   * Group by Comment.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/statistics/groupBy
+   * @param {GassmaGassmaCommentGroupByData} groupByData - Group by arguments.
+   * @example
+   * // Group by id, get count
+   * const result = gassma.Comment.groupBy({
+   *   by: ['id'],
+   *   _count: true,
+   * })
+   * 
+   */
   groupBy<T extends GassmaGassmaCommentGroupByData>(groupByData: T & Gassma.Subset<T, GassmaGassmaCommentGroupByData>): GassmaGassmaCommentGroupByResult<T>[];
+  /**
+   * Get the value the next `create` will issue for an autoincrement field of Comment.
+   * Reading the counter is allowed inside `$transaction`.
+   * Throws `GassmaAutoincrementNotConfiguredError` when the field is not an autoincrement field.
+   * Read more here: https://gassma.io/en/docs/reference/config/autoincrement
+   * @param {string} field - An autoincrement field of Comment.
+   * @example
+   * // The id the next Comment will get
+   * const next = gassma.Comment.$getAutoincrement("id")
+   */
+  $getAutoincrement(field: "id"): number;
+  /**
+   * Set the value the next `create` will issue for an autoincrement field of Comment.
+   * `next` is the value that will be issued next, so it must be an integer of 1 or more.
+   * Throws `GassmaAutoincrementInTransactionError` inside `$transaction`, because the counter is never rolled back.
+   * Read more here: https://gassma.io/en/docs/reference/config/autoincrement
+   * @param {string} field - An autoincrement field of Comment.
+   * @param {number} next - The value the next `create` will issue.
+   * @example
+   * // Let the next Comment continue from 1000
+   * gassma.Comment.$setAutoincrement("id", 1000)
+   */
+  $setAutoincrement(field: "id", next: number): void;
+  /**
+   * Line the counter of Comment up with the rows already in the sheet.
+   * The counter becomes the largest value in the column plus one, which is also the return value.
+   * Throws `GassmaAutoincrementInTransactionError` inside `$transaction`, because the counter is never rolled back.
+   * Read more here: https://gassma.io/en/docs/reference/config/autoincrement
+   * @param {string} field - An autoincrement field of Comment.
+   * @example
+   * // Adopt a sheet that already has rows
+   * const next = gassma.Comment.$syncAutoincrement("id")
+   */
+  $syncAutoincrement(field: "id"): number;
 }
 
+/**
+ * The delegate class that exposes CRUD operations for the **Category** model.
+ */
 export declare class GassmaGassmaCategoryController<GO extends GassmaGassmaCategoryOmit = {}, O = {}, CMap = {}> {
   constructor(sheetName: string, id?: string);
 
+  /**
+   * Fields of the Category model
+   */
   readonly fields: Record<string, Gassma.FieldRef>;
+  /**
+   * Change the range this model reads and writes on the spreadsheet.
+   * Read more here: https://gassma.io/en/docs/reference/settings/changeSettings
+   * @param {number} startRowNumber - The row number the header row lives on.
+   * @param {number | string} startColumnValue - The first column of the range.
+   * @param {number | string} endColumnValue - The last column of the range.
+   */
   changeSettings(
     startRowNumber: number,
     startColumnValue: number | string,
     endColumnValue: number | string
   ): void;
+  /**
+   * Create many Categories.
+   * Read more here: https://gassma.io/en/docs/reference/crud/create/createMany
+   * @param {GassmaGassmaCategoryCreateManyData} createdData - Arguments to create many Categories.
+   * @example
+   * // Create many Categories
+   * const category = gassma.Category.createMany({
+   *   data: [
+   *     // ... provide data here
+   *   ]
+   * })
+   * 
+   */
   createMany(createdData: GassmaGassmaCategoryCreateManyData): CreateManyReturn;
+  /**
+   * Create many Categories and returns the data saved in the spreadsheet.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/crud/create/createManyAndReturn
+   * @param {GassmaGassmaCategoryCreateManyAndReturnData} createdData - Arguments to create many Categories.
+   * @example
+   * // Create many Categories
+   * const category = gassma.Category.createManyAndReturn({
+   *   data: [
+   *     // ... provide data here
+   *   ]
+   * })
+   * 
+   * // Create many Categories and only return the `id`
+   * const categoryWithIdOnly = gassma.Category.createManyAndReturn({
+   *   select: { id: true },
+   *   data: [
+   *     // ... provide data here
+   *   ]
+   * })
+   * 
+   */
   createManyAndReturn<T extends GassmaGassmaCategoryCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Category">>>(createdData: T & Gassma.Subset<T, GassmaGassmaCategoryCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Category">>>): GassmaGassmaCategoryFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  /**
+   * Create a Category.
+   * Read more here: https://gassma.io/en/docs/reference/crud/create/create
+   * @param {GassmaGassmaCategoryCreateData} createdData - Arguments to create a Category.
+   * @example
+   * // Create one Category
+   * const Category = gassma.Category.create({
+   *   data: {
+   *     // ... data to create a Category
+   *   }
+   * })
+   * 
+   */
   create<T extends GassmaGassmaCategoryCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "Category">>>(createdData: T & Gassma.Subset<T, GassmaGassmaCategoryCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "Category">>>): GassmaGassmaCategoryFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  /**
+   * Find the first Category that matches the filter.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/crud/read/findFirst
+   * @param {GassmaGassmaCategoryFindFirstData} findData - Arguments to find a Category
+   * @example
+   * // Get one Category
+   * const category = gassma.Category.findFirst({
+   *   where: {
+   *     // ... provide filter here
+   *   }
+   * })
+   */
   findFirst<T extends GassmaGassmaCategoryFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Category">>>(findData: T & Gassma.Subset<T, GassmaGassmaCategoryFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Category">>>): GassmaGassmaCategoryFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  /**
+   * Find the first Category.
+   * Read more here: https://gassma.io/en/docs/reference/crud/read/findFirst
+   * @example
+   * // Get the first Category
+   * const category = gassma.Category.findFirst()
+   */
   findFirst(): GassmaGassmaCategoryFindResult<unknown, unknown, unknown, GO, O, CMap> | null;
+  /**
+   * Find the first Category that matches the filter or
+   * throw `NotFoundError` if no matches were found.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/crud/read/findFirstOrThrow
+   * @param {GassmaGassmaCategoryFindFirstData} findData - Arguments to find a Category
+   * @example
+   * // Get one Category
+   * const category = gassma.Category.findFirstOrThrow({
+   *   where: {
+   *     // ... provide filter here
+   *   }
+   * })
+   */
   findFirstOrThrow<T extends GassmaGassmaCategoryFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Category">>>(findData: T & Gassma.Subset<T, GassmaGassmaCategoryFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Category">>>): GassmaGassmaCategoryFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  /**
+   * Find the first Category or throw `NotFoundError` if no Categories exist.
+   * Read more here: https://gassma.io/en/docs/reference/crud/read/findFirstOrThrow
+   * @example
+   * // Get the first Category
+   * const category = gassma.Category.findFirstOrThrow()
+   */
   findFirstOrThrow(): GassmaGassmaCategoryFindResult<unknown, unknown, unknown, GO, O, CMap>;
+  /**
+   * Find zero or more Categories that matches the filter.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/crud/read/findMany
+   * @param {GassmaGassmaCategoryFindManyData} findData - Arguments to filter and select certain fields only.
+   * @example
+   * // Get all Categories
+   * const categories = gassma.Category.findMany()
+   * 
+   * // Get first 10 Categories
+   * const categories = gassma.Category.findMany({ take: 10 })
+   * 
+   * // Only select the `id`
+   * const categoryWithIdOnly = gassma.Category.findMany({ select: { id: true } })
+   * 
+   */
   findMany<T extends GassmaGassmaCategoryFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "Category">>>(findData: T & Gassma.Subset<T, GassmaGassmaCategoryFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "Category">>>): GassmaGassmaCategoryFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  /**
+   * Find all Categories.
+   * Read more here: https://gassma.io/en/docs/reference/crud/read/findMany
+   * @example
+   * // Get all Categories
+   * const categories = gassma.Category.findMany()
+   */
   findMany(): GassmaGassmaCategoryFindResult<unknown, unknown, unknown, GO, O, CMap>[];
+  /**
+   * Update one Category.
+   * Read more here: https://gassma.io/en/docs/reference/crud/update/update
+   * @param {GassmaGassmaCategoryUpdateSingleData} updateData - Arguments to update one Category.
+   * @example
+   * // Update one Category
+   * const category = gassma.Category.update({
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   data: {
+   *     // ... provide data here
+   *   }
+   * })
+   * 
+   */
   update<T extends GassmaGassmaCategoryUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Category">>>(updateData: T & Gassma.Subset<T, GassmaGassmaCategoryUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Category">>>): GassmaGassmaCategoryFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  /**
+   * Update zero or more Categories.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/crud/update/updateMany
+   * @param {GassmaGassmaCategoryUpdateData} updateData - Arguments to update one or more rows.
+   * @example
+   * // Update many Categories
+   * const { count } = gassma.Category.updateMany({
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   data: {
+   *     // ... provide data here
+   *   }
+   * })
+   * 
+   */
   updateMany(updateData: GassmaGassmaCategoryUpdateData): UpdateManyReturn;
+  /**
+   * Update zero or more Categories and returns the data updated in the spreadsheet.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/crud/update/updateManyAndReturn
+   * @param {GassmaGassmaCategoryUpdateManyAndReturnData} updateData - Arguments to update many Categories.
+   * @example
+   * // Update many Categories
+   * const categories = gassma.Category.updateManyAndReturn({
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   data: {
+   *     // ... provide data here
+   *   }
+   * })
+   * 
+   * // Update zero or more Categories and only return the `id`
+   * const categoryWithIdOnly = gassma.Category.updateManyAndReturn({
+   *   select: { id: true },
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   data: {
+   *     // ... provide data here
+   *   }
+   * })
+   * 
+   */
   updateManyAndReturn<T extends GassmaGassmaCategoryUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Category">>>(updateData: T & Gassma.Subset<T, GassmaGassmaCategoryUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Category">>>): GassmaGassmaCategoryFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  /**
+   * Create or update one Category.
+   * Read more here: https://gassma.io/en/docs/reference/crud/update/upsert
+   * @param {GassmaGassmaCategoryUpsertSingleData} upsertData - Arguments to update or create a Category.
+   * @example
+   * // Update or create a Category
+   * const category = gassma.Category.upsert({
+   *   create: {
+   *     // ... data to create a Category
+   *   },
+   *   update: {
+   *     // ... in case it already exists, update
+   *   },
+   *   where: {
+   *     // ... the filter for the Category we want to update
+   *   }
+   * })
+   */
   upsert<T extends GassmaGassmaCategoryUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Category">>>(upsertData: T & Gassma.Subset<T, GassmaGassmaCategoryUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Category">>>): GassmaGassmaCategoryFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  /**
+   * Delete a Category.
+   * Read more here: https://gassma.io/en/docs/reference/crud/delete/delete
+   * @param {GassmaGassmaCategoryDeleteSingleData} deleteData - Arguments to delete one Category.
+   * @example
+   * // Delete one Category
+   * const Category = gassma.Category.delete({
+   *   where: {
+   *     // ... filter to delete one Category
+   *   }
+   * })
+   * 
+   */
   delete<T extends GassmaGassmaCategoryDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Category">>>(deleteData: T & Gassma.Subset<T, GassmaGassmaCategoryDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Category">>>): GassmaGassmaCategoryFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  /**
+   * Delete zero or more Categories.
+   * Read more here: https://gassma.io/en/docs/reference/crud/delete/deleteMany
+   * @param {GassmaGassmaCategoryDeleteData} deleteData - Arguments to filter Categories to delete.
+   * @example
+   * // Delete a few Categories
+   * const { count } = gassma.Category.deleteMany({
+   *   where: {
+   *     // ... provide filter here
+   *   }
+   * })
+   * 
+   */
   deleteMany(deleteData: GassmaGassmaCategoryDeleteData): DeleteManyReturn;
+  /**
+   * Delete every Category.
+   * Calling `deleteMany` without arguments deletes **all** rows in the sheet. This cannot be undone.
+   * Read more here: https://gassma.io/en/docs/reference/crud/delete/deleteMany
+   * @example
+   * // Delete every Category in the sheet
+   * const { count } = gassma.Category.deleteMany()
+   */
   deleteMany(): DeleteManyReturn;
+  /**
+   * Allows you to perform aggregations operations on a Category.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/statistics/aggregate
+   * @param {GassmaGassmaCategoryAggregateData} aggregateData - Select which aggregations you would like to apply and on what fields.
+   * @example
+   * // Count the Categories that match the filter
+   * const aggregations = gassma.Category.aggregate({
+   *   _count: true,
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   take: 10,
+   * })
+   */
   aggregate<T extends GassmaGassmaCategoryAggregateData>(aggregateData: T & Gassma.Subset<T, GassmaGassmaCategoryAggregateData>): GassmaGassmaCategoryAggregateResult<T>;
-  count<T extends GassmaGassmaCategoryCountData>(coutData: T & Gassma.Subset<T, GassmaGassmaCategoryCountData>): GassmaGassmaCategoryCountResult<T>;
+  /**
+   * Count the number of Categories.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/statistics/count
+   * @param {GassmaGassmaCategoryCountData} countData - Arguments to filter Categories to count.
+   * @example
+   * // Count the number of Categories
+   * const count = gassma.Category.count({
+   *   where: {
+   *     // ... the filter for the Categories we want to count
+   *   }
+   * })
+   */
+  count<T extends GassmaGassmaCategoryCountData>(countData: T & Gassma.Subset<T, GassmaGassmaCategoryCountData>): GassmaGassmaCategoryCountResult<T>;
+  /**
+   * Count every Category.
+   * Read more here: https://gassma.io/en/docs/reference/statistics/count
+   * @example
+   * // Count every Category
+   * const count = gassma.Category.count()
+   */
   count(): number;
+  /**
+   * Group by Category.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/statistics/groupBy
+   * @param {GassmaGassmaCategoryGroupByData} groupByData - Group by arguments.
+   * @example
+   * // Group by id, get count
+   * const result = gassma.Category.groupBy({
+   *   by: ['id'],
+   *   _count: true,
+   * })
+   * 
+   */
   groupBy<T extends GassmaGassmaCategoryGroupByData>(groupByData: T & Gassma.Subset<T, GassmaGassmaCategoryGroupByData>): GassmaGassmaCategoryGroupByResult<T>[];
+  /**
+   * Get the value the next `create` will issue for an autoincrement field of Category.
+   * Reading the counter is allowed inside `$transaction`.
+   * Throws `GassmaAutoincrementNotConfiguredError` when the field is not an autoincrement field.
+   * Read more here: https://gassma.io/en/docs/reference/config/autoincrement
+   * @param {string} field - An autoincrement field of Category.
+   * @example
+   * // The id the next Category will get
+   * const next = gassma.Category.$getAutoincrement("id")
+   */
+  $getAutoincrement(field: "id"): number;
+  /**
+   * Set the value the next `create` will issue for an autoincrement field of Category.
+   * `next` is the value that will be issued next, so it must be an integer of 1 or more.
+   * Throws `GassmaAutoincrementInTransactionError` inside `$transaction`, because the counter is never rolled back.
+   * Read more here: https://gassma.io/en/docs/reference/config/autoincrement
+   * @param {string} field - An autoincrement field of Category.
+   * @param {number} next - The value the next `create` will issue.
+   * @example
+   * // Let the next Category continue from 1000
+   * gassma.Category.$setAutoincrement("id", 1000)
+   */
+  $setAutoincrement(field: "id", next: number): void;
+  /**
+   * Line the counter of Category up with the rows already in the sheet.
+   * The counter becomes the largest value in the column plus one, which is also the return value.
+   * Throws `GassmaAutoincrementInTransactionError` inside `$transaction`, because the counter is never rolled back.
+   * Read more here: https://gassma.io/en/docs/reference/config/autoincrement
+   * @param {string} field - An autoincrement field of Category.
+   * @example
+   * // Adopt a sheet that already has rows
+   * const next = gassma.Category.$syncAutoincrement("id")
+   */
+  $syncAutoincrement(field: "id"): number;
 }
 
+/**
+ * The delegate class that exposes CRUD operations for the **Tag** model.
+ */
 export declare class GassmaGassmaTagController<GO extends GassmaGassmaTagOmit = {}, O = {}, CMap = {}> {
   constructor(sheetName: string, id?: string);
 
+  /**
+   * Fields of the Tag model
+   */
   readonly fields: Record<string, Gassma.FieldRef>;
+  /**
+   * Change the range this model reads and writes on the spreadsheet.
+   * Read more here: https://gassma.io/en/docs/reference/settings/changeSettings
+   * @param {number} startRowNumber - The row number the header row lives on.
+   * @param {number | string} startColumnValue - The first column of the range.
+   * @param {number | string} endColumnValue - The last column of the range.
+   */
   changeSettings(
     startRowNumber: number,
     startColumnValue: number | string,
     endColumnValue: number | string
   ): void;
+  /**
+   * Create many Tags.
+   * Read more here: https://gassma.io/en/docs/reference/crud/create/createMany
+   * @param {GassmaGassmaTagCreateManyData} createdData - Arguments to create many Tags.
+   * @example
+   * // Create many Tags
+   * const tag = gassma.Tag.createMany({
+   *   data: [
+   *     // ... provide data here
+   *   ]
+   * })
+   * 
+   */
   createMany(createdData: GassmaGassmaTagCreateManyData): CreateManyReturn;
+  /**
+   * Create many Tags and returns the data saved in the spreadsheet.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/crud/create/createManyAndReturn
+   * @param {GassmaGassmaTagCreateManyAndReturnData} createdData - Arguments to create many Tags.
+   * @example
+   * // Create many Tags
+   * const tag = gassma.Tag.createManyAndReturn({
+   *   data: [
+   *     // ... provide data here
+   *   ]
+   * })
+   * 
+   * // Create many Tags and only return the `id`
+   * const tagWithIdOnly = gassma.Tag.createManyAndReturn({
+   *   select: { id: true },
+   *   data: [
+   *     // ... provide data here
+   *   ]
+   * })
+   * 
+   */
   createManyAndReturn<T extends GassmaGassmaTagCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Tag">>>(createdData: T & Gassma.Subset<T, GassmaGassmaTagCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Tag">>>): GassmaGassmaTagFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  /**
+   * Create a Tag.
+   * Read more here: https://gassma.io/en/docs/reference/crud/create/create
+   * @param {GassmaGassmaTagCreateData} createdData - Arguments to create a Tag.
+   * @example
+   * // Create one Tag
+   * const Tag = gassma.Tag.create({
+   *   data: {
+   *     // ... data to create a Tag
+   *   }
+   * })
+   * 
+   */
   create<T extends GassmaGassmaTagCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "Tag">>>(createdData: T & Gassma.Subset<T, GassmaGassmaTagCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "Tag">>>): GassmaGassmaTagFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  /**
+   * Find the first Tag that matches the filter.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/crud/read/findFirst
+   * @param {GassmaGassmaTagFindFirstData} findData - Arguments to find a Tag
+   * @example
+   * // Get one Tag
+   * const tag = gassma.Tag.findFirst({
+   *   where: {
+   *     // ... provide filter here
+   *   }
+   * })
+   */
   findFirst<T extends GassmaGassmaTagFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Tag">>>(findData: T & Gassma.Subset<T, GassmaGassmaTagFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Tag">>>): GassmaGassmaTagFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  /**
+   * Find the first Tag.
+   * Read more here: https://gassma.io/en/docs/reference/crud/read/findFirst
+   * @example
+   * // Get the first Tag
+   * const tag = gassma.Tag.findFirst()
+   */
   findFirst(): GassmaGassmaTagFindResult<unknown, unknown, unknown, GO, O, CMap> | null;
+  /**
+   * Find the first Tag that matches the filter or
+   * throw `NotFoundError` if no matches were found.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/crud/read/findFirstOrThrow
+   * @param {GassmaGassmaTagFindFirstData} findData - Arguments to find a Tag
+   * @example
+   * // Get one Tag
+   * const tag = gassma.Tag.findFirstOrThrow({
+   *   where: {
+   *     // ... provide filter here
+   *   }
+   * })
+   */
   findFirstOrThrow<T extends GassmaGassmaTagFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Tag">>>(findData: T & Gassma.Subset<T, GassmaGassmaTagFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Tag">>>): GassmaGassmaTagFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  /**
+   * Find the first Tag or throw `NotFoundError` if no Tags exist.
+   * Read more here: https://gassma.io/en/docs/reference/crud/read/findFirstOrThrow
+   * @example
+   * // Get the first Tag
+   * const tag = gassma.Tag.findFirstOrThrow()
+   */
   findFirstOrThrow(): GassmaGassmaTagFindResult<unknown, unknown, unknown, GO, O, CMap>;
+  /**
+   * Find zero or more Tags that matches the filter.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/crud/read/findMany
+   * @param {GassmaGassmaTagFindManyData} findData - Arguments to filter and select certain fields only.
+   * @example
+   * // Get all Tags
+   * const tags = gassma.Tag.findMany()
+   * 
+   * // Get first 10 Tags
+   * const tags = gassma.Tag.findMany({ take: 10 })
+   * 
+   * // Only select the `id`
+   * const tagWithIdOnly = gassma.Tag.findMany({ select: { id: true } })
+   * 
+   */
   findMany<T extends GassmaGassmaTagFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "Tag">>>(findData: T & Gassma.Subset<T, GassmaGassmaTagFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "Tag">>>): GassmaGassmaTagFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  /**
+   * Find all Tags.
+   * Read more here: https://gassma.io/en/docs/reference/crud/read/findMany
+   * @example
+   * // Get all Tags
+   * const tags = gassma.Tag.findMany()
+   */
   findMany(): GassmaGassmaTagFindResult<unknown, unknown, unknown, GO, O, CMap>[];
+  /**
+   * Update one Tag.
+   * Read more here: https://gassma.io/en/docs/reference/crud/update/update
+   * @param {GassmaGassmaTagUpdateSingleData} updateData - Arguments to update one Tag.
+   * @example
+   * // Update one Tag
+   * const tag = gassma.Tag.update({
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   data: {
+   *     // ... provide data here
+   *   }
+   * })
+   * 
+   */
   update<T extends GassmaGassmaTagUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Tag">>>(updateData: T & Gassma.Subset<T, GassmaGassmaTagUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Tag">>>): GassmaGassmaTagFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  /**
+   * Update zero or more Tags.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/crud/update/updateMany
+   * @param {GassmaGassmaTagUpdateData} updateData - Arguments to update one or more rows.
+   * @example
+   * // Update many Tags
+   * const { count } = gassma.Tag.updateMany({
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   data: {
+   *     // ... provide data here
+   *   }
+   * })
+   * 
+   */
   updateMany(updateData: GassmaGassmaTagUpdateData): UpdateManyReturn;
+  /**
+   * Update zero or more Tags and returns the data updated in the spreadsheet.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/crud/update/updateManyAndReturn
+   * @param {GassmaGassmaTagUpdateManyAndReturnData} updateData - Arguments to update many Tags.
+   * @example
+   * // Update many Tags
+   * const tags = gassma.Tag.updateManyAndReturn({
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   data: {
+   *     // ... provide data here
+   *   }
+   * })
+   * 
+   * // Update zero or more Tags and only return the `id`
+   * const tagWithIdOnly = gassma.Tag.updateManyAndReturn({
+   *   select: { id: true },
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   data: {
+   *     // ... provide data here
+   *   }
+   * })
+   * 
+   */
   updateManyAndReturn<T extends GassmaGassmaTagUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Tag">>>(updateData: T & Gassma.Subset<T, GassmaGassmaTagUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Tag">>>): GassmaGassmaTagFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  /**
+   * Create or update one Tag.
+   * Read more here: https://gassma.io/en/docs/reference/crud/update/upsert
+   * @param {GassmaGassmaTagUpsertSingleData} upsertData - Arguments to update or create a Tag.
+   * @example
+   * // Update or create a Tag
+   * const tag = gassma.Tag.upsert({
+   *   create: {
+   *     // ... data to create a Tag
+   *   },
+   *   update: {
+   *     // ... in case it already exists, update
+   *   },
+   *   where: {
+   *     // ... the filter for the Tag we want to update
+   *   }
+   * })
+   */
   upsert<T extends GassmaGassmaTagUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Tag">>>(upsertData: T & Gassma.Subset<T, GassmaGassmaTagUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Tag">>>): GassmaGassmaTagFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  /**
+   * Delete a Tag.
+   * Read more here: https://gassma.io/en/docs/reference/crud/delete/delete
+   * @param {GassmaGassmaTagDeleteSingleData} deleteData - Arguments to delete one Tag.
+   * @example
+   * // Delete one Tag
+   * const Tag = gassma.Tag.delete({
+   *   where: {
+   *     // ... filter to delete one Tag
+   *   }
+   * })
+   * 
+   */
   delete<T extends GassmaGassmaTagDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Tag">>>(deleteData: T & Gassma.Subset<T, GassmaGassmaTagDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Tag">>>): GassmaGassmaTagFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  /**
+   * Delete zero or more Tags.
+   * Read more here: https://gassma.io/en/docs/reference/crud/delete/deleteMany
+   * @param {GassmaGassmaTagDeleteData} deleteData - Arguments to filter Tags to delete.
+   * @example
+   * // Delete a few Tags
+   * const { count } = gassma.Tag.deleteMany({
+   *   where: {
+   *     // ... provide filter here
+   *   }
+   * })
+   * 
+   */
   deleteMany(deleteData: GassmaGassmaTagDeleteData): DeleteManyReturn;
+  /**
+   * Delete every Tag.
+   * Calling `deleteMany` without arguments deletes **all** rows in the sheet. This cannot be undone.
+   * Read more here: https://gassma.io/en/docs/reference/crud/delete/deleteMany
+   * @example
+   * // Delete every Tag in the sheet
+   * const { count } = gassma.Tag.deleteMany()
+   */
   deleteMany(): DeleteManyReturn;
+  /**
+   * Allows you to perform aggregations operations on a Tag.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/statistics/aggregate
+   * @param {GassmaGassmaTagAggregateData} aggregateData - Select which aggregations you would like to apply and on what fields.
+   * @example
+   * // Count the Tags that match the filter
+   * const aggregations = gassma.Tag.aggregate({
+   *   _count: true,
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   take: 10,
+   * })
+   */
   aggregate<T extends GassmaGassmaTagAggregateData>(aggregateData: T & Gassma.Subset<T, GassmaGassmaTagAggregateData>): GassmaGassmaTagAggregateResult<T>;
-  count<T extends GassmaGassmaTagCountData>(coutData: T & Gassma.Subset<T, GassmaGassmaTagCountData>): GassmaGassmaTagCountResult<T>;
+  /**
+   * Count the number of Tags.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/statistics/count
+   * @param {GassmaGassmaTagCountData} countData - Arguments to filter Tags to count.
+   * @example
+   * // Count the number of Tags
+   * const count = gassma.Tag.count({
+   *   where: {
+   *     // ... the filter for the Tags we want to count
+   *   }
+   * })
+   */
+  count<T extends GassmaGassmaTagCountData>(countData: T & Gassma.Subset<T, GassmaGassmaTagCountData>): GassmaGassmaTagCountResult<T>;
+  /**
+   * Count every Tag.
+   * Read more here: https://gassma.io/en/docs/reference/statistics/count
+   * @example
+   * // Count every Tag
+   * const count = gassma.Tag.count()
+   */
   count(): number;
+  /**
+   * Group by Tag.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/statistics/groupBy
+   * @param {GassmaGassmaTagGroupByData} groupByData - Group by arguments.
+   * @example
+   * // Group by id, get count
+   * const result = gassma.Tag.groupBy({
+   *   by: ['id'],
+   *   _count: true,
+   * })
+   * 
+   */
   groupBy<T extends GassmaGassmaTagGroupByData>(groupByData: T & Gassma.Subset<T, GassmaGassmaTagGroupByData>): GassmaGassmaTagGroupByResult<T>[];
+  /**
+   * Get the value the next `create` will issue for an autoincrement field of Tag.
+   * Reading the counter is allowed inside `$transaction`.
+   * Throws `GassmaAutoincrementNotConfiguredError` when the field is not an autoincrement field.
+   * Read more here: https://gassma.io/en/docs/reference/config/autoincrement
+   * @param {string} field - An autoincrement field of Tag.
+   * @example
+   * // The id the next Tag will get
+   * const next = gassma.Tag.$getAutoincrement("id")
+   */
+  $getAutoincrement(field: "id"): number;
+  /**
+   * Set the value the next `create` will issue for an autoincrement field of Tag.
+   * `next` is the value that will be issued next, so it must be an integer of 1 or more.
+   * Throws `GassmaAutoincrementInTransactionError` inside `$transaction`, because the counter is never rolled back.
+   * Read more here: https://gassma.io/en/docs/reference/config/autoincrement
+   * @param {string} field - An autoincrement field of Tag.
+   * @param {number} next - The value the next `create` will issue.
+   * @example
+   * // Let the next Tag continue from 1000
+   * gassma.Tag.$setAutoincrement("id", 1000)
+   */
+  $setAutoincrement(field: "id", next: number): void;
+  /**
+   * Line the counter of Tag up with the rows already in the sheet.
+   * The counter becomes the largest value in the column plus one, which is also the return value.
+   * Throws `GassmaAutoincrementInTransactionError` inside `$transaction`, because the counter is never rolled back.
+   * Read more here: https://gassma.io/en/docs/reference/config/autoincrement
+   * @param {string} field - An autoincrement field of Tag.
+   * @example
+   * // Adopt a sheet that already has rows
+   * const next = gassma.Tag.$syncAutoincrement("id")
+   */
+  $syncAutoincrement(field: "id"): number;
 }
 
+/**
+ * The delegate class that exposes CRUD operations for the **SensorReading** model.
+ */
 export declare class GassmaGassmaSensorReadingController<GO extends GassmaGassmaSensorReadingOmit = {}, O = {}, CMap = {}> {
   constructor(sheetName: string, id?: string);
 
+  /**
+   * Fields of the SensorReading model
+   */
   readonly fields: Record<string, Gassma.FieldRef>;
+  /**
+   * Change the range this model reads and writes on the spreadsheet.
+   * Read more here: https://gassma.io/en/docs/reference/settings/changeSettings
+   * @param {number} startRowNumber - The row number the header row lives on.
+   * @param {number | string} startColumnValue - The first column of the range.
+   * @param {number | string} endColumnValue - The last column of the range.
+   */
   changeSettings(
     startRowNumber: number,
     startColumnValue: number | string,
     endColumnValue: number | string
   ): void;
+  /**
+   * Create many SensorReadings.
+   * Read more here: https://gassma.io/en/docs/reference/crud/create/createMany
+   * @param {GassmaGassmaSensorReadingCreateManyData} createdData - Arguments to create many SensorReadings.
+   * @example
+   * // Create many SensorReadings
+   * const sensorReading = gassma.SensorReading.createMany({
+   *   data: [
+   *     // ... provide data here
+   *   ]
+   * })
+   * 
+   */
   createMany(createdData: GassmaGassmaSensorReadingCreateManyData): CreateManyReturn;
+  /**
+   * Create many SensorReadings and returns the data saved in the spreadsheet.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/crud/create/createManyAndReturn
+   * @param {GassmaGassmaSensorReadingCreateManyAndReturnData} createdData - Arguments to create many SensorReadings.
+   * @example
+   * // Create many SensorReadings
+   * const sensorReading = gassma.SensorReading.createManyAndReturn({
+   *   data: [
+   *     // ... provide data here
+   *   ]
+   * })
+   * 
+   * // Create many SensorReadings and only return the `id`
+   * const sensorReadingWithIdOnly = gassma.SensorReading.createManyAndReturn({
+   *   select: { id: true },
+   *   data: [
+   *     // ... provide data here
+   *   ]
+   * })
+   * 
+   */
   createManyAndReturn<T extends GassmaGassmaSensorReadingCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "SensorReading">>>(createdData: T & Gassma.Subset<T, GassmaGassmaSensorReadingCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "SensorReading">>>): GassmaGassmaSensorReadingFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  /**
+   * Create a SensorReading.
+   * Read more here: https://gassma.io/en/docs/reference/crud/create/create
+   * @param {GassmaGassmaSensorReadingCreateData} createdData - Arguments to create a SensorReading.
+   * @example
+   * // Create one SensorReading
+   * const SensorReading = gassma.SensorReading.create({
+   *   data: {
+   *     // ... data to create a SensorReading
+   *   }
+   * })
+   * 
+   */
   create<T extends GassmaGassmaSensorReadingCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "SensorReading">>>(createdData: T & Gassma.Subset<T, GassmaGassmaSensorReadingCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "SensorReading">>>): GassmaGassmaSensorReadingFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  /**
+   * Find the first SensorReading that matches the filter.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/crud/read/findFirst
+   * @param {GassmaGassmaSensorReadingFindFirstData} findData - Arguments to find a SensorReading
+   * @example
+   * // Get one SensorReading
+   * const sensorReading = gassma.SensorReading.findFirst({
+   *   where: {
+   *     // ... provide filter here
+   *   }
+   * })
+   */
   findFirst<T extends GassmaGassmaSensorReadingFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "SensorReading">>>(findData: T & Gassma.Subset<T, GassmaGassmaSensorReadingFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "SensorReading">>>): GassmaGassmaSensorReadingFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  /**
+   * Find the first SensorReading.
+   * Read more here: https://gassma.io/en/docs/reference/crud/read/findFirst
+   * @example
+   * // Get the first SensorReading
+   * const sensorReading = gassma.SensorReading.findFirst()
+   */
   findFirst(): GassmaGassmaSensorReadingFindResult<unknown, unknown, unknown, GO, O, CMap> | null;
+  /**
+   * Find the first SensorReading that matches the filter or
+   * throw `NotFoundError` if no matches were found.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/crud/read/findFirstOrThrow
+   * @param {GassmaGassmaSensorReadingFindFirstData} findData - Arguments to find a SensorReading
+   * @example
+   * // Get one SensorReading
+   * const sensorReading = gassma.SensorReading.findFirstOrThrow({
+   *   where: {
+   *     // ... provide filter here
+   *   }
+   * })
+   */
   findFirstOrThrow<T extends GassmaGassmaSensorReadingFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "SensorReading">>>(findData: T & Gassma.Subset<T, GassmaGassmaSensorReadingFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "SensorReading">>>): GassmaGassmaSensorReadingFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  /**
+   * Find the first SensorReading or throw `NotFoundError` if no SensorReadings exist.
+   * Read more here: https://gassma.io/en/docs/reference/crud/read/findFirstOrThrow
+   * @example
+   * // Get the first SensorReading
+   * const sensorReading = gassma.SensorReading.findFirstOrThrow()
+   */
   findFirstOrThrow(): GassmaGassmaSensorReadingFindResult<unknown, unknown, unknown, GO, O, CMap>;
+  /**
+   * Find zero or more SensorReadings that matches the filter.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/crud/read/findMany
+   * @param {GassmaGassmaSensorReadingFindManyData} findData - Arguments to filter and select certain fields only.
+   * @example
+   * // Get all SensorReadings
+   * const sensorReadings = gassma.SensorReading.findMany()
+   * 
+   * // Get first 10 SensorReadings
+   * const sensorReadings = gassma.SensorReading.findMany({ take: 10 })
+   * 
+   * // Only select the `id`
+   * const sensorReadingWithIdOnly = gassma.SensorReading.findMany({ select: { id: true } })
+   * 
+   */
   findMany<T extends GassmaGassmaSensorReadingFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "SensorReading">>>(findData: T & Gassma.Subset<T, GassmaGassmaSensorReadingFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "SensorReading">>>): GassmaGassmaSensorReadingFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  /**
+   * Find all SensorReadings.
+   * Read more here: https://gassma.io/en/docs/reference/crud/read/findMany
+   * @example
+   * // Get all SensorReadings
+   * const sensorReadings = gassma.SensorReading.findMany()
+   */
   findMany(): GassmaGassmaSensorReadingFindResult<unknown, unknown, unknown, GO, O, CMap>[];
+  /**
+   * Update one SensorReading.
+   * Read more here: https://gassma.io/en/docs/reference/crud/update/update
+   * @param {GassmaGassmaSensorReadingUpdateSingleData} updateData - Arguments to update one SensorReading.
+   * @example
+   * // Update one SensorReading
+   * const sensorReading = gassma.SensorReading.update({
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   data: {
+   *     // ... provide data here
+   *   }
+   * })
+   * 
+   */
   update<T extends GassmaGassmaSensorReadingUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "SensorReading">>>(updateData: T & Gassma.Subset<T, GassmaGassmaSensorReadingUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "SensorReading">>>): GassmaGassmaSensorReadingFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  /**
+   * Update zero or more SensorReadings.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/crud/update/updateMany
+   * @param {GassmaGassmaSensorReadingUpdateData} updateData - Arguments to update one or more rows.
+   * @example
+   * // Update many SensorReadings
+   * const { count } = gassma.SensorReading.updateMany({
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   data: {
+   *     // ... provide data here
+   *   }
+   * })
+   * 
+   */
   updateMany(updateData: GassmaGassmaSensorReadingUpdateData): UpdateManyReturn;
+  /**
+   * Update zero or more SensorReadings and returns the data updated in the spreadsheet.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/crud/update/updateManyAndReturn
+   * @param {GassmaGassmaSensorReadingUpdateManyAndReturnData} updateData - Arguments to update many SensorReadings.
+   * @example
+   * // Update many SensorReadings
+   * const sensorReadings = gassma.SensorReading.updateManyAndReturn({
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   data: {
+   *     // ... provide data here
+   *   }
+   * })
+   * 
+   * // Update zero or more SensorReadings and only return the `id`
+   * const sensorReadingWithIdOnly = gassma.SensorReading.updateManyAndReturn({
+   *   select: { id: true },
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   data: {
+   *     // ... provide data here
+   *   }
+   * })
+   * 
+   */
   updateManyAndReturn<T extends GassmaGassmaSensorReadingUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "SensorReading">>>(updateData: T & Gassma.Subset<T, GassmaGassmaSensorReadingUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "SensorReading">>>): GassmaGassmaSensorReadingFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  /**
+   * Create or update one SensorReading.
+   * Read more here: https://gassma.io/en/docs/reference/crud/update/upsert
+   * @param {GassmaGassmaSensorReadingUpsertSingleData} upsertData - Arguments to update or create a SensorReading.
+   * @example
+   * // Update or create a SensorReading
+   * const sensorReading = gassma.SensorReading.upsert({
+   *   create: {
+   *     // ... data to create a SensorReading
+   *   },
+   *   update: {
+   *     // ... in case it already exists, update
+   *   },
+   *   where: {
+   *     // ... the filter for the SensorReading we want to update
+   *   }
+   * })
+   */
   upsert<T extends GassmaGassmaSensorReadingUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "SensorReading">>>(upsertData: T & Gassma.Subset<T, GassmaGassmaSensorReadingUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "SensorReading">>>): GassmaGassmaSensorReadingFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  /**
+   * Delete a SensorReading.
+   * Read more here: https://gassma.io/en/docs/reference/crud/delete/delete
+   * @param {GassmaGassmaSensorReadingDeleteSingleData} deleteData - Arguments to delete one SensorReading.
+   * @example
+   * // Delete one SensorReading
+   * const SensorReading = gassma.SensorReading.delete({
+   *   where: {
+   *     // ... filter to delete one SensorReading
+   *   }
+   * })
+   * 
+   */
   delete<T extends GassmaGassmaSensorReadingDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "SensorReading">>>(deleteData: T & Gassma.Subset<T, GassmaGassmaSensorReadingDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "SensorReading">>>): GassmaGassmaSensorReadingFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  /**
+   * Delete zero or more SensorReadings.
+   * Read more here: https://gassma.io/en/docs/reference/crud/delete/deleteMany
+   * @param {GassmaGassmaSensorReadingDeleteData} deleteData - Arguments to filter SensorReadings to delete.
+   * @example
+   * // Delete a few SensorReadings
+   * const { count } = gassma.SensorReading.deleteMany({
+   *   where: {
+   *     // ... provide filter here
+   *   }
+   * })
+   * 
+   */
   deleteMany(deleteData: GassmaGassmaSensorReadingDeleteData): DeleteManyReturn;
+  /**
+   * Delete every SensorReading.
+   * Calling `deleteMany` without arguments deletes **all** rows in the sheet. This cannot be undone.
+   * Read more here: https://gassma.io/en/docs/reference/crud/delete/deleteMany
+   * @example
+   * // Delete every SensorReading in the sheet
+   * const { count } = gassma.SensorReading.deleteMany()
+   */
   deleteMany(): DeleteManyReturn;
+  /**
+   * Allows you to perform aggregations operations on a SensorReading.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/statistics/aggregate
+   * @param {GassmaGassmaSensorReadingAggregateData} aggregateData - Select which aggregations you would like to apply and on what fields.
+   * @example
+   * // Count the SensorReadings that match the filter
+   * const aggregations = gassma.SensorReading.aggregate({
+   *   _count: true,
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   take: 10,
+   * })
+   */
   aggregate<T extends GassmaGassmaSensorReadingAggregateData>(aggregateData: T & Gassma.Subset<T, GassmaGassmaSensorReadingAggregateData>): GassmaGassmaSensorReadingAggregateResult<T>;
-  count<T extends GassmaGassmaSensorReadingCountData>(coutData: T & Gassma.Subset<T, GassmaGassmaSensorReadingCountData>): GassmaGassmaSensorReadingCountResult<T>;
+  /**
+   * Count the number of SensorReadings.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/statistics/count
+   * @param {GassmaGassmaSensorReadingCountData} countData - Arguments to filter SensorReadings to count.
+   * @example
+   * // Count the number of SensorReadings
+   * const count = gassma.SensorReading.count({
+   *   where: {
+   *     // ... the filter for the SensorReadings we want to count
+   *   }
+   * })
+   */
+  count<T extends GassmaGassmaSensorReadingCountData>(countData: T & Gassma.Subset<T, GassmaGassmaSensorReadingCountData>): GassmaGassmaSensorReadingCountResult<T>;
+  /**
+   * Count every SensorReading.
+   * Read more here: https://gassma.io/en/docs/reference/statistics/count
+   * @example
+   * // Count every SensorReading
+   * const count = gassma.SensorReading.count()
+   */
   count(): number;
+  /**
+   * Group by SensorReading.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/statistics/groupBy
+   * @param {GassmaGassmaSensorReadingGroupByData} groupByData - Group by arguments.
+   * @example
+   * // Group by id, get count
+   * const result = gassma.SensorReading.groupBy({
+   *   by: ['id'],
+   *   _count: true,
+   * })
+   * 
+   */
   groupBy<T extends GassmaGassmaSensorReadingGroupByData>(groupByData: T & Gassma.Subset<T, GassmaGassmaSensorReadingGroupByData>): GassmaGassmaSensorReadingGroupByResult<T>[];
+  /**
+   * Get the value the next `create` will issue for an autoincrement field of SensorReading.
+   * Reading the counter is allowed inside `$transaction`.
+   * Throws `GassmaAutoincrementNotConfiguredError` when the field is not an autoincrement field.
+   * Read more here: https://gassma.io/en/docs/reference/config/autoincrement
+   * @param {string} field - An autoincrement field of SensorReading.
+   * @example
+   * // The id the next SensorReading will get
+   * const next = gassma.SensorReading.$getAutoincrement("id")
+   */
+  $getAutoincrement(field: "id"): number;
+  /**
+   * Set the value the next `create` will issue for an autoincrement field of SensorReading.
+   * `next` is the value that will be issued next, so it must be an integer of 1 or more.
+   * Throws `GassmaAutoincrementInTransactionError` inside `$transaction`, because the counter is never rolled back.
+   * Read more here: https://gassma.io/en/docs/reference/config/autoincrement
+   * @param {string} field - An autoincrement field of SensorReading.
+   * @param {number} next - The value the next `create` will issue.
+   * @example
+   * // Let the next SensorReading continue from 1000
+   * gassma.SensorReading.$setAutoincrement("id", 1000)
+   */
+  $setAutoincrement(field: "id", next: number): void;
+  /**
+   * Line the counter of SensorReading up with the rows already in the sheet.
+   * The counter becomes the largest value in the column plus one, which is also the return value.
+   * Throws `GassmaAutoincrementInTransactionError` inside `$transaction`, because the counter is never rolled back.
+   * Read more here: https://gassma.io/en/docs/reference/config/autoincrement
+   * @param {string} field - An autoincrement field of SensorReading.
+   * @example
+   * // Adopt a sheet that already has rows
+   * const next = gassma.SensorReading.$syncAutoincrement("id")
+   */
+  $syncAutoincrement(field: "id"): number;
 }
 
+/**
+ * The delegate class that exposes CRUD operations for the **TimeSlot** model.
+ */
 export declare class GassmaGassmaTimeSlotController<GO extends GassmaGassmaTimeSlotOmit = {}, O = {}, CMap = {}> {
   constructor(sheetName: string, id?: string);
 
+  /**
+   * Fields of the TimeSlot model
+   */
   readonly fields: Record<string, Gassma.FieldRef>;
+  /**
+   * Change the range this model reads and writes on the spreadsheet.
+   * Read more here: https://gassma.io/en/docs/reference/settings/changeSettings
+   * @param {number} startRowNumber - The row number the header row lives on.
+   * @param {number | string} startColumnValue - The first column of the range.
+   * @param {number | string} endColumnValue - The last column of the range.
+   */
   changeSettings(
     startRowNumber: number,
     startColumnValue: number | string,
     endColumnValue: number | string
   ): void;
+  /**
+   * Create many TimeSlots.
+   * Read more here: https://gassma.io/en/docs/reference/crud/create/createMany
+   * @param {GassmaGassmaTimeSlotCreateManyData} createdData - Arguments to create many TimeSlots.
+   * @example
+   * // Create many TimeSlots
+   * const timeSlot = gassma.TimeSlot.createMany({
+   *   data: [
+   *     // ... provide data here
+   *   ]
+   * })
+   * 
+   */
   createMany(createdData: GassmaGassmaTimeSlotCreateManyData): CreateManyReturn;
+  /**
+   * Create many TimeSlots and returns the data saved in the spreadsheet.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/crud/create/createManyAndReturn
+   * @param {GassmaGassmaTimeSlotCreateManyAndReturnData} createdData - Arguments to create many TimeSlots.
+   * @example
+   * // Create many TimeSlots
+   * const timeSlot = gassma.TimeSlot.createManyAndReturn({
+   *   data: [
+   *     // ... provide data here
+   *   ]
+   * })
+   * 
+   * // Create many TimeSlots and only return the `id`
+   * const timeSlotWithIdOnly = gassma.TimeSlot.createManyAndReturn({
+   *   select: { id: true },
+   *   data: [
+   *     // ... provide data here
+   *   ]
+   * })
+   * 
+   */
   createManyAndReturn<T extends GassmaGassmaTimeSlotCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "TimeSlot">>>(createdData: T & Gassma.Subset<T, GassmaGassmaTimeSlotCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "TimeSlot">>>): GassmaGassmaTimeSlotFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  /**
+   * Create a TimeSlot.
+   * Read more here: https://gassma.io/en/docs/reference/crud/create/create
+   * @param {GassmaGassmaTimeSlotCreateData} createdData - Arguments to create a TimeSlot.
+   * @example
+   * // Create one TimeSlot
+   * const TimeSlot = gassma.TimeSlot.create({
+   *   data: {
+   *     // ... data to create a TimeSlot
+   *   }
+   * })
+   * 
+   */
   create<T extends GassmaGassmaTimeSlotCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "TimeSlot">>>(createdData: T & Gassma.Subset<T, GassmaGassmaTimeSlotCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "TimeSlot">>>): GassmaGassmaTimeSlotFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  /**
+   * Find the first TimeSlot that matches the filter.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/crud/read/findFirst
+   * @param {GassmaGassmaTimeSlotFindFirstData} findData - Arguments to find a TimeSlot
+   * @example
+   * // Get one TimeSlot
+   * const timeSlot = gassma.TimeSlot.findFirst({
+   *   where: {
+   *     // ... provide filter here
+   *   }
+   * })
+   */
   findFirst<T extends GassmaGassmaTimeSlotFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "TimeSlot">>>(findData: T & Gassma.Subset<T, GassmaGassmaTimeSlotFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "TimeSlot">>>): GassmaGassmaTimeSlotFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  /**
+   * Find the first TimeSlot.
+   * Read more here: https://gassma.io/en/docs/reference/crud/read/findFirst
+   * @example
+   * // Get the first TimeSlot
+   * const timeSlot = gassma.TimeSlot.findFirst()
+   */
   findFirst(): GassmaGassmaTimeSlotFindResult<unknown, unknown, unknown, GO, O, CMap> | null;
+  /**
+   * Find the first TimeSlot that matches the filter or
+   * throw `NotFoundError` if no matches were found.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/crud/read/findFirstOrThrow
+   * @param {GassmaGassmaTimeSlotFindFirstData} findData - Arguments to find a TimeSlot
+   * @example
+   * // Get one TimeSlot
+   * const timeSlot = gassma.TimeSlot.findFirstOrThrow({
+   *   where: {
+   *     // ... provide filter here
+   *   }
+   * })
+   */
   findFirstOrThrow<T extends GassmaGassmaTimeSlotFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "TimeSlot">>>(findData: T & Gassma.Subset<T, GassmaGassmaTimeSlotFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "TimeSlot">>>): GassmaGassmaTimeSlotFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  /**
+   * Find the first TimeSlot or throw `NotFoundError` if no TimeSlots exist.
+   * Read more here: https://gassma.io/en/docs/reference/crud/read/findFirstOrThrow
+   * @example
+   * // Get the first TimeSlot
+   * const timeSlot = gassma.TimeSlot.findFirstOrThrow()
+   */
   findFirstOrThrow(): GassmaGassmaTimeSlotFindResult<unknown, unknown, unknown, GO, O, CMap>;
+  /**
+   * Find zero or more TimeSlots that matches the filter.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/crud/read/findMany
+   * @param {GassmaGassmaTimeSlotFindManyData} findData - Arguments to filter and select certain fields only.
+   * @example
+   * // Get all TimeSlots
+   * const timeSlots = gassma.TimeSlot.findMany()
+   * 
+   * // Get first 10 TimeSlots
+   * const timeSlots = gassma.TimeSlot.findMany({ take: 10 })
+   * 
+   * // Only select the `id`
+   * const timeSlotWithIdOnly = gassma.TimeSlot.findMany({ select: { id: true } })
+   * 
+   */
   findMany<T extends GassmaGassmaTimeSlotFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "TimeSlot">>>(findData: T & Gassma.Subset<T, GassmaGassmaTimeSlotFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "TimeSlot">>>): GassmaGassmaTimeSlotFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  /**
+   * Find all TimeSlots.
+   * Read more here: https://gassma.io/en/docs/reference/crud/read/findMany
+   * @example
+   * // Get all TimeSlots
+   * const timeSlots = gassma.TimeSlot.findMany()
+   */
   findMany(): GassmaGassmaTimeSlotFindResult<unknown, unknown, unknown, GO, O, CMap>[];
+  /**
+   * Update one TimeSlot.
+   * Read more here: https://gassma.io/en/docs/reference/crud/update/update
+   * @param {GassmaGassmaTimeSlotUpdateSingleData} updateData - Arguments to update one TimeSlot.
+   * @example
+   * // Update one TimeSlot
+   * const timeSlot = gassma.TimeSlot.update({
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   data: {
+   *     // ... provide data here
+   *   }
+   * })
+   * 
+   */
   update<T extends GassmaGassmaTimeSlotUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "TimeSlot">>>(updateData: T & Gassma.Subset<T, GassmaGassmaTimeSlotUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "TimeSlot">>>): GassmaGassmaTimeSlotFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  /**
+   * Update zero or more TimeSlots.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/crud/update/updateMany
+   * @param {GassmaGassmaTimeSlotUpdateData} updateData - Arguments to update one or more rows.
+   * @example
+   * // Update many TimeSlots
+   * const { count } = gassma.TimeSlot.updateMany({
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   data: {
+   *     // ... provide data here
+   *   }
+   * })
+   * 
+   */
   updateMany(updateData: GassmaGassmaTimeSlotUpdateData): UpdateManyReturn;
+  /**
+   * Update zero or more TimeSlots and returns the data updated in the spreadsheet.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/crud/update/updateManyAndReturn
+   * @param {GassmaGassmaTimeSlotUpdateManyAndReturnData} updateData - Arguments to update many TimeSlots.
+   * @example
+   * // Update many TimeSlots
+   * const timeSlots = gassma.TimeSlot.updateManyAndReturn({
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   data: {
+   *     // ... provide data here
+   *   }
+   * })
+   * 
+   * // Update zero or more TimeSlots and only return the `id`
+   * const timeSlotWithIdOnly = gassma.TimeSlot.updateManyAndReturn({
+   *   select: { id: true },
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   data: {
+   *     // ... provide data here
+   *   }
+   * })
+   * 
+   */
   updateManyAndReturn<T extends GassmaGassmaTimeSlotUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "TimeSlot">>>(updateData: T & Gassma.Subset<T, GassmaGassmaTimeSlotUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "TimeSlot">>>): GassmaGassmaTimeSlotFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  /**
+   * Create or update one TimeSlot.
+   * Read more here: https://gassma.io/en/docs/reference/crud/update/upsert
+   * @param {GassmaGassmaTimeSlotUpsertSingleData} upsertData - Arguments to update or create a TimeSlot.
+   * @example
+   * // Update or create a TimeSlot
+   * const timeSlot = gassma.TimeSlot.upsert({
+   *   create: {
+   *     // ... data to create a TimeSlot
+   *   },
+   *   update: {
+   *     // ... in case it already exists, update
+   *   },
+   *   where: {
+   *     // ... the filter for the TimeSlot we want to update
+   *   }
+   * })
+   */
   upsert<T extends GassmaGassmaTimeSlotUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "TimeSlot">>>(upsertData: T & Gassma.Subset<T, GassmaGassmaTimeSlotUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "TimeSlot">>>): GassmaGassmaTimeSlotFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  /**
+   * Delete a TimeSlot.
+   * Read more here: https://gassma.io/en/docs/reference/crud/delete/delete
+   * @param {GassmaGassmaTimeSlotDeleteSingleData} deleteData - Arguments to delete one TimeSlot.
+   * @example
+   * // Delete one TimeSlot
+   * const TimeSlot = gassma.TimeSlot.delete({
+   *   where: {
+   *     // ... filter to delete one TimeSlot
+   *   }
+   * })
+   * 
+   */
   delete<T extends GassmaGassmaTimeSlotDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "TimeSlot">>>(deleteData: T & Gassma.Subset<T, GassmaGassmaTimeSlotDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "TimeSlot">>>): GassmaGassmaTimeSlotFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  /**
+   * Delete zero or more TimeSlots.
+   * Read more here: https://gassma.io/en/docs/reference/crud/delete/deleteMany
+   * @param {GassmaGassmaTimeSlotDeleteData} deleteData - Arguments to filter TimeSlots to delete.
+   * @example
+   * // Delete a few TimeSlots
+   * const { count } = gassma.TimeSlot.deleteMany({
+   *   where: {
+   *     // ... provide filter here
+   *   }
+   * })
+   * 
+   */
   deleteMany(deleteData: GassmaGassmaTimeSlotDeleteData): DeleteManyReturn;
+  /**
+   * Delete every TimeSlot.
+   * Calling `deleteMany` without arguments deletes **all** rows in the sheet. This cannot be undone.
+   * Read more here: https://gassma.io/en/docs/reference/crud/delete/deleteMany
+   * @example
+   * // Delete every TimeSlot in the sheet
+   * const { count } = gassma.TimeSlot.deleteMany()
+   */
   deleteMany(): DeleteManyReturn;
+  /**
+   * Allows you to perform aggregations operations on a TimeSlot.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/statistics/aggregate
+   * @param {GassmaGassmaTimeSlotAggregateData} aggregateData - Select which aggregations you would like to apply and on what fields.
+   * @example
+   * // Count the TimeSlots that match the filter
+   * const aggregations = gassma.TimeSlot.aggregate({
+   *   _count: true,
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   take: 10,
+   * })
+   */
   aggregate<T extends GassmaGassmaTimeSlotAggregateData>(aggregateData: T & Gassma.Subset<T, GassmaGassmaTimeSlotAggregateData>): GassmaGassmaTimeSlotAggregateResult<T>;
-  count<T extends GassmaGassmaTimeSlotCountData>(coutData: T & Gassma.Subset<T, GassmaGassmaTimeSlotCountData>): GassmaGassmaTimeSlotCountResult<T>;
+  /**
+   * Count the number of TimeSlots.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/statistics/count
+   * @param {GassmaGassmaTimeSlotCountData} countData - Arguments to filter TimeSlots to count.
+   * @example
+   * // Count the number of TimeSlots
+   * const count = gassma.TimeSlot.count({
+   *   where: {
+   *     // ... the filter for the TimeSlots we want to count
+   *   }
+   * })
+   */
+  count<T extends GassmaGassmaTimeSlotCountData>(countData: T & Gassma.Subset<T, GassmaGassmaTimeSlotCountData>): GassmaGassmaTimeSlotCountResult<T>;
+  /**
+   * Count every TimeSlot.
+   * Read more here: https://gassma.io/en/docs/reference/statistics/count
+   * @example
+   * // Count every TimeSlot
+   * const count = gassma.TimeSlot.count()
+   */
   count(): number;
+  /**
+   * Group by TimeSlot.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/statistics/groupBy
+   * @param {GassmaGassmaTimeSlotGroupByData} groupByData - Group by arguments.
+   * @example
+   * // Group by id, get count
+   * const result = gassma.TimeSlot.groupBy({
+   *   by: ['id'],
+   *   _count: true,
+   * })
+   * 
+   */
   groupBy<T extends GassmaGassmaTimeSlotGroupByData>(groupByData: T & Gassma.Subset<T, GassmaGassmaTimeSlotGroupByData>): GassmaGassmaTimeSlotGroupByResult<T>[];
+  /**
+   * Get the value the next `create` will issue for an autoincrement field of TimeSlot.
+   * Reading the counter is allowed inside `$transaction`.
+   * Throws `GassmaAutoincrementNotConfiguredError` when the field is not an autoincrement field.
+   * Read more here: https://gassma.io/en/docs/reference/config/autoincrement
+   * @param {string} field - An autoincrement field of TimeSlot.
+   * @example
+   * // The id the next TimeSlot will get
+   * const next = gassma.TimeSlot.$getAutoincrement("id")
+   */
+  $getAutoincrement(field: "id"): number;
+  /**
+   * Set the value the next `create` will issue for an autoincrement field of TimeSlot.
+   * `next` is the value that will be issued next, so it must be an integer of 1 or more.
+   * Throws `GassmaAutoincrementInTransactionError` inside `$transaction`, because the counter is never rolled back.
+   * Read more here: https://gassma.io/en/docs/reference/config/autoincrement
+   * @param {string} field - An autoincrement field of TimeSlot.
+   * @param {number} next - The value the next `create` will issue.
+   * @example
+   * // Let the next TimeSlot continue from 1000
+   * gassma.TimeSlot.$setAutoincrement("id", 1000)
+   */
+  $setAutoincrement(field: "id", next: number): void;
+  /**
+   * Line the counter of TimeSlot up with the rows already in the sheet.
+   * The counter becomes the largest value in the column plus one, which is also the return value.
+   * Throws `GassmaAutoincrementInTransactionError` inside `$transaction`, because the counter is never rolled back.
+   * Read more here: https://gassma.io/en/docs/reference/config/autoincrement
+   * @param {string} field - An autoincrement field of TimeSlot.
+   * @example
+   * // Adopt a sheet that already has rows
+   * const next = gassma.TimeSlot.$syncAutoincrement("id")
+   */
+  $syncAutoincrement(field: "id"): number;
 }
 
+/**
+ * The delegate class that exposes CRUD operations for the **Reservation** model.
+ */
 export declare class GassmaGassmaReservationController<GO extends GassmaGassmaReservationOmit = {}, O = {}, CMap = {}> {
   constructor(sheetName: string, id?: string);
 
+  /**
+   * Fields of the Reservation model
+   */
   readonly fields: Record<string, Gassma.FieldRef>;
+  /**
+   * Change the range this model reads and writes on the spreadsheet.
+   * Read more here: https://gassma.io/en/docs/reference/settings/changeSettings
+   * @param {number} startRowNumber - The row number the header row lives on.
+   * @param {number | string} startColumnValue - The first column of the range.
+   * @param {number | string} endColumnValue - The last column of the range.
+   */
   changeSettings(
     startRowNumber: number,
     startColumnValue: number | string,
     endColumnValue: number | string
   ): void;
+  /**
+   * Create many Reservations.
+   * Read more here: https://gassma.io/en/docs/reference/crud/create/createMany
+   * @param {GassmaGassmaReservationCreateManyData} createdData - Arguments to create many Reservations.
+   * @example
+   * // Create many Reservations
+   * const reservation = gassma.Reservation.createMany({
+   *   data: [
+   *     // ... provide data here
+   *   ]
+   * })
+   * 
+   */
   createMany(createdData: GassmaGassmaReservationCreateManyData): CreateManyReturn;
+  /**
+   * Create many Reservations and returns the data saved in the spreadsheet.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/crud/create/createManyAndReturn
+   * @param {GassmaGassmaReservationCreateManyAndReturnData} createdData - Arguments to create many Reservations.
+   * @example
+   * // Create many Reservations
+   * const reservation = gassma.Reservation.createManyAndReturn({
+   *   data: [
+   *     // ... provide data here
+   *   ]
+   * })
+   * 
+   * // Create many Reservations and only return the `id`
+   * const reservationWithIdOnly = gassma.Reservation.createManyAndReturn({
+   *   select: { id: true },
+   *   data: [
+   *     // ... provide data here
+   *   ]
+   * })
+   * 
+   */
   createManyAndReturn<T extends GassmaGassmaReservationCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Reservation">>>(createdData: T & Gassma.Subset<T, GassmaGassmaReservationCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Reservation">>>): GassmaGassmaReservationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  /**
+   * Create a Reservation.
+   * Read more here: https://gassma.io/en/docs/reference/crud/create/create
+   * @param {GassmaGassmaReservationCreateData} createdData - Arguments to create a Reservation.
+   * @example
+   * // Create one Reservation
+   * const Reservation = gassma.Reservation.create({
+   *   data: {
+   *     // ... data to create a Reservation
+   *   }
+   * })
+   * 
+   */
   create<T extends GassmaGassmaReservationCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "Reservation">>>(createdData: T & Gassma.Subset<T, GassmaGassmaReservationCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "Reservation">>>): GassmaGassmaReservationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  /**
+   * Find the first Reservation that matches the filter.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/crud/read/findFirst
+   * @param {GassmaGassmaReservationFindFirstData} findData - Arguments to find a Reservation
+   * @example
+   * // Get one Reservation
+   * const reservation = gassma.Reservation.findFirst({
+   *   where: {
+   *     // ... provide filter here
+   *   }
+   * })
+   */
   findFirst<T extends GassmaGassmaReservationFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Reservation">>>(findData: T & Gassma.Subset<T, GassmaGassmaReservationFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Reservation">>>): GassmaGassmaReservationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  /**
+   * Find the first Reservation.
+   * Read more here: https://gassma.io/en/docs/reference/crud/read/findFirst
+   * @example
+   * // Get the first Reservation
+   * const reservation = gassma.Reservation.findFirst()
+   */
   findFirst(): GassmaGassmaReservationFindResult<unknown, unknown, unknown, GO, O, CMap> | null;
+  /**
+   * Find the first Reservation that matches the filter or
+   * throw `NotFoundError` if no matches were found.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/crud/read/findFirstOrThrow
+   * @param {GassmaGassmaReservationFindFirstData} findData - Arguments to find a Reservation
+   * @example
+   * // Get one Reservation
+   * const reservation = gassma.Reservation.findFirstOrThrow({
+   *   where: {
+   *     // ... provide filter here
+   *   }
+   * })
+   */
   findFirstOrThrow<T extends GassmaGassmaReservationFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Reservation">>>(findData: T & Gassma.Subset<T, GassmaGassmaReservationFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Reservation">>>): GassmaGassmaReservationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  /**
+   * Find the first Reservation or throw `NotFoundError` if no Reservations exist.
+   * Read more here: https://gassma.io/en/docs/reference/crud/read/findFirstOrThrow
+   * @example
+   * // Get the first Reservation
+   * const reservation = gassma.Reservation.findFirstOrThrow()
+   */
   findFirstOrThrow(): GassmaGassmaReservationFindResult<unknown, unknown, unknown, GO, O, CMap>;
+  /**
+   * Find zero or more Reservations that matches the filter.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/crud/read/findMany
+   * @param {GassmaGassmaReservationFindManyData} findData - Arguments to filter and select certain fields only.
+   * @example
+   * // Get all Reservations
+   * const reservations = gassma.Reservation.findMany()
+   * 
+   * // Get first 10 Reservations
+   * const reservations = gassma.Reservation.findMany({ take: 10 })
+   * 
+   * // Only select the `id`
+   * const reservationWithIdOnly = gassma.Reservation.findMany({ select: { id: true } })
+   * 
+   */
   findMany<T extends GassmaGassmaReservationFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "Reservation">>>(findData: T & Gassma.Subset<T, GassmaGassmaReservationFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "Reservation">>>): GassmaGassmaReservationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  /**
+   * Find all Reservations.
+   * Read more here: https://gassma.io/en/docs/reference/crud/read/findMany
+   * @example
+   * // Get all Reservations
+   * const reservations = gassma.Reservation.findMany()
+   */
   findMany(): GassmaGassmaReservationFindResult<unknown, unknown, unknown, GO, O, CMap>[];
+  /**
+   * Update one Reservation.
+   * Read more here: https://gassma.io/en/docs/reference/crud/update/update
+   * @param {GassmaGassmaReservationUpdateSingleData} updateData - Arguments to update one Reservation.
+   * @example
+   * // Update one Reservation
+   * const reservation = gassma.Reservation.update({
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   data: {
+   *     // ... provide data here
+   *   }
+   * })
+   * 
+   */
   update<T extends GassmaGassmaReservationUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Reservation">>>(updateData: T & Gassma.Subset<T, GassmaGassmaReservationUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Reservation">>>): GassmaGassmaReservationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  /**
+   * Update zero or more Reservations.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/crud/update/updateMany
+   * @param {GassmaGassmaReservationUpdateData} updateData - Arguments to update one or more rows.
+   * @example
+   * // Update many Reservations
+   * const { count } = gassma.Reservation.updateMany({
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   data: {
+   *     // ... provide data here
+   *   }
+   * })
+   * 
+   */
   updateMany(updateData: GassmaGassmaReservationUpdateData): UpdateManyReturn;
+  /**
+   * Update zero or more Reservations and returns the data updated in the spreadsheet.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/crud/update/updateManyAndReturn
+   * @param {GassmaGassmaReservationUpdateManyAndReturnData} updateData - Arguments to update many Reservations.
+   * @example
+   * // Update many Reservations
+   * const reservations = gassma.Reservation.updateManyAndReturn({
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   data: {
+   *     // ... provide data here
+   *   }
+   * })
+   * 
+   * // Update zero or more Reservations and only return the `id`
+   * const reservationWithIdOnly = gassma.Reservation.updateManyAndReturn({
+   *   select: { id: true },
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   data: {
+   *     // ... provide data here
+   *   }
+   * })
+   * 
+   */
   updateManyAndReturn<T extends GassmaGassmaReservationUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Reservation">>>(updateData: T & Gassma.Subset<T, GassmaGassmaReservationUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Reservation">>>): GassmaGassmaReservationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  /**
+   * Create or update one Reservation.
+   * Read more here: https://gassma.io/en/docs/reference/crud/update/upsert
+   * @param {GassmaGassmaReservationUpsertSingleData} upsertData - Arguments to update or create a Reservation.
+   * @example
+   * // Update or create a Reservation
+   * const reservation = gassma.Reservation.upsert({
+   *   create: {
+   *     // ... data to create a Reservation
+   *   },
+   *   update: {
+   *     // ... in case it already exists, update
+   *   },
+   *   where: {
+   *     // ... the filter for the Reservation we want to update
+   *   }
+   * })
+   */
   upsert<T extends GassmaGassmaReservationUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Reservation">>>(upsertData: T & Gassma.Subset<T, GassmaGassmaReservationUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Reservation">>>): GassmaGassmaReservationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  /**
+   * Delete a Reservation.
+   * Read more here: https://gassma.io/en/docs/reference/crud/delete/delete
+   * @param {GassmaGassmaReservationDeleteSingleData} deleteData - Arguments to delete one Reservation.
+   * @example
+   * // Delete one Reservation
+   * const Reservation = gassma.Reservation.delete({
+   *   where: {
+   *     // ... filter to delete one Reservation
+   *   }
+   * })
+   * 
+   */
   delete<T extends GassmaGassmaReservationDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Reservation">>>(deleteData: T & Gassma.Subset<T, GassmaGassmaReservationDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Reservation">>>): GassmaGassmaReservationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  /**
+   * Delete zero or more Reservations.
+   * Read more here: https://gassma.io/en/docs/reference/crud/delete/deleteMany
+   * @param {GassmaGassmaReservationDeleteData} deleteData - Arguments to filter Reservations to delete.
+   * @example
+   * // Delete a few Reservations
+   * const { count } = gassma.Reservation.deleteMany({
+   *   where: {
+   *     // ... provide filter here
+   *   }
+   * })
+   * 
+   */
   deleteMany(deleteData: GassmaGassmaReservationDeleteData): DeleteManyReturn;
+  /**
+   * Delete every Reservation.
+   * Calling `deleteMany` without arguments deletes **all** rows in the sheet. This cannot be undone.
+   * Read more here: https://gassma.io/en/docs/reference/crud/delete/deleteMany
+   * @example
+   * // Delete every Reservation in the sheet
+   * const { count } = gassma.Reservation.deleteMany()
+   */
   deleteMany(): DeleteManyReturn;
+  /**
+   * Allows you to perform aggregations operations on a Reservation.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/statistics/aggregate
+   * @param {GassmaGassmaReservationAggregateData} aggregateData - Select which aggregations you would like to apply and on what fields.
+   * @example
+   * // Count the Reservations that match the filter
+   * const aggregations = gassma.Reservation.aggregate({
+   *   _count: true,
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   take: 10,
+   * })
+   */
   aggregate<T extends GassmaGassmaReservationAggregateData>(aggregateData: T & Gassma.Subset<T, GassmaGassmaReservationAggregateData>): GassmaGassmaReservationAggregateResult<T>;
-  count<T extends GassmaGassmaReservationCountData>(coutData: T & Gassma.Subset<T, GassmaGassmaReservationCountData>): GassmaGassmaReservationCountResult<T>;
+  /**
+   * Count the number of Reservations.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/statistics/count
+   * @param {GassmaGassmaReservationCountData} countData - Arguments to filter Reservations to count.
+   * @example
+   * // Count the number of Reservations
+   * const count = gassma.Reservation.count({
+   *   where: {
+   *     // ... the filter for the Reservations we want to count
+   *   }
+   * })
+   */
+  count<T extends GassmaGassmaReservationCountData>(countData: T & Gassma.Subset<T, GassmaGassmaReservationCountData>): GassmaGassmaReservationCountResult<T>;
+  /**
+   * Count every Reservation.
+   * Read more here: https://gassma.io/en/docs/reference/statistics/count
+   * @example
+   * // Count every Reservation
+   * const count = gassma.Reservation.count()
+   */
   count(): number;
+  /**
+   * Group by Reservation.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/statistics/groupBy
+   * @param {GassmaGassmaReservationGroupByData} groupByData - Group by arguments.
+   * @example
+   * // Group by id, get count
+   * const result = gassma.Reservation.groupBy({
+   *   by: ['id'],
+   *   _count: true,
+   * })
+   * 
+   */
   groupBy<T extends GassmaGassmaReservationGroupByData>(groupByData: T & Gassma.Subset<T, GassmaGassmaReservationGroupByData>): GassmaGassmaReservationGroupByResult<T>[];
+  /**
+   * Get the value the next `create` will issue for an autoincrement field of Reservation.
+   * Reading the counter is allowed inside `$transaction`.
+   * Throws `GassmaAutoincrementNotConfiguredError` when the field is not an autoincrement field.
+   * Read more here: https://gassma.io/en/docs/reference/config/autoincrement
+   * @param {string} field - An autoincrement field of Reservation.
+   * @example
+   * // The id the next Reservation will get
+   * const next = gassma.Reservation.$getAutoincrement("id")
+   */
+  $getAutoincrement(field: "id"): number;
+  /**
+   * Set the value the next `create` will issue for an autoincrement field of Reservation.
+   * `next` is the value that will be issued next, so it must be an integer of 1 or more.
+   * Throws `GassmaAutoincrementInTransactionError` inside `$transaction`, because the counter is never rolled back.
+   * Read more here: https://gassma.io/en/docs/reference/config/autoincrement
+   * @param {string} field - An autoincrement field of Reservation.
+   * @param {number} next - The value the next `create` will issue.
+   * @example
+   * // Let the next Reservation continue from 1000
+   * gassma.Reservation.$setAutoincrement("id", 1000)
+   */
+  $setAutoincrement(field: "id", next: number): void;
+  /**
+   * Line the counter of Reservation up with the rows already in the sheet.
+   * The counter becomes the largest value in the column plus one, which is also the return value.
+   * Throws `GassmaAutoincrementInTransactionError` inside `$transaction`, because the counter is never rolled back.
+   * Read more here: https://gassma.io/en/docs/reference/config/autoincrement
+   * @param {string} field - An autoincrement field of Reservation.
+   * @example
+   * // Adopt a sheet that already has rows
+   * const next = gassma.Reservation.$syncAutoincrement("id")
+   */
+  $syncAutoincrement(field: "id"): number;
 }
 
+/**
+ * The delegate class that exposes CRUD operations for the **Product** model.
+ */
 export declare class GassmaGassmaProductController<GO extends GassmaGassmaProductOmit = {}, O = {}, CMap = {}> {
   constructor(sheetName: string, id?: string);
 
+  /**
+   * Fields of the Product model
+   */
   readonly fields: Record<string, Gassma.FieldRef>;
+  /**
+   * Change the range this model reads and writes on the spreadsheet.
+   * Read more here: https://gassma.io/en/docs/reference/settings/changeSettings
+   * @param {number} startRowNumber - The row number the header row lives on.
+   * @param {number | string} startColumnValue - The first column of the range.
+   * @param {number | string} endColumnValue - The last column of the range.
+   */
   changeSettings(
     startRowNumber: number,
     startColumnValue: number | string,
     endColumnValue: number | string
   ): void;
+  /**
+   * Create many Products.
+   * Read more here: https://gassma.io/en/docs/reference/crud/create/createMany
+   * @param {GassmaGassmaProductCreateManyData} createdData - Arguments to create many Products.
+   * @example
+   * // Create many Products
+   * const product = gassma.Product.createMany({
+   *   data: [
+   *     // ... provide data here
+   *   ]
+   * })
+   * 
+   */
   createMany(createdData: GassmaGassmaProductCreateManyData): CreateManyReturn;
+  /**
+   * Create many Products and returns the data saved in the spreadsheet.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/crud/create/createManyAndReturn
+   * @param {GassmaGassmaProductCreateManyAndReturnData} createdData - Arguments to create many Products.
+   * @example
+   * // Create many Products
+   * const product = gassma.Product.createManyAndReturn({
+   *   data: [
+   *     // ... provide data here
+   *   ]
+   * })
+   * 
+   * // Create many Products and only return the `id`
+   * const productWithIdOnly = gassma.Product.createManyAndReturn({
+   *   select: { id: true },
+   *   data: [
+   *     // ... provide data here
+   *   ]
+   * })
+   * 
+   */
   createManyAndReturn<T extends GassmaGassmaProductCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Product">>>(createdData: T & Gassma.Subset<T, GassmaGassmaProductCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Product">>>): GassmaGassmaProductFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  /**
+   * Create a Product.
+   * Read more here: https://gassma.io/en/docs/reference/crud/create/create
+   * @param {GassmaGassmaProductCreateData} createdData - Arguments to create a Product.
+   * @example
+   * // Create one Product
+   * const Product = gassma.Product.create({
+   *   data: {
+   *     // ... data to create a Product
+   *   }
+   * })
+   * 
+   */
   create<T extends GassmaGassmaProductCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "Product">>>(createdData: T & Gassma.Subset<T, GassmaGassmaProductCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "Product">>>): GassmaGassmaProductFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  /**
+   * Find the first Product that matches the filter.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/crud/read/findFirst
+   * @param {GassmaGassmaProductFindFirstData} findData - Arguments to find a Product
+   * @example
+   * // Get one Product
+   * const product = gassma.Product.findFirst({
+   *   where: {
+   *     // ... provide filter here
+   *   }
+   * })
+   */
   findFirst<T extends GassmaGassmaProductFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Product">>>(findData: T & Gassma.Subset<T, GassmaGassmaProductFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Product">>>): GassmaGassmaProductFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  /**
+   * Find the first Product.
+   * Read more here: https://gassma.io/en/docs/reference/crud/read/findFirst
+   * @example
+   * // Get the first Product
+   * const product = gassma.Product.findFirst()
+   */
   findFirst(): GassmaGassmaProductFindResult<unknown, unknown, unknown, GO, O, CMap> | null;
+  /**
+   * Find the first Product that matches the filter or
+   * throw `NotFoundError` if no matches were found.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/crud/read/findFirstOrThrow
+   * @param {GassmaGassmaProductFindFirstData} findData - Arguments to find a Product
+   * @example
+   * // Get one Product
+   * const product = gassma.Product.findFirstOrThrow({
+   *   where: {
+   *     // ... provide filter here
+   *   }
+   * })
+   */
   findFirstOrThrow<T extends GassmaGassmaProductFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Product">>>(findData: T & Gassma.Subset<T, GassmaGassmaProductFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Product">>>): GassmaGassmaProductFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  /**
+   * Find the first Product or throw `NotFoundError` if no Products exist.
+   * Read more here: https://gassma.io/en/docs/reference/crud/read/findFirstOrThrow
+   * @example
+   * // Get the first Product
+   * const product = gassma.Product.findFirstOrThrow()
+   */
   findFirstOrThrow(): GassmaGassmaProductFindResult<unknown, unknown, unknown, GO, O, CMap>;
+  /**
+   * Find zero or more Products that matches the filter.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/crud/read/findMany
+   * @param {GassmaGassmaProductFindManyData} findData - Arguments to filter and select certain fields only.
+   * @example
+   * // Get all Products
+   * const products = gassma.Product.findMany()
+   * 
+   * // Get first 10 Products
+   * const products = gassma.Product.findMany({ take: 10 })
+   * 
+   * // Only select the `id`
+   * const productWithIdOnly = gassma.Product.findMany({ select: { id: true } })
+   * 
+   */
   findMany<T extends GassmaGassmaProductFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "Product">>>(findData: T & Gassma.Subset<T, GassmaGassmaProductFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "Product">>>): GassmaGassmaProductFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  /**
+   * Find all Products.
+   * Read more here: https://gassma.io/en/docs/reference/crud/read/findMany
+   * @example
+   * // Get all Products
+   * const products = gassma.Product.findMany()
+   */
   findMany(): GassmaGassmaProductFindResult<unknown, unknown, unknown, GO, O, CMap>[];
+  /**
+   * Update one Product.
+   * Read more here: https://gassma.io/en/docs/reference/crud/update/update
+   * @param {GassmaGassmaProductUpdateSingleData} updateData - Arguments to update one Product.
+   * @example
+   * // Update one Product
+   * const product = gassma.Product.update({
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   data: {
+   *     // ... provide data here
+   *   }
+   * })
+   * 
+   */
   update<T extends GassmaGassmaProductUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Product">>>(updateData: T & Gassma.Subset<T, GassmaGassmaProductUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Product">>>): GassmaGassmaProductFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  /**
+   * Update zero or more Products.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/crud/update/updateMany
+   * @param {GassmaGassmaProductUpdateData} updateData - Arguments to update one or more rows.
+   * @example
+   * // Update many Products
+   * const { count } = gassma.Product.updateMany({
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   data: {
+   *     // ... provide data here
+   *   }
+   * })
+   * 
+   */
   updateMany(updateData: GassmaGassmaProductUpdateData): UpdateManyReturn;
+  /**
+   * Update zero or more Products and returns the data updated in the spreadsheet.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/crud/update/updateManyAndReturn
+   * @param {GassmaGassmaProductUpdateManyAndReturnData} updateData - Arguments to update many Products.
+   * @example
+   * // Update many Products
+   * const products = gassma.Product.updateManyAndReturn({
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   data: {
+   *     // ... provide data here
+   *   }
+   * })
+   * 
+   * // Update zero or more Products and only return the `id`
+   * const productWithIdOnly = gassma.Product.updateManyAndReturn({
+   *   select: { id: true },
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   data: {
+   *     // ... provide data here
+   *   }
+   * })
+   * 
+   */
   updateManyAndReturn<T extends GassmaGassmaProductUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Product">>>(updateData: T & Gassma.Subset<T, GassmaGassmaProductUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Product">>>): GassmaGassmaProductFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  /**
+   * Create or update one Product.
+   * Read more here: https://gassma.io/en/docs/reference/crud/update/upsert
+   * @param {GassmaGassmaProductUpsertSingleData} upsertData - Arguments to update or create a Product.
+   * @example
+   * // Update or create a Product
+   * const product = gassma.Product.upsert({
+   *   create: {
+   *     // ... data to create a Product
+   *   },
+   *   update: {
+   *     // ... in case it already exists, update
+   *   },
+   *   where: {
+   *     // ... the filter for the Product we want to update
+   *   }
+   * })
+   */
   upsert<T extends GassmaGassmaProductUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Product">>>(upsertData: T & Gassma.Subset<T, GassmaGassmaProductUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Product">>>): GassmaGassmaProductFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  /**
+   * Delete a Product.
+   * Read more here: https://gassma.io/en/docs/reference/crud/delete/delete
+   * @param {GassmaGassmaProductDeleteSingleData} deleteData - Arguments to delete one Product.
+   * @example
+   * // Delete one Product
+   * const Product = gassma.Product.delete({
+   *   where: {
+   *     // ... filter to delete one Product
+   *   }
+   * })
+   * 
+   */
   delete<T extends GassmaGassmaProductDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Product">>>(deleteData: T & Gassma.Subset<T, GassmaGassmaProductDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Product">>>): GassmaGassmaProductFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  /**
+   * Delete zero or more Products.
+   * Read more here: https://gassma.io/en/docs/reference/crud/delete/deleteMany
+   * @param {GassmaGassmaProductDeleteData} deleteData - Arguments to filter Products to delete.
+   * @example
+   * // Delete a few Products
+   * const { count } = gassma.Product.deleteMany({
+   *   where: {
+   *     // ... provide filter here
+   *   }
+   * })
+   * 
+   */
   deleteMany(deleteData: GassmaGassmaProductDeleteData): DeleteManyReturn;
+  /**
+   * Delete every Product.
+   * Calling `deleteMany` without arguments deletes **all** rows in the sheet. This cannot be undone.
+   * Read more here: https://gassma.io/en/docs/reference/crud/delete/deleteMany
+   * @example
+   * // Delete every Product in the sheet
+   * const { count } = gassma.Product.deleteMany()
+   */
   deleteMany(): DeleteManyReturn;
+  /**
+   * Allows you to perform aggregations operations on a Product.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/statistics/aggregate
+   * @param {GassmaGassmaProductAggregateData} aggregateData - Select which aggregations you would like to apply and on what fields.
+   * @example
+   * // Count the Products that match the filter
+   * const aggregations = gassma.Product.aggregate({
+   *   _count: true,
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   take: 10,
+   * })
+   */
   aggregate<T extends GassmaGassmaProductAggregateData>(aggregateData: T & Gassma.Subset<T, GassmaGassmaProductAggregateData>): GassmaGassmaProductAggregateResult<T>;
-  count<T extends GassmaGassmaProductCountData>(coutData: T & Gassma.Subset<T, GassmaGassmaProductCountData>): GassmaGassmaProductCountResult<T>;
+  /**
+   * Count the number of Products.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/statistics/count
+   * @param {GassmaGassmaProductCountData} countData - Arguments to filter Products to count.
+   * @example
+   * // Count the number of Products
+   * const count = gassma.Product.count({
+   *   where: {
+   *     // ... the filter for the Products we want to count
+   *   }
+   * })
+   */
+  count<T extends GassmaGassmaProductCountData>(countData: T & Gassma.Subset<T, GassmaGassmaProductCountData>): GassmaGassmaProductCountResult<T>;
+  /**
+   * Count every Product.
+   * Read more here: https://gassma.io/en/docs/reference/statistics/count
+   * @example
+   * // Count every Product
+   * const count = gassma.Product.count()
+   */
   count(): number;
+  /**
+   * Group by Product.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/statistics/groupBy
+   * @param {GassmaGassmaProductGroupByData} groupByData - Group by arguments.
+   * @example
+   * // Group by id, get count
+   * const result = gassma.Product.groupBy({
+   *   by: ['id'],
+   *   _count: true,
+   * })
+   * 
+   */
   groupBy<T extends GassmaGassmaProductGroupByData>(groupByData: T & Gassma.Subset<T, GassmaGassmaProductGroupByData>): GassmaGassmaProductGroupByResult<T>[];
+  /**
+   * Get the value the next `create` will issue for an autoincrement field of Product.
+   * Reading the counter is allowed inside `$transaction`.
+   * Throws `GassmaAutoincrementNotConfiguredError` when the field is not an autoincrement field.
+   * Read more here: https://gassma.io/en/docs/reference/config/autoincrement
+   * @param {string} field - An autoincrement field of Product.
+   * @example
+   * // The id the next Product will get
+   * const next = gassma.Product.$getAutoincrement("id")
+   */
+  $getAutoincrement(field: "id"): number;
+  /**
+   * Set the value the next `create` will issue for an autoincrement field of Product.
+   * `next` is the value that will be issued next, so it must be an integer of 1 or more.
+   * Throws `GassmaAutoincrementInTransactionError` inside `$transaction`, because the counter is never rolled back.
+   * Read more here: https://gassma.io/en/docs/reference/config/autoincrement
+   * @param {string} field - An autoincrement field of Product.
+   * @param {number} next - The value the next `create` will issue.
+   * @example
+   * // Let the next Product continue from 1000
+   * gassma.Product.$setAutoincrement("id", 1000)
+   */
+  $setAutoincrement(field: "id", next: number): void;
+  /**
+   * Line the counter of Product up with the rows already in the sheet.
+   * The counter becomes the largest value in the column plus one, which is also the return value.
+   * Throws `GassmaAutoincrementInTransactionError` inside `$transaction`, because the counter is never rolled back.
+   * Read more here: https://gassma.io/en/docs/reference/config/autoincrement
+   * @param {string} field - An autoincrement field of Product.
+   * @example
+   * // Adopt a sheet that already has rows
+   * const next = gassma.Product.$syncAutoincrement("id")
+   */
+  $syncAutoincrement(field: "id"): number;
 }
 
+/**
+ * The delegate class that exposes CRUD operations for the **Order** model.
+ */
 export declare class GassmaGassmaOrderController<GO extends GassmaGassmaOrderOmit = {}, O = {}, CMap = {}> {
   constructor(sheetName: string, id?: string);
 
+  /**
+   * Fields of the Order model
+   */
   readonly fields: Record<string, Gassma.FieldRef>;
+  /**
+   * Change the range this model reads and writes on the spreadsheet.
+   * Read more here: https://gassma.io/en/docs/reference/settings/changeSettings
+   * @param {number} startRowNumber - The row number the header row lives on.
+   * @param {number | string} startColumnValue - The first column of the range.
+   * @param {number | string} endColumnValue - The last column of the range.
+   */
   changeSettings(
     startRowNumber: number,
     startColumnValue: number | string,
     endColumnValue: number | string
   ): void;
+  /**
+   * Create many Orders.
+   * Read more here: https://gassma.io/en/docs/reference/crud/create/createMany
+   * @param {GassmaGassmaOrderCreateManyData} createdData - Arguments to create many Orders.
+   * @example
+   * // Create many Orders
+   * const order = gassma.Order.createMany({
+   *   data: [
+   *     // ... provide data here
+   *   ]
+   * })
+   * 
+   */
   createMany(createdData: GassmaGassmaOrderCreateManyData): CreateManyReturn;
+  /**
+   * Create many Orders and returns the data saved in the spreadsheet.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/crud/create/createManyAndReturn
+   * @param {GassmaGassmaOrderCreateManyAndReturnData} createdData - Arguments to create many Orders.
+   * @example
+   * // Create many Orders
+   * const order = gassma.Order.createManyAndReturn({
+   *   data: [
+   *     // ... provide data here
+   *   ]
+   * })
+   * 
+   * // Create many Orders and only return the `id`
+   * const orderWithIdOnly = gassma.Order.createManyAndReturn({
+   *   select: { id: true },
+   *   data: [
+   *     // ... provide data here
+   *   ]
+   * })
+   * 
+   */
   createManyAndReturn<T extends GassmaGassmaOrderCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Order">>>(createdData: T & Gassma.Subset<T, GassmaGassmaOrderCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Order">>>): GassmaGassmaOrderFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  /**
+   * Create a Order.
+   * Read more here: https://gassma.io/en/docs/reference/crud/create/create
+   * @param {GassmaGassmaOrderCreateData} createdData - Arguments to create a Order.
+   * @example
+   * // Create one Order
+   * const Order = gassma.Order.create({
+   *   data: {
+   *     // ... data to create a Order
+   *   }
+   * })
+   * 
+   */
   create<T extends GassmaGassmaOrderCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "Order">>>(createdData: T & Gassma.Subset<T, GassmaGassmaOrderCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "Order">>>): GassmaGassmaOrderFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  /**
+   * Find the first Order that matches the filter.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/crud/read/findFirst
+   * @param {GassmaGassmaOrderFindFirstData} findData - Arguments to find a Order
+   * @example
+   * // Get one Order
+   * const order = gassma.Order.findFirst({
+   *   where: {
+   *     // ... provide filter here
+   *   }
+   * })
+   */
   findFirst<T extends GassmaGassmaOrderFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Order">>>(findData: T & Gassma.Subset<T, GassmaGassmaOrderFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Order">>>): GassmaGassmaOrderFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  /**
+   * Find the first Order.
+   * Read more here: https://gassma.io/en/docs/reference/crud/read/findFirst
+   * @example
+   * // Get the first Order
+   * const order = gassma.Order.findFirst()
+   */
   findFirst(): GassmaGassmaOrderFindResult<unknown, unknown, unknown, GO, O, CMap> | null;
+  /**
+   * Find the first Order that matches the filter or
+   * throw `NotFoundError` if no matches were found.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/crud/read/findFirstOrThrow
+   * @param {GassmaGassmaOrderFindFirstData} findData - Arguments to find a Order
+   * @example
+   * // Get one Order
+   * const order = gassma.Order.findFirstOrThrow({
+   *   where: {
+   *     // ... provide filter here
+   *   }
+   * })
+   */
   findFirstOrThrow<T extends GassmaGassmaOrderFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Order">>>(findData: T & Gassma.Subset<T, GassmaGassmaOrderFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Order">>>): GassmaGassmaOrderFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  /**
+   * Find the first Order or throw `NotFoundError` if no Orders exist.
+   * Read more here: https://gassma.io/en/docs/reference/crud/read/findFirstOrThrow
+   * @example
+   * // Get the first Order
+   * const order = gassma.Order.findFirstOrThrow()
+   */
   findFirstOrThrow(): GassmaGassmaOrderFindResult<unknown, unknown, unknown, GO, O, CMap>;
+  /**
+   * Find zero or more Orders that matches the filter.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/crud/read/findMany
+   * @param {GassmaGassmaOrderFindManyData} findData - Arguments to filter and select certain fields only.
+   * @example
+   * // Get all Orders
+   * const orders = gassma.Order.findMany()
+   * 
+   * // Get first 10 Orders
+   * const orders = gassma.Order.findMany({ take: 10 })
+   * 
+   * // Only select the `id`
+   * const orderWithIdOnly = gassma.Order.findMany({ select: { id: true } })
+   * 
+   */
   findMany<T extends GassmaGassmaOrderFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "Order">>>(findData: T & Gassma.Subset<T, GassmaGassmaOrderFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "Order">>>): GassmaGassmaOrderFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  /**
+   * Find all Orders.
+   * Read more here: https://gassma.io/en/docs/reference/crud/read/findMany
+   * @example
+   * // Get all Orders
+   * const orders = gassma.Order.findMany()
+   */
   findMany(): GassmaGassmaOrderFindResult<unknown, unknown, unknown, GO, O, CMap>[];
+  /**
+   * Update one Order.
+   * Read more here: https://gassma.io/en/docs/reference/crud/update/update
+   * @param {GassmaGassmaOrderUpdateSingleData} updateData - Arguments to update one Order.
+   * @example
+   * // Update one Order
+   * const order = gassma.Order.update({
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   data: {
+   *     // ... provide data here
+   *   }
+   * })
+   * 
+   */
   update<T extends GassmaGassmaOrderUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Order">>>(updateData: T & Gassma.Subset<T, GassmaGassmaOrderUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Order">>>): GassmaGassmaOrderFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  /**
+   * Update zero or more Orders.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/crud/update/updateMany
+   * @param {GassmaGassmaOrderUpdateData} updateData - Arguments to update one or more rows.
+   * @example
+   * // Update many Orders
+   * const { count } = gassma.Order.updateMany({
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   data: {
+   *     // ... provide data here
+   *   }
+   * })
+   * 
+   */
   updateMany(updateData: GassmaGassmaOrderUpdateData): UpdateManyReturn;
+  /**
+   * Update zero or more Orders and returns the data updated in the spreadsheet.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/crud/update/updateManyAndReturn
+   * @param {GassmaGassmaOrderUpdateManyAndReturnData} updateData - Arguments to update many Orders.
+   * @example
+   * // Update many Orders
+   * const orders = gassma.Order.updateManyAndReturn({
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   data: {
+   *     // ... provide data here
+   *   }
+   * })
+   * 
+   * // Update zero or more Orders and only return the `id`
+   * const orderWithIdOnly = gassma.Order.updateManyAndReturn({
+   *   select: { id: true },
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   data: {
+   *     // ... provide data here
+   *   }
+   * })
+   * 
+   */
   updateManyAndReturn<T extends GassmaGassmaOrderUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Order">>>(updateData: T & Gassma.Subset<T, GassmaGassmaOrderUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Order">>>): GassmaGassmaOrderFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  /**
+   * Create or update one Order.
+   * Read more here: https://gassma.io/en/docs/reference/crud/update/upsert
+   * @param {GassmaGassmaOrderUpsertSingleData} upsertData - Arguments to update or create a Order.
+   * @example
+   * // Update or create a Order
+   * const order = gassma.Order.upsert({
+   *   create: {
+   *     // ... data to create a Order
+   *   },
+   *   update: {
+   *     // ... in case it already exists, update
+   *   },
+   *   where: {
+   *     // ... the filter for the Order we want to update
+   *   }
+   * })
+   */
   upsert<T extends GassmaGassmaOrderUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Order">>>(upsertData: T & Gassma.Subset<T, GassmaGassmaOrderUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Order">>>): GassmaGassmaOrderFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  /**
+   * Delete a Order.
+   * Read more here: https://gassma.io/en/docs/reference/crud/delete/delete
+   * @param {GassmaGassmaOrderDeleteSingleData} deleteData - Arguments to delete one Order.
+   * @example
+   * // Delete one Order
+   * const Order = gassma.Order.delete({
+   *   where: {
+   *     // ... filter to delete one Order
+   *   }
+   * })
+   * 
+   */
   delete<T extends GassmaGassmaOrderDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Order">>>(deleteData: T & Gassma.Subset<T, GassmaGassmaOrderDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Order">>>): GassmaGassmaOrderFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  /**
+   * Delete zero or more Orders.
+   * Read more here: https://gassma.io/en/docs/reference/crud/delete/deleteMany
+   * @param {GassmaGassmaOrderDeleteData} deleteData - Arguments to filter Orders to delete.
+   * @example
+   * // Delete a few Orders
+   * const { count } = gassma.Order.deleteMany({
+   *   where: {
+   *     // ... provide filter here
+   *   }
+   * })
+   * 
+   */
   deleteMany(deleteData: GassmaGassmaOrderDeleteData): DeleteManyReturn;
+  /**
+   * Delete every Order.
+   * Calling `deleteMany` without arguments deletes **all** rows in the sheet. This cannot be undone.
+   * Read more here: https://gassma.io/en/docs/reference/crud/delete/deleteMany
+   * @example
+   * // Delete every Order in the sheet
+   * const { count } = gassma.Order.deleteMany()
+   */
   deleteMany(): DeleteManyReturn;
+  /**
+   * Allows you to perform aggregations operations on a Order.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/statistics/aggregate
+   * @param {GassmaGassmaOrderAggregateData} aggregateData - Select which aggregations you would like to apply and on what fields.
+   * @example
+   * // Count the Orders that match the filter
+   * const aggregations = gassma.Order.aggregate({
+   *   _count: true,
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   take: 10,
+   * })
+   */
   aggregate<T extends GassmaGassmaOrderAggregateData>(aggregateData: T & Gassma.Subset<T, GassmaGassmaOrderAggregateData>): GassmaGassmaOrderAggregateResult<T>;
-  count<T extends GassmaGassmaOrderCountData>(coutData: T & Gassma.Subset<T, GassmaGassmaOrderCountData>): GassmaGassmaOrderCountResult<T>;
+  /**
+   * Count the number of Orders.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/statistics/count
+   * @param {GassmaGassmaOrderCountData} countData - Arguments to filter Orders to count.
+   * @example
+   * // Count the number of Orders
+   * const count = gassma.Order.count({
+   *   where: {
+   *     // ... the filter for the Orders we want to count
+   *   }
+   * })
+   */
+  count<T extends GassmaGassmaOrderCountData>(countData: T & Gassma.Subset<T, GassmaGassmaOrderCountData>): GassmaGassmaOrderCountResult<T>;
+  /**
+   * Count every Order.
+   * Read more here: https://gassma.io/en/docs/reference/statistics/count
+   * @example
+   * // Count every Order
+   * const count = gassma.Order.count()
+   */
   count(): number;
+  /**
+   * Group by Order.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/statistics/groupBy
+   * @param {GassmaGassmaOrderGroupByData} groupByData - Group by arguments.
+   * @example
+   * // Group by id, get count
+   * const result = gassma.Order.groupBy({
+   *   by: ['id'],
+   *   _count: true,
+   * })
+   * 
+   */
   groupBy<T extends GassmaGassmaOrderGroupByData>(groupByData: T & Gassma.Subset<T, GassmaGassmaOrderGroupByData>): GassmaGassmaOrderGroupByResult<T>[];
+  /**
+   * Get the value the next `create` will issue for an autoincrement field of Order.
+   * Reading the counter is allowed inside `$transaction`.
+   * Throws `GassmaAutoincrementNotConfiguredError` when the field is not an autoincrement field.
+   * Read more here: https://gassma.io/en/docs/reference/config/autoincrement
+   * @param {string} field - An autoincrement field of Order.
+   * @example
+   * // The id the next Order will get
+   * const next = gassma.Order.$getAutoincrement("id")
+   */
+  $getAutoincrement(field: "id"): number;
+  /**
+   * Set the value the next `create` will issue for an autoincrement field of Order.
+   * `next` is the value that will be issued next, so it must be an integer of 1 or more.
+   * Throws `GassmaAutoincrementInTransactionError` inside `$transaction`, because the counter is never rolled back.
+   * Read more here: https://gassma.io/en/docs/reference/config/autoincrement
+   * @param {string} field - An autoincrement field of Order.
+   * @param {number} next - The value the next `create` will issue.
+   * @example
+   * // Let the next Order continue from 1000
+   * gassma.Order.$setAutoincrement("id", 1000)
+   */
+  $setAutoincrement(field: "id", next: number): void;
+  /**
+   * Line the counter of Order up with the rows already in the sheet.
+   * The counter becomes the largest value in the column plus one, which is also the return value.
+   * Throws `GassmaAutoincrementInTransactionError` inside `$transaction`, because the counter is never rolled back.
+   * Read more here: https://gassma.io/en/docs/reference/config/autoincrement
+   * @param {string} field - An autoincrement field of Order.
+   * @example
+   * // Adopt a sheet that already has rows
+   * const next = gassma.Order.$syncAutoincrement("id")
+   */
+  $syncAutoincrement(field: "id"): number;
 }
 
+/**
+ * The delegate class that exposes CRUD operations for the **OrderItem** model.
+ */
 export declare class GassmaGassmaOrderItemController<GO extends GassmaGassmaOrderItemOmit = {}, O = {}, CMap = {}> {
   constructor(sheetName: string, id?: string);
 
+  /**
+   * Fields of the OrderItem model
+   */
   readonly fields: Record<string, Gassma.FieldRef>;
+  /**
+   * Change the range this model reads and writes on the spreadsheet.
+   * Read more here: https://gassma.io/en/docs/reference/settings/changeSettings
+   * @param {number} startRowNumber - The row number the header row lives on.
+   * @param {number | string} startColumnValue - The first column of the range.
+   * @param {number | string} endColumnValue - The last column of the range.
+   */
   changeSettings(
     startRowNumber: number,
     startColumnValue: number | string,
     endColumnValue: number | string
   ): void;
+  /**
+   * Create many OrderItems.
+   * Read more here: https://gassma.io/en/docs/reference/crud/create/createMany
+   * @param {GassmaGassmaOrderItemCreateManyData} createdData - Arguments to create many OrderItems.
+   * @example
+   * // Create many OrderItems
+   * const orderItem = gassma.OrderItem.createMany({
+   *   data: [
+   *     // ... provide data here
+   *   ]
+   * })
+   * 
+   */
   createMany(createdData: GassmaGassmaOrderItemCreateManyData): CreateManyReturn;
+  /**
+   * Create many OrderItems and returns the data saved in the spreadsheet.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/crud/create/createManyAndReturn
+   * @param {GassmaGassmaOrderItemCreateManyAndReturnData} createdData - Arguments to create many OrderItems.
+   * @example
+   * // Create many OrderItems
+   * const orderItem = gassma.OrderItem.createManyAndReturn({
+   *   data: [
+   *     // ... provide data here
+   *   ]
+   * })
+   * 
+   * // Create many OrderItems and only return the `id`
+   * const orderItemWithIdOnly = gassma.OrderItem.createManyAndReturn({
+   *   select: { id: true },
+   *   data: [
+   *     // ... provide data here
+   *   ]
+   * })
+   * 
+   */
   createManyAndReturn<T extends GassmaGassmaOrderItemCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "OrderItem">>>(createdData: T & Gassma.Subset<T, GassmaGassmaOrderItemCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "OrderItem">>>): GassmaGassmaOrderItemFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  /**
+   * Create a OrderItem.
+   * Read more here: https://gassma.io/en/docs/reference/crud/create/create
+   * @param {GassmaGassmaOrderItemCreateData} createdData - Arguments to create a OrderItem.
+   * @example
+   * // Create one OrderItem
+   * const OrderItem = gassma.OrderItem.create({
+   *   data: {
+   *     // ... data to create a OrderItem
+   *   }
+   * })
+   * 
+   */
   create<T extends GassmaGassmaOrderItemCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "OrderItem">>>(createdData: T & Gassma.Subset<T, GassmaGassmaOrderItemCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "OrderItem">>>): GassmaGassmaOrderItemFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  /**
+   * Find the first OrderItem that matches the filter.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/crud/read/findFirst
+   * @param {GassmaGassmaOrderItemFindFirstData} findData - Arguments to find a OrderItem
+   * @example
+   * // Get one OrderItem
+   * const orderItem = gassma.OrderItem.findFirst({
+   *   where: {
+   *     // ... provide filter here
+   *   }
+   * })
+   */
   findFirst<T extends GassmaGassmaOrderItemFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "OrderItem">>>(findData: T & Gassma.Subset<T, GassmaGassmaOrderItemFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "OrderItem">>>): GassmaGassmaOrderItemFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  /**
+   * Find the first OrderItem.
+   * Read more here: https://gassma.io/en/docs/reference/crud/read/findFirst
+   * @example
+   * // Get the first OrderItem
+   * const orderItem = gassma.OrderItem.findFirst()
+   */
   findFirst(): GassmaGassmaOrderItemFindResult<unknown, unknown, unknown, GO, O, CMap> | null;
+  /**
+   * Find the first OrderItem that matches the filter or
+   * throw `NotFoundError` if no matches were found.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/crud/read/findFirstOrThrow
+   * @param {GassmaGassmaOrderItemFindFirstData} findData - Arguments to find a OrderItem
+   * @example
+   * // Get one OrderItem
+   * const orderItem = gassma.OrderItem.findFirstOrThrow({
+   *   where: {
+   *     // ... provide filter here
+   *   }
+   * })
+   */
   findFirstOrThrow<T extends GassmaGassmaOrderItemFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "OrderItem">>>(findData: T & Gassma.Subset<T, GassmaGassmaOrderItemFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "OrderItem">>>): GassmaGassmaOrderItemFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  /**
+   * Find the first OrderItem or throw `NotFoundError` if no OrderItems exist.
+   * Read more here: https://gassma.io/en/docs/reference/crud/read/findFirstOrThrow
+   * @example
+   * // Get the first OrderItem
+   * const orderItem = gassma.OrderItem.findFirstOrThrow()
+   */
   findFirstOrThrow(): GassmaGassmaOrderItemFindResult<unknown, unknown, unknown, GO, O, CMap>;
+  /**
+   * Find zero or more OrderItems that matches the filter.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/crud/read/findMany
+   * @param {GassmaGassmaOrderItemFindManyData} findData - Arguments to filter and select certain fields only.
+   * @example
+   * // Get all OrderItems
+   * const orderItems = gassma.OrderItem.findMany()
+   * 
+   * // Get first 10 OrderItems
+   * const orderItems = gassma.OrderItem.findMany({ take: 10 })
+   * 
+   * // Only select the `id`
+   * const orderItemWithIdOnly = gassma.OrderItem.findMany({ select: { id: true } })
+   * 
+   */
   findMany<T extends GassmaGassmaOrderItemFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "OrderItem">>>(findData: T & Gassma.Subset<T, GassmaGassmaOrderItemFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "OrderItem">>>): GassmaGassmaOrderItemFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  /**
+   * Find all OrderItems.
+   * Read more here: https://gassma.io/en/docs/reference/crud/read/findMany
+   * @example
+   * // Get all OrderItems
+   * const orderItems = gassma.OrderItem.findMany()
+   */
   findMany(): GassmaGassmaOrderItemFindResult<unknown, unknown, unknown, GO, O, CMap>[];
+  /**
+   * Update one OrderItem.
+   * Read more here: https://gassma.io/en/docs/reference/crud/update/update
+   * @param {GassmaGassmaOrderItemUpdateSingleData} updateData - Arguments to update one OrderItem.
+   * @example
+   * // Update one OrderItem
+   * const orderItem = gassma.OrderItem.update({
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   data: {
+   *     // ... provide data here
+   *   }
+   * })
+   * 
+   */
   update<T extends GassmaGassmaOrderItemUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "OrderItem">>>(updateData: T & Gassma.Subset<T, GassmaGassmaOrderItemUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "OrderItem">>>): GassmaGassmaOrderItemFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  /**
+   * Update zero or more OrderItems.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/crud/update/updateMany
+   * @param {GassmaGassmaOrderItemUpdateData} updateData - Arguments to update one or more rows.
+   * @example
+   * // Update many OrderItems
+   * const { count } = gassma.OrderItem.updateMany({
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   data: {
+   *     // ... provide data here
+   *   }
+   * })
+   * 
+   */
   updateMany(updateData: GassmaGassmaOrderItemUpdateData): UpdateManyReturn;
+  /**
+   * Update zero or more OrderItems and returns the data updated in the spreadsheet.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/crud/update/updateManyAndReturn
+   * @param {GassmaGassmaOrderItemUpdateManyAndReturnData} updateData - Arguments to update many OrderItems.
+   * @example
+   * // Update many OrderItems
+   * const orderItems = gassma.OrderItem.updateManyAndReturn({
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   data: {
+   *     // ... provide data here
+   *   }
+   * })
+   * 
+   * // Update zero or more OrderItems and only return the `id`
+   * const orderItemWithIdOnly = gassma.OrderItem.updateManyAndReturn({
+   *   select: { id: true },
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   data: {
+   *     // ... provide data here
+   *   }
+   * })
+   * 
+   */
   updateManyAndReturn<T extends GassmaGassmaOrderItemUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "OrderItem">>>(updateData: T & Gassma.Subset<T, GassmaGassmaOrderItemUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "OrderItem">>>): GassmaGassmaOrderItemFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  /**
+   * Create or update one OrderItem.
+   * Read more here: https://gassma.io/en/docs/reference/crud/update/upsert
+   * @param {GassmaGassmaOrderItemUpsertSingleData} upsertData - Arguments to update or create a OrderItem.
+   * @example
+   * // Update or create a OrderItem
+   * const orderItem = gassma.OrderItem.upsert({
+   *   create: {
+   *     // ... data to create a OrderItem
+   *   },
+   *   update: {
+   *     // ... in case it already exists, update
+   *   },
+   *   where: {
+   *     // ... the filter for the OrderItem we want to update
+   *   }
+   * })
+   */
   upsert<T extends GassmaGassmaOrderItemUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "OrderItem">>>(upsertData: T & Gassma.Subset<T, GassmaGassmaOrderItemUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "OrderItem">>>): GassmaGassmaOrderItemFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  /**
+   * Delete a OrderItem.
+   * Read more here: https://gassma.io/en/docs/reference/crud/delete/delete
+   * @param {GassmaGassmaOrderItemDeleteSingleData} deleteData - Arguments to delete one OrderItem.
+   * @example
+   * // Delete one OrderItem
+   * const OrderItem = gassma.OrderItem.delete({
+   *   where: {
+   *     // ... filter to delete one OrderItem
+   *   }
+   * })
+   * 
+   */
   delete<T extends GassmaGassmaOrderItemDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "OrderItem">>>(deleteData: T & Gassma.Subset<T, GassmaGassmaOrderItemDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "OrderItem">>>): GassmaGassmaOrderItemFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  /**
+   * Delete zero or more OrderItems.
+   * Read more here: https://gassma.io/en/docs/reference/crud/delete/deleteMany
+   * @param {GassmaGassmaOrderItemDeleteData} deleteData - Arguments to filter OrderItems to delete.
+   * @example
+   * // Delete a few OrderItems
+   * const { count } = gassma.OrderItem.deleteMany({
+   *   where: {
+   *     // ... provide filter here
+   *   }
+   * })
+   * 
+   */
   deleteMany(deleteData: GassmaGassmaOrderItemDeleteData): DeleteManyReturn;
+  /**
+   * Delete every OrderItem.
+   * Calling `deleteMany` without arguments deletes **all** rows in the sheet. This cannot be undone.
+   * Read more here: https://gassma.io/en/docs/reference/crud/delete/deleteMany
+   * @example
+   * // Delete every OrderItem in the sheet
+   * const { count } = gassma.OrderItem.deleteMany()
+   */
   deleteMany(): DeleteManyReturn;
+  /**
+   * Allows you to perform aggregations operations on a OrderItem.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/statistics/aggregate
+   * @param {GassmaGassmaOrderItemAggregateData} aggregateData - Select which aggregations you would like to apply and on what fields.
+   * @example
+   * // Count the OrderItems that match the filter
+   * const aggregations = gassma.OrderItem.aggregate({
+   *   _count: true,
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   take: 10,
+   * })
+   */
   aggregate<T extends GassmaGassmaOrderItemAggregateData>(aggregateData: T & Gassma.Subset<T, GassmaGassmaOrderItemAggregateData>): GassmaGassmaOrderItemAggregateResult<T>;
-  count<T extends GassmaGassmaOrderItemCountData>(coutData: T & Gassma.Subset<T, GassmaGassmaOrderItemCountData>): GassmaGassmaOrderItemCountResult<T>;
+  /**
+   * Count the number of OrderItems.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/statistics/count
+   * @param {GassmaGassmaOrderItemCountData} countData - Arguments to filter OrderItems to count.
+   * @example
+   * // Count the number of OrderItems
+   * const count = gassma.OrderItem.count({
+   *   where: {
+   *     // ... the filter for the OrderItems we want to count
+   *   }
+   * })
+   */
+  count<T extends GassmaGassmaOrderItemCountData>(countData: T & Gassma.Subset<T, GassmaGassmaOrderItemCountData>): GassmaGassmaOrderItemCountResult<T>;
+  /**
+   * Count every OrderItem.
+   * Read more here: https://gassma.io/en/docs/reference/statistics/count
+   * @example
+   * // Count every OrderItem
+   * const count = gassma.OrderItem.count()
+   */
   count(): number;
+  /**
+   * Group by OrderItem.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/statistics/groupBy
+   * @param {GassmaGassmaOrderItemGroupByData} groupByData - Group by arguments.
+   * @example
+   * // Group by id, get count
+   * const result = gassma.OrderItem.groupBy({
+   *   by: ['id'],
+   *   _count: true,
+   * })
+   * 
+   */
   groupBy<T extends GassmaGassmaOrderItemGroupByData>(groupByData: T & Gassma.Subset<T, GassmaGassmaOrderItemGroupByData>): GassmaGassmaOrderItemGroupByResult<T>[];
+  /**
+   * Get the value the next `create` will issue for an autoincrement field of OrderItem.
+   * Reading the counter is allowed inside `$transaction`.
+   * Throws `GassmaAutoincrementNotConfiguredError` when the field is not an autoincrement field.
+   * Read more here: https://gassma.io/en/docs/reference/config/autoincrement
+   * @param {string} field - An autoincrement field of OrderItem.
+   * @example
+   * // The id the next OrderItem will get
+   * const next = gassma.OrderItem.$getAutoincrement("id")
+   */
+  $getAutoincrement(field: "id"): number;
+  /**
+   * Set the value the next `create` will issue for an autoincrement field of OrderItem.
+   * `next` is the value that will be issued next, so it must be an integer of 1 or more.
+   * Throws `GassmaAutoincrementInTransactionError` inside `$transaction`, because the counter is never rolled back.
+   * Read more here: https://gassma.io/en/docs/reference/config/autoincrement
+   * @param {string} field - An autoincrement field of OrderItem.
+   * @param {number} next - The value the next `create` will issue.
+   * @example
+   * // Let the next OrderItem continue from 1000
+   * gassma.OrderItem.$setAutoincrement("id", 1000)
+   */
+  $setAutoincrement(field: "id", next: number): void;
+  /**
+   * Line the counter of OrderItem up with the rows already in the sheet.
+   * The counter becomes the largest value in the column plus one, which is also the return value.
+   * Throws `GassmaAutoincrementInTransactionError` inside `$transaction`, because the counter is never rolled back.
+   * Read more here: https://gassma.io/en/docs/reference/config/autoincrement
+   * @param {string} field - An autoincrement field of OrderItem.
+   * @example
+   * // Adopt a sheet that already has rows
+   * const next = gassma.OrderItem.$syncAutoincrement("id")
+   */
+  $syncAutoincrement(field: "id"): number;
 }
 
+/**
+ * The delegate class that exposes CRUD operations for the **FormulaCell** model.
+ */
 export declare class GassmaGassmaFormulaCellController<GO extends GassmaGassmaFormulaCellOmit = {}, O = {}, CMap = {}> {
   constructor(sheetName: string, id?: string);
 
+  /**
+   * Fields of the FormulaCell model
+   */
   readonly fields: Record<string, Gassma.FieldRef>;
+  /**
+   * Change the range this model reads and writes on the spreadsheet.
+   * Read more here: https://gassma.io/en/docs/reference/settings/changeSettings
+   * @param {number} startRowNumber - The row number the header row lives on.
+   * @param {number | string} startColumnValue - The first column of the range.
+   * @param {number | string} endColumnValue - The last column of the range.
+   */
   changeSettings(
     startRowNumber: number,
     startColumnValue: number | string,
     endColumnValue: number | string
   ): void;
+  /**
+   * Create many FormulaCells.
+   * Read more here: https://gassma.io/en/docs/reference/crud/create/createMany
+   * @param {GassmaGassmaFormulaCellCreateManyData} createdData - Arguments to create many FormulaCells.
+   * @example
+   * // Create many FormulaCells
+   * const formulaCell = gassma.FormulaCell.createMany({
+   *   data: [
+   *     // ... provide data here
+   *   ]
+   * })
+   * 
+   */
   createMany(createdData: GassmaGassmaFormulaCellCreateManyData): CreateManyReturn;
+  /**
+   * Create many FormulaCells and returns the data saved in the spreadsheet.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/crud/create/createManyAndReturn
+   * @param {GassmaGassmaFormulaCellCreateManyAndReturnData} createdData - Arguments to create many FormulaCells.
+   * @example
+   * // Create many FormulaCells
+   * const formulaCell = gassma.FormulaCell.createManyAndReturn({
+   *   data: [
+   *     // ... provide data here
+   *   ]
+   * })
+   * 
+   * // Create many FormulaCells and only return the `id`
+   * const formulaCellWithIdOnly = gassma.FormulaCell.createManyAndReturn({
+   *   select: { id: true },
+   *   data: [
+   *     // ... provide data here
+   *   ]
+   * })
+   * 
+   */
   createManyAndReturn<T extends GassmaGassmaFormulaCellCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "FormulaCell">>>(createdData: T & Gassma.Subset<T, GassmaGassmaFormulaCellCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "FormulaCell">>>): GassmaGassmaFormulaCellFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  /**
+   * Create a FormulaCell.
+   * Read more here: https://gassma.io/en/docs/reference/crud/create/create
+   * @param {GassmaGassmaFormulaCellCreateData} createdData - Arguments to create a FormulaCell.
+   * @example
+   * // Create one FormulaCell
+   * const FormulaCell = gassma.FormulaCell.create({
+   *   data: {
+   *     // ... data to create a FormulaCell
+   *   }
+   * })
+   * 
+   */
   create<T extends GassmaGassmaFormulaCellCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "FormulaCell">>>(createdData: T & Gassma.Subset<T, GassmaGassmaFormulaCellCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "FormulaCell">>>): GassmaGassmaFormulaCellFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  /**
+   * Find the first FormulaCell that matches the filter.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/crud/read/findFirst
+   * @param {GassmaGassmaFormulaCellFindFirstData} findData - Arguments to find a FormulaCell
+   * @example
+   * // Get one FormulaCell
+   * const formulaCell = gassma.FormulaCell.findFirst({
+   *   where: {
+   *     // ... provide filter here
+   *   }
+   * })
+   */
   findFirst<T extends GassmaGassmaFormulaCellFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "FormulaCell">>>(findData: T & Gassma.Subset<T, GassmaGassmaFormulaCellFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "FormulaCell">>>): GassmaGassmaFormulaCellFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  /**
+   * Find the first FormulaCell.
+   * Read more here: https://gassma.io/en/docs/reference/crud/read/findFirst
+   * @example
+   * // Get the first FormulaCell
+   * const formulaCell = gassma.FormulaCell.findFirst()
+   */
   findFirst(): GassmaGassmaFormulaCellFindResult<unknown, unknown, unknown, GO, O, CMap> | null;
+  /**
+   * Find the first FormulaCell that matches the filter or
+   * throw `NotFoundError` if no matches were found.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/crud/read/findFirstOrThrow
+   * @param {GassmaGassmaFormulaCellFindFirstData} findData - Arguments to find a FormulaCell
+   * @example
+   * // Get one FormulaCell
+   * const formulaCell = gassma.FormulaCell.findFirstOrThrow({
+   *   where: {
+   *     // ... provide filter here
+   *   }
+   * })
+   */
   findFirstOrThrow<T extends GassmaGassmaFormulaCellFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "FormulaCell">>>(findData: T & Gassma.Subset<T, GassmaGassmaFormulaCellFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "FormulaCell">>>): GassmaGassmaFormulaCellFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  /**
+   * Find the first FormulaCell or throw `NotFoundError` if no FormulaCells exist.
+   * Read more here: https://gassma.io/en/docs/reference/crud/read/findFirstOrThrow
+   * @example
+   * // Get the first FormulaCell
+   * const formulaCell = gassma.FormulaCell.findFirstOrThrow()
+   */
   findFirstOrThrow(): GassmaGassmaFormulaCellFindResult<unknown, unknown, unknown, GO, O, CMap>;
+  /**
+   * Find zero or more FormulaCells that matches the filter.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/crud/read/findMany
+   * @param {GassmaGassmaFormulaCellFindManyData} findData - Arguments to filter and select certain fields only.
+   * @example
+   * // Get all FormulaCells
+   * const formulaCells = gassma.FormulaCell.findMany()
+   * 
+   * // Get first 10 FormulaCells
+   * const formulaCells = gassma.FormulaCell.findMany({ take: 10 })
+   * 
+   * // Only select the `id`
+   * const formulaCellWithIdOnly = gassma.FormulaCell.findMany({ select: { id: true } })
+   * 
+   */
   findMany<T extends GassmaGassmaFormulaCellFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "FormulaCell">>>(findData: T & Gassma.Subset<T, GassmaGassmaFormulaCellFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "FormulaCell">>>): GassmaGassmaFormulaCellFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  /**
+   * Find all FormulaCells.
+   * Read more here: https://gassma.io/en/docs/reference/crud/read/findMany
+   * @example
+   * // Get all FormulaCells
+   * const formulaCells = gassma.FormulaCell.findMany()
+   */
   findMany(): GassmaGassmaFormulaCellFindResult<unknown, unknown, unknown, GO, O, CMap>[];
+  /**
+   * Update one FormulaCell.
+   * Read more here: https://gassma.io/en/docs/reference/crud/update/update
+   * @param {GassmaGassmaFormulaCellUpdateSingleData} updateData - Arguments to update one FormulaCell.
+   * @example
+   * // Update one FormulaCell
+   * const formulaCell = gassma.FormulaCell.update({
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   data: {
+   *     // ... provide data here
+   *   }
+   * })
+   * 
+   */
   update<T extends GassmaGassmaFormulaCellUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "FormulaCell">>>(updateData: T & Gassma.Subset<T, GassmaGassmaFormulaCellUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "FormulaCell">>>): GassmaGassmaFormulaCellFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  /**
+   * Update zero or more FormulaCells.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/crud/update/updateMany
+   * @param {GassmaGassmaFormulaCellUpdateData} updateData - Arguments to update one or more rows.
+   * @example
+   * // Update many FormulaCells
+   * const { count } = gassma.FormulaCell.updateMany({
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   data: {
+   *     // ... provide data here
+   *   }
+   * })
+   * 
+   */
   updateMany(updateData: GassmaGassmaFormulaCellUpdateData): UpdateManyReturn;
+  /**
+   * Update zero or more FormulaCells and returns the data updated in the spreadsheet.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/crud/update/updateManyAndReturn
+   * @param {GassmaGassmaFormulaCellUpdateManyAndReturnData} updateData - Arguments to update many FormulaCells.
+   * @example
+   * // Update many FormulaCells
+   * const formulaCells = gassma.FormulaCell.updateManyAndReturn({
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   data: {
+   *     // ... provide data here
+   *   }
+   * })
+   * 
+   * // Update zero or more FormulaCells and only return the `id`
+   * const formulaCellWithIdOnly = gassma.FormulaCell.updateManyAndReturn({
+   *   select: { id: true },
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   data: {
+   *     // ... provide data here
+   *   }
+   * })
+   * 
+   */
   updateManyAndReturn<T extends GassmaGassmaFormulaCellUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "FormulaCell">>>(updateData: T & Gassma.Subset<T, GassmaGassmaFormulaCellUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "FormulaCell">>>): GassmaGassmaFormulaCellFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  /**
+   * Create or update one FormulaCell.
+   * Read more here: https://gassma.io/en/docs/reference/crud/update/upsert
+   * @param {GassmaGassmaFormulaCellUpsertSingleData} upsertData - Arguments to update or create a FormulaCell.
+   * @example
+   * // Update or create a FormulaCell
+   * const formulaCell = gassma.FormulaCell.upsert({
+   *   create: {
+   *     // ... data to create a FormulaCell
+   *   },
+   *   update: {
+   *     // ... in case it already exists, update
+   *   },
+   *   where: {
+   *     // ... the filter for the FormulaCell we want to update
+   *   }
+   * })
+   */
   upsert<T extends GassmaGassmaFormulaCellUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "FormulaCell">>>(upsertData: T & Gassma.Subset<T, GassmaGassmaFormulaCellUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "FormulaCell">>>): GassmaGassmaFormulaCellFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  /**
+   * Delete a FormulaCell.
+   * Read more here: https://gassma.io/en/docs/reference/crud/delete/delete
+   * @param {GassmaGassmaFormulaCellDeleteSingleData} deleteData - Arguments to delete one FormulaCell.
+   * @example
+   * // Delete one FormulaCell
+   * const FormulaCell = gassma.FormulaCell.delete({
+   *   where: {
+   *     // ... filter to delete one FormulaCell
+   *   }
+   * })
+   * 
+   */
   delete<T extends GassmaGassmaFormulaCellDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "FormulaCell">>>(deleteData: T & Gassma.Subset<T, GassmaGassmaFormulaCellDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "FormulaCell">>>): GassmaGassmaFormulaCellFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  /**
+   * Delete zero or more FormulaCells.
+   * Read more here: https://gassma.io/en/docs/reference/crud/delete/deleteMany
+   * @param {GassmaGassmaFormulaCellDeleteData} deleteData - Arguments to filter FormulaCells to delete.
+   * @example
+   * // Delete a few FormulaCells
+   * const { count } = gassma.FormulaCell.deleteMany({
+   *   where: {
+   *     // ... provide filter here
+   *   }
+   * })
+   * 
+   */
   deleteMany(deleteData: GassmaGassmaFormulaCellDeleteData): DeleteManyReturn;
+  /**
+   * Delete every FormulaCell.
+   * Calling `deleteMany` without arguments deletes **all** rows in the sheet. This cannot be undone.
+   * Read more here: https://gassma.io/en/docs/reference/crud/delete/deleteMany
+   * @example
+   * // Delete every FormulaCell in the sheet
+   * const { count } = gassma.FormulaCell.deleteMany()
+   */
   deleteMany(): DeleteManyReturn;
+  /**
+   * Allows you to perform aggregations operations on a FormulaCell.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/statistics/aggregate
+   * @param {GassmaGassmaFormulaCellAggregateData} aggregateData - Select which aggregations you would like to apply and on what fields.
+   * @example
+   * // Count the FormulaCells that match the filter
+   * const aggregations = gassma.FormulaCell.aggregate({
+   *   _count: true,
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   take: 10,
+   * })
+   */
   aggregate<T extends GassmaGassmaFormulaCellAggregateData>(aggregateData: T & Gassma.Subset<T, GassmaGassmaFormulaCellAggregateData>): GassmaGassmaFormulaCellAggregateResult<T>;
-  count<T extends GassmaGassmaFormulaCellCountData>(coutData: T & Gassma.Subset<T, GassmaGassmaFormulaCellCountData>): GassmaGassmaFormulaCellCountResult<T>;
+  /**
+   * Count the number of FormulaCells.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/statistics/count
+   * @param {GassmaGassmaFormulaCellCountData} countData - Arguments to filter FormulaCells to count.
+   * @example
+   * // Count the number of FormulaCells
+   * const count = gassma.FormulaCell.count({
+   *   where: {
+   *     // ... the filter for the FormulaCells we want to count
+   *   }
+   * })
+   */
+  count<T extends GassmaGassmaFormulaCellCountData>(countData: T & Gassma.Subset<T, GassmaGassmaFormulaCellCountData>): GassmaGassmaFormulaCellCountResult<T>;
+  /**
+   * Count every FormulaCell.
+   * Read more here: https://gassma.io/en/docs/reference/statistics/count
+   * @example
+   * // Count every FormulaCell
+   * const count = gassma.FormulaCell.count()
+   */
   count(): number;
+  /**
+   * Group by FormulaCell.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/statistics/groupBy
+   * @param {GassmaGassmaFormulaCellGroupByData} groupByData - Group by arguments.
+   * @example
+   * // Group by id, get count
+   * const result = gassma.FormulaCell.groupBy({
+   *   by: ['id'],
+   *   _count: true,
+   * })
+   * 
+   */
   groupBy<T extends GassmaGassmaFormulaCellGroupByData>(groupByData: T & Gassma.Subset<T, GassmaGassmaFormulaCellGroupByData>): GassmaGassmaFormulaCellGroupByResult<T>[];
+  /**
+   * Get the value the next `create` will issue for an autoincrement field of FormulaCell.
+   * FormulaCell has no autoincrement field, so this cannot be called.
+   * Read more here: https://gassma.io/en/docs/reference/config/autoincrement
+   */
+  $getAutoincrement(field: never): number;
+  /**
+   * Set the value the next `create` will issue for an autoincrement field of FormulaCell.
+   * FormulaCell has no autoincrement field, so this cannot be called.
+   * Read more here: https://gassma.io/en/docs/reference/config/autoincrement
+   */
+  $setAutoincrement(field: never, next: number): void;
+  /**
+   * Line the counter of FormulaCell up with the rows already in the sheet.
+   * FormulaCell has no autoincrement field, so this cannot be called.
+   * Read more here: https://gassma.io/en/docs/reference/config/autoincrement
+   */
+  $syncAutoincrement(field: never): number;
 }
 
+/**
+ * The delegate class that exposes CRUD operations for the **Notification** model.
+ */
 export declare class GassmaGassmaNotificationController<GO extends GassmaGassmaNotificationOmit = {}, O = {}, CMap = {}> {
   constructor(sheetName: string, id?: string);
 
+  /**
+   * Fields of the Notification model
+   */
   readonly fields: Record<string, Gassma.FieldRef>;
+  /**
+   * Change the range this model reads and writes on the spreadsheet.
+   * Read more here: https://gassma.io/en/docs/reference/settings/changeSettings
+   * @param {number} startRowNumber - The row number the header row lives on.
+   * @param {number | string} startColumnValue - The first column of the range.
+   * @param {number | string} endColumnValue - The last column of the range.
+   */
   changeSettings(
     startRowNumber: number,
     startColumnValue: number | string,
     endColumnValue: number | string
   ): void;
+  /**
+   * Create many Notifications.
+   * Read more here: https://gassma.io/en/docs/reference/crud/create/createMany
+   * @param {GassmaGassmaNotificationCreateManyData} createdData - Arguments to create many Notifications.
+   * @example
+   * // Create many Notifications
+   * const notification = gassma.Notification.createMany({
+   *   data: [
+   *     // ... provide data here
+   *   ]
+   * })
+   * 
+   */
   createMany(createdData: GassmaGassmaNotificationCreateManyData): CreateManyReturn;
+  /**
+   * Create many Notifications and returns the data saved in the spreadsheet.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/crud/create/createManyAndReturn
+   * @param {GassmaGassmaNotificationCreateManyAndReturnData} createdData - Arguments to create many Notifications.
+   * @example
+   * // Create many Notifications
+   * const notification = gassma.Notification.createManyAndReturn({
+   *   data: [
+   *     // ... provide data here
+   *   ]
+   * })
+   * 
+   * // Create many Notifications and only return the `id`
+   * const notificationWithIdOnly = gassma.Notification.createManyAndReturn({
+   *   select: { id: true },
+   *   data: [
+   *     // ... provide data here
+   *   ]
+   * })
+   * 
+   */
   createManyAndReturn<T extends GassmaGassmaNotificationCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Notification">>>(createdData: T & Gassma.Subset<T, GassmaGassmaNotificationCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Notification">>>): GassmaGassmaNotificationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  /**
+   * Create a Notification.
+   * Read more here: https://gassma.io/en/docs/reference/crud/create/create
+   * @param {GassmaGassmaNotificationCreateData} createdData - Arguments to create a Notification.
+   * @example
+   * // Create one Notification
+   * const Notification = gassma.Notification.create({
+   *   data: {
+   *     // ... data to create a Notification
+   *   }
+   * })
+   * 
+   */
   create<T extends GassmaGassmaNotificationCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "Notification">>>(createdData: T & Gassma.Subset<T, GassmaGassmaNotificationCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "Notification">>>): GassmaGassmaNotificationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  /**
+   * Find the first Notification that matches the filter.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/crud/read/findFirst
+   * @param {GassmaGassmaNotificationFindFirstData} findData - Arguments to find a Notification
+   * @example
+   * // Get one Notification
+   * const notification = gassma.Notification.findFirst({
+   *   where: {
+   *     // ... provide filter here
+   *   }
+   * })
+   */
   findFirst<T extends GassmaGassmaNotificationFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Notification">>>(findData: T & Gassma.Subset<T, GassmaGassmaNotificationFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Notification">>>): GassmaGassmaNotificationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  /**
+   * Find the first Notification.
+   * Read more here: https://gassma.io/en/docs/reference/crud/read/findFirst
+   * @example
+   * // Get the first Notification
+   * const notification = gassma.Notification.findFirst()
+   */
   findFirst(): GassmaGassmaNotificationFindResult<unknown, unknown, unknown, GO, O, CMap> | null;
+  /**
+   * Find the first Notification that matches the filter or
+   * throw `NotFoundError` if no matches were found.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/crud/read/findFirstOrThrow
+   * @param {GassmaGassmaNotificationFindFirstData} findData - Arguments to find a Notification
+   * @example
+   * // Get one Notification
+   * const notification = gassma.Notification.findFirstOrThrow({
+   *   where: {
+   *     // ... provide filter here
+   *   }
+   * })
+   */
   findFirstOrThrow<T extends GassmaGassmaNotificationFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Notification">>>(findData: T & Gassma.Subset<T, GassmaGassmaNotificationFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Notification">>>): GassmaGassmaNotificationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  /**
+   * Find the first Notification or throw `NotFoundError` if no Notifications exist.
+   * Read more here: https://gassma.io/en/docs/reference/crud/read/findFirstOrThrow
+   * @example
+   * // Get the first Notification
+   * const notification = gassma.Notification.findFirstOrThrow()
+   */
   findFirstOrThrow(): GassmaGassmaNotificationFindResult<unknown, unknown, unknown, GO, O, CMap>;
+  /**
+   * Find zero or more Notifications that matches the filter.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/crud/read/findMany
+   * @param {GassmaGassmaNotificationFindManyData} findData - Arguments to filter and select certain fields only.
+   * @example
+   * // Get all Notifications
+   * const notifications = gassma.Notification.findMany()
+   * 
+   * // Get first 10 Notifications
+   * const notifications = gassma.Notification.findMany({ take: 10 })
+   * 
+   * // Only select the `id`
+   * const notificationWithIdOnly = gassma.Notification.findMany({ select: { id: true } })
+   * 
+   */
   findMany<T extends GassmaGassmaNotificationFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "Notification">>>(findData: T & Gassma.Subset<T, GassmaGassmaNotificationFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "Notification">>>): GassmaGassmaNotificationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  /**
+   * Find all Notifications.
+   * Read more here: https://gassma.io/en/docs/reference/crud/read/findMany
+   * @example
+   * // Get all Notifications
+   * const notifications = gassma.Notification.findMany()
+   */
   findMany(): GassmaGassmaNotificationFindResult<unknown, unknown, unknown, GO, O, CMap>[];
+  /**
+   * Update one Notification.
+   * Read more here: https://gassma.io/en/docs/reference/crud/update/update
+   * @param {GassmaGassmaNotificationUpdateSingleData} updateData - Arguments to update one Notification.
+   * @example
+   * // Update one Notification
+   * const notification = gassma.Notification.update({
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   data: {
+   *     // ... provide data here
+   *   }
+   * })
+   * 
+   */
   update<T extends GassmaGassmaNotificationUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Notification">>>(updateData: T & Gassma.Subset<T, GassmaGassmaNotificationUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Notification">>>): GassmaGassmaNotificationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  /**
+   * Update zero or more Notifications.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/crud/update/updateMany
+   * @param {GassmaGassmaNotificationUpdateData} updateData - Arguments to update one or more rows.
+   * @example
+   * // Update many Notifications
+   * const { count } = gassma.Notification.updateMany({
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   data: {
+   *     // ... provide data here
+   *   }
+   * })
+   * 
+   */
   updateMany(updateData: GassmaGassmaNotificationUpdateData): UpdateManyReturn;
+  /**
+   * Update zero or more Notifications and returns the data updated in the spreadsheet.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/crud/update/updateManyAndReturn
+   * @param {GassmaGassmaNotificationUpdateManyAndReturnData} updateData - Arguments to update many Notifications.
+   * @example
+   * // Update many Notifications
+   * const notifications = gassma.Notification.updateManyAndReturn({
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   data: {
+   *     // ... provide data here
+   *   }
+   * })
+   * 
+   * // Update zero or more Notifications and only return the `id`
+   * const notificationWithIdOnly = gassma.Notification.updateManyAndReturn({
+   *   select: { id: true },
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   data: {
+   *     // ... provide data here
+   *   }
+   * })
+   * 
+   */
   updateManyAndReturn<T extends GassmaGassmaNotificationUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Notification">>>(updateData: T & Gassma.Subset<T, GassmaGassmaNotificationUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Notification">>>): GassmaGassmaNotificationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  /**
+   * Create or update one Notification.
+   * Read more here: https://gassma.io/en/docs/reference/crud/update/upsert
+   * @param {GassmaGassmaNotificationUpsertSingleData} upsertData - Arguments to update or create a Notification.
+   * @example
+   * // Update or create a Notification
+   * const notification = gassma.Notification.upsert({
+   *   create: {
+   *     // ... data to create a Notification
+   *   },
+   *   update: {
+   *     // ... in case it already exists, update
+   *   },
+   *   where: {
+   *     // ... the filter for the Notification we want to update
+   *   }
+   * })
+   */
   upsert<T extends GassmaGassmaNotificationUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Notification">>>(upsertData: T & Gassma.Subset<T, GassmaGassmaNotificationUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Notification">>>): GassmaGassmaNotificationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  /**
+   * Delete a Notification.
+   * Read more here: https://gassma.io/en/docs/reference/crud/delete/delete
+   * @param {GassmaGassmaNotificationDeleteSingleData} deleteData - Arguments to delete one Notification.
+   * @example
+   * // Delete one Notification
+   * const Notification = gassma.Notification.delete({
+   *   where: {
+   *     // ... filter to delete one Notification
+   *   }
+   * })
+   * 
+   */
   delete<T extends GassmaGassmaNotificationDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Notification">>>(deleteData: T & Gassma.Subset<T, GassmaGassmaNotificationDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Notification">>>): GassmaGassmaNotificationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  /**
+   * Delete zero or more Notifications.
+   * Read more here: https://gassma.io/en/docs/reference/crud/delete/deleteMany
+   * @param {GassmaGassmaNotificationDeleteData} deleteData - Arguments to filter Notifications to delete.
+   * @example
+   * // Delete a few Notifications
+   * const { count } = gassma.Notification.deleteMany({
+   *   where: {
+   *     // ... provide filter here
+   *   }
+   * })
+   * 
+   */
   deleteMany(deleteData: GassmaGassmaNotificationDeleteData): DeleteManyReturn;
+  /**
+   * Delete every Notification.
+   * Calling `deleteMany` without arguments deletes **all** rows in the sheet. This cannot be undone.
+   * Read more here: https://gassma.io/en/docs/reference/crud/delete/deleteMany
+   * @example
+   * // Delete every Notification in the sheet
+   * const { count } = gassma.Notification.deleteMany()
+   */
   deleteMany(): DeleteManyReturn;
+  /**
+   * Allows you to perform aggregations operations on a Notification.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/statistics/aggregate
+   * @param {GassmaGassmaNotificationAggregateData} aggregateData - Select which aggregations you would like to apply and on what fields.
+   * @example
+   * // Count the Notifications that match the filter
+   * const aggregations = gassma.Notification.aggregate({
+   *   _count: true,
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   take: 10,
+   * })
+   */
   aggregate<T extends GassmaGassmaNotificationAggregateData>(aggregateData: T & Gassma.Subset<T, GassmaGassmaNotificationAggregateData>): GassmaGassmaNotificationAggregateResult<T>;
-  count<T extends GassmaGassmaNotificationCountData>(coutData: T & Gassma.Subset<T, GassmaGassmaNotificationCountData>): GassmaGassmaNotificationCountResult<T>;
+  /**
+   * Count the number of Notifications.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/statistics/count
+   * @param {GassmaGassmaNotificationCountData} countData - Arguments to filter Notifications to count.
+   * @example
+   * // Count the number of Notifications
+   * const count = gassma.Notification.count({
+   *   where: {
+   *     // ... the filter for the Notifications we want to count
+   *   }
+   * })
+   */
+  count<T extends GassmaGassmaNotificationCountData>(countData: T & Gassma.Subset<T, GassmaGassmaNotificationCountData>): GassmaGassmaNotificationCountResult<T>;
+  /**
+   * Count every Notification.
+   * Read more here: https://gassma.io/en/docs/reference/statistics/count
+   * @example
+   * // Count every Notification
+   * const count = gassma.Notification.count()
+   */
   count(): number;
+  /**
+   * Group by Notification.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/statistics/groupBy
+   * @param {GassmaGassmaNotificationGroupByData} groupByData - Group by arguments.
+   * @example
+   * // Group by id, get count
+   * const result = gassma.Notification.groupBy({
+   *   by: ['id'],
+   *   _count: true,
+   * })
+   * 
+   */
   groupBy<T extends GassmaGassmaNotificationGroupByData>(groupByData: T & Gassma.Subset<T, GassmaGassmaNotificationGroupByData>): GassmaGassmaNotificationGroupByResult<T>[];
+  /**
+   * Get the value the next `create` will issue for an autoincrement field of Notification.
+   * Reading the counter is allowed inside `$transaction`.
+   * Throws `GassmaAutoincrementNotConfiguredError` when the field is not an autoincrement field.
+   * Read more here: https://gassma.io/en/docs/reference/config/autoincrement
+   * @param {string} field - An autoincrement field of Notification.
+   * @example
+   * // The id the next Notification will get
+   * const next = gassma.Notification.$getAutoincrement("id")
+   */
+  $getAutoincrement(field: "id"): number;
+  /**
+   * Set the value the next `create` will issue for an autoincrement field of Notification.
+   * `next` is the value that will be issued next, so it must be an integer of 1 or more.
+   * Throws `GassmaAutoincrementInTransactionError` inside `$transaction`, because the counter is never rolled back.
+   * Read more here: https://gassma.io/en/docs/reference/config/autoincrement
+   * @param {string} field - An autoincrement field of Notification.
+   * @param {number} next - The value the next `create` will issue.
+   * @example
+   * // Let the next Notification continue from 1000
+   * gassma.Notification.$setAutoincrement("id", 1000)
+   */
+  $setAutoincrement(field: "id", next: number): void;
+  /**
+   * Line the counter of Notification up with the rows already in the sheet.
+   * The counter becomes the largest value in the column plus one, which is also the return value.
+   * Throws `GassmaAutoincrementInTransactionError` inside `$transaction`, because the counter is never rolled back.
+   * Read more here: https://gassma.io/en/docs/reference/config/autoincrement
+   * @param {string} field - An autoincrement field of Notification.
+   * @example
+   * // Adopt a sheet that already has rows
+   * const next = gassma.Notification.$syncAutoincrement("id")
+   */
+  $syncAutoincrement(field: "id"): number;
 }
 
+/**
+ * The delegate class that exposes CRUD operations for the **OffsetNote** model.
+ */
 export declare class GassmaGassmaOffsetNoteController<GO extends GassmaGassmaOffsetNoteOmit = {}, O = {}, CMap = {}> {
   constructor(sheetName: string, id?: string);
 
+  /**
+   * Fields of the OffsetNote model
+   */
   readonly fields: Record<string, Gassma.FieldRef>;
+  /**
+   * Change the range this model reads and writes on the spreadsheet.
+   * Read more here: https://gassma.io/en/docs/reference/settings/changeSettings
+   * @param {number} startRowNumber - The row number the header row lives on.
+   * @param {number | string} startColumnValue - The first column of the range.
+   * @param {number | string} endColumnValue - The last column of the range.
+   */
   changeSettings(
     startRowNumber: number,
     startColumnValue: number | string,
     endColumnValue: number | string
   ): void;
+  /**
+   * Create many OffsetNotes.
+   * Read more here: https://gassma.io/en/docs/reference/crud/create/createMany
+   * @param {GassmaGassmaOffsetNoteCreateManyData} createdData - Arguments to create many OffsetNotes.
+   * @example
+   * // Create many OffsetNotes
+   * const offsetNote = gassma.OffsetNote.createMany({
+   *   data: [
+   *     // ... provide data here
+   *   ]
+   * })
+   * 
+   */
   createMany(createdData: GassmaGassmaOffsetNoteCreateManyData): CreateManyReturn;
+  /**
+   * Create many OffsetNotes and returns the data saved in the spreadsheet.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/crud/create/createManyAndReturn
+   * @param {GassmaGassmaOffsetNoteCreateManyAndReturnData} createdData - Arguments to create many OffsetNotes.
+   * @example
+   * // Create many OffsetNotes
+   * const offsetNote = gassma.OffsetNote.createManyAndReturn({
+   *   data: [
+   *     // ... provide data here
+   *   ]
+   * })
+   * 
+   * // Create many OffsetNotes and only return the `id`
+   * const offsetNoteWithIdOnly = gassma.OffsetNote.createManyAndReturn({
+   *   select: { id: true },
+   *   data: [
+   *     // ... provide data here
+   *   ]
+   * })
+   * 
+   */
   createManyAndReturn<T extends GassmaGassmaOffsetNoteCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "OffsetNote">>>(createdData: T & Gassma.Subset<T, GassmaGassmaOffsetNoteCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "OffsetNote">>>): GassmaGassmaOffsetNoteFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  /**
+   * Create a OffsetNote.
+   * Read more here: https://gassma.io/en/docs/reference/crud/create/create
+   * @param {GassmaGassmaOffsetNoteCreateData} createdData - Arguments to create a OffsetNote.
+   * @example
+   * // Create one OffsetNote
+   * const OffsetNote = gassma.OffsetNote.create({
+   *   data: {
+   *     // ... data to create a OffsetNote
+   *   }
+   * })
+   * 
+   */
   create<T extends GassmaGassmaOffsetNoteCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "OffsetNote">>>(createdData: T & Gassma.Subset<T, GassmaGassmaOffsetNoteCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "OffsetNote">>>): GassmaGassmaOffsetNoteFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  /**
+   * Find the first OffsetNote that matches the filter.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/crud/read/findFirst
+   * @param {GassmaGassmaOffsetNoteFindFirstData} findData - Arguments to find a OffsetNote
+   * @example
+   * // Get one OffsetNote
+   * const offsetNote = gassma.OffsetNote.findFirst({
+   *   where: {
+   *     // ... provide filter here
+   *   }
+   * })
+   */
   findFirst<T extends GassmaGassmaOffsetNoteFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "OffsetNote">>>(findData: T & Gassma.Subset<T, GassmaGassmaOffsetNoteFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "OffsetNote">>>): GassmaGassmaOffsetNoteFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  /**
+   * Find the first OffsetNote.
+   * Read more here: https://gassma.io/en/docs/reference/crud/read/findFirst
+   * @example
+   * // Get the first OffsetNote
+   * const offsetNote = gassma.OffsetNote.findFirst()
+   */
   findFirst(): GassmaGassmaOffsetNoteFindResult<unknown, unknown, unknown, GO, O, CMap> | null;
+  /**
+   * Find the first OffsetNote that matches the filter or
+   * throw `NotFoundError` if no matches were found.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/crud/read/findFirstOrThrow
+   * @param {GassmaGassmaOffsetNoteFindFirstData} findData - Arguments to find a OffsetNote
+   * @example
+   * // Get one OffsetNote
+   * const offsetNote = gassma.OffsetNote.findFirstOrThrow({
+   *   where: {
+   *     // ... provide filter here
+   *   }
+   * })
+   */
   findFirstOrThrow<T extends GassmaGassmaOffsetNoteFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "OffsetNote">>>(findData: T & Gassma.Subset<T, GassmaGassmaOffsetNoteFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "OffsetNote">>>): GassmaGassmaOffsetNoteFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  /**
+   * Find the first OffsetNote or throw `NotFoundError` if no OffsetNotes exist.
+   * Read more here: https://gassma.io/en/docs/reference/crud/read/findFirstOrThrow
+   * @example
+   * // Get the first OffsetNote
+   * const offsetNote = gassma.OffsetNote.findFirstOrThrow()
+   */
   findFirstOrThrow(): GassmaGassmaOffsetNoteFindResult<unknown, unknown, unknown, GO, O, CMap>;
+  /**
+   * Find zero or more OffsetNotes that matches the filter.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/crud/read/findMany
+   * @param {GassmaGassmaOffsetNoteFindManyData} findData - Arguments to filter and select certain fields only.
+   * @example
+   * // Get all OffsetNotes
+   * const offsetNotes = gassma.OffsetNote.findMany()
+   * 
+   * // Get first 10 OffsetNotes
+   * const offsetNotes = gassma.OffsetNote.findMany({ take: 10 })
+   * 
+   * // Only select the `id`
+   * const offsetNoteWithIdOnly = gassma.OffsetNote.findMany({ select: { id: true } })
+   * 
+   */
   findMany<T extends GassmaGassmaOffsetNoteFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "OffsetNote">>>(findData: T & Gassma.Subset<T, GassmaGassmaOffsetNoteFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "OffsetNote">>>): GassmaGassmaOffsetNoteFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  /**
+   * Find all OffsetNotes.
+   * Read more here: https://gassma.io/en/docs/reference/crud/read/findMany
+   * @example
+   * // Get all OffsetNotes
+   * const offsetNotes = gassma.OffsetNote.findMany()
+   */
   findMany(): GassmaGassmaOffsetNoteFindResult<unknown, unknown, unknown, GO, O, CMap>[];
+  /**
+   * Update one OffsetNote.
+   * Read more here: https://gassma.io/en/docs/reference/crud/update/update
+   * @param {GassmaGassmaOffsetNoteUpdateSingleData} updateData - Arguments to update one OffsetNote.
+   * @example
+   * // Update one OffsetNote
+   * const offsetNote = gassma.OffsetNote.update({
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   data: {
+   *     // ... provide data here
+   *   }
+   * })
+   * 
+   */
   update<T extends GassmaGassmaOffsetNoteUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "OffsetNote">>>(updateData: T & Gassma.Subset<T, GassmaGassmaOffsetNoteUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "OffsetNote">>>): GassmaGassmaOffsetNoteFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  /**
+   * Update zero or more OffsetNotes.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/crud/update/updateMany
+   * @param {GassmaGassmaOffsetNoteUpdateData} updateData - Arguments to update one or more rows.
+   * @example
+   * // Update many OffsetNotes
+   * const { count } = gassma.OffsetNote.updateMany({
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   data: {
+   *     // ... provide data here
+   *   }
+   * })
+   * 
+   */
   updateMany(updateData: GassmaGassmaOffsetNoteUpdateData): UpdateManyReturn;
+  /**
+   * Update zero or more OffsetNotes and returns the data updated in the spreadsheet.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/crud/update/updateManyAndReturn
+   * @param {GassmaGassmaOffsetNoteUpdateManyAndReturnData} updateData - Arguments to update many OffsetNotes.
+   * @example
+   * // Update many OffsetNotes
+   * const offsetNotes = gassma.OffsetNote.updateManyAndReturn({
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   data: {
+   *     // ... provide data here
+   *   }
+   * })
+   * 
+   * // Update zero or more OffsetNotes and only return the `id`
+   * const offsetNoteWithIdOnly = gassma.OffsetNote.updateManyAndReturn({
+   *   select: { id: true },
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   data: {
+   *     // ... provide data here
+   *   }
+   * })
+   * 
+   */
   updateManyAndReturn<T extends GassmaGassmaOffsetNoteUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "OffsetNote">>>(updateData: T & Gassma.Subset<T, GassmaGassmaOffsetNoteUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "OffsetNote">>>): GassmaGassmaOffsetNoteFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  /**
+   * Create or update one OffsetNote.
+   * Read more here: https://gassma.io/en/docs/reference/crud/update/upsert
+   * @param {GassmaGassmaOffsetNoteUpsertSingleData} upsertData - Arguments to update or create a OffsetNote.
+   * @example
+   * // Update or create a OffsetNote
+   * const offsetNote = gassma.OffsetNote.upsert({
+   *   create: {
+   *     // ... data to create a OffsetNote
+   *   },
+   *   update: {
+   *     // ... in case it already exists, update
+   *   },
+   *   where: {
+   *     // ... the filter for the OffsetNote we want to update
+   *   }
+   * })
+   */
   upsert<T extends GassmaGassmaOffsetNoteUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "OffsetNote">>>(upsertData: T & Gassma.Subset<T, GassmaGassmaOffsetNoteUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "OffsetNote">>>): GassmaGassmaOffsetNoteFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  /**
+   * Delete a OffsetNote.
+   * Read more here: https://gassma.io/en/docs/reference/crud/delete/delete
+   * @param {GassmaGassmaOffsetNoteDeleteSingleData} deleteData - Arguments to delete one OffsetNote.
+   * @example
+   * // Delete one OffsetNote
+   * const OffsetNote = gassma.OffsetNote.delete({
+   *   where: {
+   *     // ... filter to delete one OffsetNote
+   *   }
+   * })
+   * 
+   */
   delete<T extends GassmaGassmaOffsetNoteDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "OffsetNote">>>(deleteData: T & Gassma.Subset<T, GassmaGassmaOffsetNoteDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "OffsetNote">>>): GassmaGassmaOffsetNoteFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  /**
+   * Delete zero or more OffsetNotes.
+   * Read more here: https://gassma.io/en/docs/reference/crud/delete/deleteMany
+   * @param {GassmaGassmaOffsetNoteDeleteData} deleteData - Arguments to filter OffsetNotes to delete.
+   * @example
+   * // Delete a few OffsetNotes
+   * const { count } = gassma.OffsetNote.deleteMany({
+   *   where: {
+   *     // ... provide filter here
+   *   }
+   * })
+   * 
+   */
   deleteMany(deleteData: GassmaGassmaOffsetNoteDeleteData): DeleteManyReturn;
+  /**
+   * Delete every OffsetNote.
+   * Calling `deleteMany` without arguments deletes **all** rows in the sheet. This cannot be undone.
+   * Read more here: https://gassma.io/en/docs/reference/crud/delete/deleteMany
+   * @example
+   * // Delete every OffsetNote in the sheet
+   * const { count } = gassma.OffsetNote.deleteMany()
+   */
   deleteMany(): DeleteManyReturn;
+  /**
+   * Allows you to perform aggregations operations on a OffsetNote.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/statistics/aggregate
+   * @param {GassmaGassmaOffsetNoteAggregateData} aggregateData - Select which aggregations you would like to apply and on what fields.
+   * @example
+   * // Count the OffsetNotes that match the filter
+   * const aggregations = gassma.OffsetNote.aggregate({
+   *   _count: true,
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   take: 10,
+   * })
+   */
   aggregate<T extends GassmaGassmaOffsetNoteAggregateData>(aggregateData: T & Gassma.Subset<T, GassmaGassmaOffsetNoteAggregateData>): GassmaGassmaOffsetNoteAggregateResult<T>;
-  count<T extends GassmaGassmaOffsetNoteCountData>(coutData: T & Gassma.Subset<T, GassmaGassmaOffsetNoteCountData>): GassmaGassmaOffsetNoteCountResult<T>;
+  /**
+   * Count the number of OffsetNotes.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/statistics/count
+   * @param {GassmaGassmaOffsetNoteCountData} countData - Arguments to filter OffsetNotes to count.
+   * @example
+   * // Count the number of OffsetNotes
+   * const count = gassma.OffsetNote.count({
+   *   where: {
+   *     // ... the filter for the OffsetNotes we want to count
+   *   }
+   * })
+   */
+  count<T extends GassmaGassmaOffsetNoteCountData>(countData: T & Gassma.Subset<T, GassmaGassmaOffsetNoteCountData>): GassmaGassmaOffsetNoteCountResult<T>;
+  /**
+   * Count every OffsetNote.
+   * Read more here: https://gassma.io/en/docs/reference/statistics/count
+   * @example
+   * // Count every OffsetNote
+   * const count = gassma.OffsetNote.count()
+   */
   count(): number;
+  /**
+   * Group by OffsetNote.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/statistics/groupBy
+   * @param {GassmaGassmaOffsetNoteGroupByData} groupByData - Group by arguments.
+   * @example
+   * // Group by id, get count
+   * const result = gassma.OffsetNote.groupBy({
+   *   by: ['id'],
+   *   _count: true,
+   * })
+   * 
+   */
   groupBy<T extends GassmaGassmaOffsetNoteGroupByData>(groupByData: T & Gassma.Subset<T, GassmaGassmaOffsetNoteGroupByData>): GassmaGassmaOffsetNoteGroupByResult<T>[];
+  /**
+   * Get the value the next `create` will issue for an autoincrement field of OffsetNote.
+   * OffsetNote has no autoincrement field, so this cannot be called.
+   * Read more here: https://gassma.io/en/docs/reference/config/autoincrement
+   */
+  $getAutoincrement(field: never): number;
+  /**
+   * Set the value the next `create` will issue for an autoincrement field of OffsetNote.
+   * OffsetNote has no autoincrement field, so this cannot be called.
+   * Read more here: https://gassma.io/en/docs/reference/config/autoincrement
+   */
+  $setAutoincrement(field: never, next: number): void;
+  /**
+   * Line the counter of OffsetNote up with the rows already in the sheet.
+   * OffsetNote has no autoincrement field, so this cannot be called.
+   * Read more here: https://gassma.io/en/docs/reference/config/autoincrement
+   */
+  $syncAutoincrement(field: never): number;
 }
 
+/**
+ * The delegate class that exposes CRUD operations for the **User** model.
+ */
 export declare class GassmaGassmaUserController<GO extends GassmaGassmaUserOmit = {}, O = {}, CMap = {}> {
   constructor(sheetName: string, id?: string);
 
+  /**
+   * Fields of the User model
+   */
   readonly fields: Record<string, Gassma.FieldRef>;
+  /**
+   * Change the range this model reads and writes on the spreadsheet.
+   * Read more here: https://gassma.io/en/docs/reference/settings/changeSettings
+   * @param {number} startRowNumber - The row number the header row lives on.
+   * @param {number | string} startColumnValue - The first column of the range.
+   * @param {number | string} endColumnValue - The last column of the range.
+   */
   changeSettings(
     startRowNumber: number,
     startColumnValue: number | string,
     endColumnValue: number | string
   ): void;
+  /**
+   * Create many Users.
+   * Read more here: https://gassma.io/en/docs/reference/crud/create/createMany
+   * @param {GassmaGassmaUserCreateManyData} createdData - Arguments to create many Users.
+   * @example
+   * // Create many Users
+   * const user = gassma.User.createMany({
+   *   data: [
+   *     // ... provide data here
+   *   ]
+   * })
+   * 
+   */
   createMany(createdData: GassmaGassmaUserCreateManyData): CreateManyReturn;
+  /**
+   * Create many Users and returns the data saved in the spreadsheet.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/crud/create/createManyAndReturn
+   * @param {GassmaGassmaUserCreateManyAndReturnData} createdData - Arguments to create many Users.
+   * @example
+   * // Create many Users
+   * const user = gassma.User.createManyAndReturn({
+   *   data: [
+   *     // ... provide data here
+   *   ]
+   * })
+   * 
+   * // Create many Users and only return the `id`
+   * const userWithIdOnly = gassma.User.createManyAndReturn({
+   *   select: { id: true },
+   *   data: [
+   *     // ... provide data here
+   *   ]
+   * })
+   * 
+   */
   createManyAndReturn<T extends GassmaGassmaUserCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "User">>>(createdData: T & Gassma.Subset<T, GassmaGassmaUserCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "User">>>): GassmaGassmaUserFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  /**
+   * Create a User.
+   * Read more here: https://gassma.io/en/docs/reference/crud/create/create
+   * @param {GassmaGassmaUserCreateData} createdData - Arguments to create a User.
+   * @example
+   * // Create one User
+   * const User = gassma.User.create({
+   *   data: {
+   *     // ... data to create a User
+   *   }
+   * })
+   * 
+   */
   create<T extends GassmaGassmaUserCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "User">>>(createdData: T & Gassma.Subset<T, GassmaGassmaUserCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "User">>>): GassmaGassmaUserFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  /**
+   * Find the first User that matches the filter.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/crud/read/findFirst
+   * @param {GassmaGassmaUserFindFirstData} findData - Arguments to find a User
+   * @example
+   * // Get one User
+   * const user = gassma.User.findFirst({
+   *   where: {
+   *     // ... provide filter here
+   *   }
+   * })
+   */
   findFirst<T extends GassmaGassmaUserFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "User">>>(findData: T & Gassma.Subset<T, GassmaGassmaUserFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "User">>>): GassmaGassmaUserFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  /**
+   * Find the first User.
+   * Read more here: https://gassma.io/en/docs/reference/crud/read/findFirst
+   * @example
+   * // Get the first User
+   * const user = gassma.User.findFirst()
+   */
   findFirst(): GassmaGassmaUserFindResult<unknown, unknown, unknown, GO, O, CMap> | null;
+  /**
+   * Find the first User that matches the filter or
+   * throw `NotFoundError` if no matches were found.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/crud/read/findFirstOrThrow
+   * @param {GassmaGassmaUserFindFirstData} findData - Arguments to find a User
+   * @example
+   * // Get one User
+   * const user = gassma.User.findFirstOrThrow({
+   *   where: {
+   *     // ... provide filter here
+   *   }
+   * })
+   */
   findFirstOrThrow<T extends GassmaGassmaUserFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "User">>>(findData: T & Gassma.Subset<T, GassmaGassmaUserFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "User">>>): GassmaGassmaUserFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  /**
+   * Find the first User or throw `NotFoundError` if no Users exist.
+   * Read more here: https://gassma.io/en/docs/reference/crud/read/findFirstOrThrow
+   * @example
+   * // Get the first User
+   * const user = gassma.User.findFirstOrThrow()
+   */
   findFirstOrThrow(): GassmaGassmaUserFindResult<unknown, unknown, unknown, GO, O, CMap>;
+  /**
+   * Find zero or more Users that matches the filter.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/crud/read/findMany
+   * @param {GassmaGassmaUserFindManyData} findData - Arguments to filter and select certain fields only.
+   * @example
+   * // Get all Users
+   * const users = gassma.User.findMany()
+   * 
+   * // Get first 10 Users
+   * const users = gassma.User.findMany({ take: 10 })
+   * 
+   * // Only select the `id`
+   * const userWithIdOnly = gassma.User.findMany({ select: { id: true } })
+   * 
+   */
   findMany<T extends GassmaGassmaUserFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "User">>>(findData: T & Gassma.Subset<T, GassmaGassmaUserFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "User">>>): GassmaGassmaUserFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  /**
+   * Find all Users.
+   * Read more here: https://gassma.io/en/docs/reference/crud/read/findMany
+   * @example
+   * // Get all Users
+   * const users = gassma.User.findMany()
+   */
   findMany(): GassmaGassmaUserFindResult<unknown, unknown, unknown, GO, O, CMap>[];
+  /**
+   * Update one User.
+   * Read more here: https://gassma.io/en/docs/reference/crud/update/update
+   * @param {GassmaGassmaUserUpdateSingleData} updateData - Arguments to update one User.
+   * @example
+   * // Update one User
+   * const user = gassma.User.update({
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   data: {
+   *     // ... provide data here
+   *   }
+   * })
+   * 
+   */
   update<T extends GassmaGassmaUserUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "User">>>(updateData: T & Gassma.Subset<T, GassmaGassmaUserUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "User">>>): GassmaGassmaUserFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  /**
+   * Update zero or more Users.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/crud/update/updateMany
+   * @param {GassmaGassmaUserUpdateData} updateData - Arguments to update one or more rows.
+   * @example
+   * // Update many Users
+   * const { count } = gassma.User.updateMany({
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   data: {
+   *     // ... provide data here
+   *   }
+   * })
+   * 
+   */
   updateMany(updateData: GassmaGassmaUserUpdateData): UpdateManyReturn;
+  /**
+   * Update zero or more Users and returns the data updated in the spreadsheet.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/crud/update/updateManyAndReturn
+   * @param {GassmaGassmaUserUpdateManyAndReturnData} updateData - Arguments to update many Users.
+   * @example
+   * // Update many Users
+   * const users = gassma.User.updateManyAndReturn({
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   data: {
+   *     // ... provide data here
+   *   }
+   * })
+   * 
+   * // Update zero or more Users and only return the `id`
+   * const userWithIdOnly = gassma.User.updateManyAndReturn({
+   *   select: { id: true },
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   data: {
+   *     // ... provide data here
+   *   }
+   * })
+   * 
+   */
   updateManyAndReturn<T extends GassmaGassmaUserUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "User">>>(updateData: T & Gassma.Subset<T, GassmaGassmaUserUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "User">>>): GassmaGassmaUserFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  /**
+   * Create or update one User.
+   * Read more here: https://gassma.io/en/docs/reference/crud/update/upsert
+   * @param {GassmaGassmaUserUpsertSingleData} upsertData - Arguments to update or create a User.
+   * @example
+   * // Update or create a User
+   * const user = gassma.User.upsert({
+   *   create: {
+   *     // ... data to create a User
+   *   },
+   *   update: {
+   *     // ... in case it already exists, update
+   *   },
+   *   where: {
+   *     // ... the filter for the User we want to update
+   *   }
+   * })
+   */
   upsert<T extends GassmaGassmaUserUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "User">>>(upsertData: T & Gassma.Subset<T, GassmaGassmaUserUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "User">>>): GassmaGassmaUserFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  /**
+   * Delete a User.
+   * Read more here: https://gassma.io/en/docs/reference/crud/delete/delete
+   * @param {GassmaGassmaUserDeleteSingleData} deleteData - Arguments to delete one User.
+   * @example
+   * // Delete one User
+   * const User = gassma.User.delete({
+   *   where: {
+   *     // ... filter to delete one User
+   *   }
+   * })
+   * 
+   */
   delete<T extends GassmaGassmaUserDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "User">>>(deleteData: T & Gassma.Subset<T, GassmaGassmaUserDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "User">>>): GassmaGassmaUserFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  /**
+   * Delete zero or more Users.
+   * Read more here: https://gassma.io/en/docs/reference/crud/delete/deleteMany
+   * @param {GassmaGassmaUserDeleteData} deleteData - Arguments to filter Users to delete.
+   * @example
+   * // Delete a few Users
+   * const { count } = gassma.User.deleteMany({
+   *   where: {
+   *     // ... provide filter here
+   *   }
+   * })
+   * 
+   */
   deleteMany(deleteData: GassmaGassmaUserDeleteData): DeleteManyReturn;
+  /**
+   * Delete every User.
+   * Calling `deleteMany` without arguments deletes **all** rows in the sheet. This cannot be undone.
+   * Read more here: https://gassma.io/en/docs/reference/crud/delete/deleteMany
+   * @example
+   * // Delete every User in the sheet
+   * const { count } = gassma.User.deleteMany()
+   */
   deleteMany(): DeleteManyReturn;
+  /**
+   * Allows you to perform aggregations operations on a User.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/statistics/aggregate
+   * @param {GassmaGassmaUserAggregateData} aggregateData - Select which aggregations you would like to apply and on what fields.
+   * @example
+   * // Count the Users that match the filter
+   * const aggregations = gassma.User.aggregate({
+   *   _count: true,
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   take: 10,
+   * })
+   */
   aggregate<T extends GassmaGassmaUserAggregateData>(aggregateData: T & Gassma.Subset<T, GassmaGassmaUserAggregateData>): GassmaGassmaUserAggregateResult<T>;
-  count<T extends GassmaGassmaUserCountData>(coutData: T & Gassma.Subset<T, GassmaGassmaUserCountData>): GassmaGassmaUserCountResult<T>;
+  /**
+   * Count the number of Users.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/statistics/count
+   * @param {GassmaGassmaUserCountData} countData - Arguments to filter Users to count.
+   * @example
+   * // Count the number of Users
+   * const count = gassma.User.count({
+   *   where: {
+   *     // ... the filter for the Users we want to count
+   *   }
+   * })
+   */
+  count<T extends GassmaGassmaUserCountData>(countData: T & Gassma.Subset<T, GassmaGassmaUserCountData>): GassmaGassmaUserCountResult<T>;
+  /**
+   * Count every User.
+   * Read more here: https://gassma.io/en/docs/reference/statistics/count
+   * @example
+   * // Count every User
+   * const count = gassma.User.count()
+   */
   count(): number;
+  /**
+   * Group by User.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/statistics/groupBy
+   * @param {GassmaGassmaUserGroupByData} groupByData - Group by arguments.
+   * @example
+   * // Group by id, get count
+   * const result = gassma.User.groupBy({
+   *   by: ['id'],
+   *   _count: true,
+   * })
+   * 
+   */
   groupBy<T extends GassmaGassmaUserGroupByData>(groupByData: T & Gassma.Subset<T, GassmaGassmaUserGroupByData>): GassmaGassmaUserGroupByResult<T>[];
+  /**
+   * Get the value the next `create` will issue for an autoincrement field of User.
+   * Reading the counter is allowed inside `$transaction`.
+   * Throws `GassmaAutoincrementNotConfiguredError` when the field is not an autoincrement field.
+   * Read more here: https://gassma.io/en/docs/reference/config/autoincrement
+   * @param {string} field - An autoincrement field of User.
+   * @example
+   * // The id the next User will get
+   * const next = gassma.User.$getAutoincrement("id")
+   */
+  $getAutoincrement(field: "id"): number;
+  /**
+   * Set the value the next `create` will issue for an autoincrement field of User.
+   * `next` is the value that will be issued next, so it must be an integer of 1 or more.
+   * Throws `GassmaAutoincrementInTransactionError` inside `$transaction`, because the counter is never rolled back.
+   * Read more here: https://gassma.io/en/docs/reference/config/autoincrement
+   * @param {string} field - An autoincrement field of User.
+   * @param {number} next - The value the next `create` will issue.
+   * @example
+   * // Let the next User continue from 1000
+   * gassma.User.$setAutoincrement("id", 1000)
+   */
+  $setAutoincrement(field: "id", next: number): void;
+  /**
+   * Line the counter of User up with the rows already in the sheet.
+   * The counter becomes the largest value in the column plus one, which is also the return value.
+   * Throws `GassmaAutoincrementInTransactionError` inside `$transaction`, because the counter is never rolled back.
+   * Read more here: https://gassma.io/en/docs/reference/config/autoincrement
+   * @param {string} field - An autoincrement field of User.
+   * @example
+   * // Adopt a sheet that already has rows
+   * const next = gassma.User.$syncAutoincrement("id")
+   */
+  $syncAutoincrement(field: "id"): number;
 }
 
+/**
+ * The delegate class that exposes CRUD operations for the **Profile** model.
+ */
 export declare class GassmaGassmaProfileController<GO extends GassmaGassmaProfileOmit = {}, O = {}, CMap = {}> {
   constructor(sheetName: string, id?: string);
 
+  /**
+   * Fields of the Profile model
+   */
   readonly fields: Record<string, Gassma.FieldRef>;
+  /**
+   * Change the range this model reads and writes on the spreadsheet.
+   * Read more here: https://gassma.io/en/docs/reference/settings/changeSettings
+   * @param {number} startRowNumber - The row number the header row lives on.
+   * @param {number | string} startColumnValue - The first column of the range.
+   * @param {number | string} endColumnValue - The last column of the range.
+   */
   changeSettings(
     startRowNumber: number,
     startColumnValue: number | string,
     endColumnValue: number | string
   ): void;
+  /**
+   * Create many Profiles.
+   * Read more here: https://gassma.io/en/docs/reference/crud/create/createMany
+   * @param {GassmaGassmaProfileCreateManyData} createdData - Arguments to create many Profiles.
+   * @example
+   * // Create many Profiles
+   * const profile = gassma.Profile.createMany({
+   *   data: [
+   *     // ... provide data here
+   *   ]
+   * })
+   * 
+   */
   createMany(createdData: GassmaGassmaProfileCreateManyData): CreateManyReturn;
+  /**
+   * Create many Profiles and returns the data saved in the spreadsheet.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/crud/create/createManyAndReturn
+   * @param {GassmaGassmaProfileCreateManyAndReturnData} createdData - Arguments to create many Profiles.
+   * @example
+   * // Create many Profiles
+   * const profile = gassma.Profile.createManyAndReturn({
+   *   data: [
+   *     // ... provide data here
+   *   ]
+   * })
+   * 
+   * // Create many Profiles and only return the `id`
+   * const profileWithIdOnly = gassma.Profile.createManyAndReturn({
+   *   select: { id: true },
+   *   data: [
+   *     // ... provide data here
+   *   ]
+   * })
+   * 
+   */
   createManyAndReturn<T extends GassmaGassmaProfileCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Profile">>>(createdData: T & Gassma.Subset<T, GassmaGassmaProfileCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Profile">>>): GassmaGassmaProfileFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  /**
+   * Create a Profile.
+   * Read more here: https://gassma.io/en/docs/reference/crud/create/create
+   * @param {GassmaGassmaProfileCreateData} createdData - Arguments to create a Profile.
+   * @example
+   * // Create one Profile
+   * const Profile = gassma.Profile.create({
+   *   data: {
+   *     // ... data to create a Profile
+   *   }
+   * })
+   * 
+   */
   create<T extends GassmaGassmaProfileCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "Profile">>>(createdData: T & Gassma.Subset<T, GassmaGassmaProfileCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "Profile">>>): GassmaGassmaProfileFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  /**
+   * Find the first Profile that matches the filter.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/crud/read/findFirst
+   * @param {GassmaGassmaProfileFindFirstData} findData - Arguments to find a Profile
+   * @example
+   * // Get one Profile
+   * const profile = gassma.Profile.findFirst({
+   *   where: {
+   *     // ... provide filter here
+   *   }
+   * })
+   */
   findFirst<T extends GassmaGassmaProfileFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Profile">>>(findData: T & Gassma.Subset<T, GassmaGassmaProfileFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Profile">>>): GassmaGassmaProfileFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  /**
+   * Find the first Profile.
+   * Read more here: https://gassma.io/en/docs/reference/crud/read/findFirst
+   * @example
+   * // Get the first Profile
+   * const profile = gassma.Profile.findFirst()
+   */
   findFirst(): GassmaGassmaProfileFindResult<unknown, unknown, unknown, GO, O, CMap> | null;
+  /**
+   * Find the first Profile that matches the filter or
+   * throw `NotFoundError` if no matches were found.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/crud/read/findFirstOrThrow
+   * @param {GassmaGassmaProfileFindFirstData} findData - Arguments to find a Profile
+   * @example
+   * // Get one Profile
+   * const profile = gassma.Profile.findFirstOrThrow({
+   *   where: {
+   *     // ... provide filter here
+   *   }
+   * })
+   */
   findFirstOrThrow<T extends GassmaGassmaProfileFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Profile">>>(findData: T & Gassma.Subset<T, GassmaGassmaProfileFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Profile">>>): GassmaGassmaProfileFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  /**
+   * Find the first Profile or throw `NotFoundError` if no Profiles exist.
+   * Read more here: https://gassma.io/en/docs/reference/crud/read/findFirstOrThrow
+   * @example
+   * // Get the first Profile
+   * const profile = gassma.Profile.findFirstOrThrow()
+   */
   findFirstOrThrow(): GassmaGassmaProfileFindResult<unknown, unknown, unknown, GO, O, CMap>;
+  /**
+   * Find zero or more Profiles that matches the filter.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/crud/read/findMany
+   * @param {GassmaGassmaProfileFindManyData} findData - Arguments to filter and select certain fields only.
+   * @example
+   * // Get all Profiles
+   * const profiles = gassma.Profile.findMany()
+   * 
+   * // Get first 10 Profiles
+   * const profiles = gassma.Profile.findMany({ take: 10 })
+   * 
+   * // Only select the `id`
+   * const profileWithIdOnly = gassma.Profile.findMany({ select: { id: true } })
+   * 
+   */
   findMany<T extends GassmaGassmaProfileFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "Profile">>>(findData: T & Gassma.Subset<T, GassmaGassmaProfileFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "Profile">>>): GassmaGassmaProfileFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  /**
+   * Find all Profiles.
+   * Read more here: https://gassma.io/en/docs/reference/crud/read/findMany
+   * @example
+   * // Get all Profiles
+   * const profiles = gassma.Profile.findMany()
+   */
   findMany(): GassmaGassmaProfileFindResult<unknown, unknown, unknown, GO, O, CMap>[];
+  /**
+   * Update one Profile.
+   * Read more here: https://gassma.io/en/docs/reference/crud/update/update
+   * @param {GassmaGassmaProfileUpdateSingleData} updateData - Arguments to update one Profile.
+   * @example
+   * // Update one Profile
+   * const profile = gassma.Profile.update({
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   data: {
+   *     // ... provide data here
+   *   }
+   * })
+   * 
+   */
   update<T extends GassmaGassmaProfileUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Profile">>>(updateData: T & Gassma.Subset<T, GassmaGassmaProfileUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Profile">>>): GassmaGassmaProfileFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  /**
+   * Update zero or more Profiles.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/crud/update/updateMany
+   * @param {GassmaGassmaProfileUpdateData} updateData - Arguments to update one or more rows.
+   * @example
+   * // Update many Profiles
+   * const { count } = gassma.Profile.updateMany({
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   data: {
+   *     // ... provide data here
+   *   }
+   * })
+   * 
+   */
   updateMany(updateData: GassmaGassmaProfileUpdateData): UpdateManyReturn;
+  /**
+   * Update zero or more Profiles and returns the data updated in the spreadsheet.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/crud/update/updateManyAndReturn
+   * @param {GassmaGassmaProfileUpdateManyAndReturnData} updateData - Arguments to update many Profiles.
+   * @example
+   * // Update many Profiles
+   * const profiles = gassma.Profile.updateManyAndReturn({
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   data: {
+   *     // ... provide data here
+   *   }
+   * })
+   * 
+   * // Update zero or more Profiles and only return the `id`
+   * const profileWithIdOnly = gassma.Profile.updateManyAndReturn({
+   *   select: { id: true },
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   data: {
+   *     // ... provide data here
+   *   }
+   * })
+   * 
+   */
   updateManyAndReturn<T extends GassmaGassmaProfileUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Profile">>>(updateData: T & Gassma.Subset<T, GassmaGassmaProfileUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Profile">>>): GassmaGassmaProfileFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  /**
+   * Create or update one Profile.
+   * Read more here: https://gassma.io/en/docs/reference/crud/update/upsert
+   * @param {GassmaGassmaProfileUpsertSingleData} upsertData - Arguments to update or create a Profile.
+   * @example
+   * // Update or create a Profile
+   * const profile = gassma.Profile.upsert({
+   *   create: {
+   *     // ... data to create a Profile
+   *   },
+   *   update: {
+   *     // ... in case it already exists, update
+   *   },
+   *   where: {
+   *     // ... the filter for the Profile we want to update
+   *   }
+   * })
+   */
   upsert<T extends GassmaGassmaProfileUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Profile">>>(upsertData: T & Gassma.Subset<T, GassmaGassmaProfileUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Profile">>>): GassmaGassmaProfileFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  /**
+   * Delete a Profile.
+   * Read more here: https://gassma.io/en/docs/reference/crud/delete/delete
+   * @param {GassmaGassmaProfileDeleteSingleData} deleteData - Arguments to delete one Profile.
+   * @example
+   * // Delete one Profile
+   * const Profile = gassma.Profile.delete({
+   *   where: {
+   *     // ... filter to delete one Profile
+   *   }
+   * })
+   * 
+   */
   delete<T extends GassmaGassmaProfileDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Profile">>>(deleteData: T & Gassma.Subset<T, GassmaGassmaProfileDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Profile">>>): GassmaGassmaProfileFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  /**
+   * Delete zero or more Profiles.
+   * Read more here: https://gassma.io/en/docs/reference/crud/delete/deleteMany
+   * @param {GassmaGassmaProfileDeleteData} deleteData - Arguments to filter Profiles to delete.
+   * @example
+   * // Delete a few Profiles
+   * const { count } = gassma.Profile.deleteMany({
+   *   where: {
+   *     // ... provide filter here
+   *   }
+   * })
+   * 
+   */
   deleteMany(deleteData: GassmaGassmaProfileDeleteData): DeleteManyReturn;
+  /**
+   * Delete every Profile.
+   * Calling `deleteMany` without arguments deletes **all** rows in the sheet. This cannot be undone.
+   * Read more here: https://gassma.io/en/docs/reference/crud/delete/deleteMany
+   * @example
+   * // Delete every Profile in the sheet
+   * const { count } = gassma.Profile.deleteMany()
+   */
   deleteMany(): DeleteManyReturn;
+  /**
+   * Allows you to perform aggregations operations on a Profile.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/statistics/aggregate
+   * @param {GassmaGassmaProfileAggregateData} aggregateData - Select which aggregations you would like to apply and on what fields.
+   * @example
+   * // Count the Profiles that match the filter
+   * const aggregations = gassma.Profile.aggregate({
+   *   _count: true,
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   take: 10,
+   * })
+   */
   aggregate<T extends GassmaGassmaProfileAggregateData>(aggregateData: T & Gassma.Subset<T, GassmaGassmaProfileAggregateData>): GassmaGassmaProfileAggregateResult<T>;
-  count<T extends GassmaGassmaProfileCountData>(coutData: T & Gassma.Subset<T, GassmaGassmaProfileCountData>): GassmaGassmaProfileCountResult<T>;
+  /**
+   * Count the number of Profiles.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/statistics/count
+   * @param {GassmaGassmaProfileCountData} countData - Arguments to filter Profiles to count.
+   * @example
+   * // Count the number of Profiles
+   * const count = gassma.Profile.count({
+   *   where: {
+   *     // ... the filter for the Profiles we want to count
+   *   }
+   * })
+   */
+  count<T extends GassmaGassmaProfileCountData>(countData: T & Gassma.Subset<T, GassmaGassmaProfileCountData>): GassmaGassmaProfileCountResult<T>;
+  /**
+   * Count every Profile.
+   * Read more here: https://gassma.io/en/docs/reference/statistics/count
+   * @example
+   * // Count every Profile
+   * const count = gassma.Profile.count()
+   */
   count(): number;
+  /**
+   * Group by Profile.
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://gassma.io/en/docs/reference/statistics/groupBy
+   * @param {GassmaGassmaProfileGroupByData} groupByData - Group by arguments.
+   * @example
+   * // Group by id, get count
+   * const result = gassma.Profile.groupBy({
+   *   by: ['id'],
+   *   _count: true,
+   * })
+   * 
+   */
   groupBy<T extends GassmaGassmaProfileGroupByData>(groupByData: T & Gassma.Subset<T, GassmaGassmaProfileGroupByData>): GassmaGassmaProfileGroupByResult<T>[];
+  /**
+   * Get the value the next `create` will issue for an autoincrement field of Profile.
+   * Reading the counter is allowed inside `$transaction`.
+   * Throws `GassmaAutoincrementNotConfiguredError` when the field is not an autoincrement field.
+   * Read more here: https://gassma.io/en/docs/reference/config/autoincrement
+   * @param {string} field - An autoincrement field of Profile.
+   * @example
+   * // The id the next Profile will get
+   * const next = gassma.Profile.$getAutoincrement("id")
+   */
+  $getAutoincrement(field: "id"): number;
+  /**
+   * Set the value the next `create` will issue for an autoincrement field of Profile.
+   * `next` is the value that will be issued next, so it must be an integer of 1 or more.
+   * Throws `GassmaAutoincrementInTransactionError` inside `$transaction`, because the counter is never rolled back.
+   * Read more here: https://gassma.io/en/docs/reference/config/autoincrement
+   * @param {string} field - An autoincrement field of Profile.
+   * @param {number} next - The value the next `create` will issue.
+   * @example
+   * // Let the next Profile continue from 1000
+   * gassma.Profile.$setAutoincrement("id", 1000)
+   */
+  $setAutoincrement(field: "id", next: number): void;
+  /**
+   * Line the counter of Profile up with the rows already in the sheet.
+   * The counter becomes the largest value in the column plus one, which is also the return value.
+   * Throws `GassmaAutoincrementInTransactionError` inside `$transaction`, because the counter is never rolled back.
+   * Read more here: https://gassma.io/en/docs/reference/config/autoincrement
+   * @param {string} field - An autoincrement field of Profile.
+   * @example
+   * // Adopt a sheet that already has rows
+   * const next = gassma.Profile.$syncAutoincrement("id")
+   */
+  $syncAutoincrement(field: "id"): number;
 }
 
 export type ManyReturn = {
@@ -4411,78 +9333,93 @@ export type GassmaGassmaProfileAggregateData = {
   _sum?: GassmaGassmaProfileNumberSelect;
 };
 
-export type GassmaGassmaPostGroupByData = Omit<GassmaGassmaPostAggregateData, "cursor"> & {
+export type GassmaGassmaPostGroupByData = Omit<GassmaGassmaPostAggregateData, "cursor" | "orderBy"> & {
   by: "id" | "title" | "content" | "published" | "viewCount" | "rating" | "authorId" | "categoryId" | "createdAt" | "updatedAt" | ("id" | "title" | "content" | "published" | "viewCount" | "rating" | "authorId" | "categoryId" | "createdAt" | "updatedAt")[];
+  orderBy?: GassmaGassmaPostOrderByWithAggregation | GassmaGassmaPostOrderByWithAggregation[];
   having?: GassmaGassmaPostHavingUse;
 };
 
-export type GassmaGassmaCommentGroupByData = Omit<GassmaGassmaCommentAggregateData, "cursor"> & {
+export type GassmaGassmaCommentGroupByData = Omit<GassmaGassmaCommentAggregateData, "cursor" | "orderBy"> & {
   by: "id" | "text" | "authorId" | "postId" | "createdAt" | ("id" | "text" | "authorId" | "postId" | "createdAt")[];
+  orderBy?: GassmaGassmaCommentOrderByWithAggregation | GassmaGassmaCommentOrderByWithAggregation[];
   having?: GassmaGassmaCommentHavingUse;
 };
 
-export type GassmaGassmaCategoryGroupByData = Omit<GassmaGassmaCategoryAggregateData, "cursor"> & {
+export type GassmaGassmaCategoryGroupByData = Omit<GassmaGassmaCategoryAggregateData, "cursor" | "orderBy"> & {
   by: "id" | "name" | "parentId" | ("id" | "name" | "parentId")[];
+  orderBy?: GassmaGassmaCategoryOrderByWithAggregation | GassmaGassmaCategoryOrderByWithAggregation[];
   having?: GassmaGassmaCategoryHavingUse;
 };
 
-export type GassmaGassmaTagGroupByData = Omit<GassmaGassmaTagAggregateData, "cursor"> & {
+export type GassmaGassmaTagGroupByData = Omit<GassmaGassmaTagAggregateData, "cursor" | "orderBy"> & {
   by: "id" | "name" | ("id" | "name")[];
+  orderBy?: GassmaGassmaTagOrderByWithAggregation | GassmaGassmaTagOrderByWithAggregation[];
   having?: GassmaGassmaTagHavingUse;
 };
 
-export type GassmaGassmaSensorReadingGroupByData = Omit<GassmaGassmaSensorReadingAggregateData, "cursor"> & {
+export type GassmaGassmaSensorReadingGroupByData = Omit<GassmaGassmaSensorReadingAggregateData, "cursor" | "orderBy"> & {
   by: "id" | "sensorName" | "recordedAt" | ("id" | "sensorName" | "recordedAt")[];
+  orderBy?: GassmaGassmaSensorReadingOrderByWithAggregation | GassmaGassmaSensorReadingOrderByWithAggregation[];
   having?: GassmaGassmaSensorReadingHavingUse;
 };
 
-export type GassmaGassmaTimeSlotGroupByData = Omit<GassmaGassmaTimeSlotAggregateData, "cursor"> & {
+export type GassmaGassmaTimeSlotGroupByData = Omit<GassmaGassmaTimeSlotAggregateData, "cursor" | "orderBy"> & {
   by: "id" | "label" | "slotAt" | ("id" | "label" | "slotAt")[];
+  orderBy?: GassmaGassmaTimeSlotOrderByWithAggregation | GassmaGassmaTimeSlotOrderByWithAggregation[];
   having?: GassmaGassmaTimeSlotHavingUse;
 };
 
-export type GassmaGassmaReservationGroupByData = Omit<GassmaGassmaReservationAggregateData, "cursor"> & {
+export type GassmaGassmaReservationGroupByData = Omit<GassmaGassmaReservationAggregateData, "cursor" | "orderBy"> & {
   by: "id" | "guestName" | "slotAt" | ("id" | "guestName" | "slotAt")[];
+  orderBy?: GassmaGassmaReservationOrderByWithAggregation | GassmaGassmaReservationOrderByWithAggregation[];
   having?: GassmaGassmaReservationHavingUse;
 };
 
-export type GassmaGassmaProductGroupByData = Omit<GassmaGassmaProductAggregateData, "cursor"> & {
+export type GassmaGassmaProductGroupByData = Omit<GassmaGassmaProductAggregateData, "cursor" | "orderBy"> & {
   by: "id" | "name" | "price" | "stock" | "status" | "createdAt" | "updatedAt" | ("id" | "name" | "price" | "stock" | "status" | "createdAt" | "updatedAt")[];
+  orderBy?: GassmaGassmaProductOrderByWithAggregation | GassmaGassmaProductOrderByWithAggregation[];
   having?: GassmaGassmaProductHavingUse;
 };
 
-export type GassmaGassmaOrderGroupByData = Omit<GassmaGassmaOrderAggregateData, "cursor"> & {
+export type GassmaGassmaOrderGroupByData = Omit<GassmaGassmaOrderAggregateData, "cursor" | "orderBy"> & {
   by: "id" | "userId" | "totalAmount" | "quantity" | "status" | "createdAt" | ("id" | "userId" | "totalAmount" | "quantity" | "status" | "createdAt")[];
+  orderBy?: GassmaGassmaOrderOrderByWithAggregation | GassmaGassmaOrderOrderByWithAggregation[];
   having?: GassmaGassmaOrderHavingUse;
 };
 
-export type GassmaGassmaOrderItemGroupByData = Omit<GassmaGassmaOrderItemAggregateData, "cursor"> & {
+export type GassmaGassmaOrderItemGroupByData = Omit<GassmaGassmaOrderItemAggregateData, "cursor" | "orderBy"> & {
   by: "id" | "orderId" | "productId" | "quantity" | "unitPrice" | ("id" | "orderId" | "productId" | "quantity" | "unitPrice")[];
+  orderBy?: GassmaGassmaOrderItemOrderByWithAggregation | GassmaGassmaOrderItemOrderByWithAggregation[];
   having?: GassmaGassmaOrderItemHavingUse;
 };
 
-export type GassmaGassmaFormulaCellGroupByData = Omit<GassmaGassmaFormulaCellAggregateData, "cursor"> & {
+export type GassmaGassmaFormulaCellGroupByData = Omit<GassmaGassmaFormulaCellAggregateData, "cursor" | "orderBy"> & {
   by: "id" | "label" | "amount" | "total" | ("id" | "label" | "amount" | "total")[];
+  orderBy?: GassmaGassmaFormulaCellOrderByWithAggregation | GassmaGassmaFormulaCellOrderByWithAggregation[];
   having?: GassmaGassmaFormulaCellHavingUse;
 };
 
-export type GassmaGassmaNotificationGroupByData = Omit<GassmaGassmaNotificationAggregateData, "cursor"> & {
+export type GassmaGassmaNotificationGroupByData = Omit<GassmaGassmaNotificationAggregateData, "cursor" | "orderBy"> & {
   by: "id" | "userId" | "message" | "isRead" | ("id" | "userId" | "message" | "isRead")[];
+  orderBy?: GassmaGassmaNotificationOrderByWithAggregation | GassmaGassmaNotificationOrderByWithAggregation[];
   having?: GassmaGassmaNotificationHavingUse;
 };
 
-export type GassmaGassmaOffsetNoteGroupByData = Omit<GassmaGassmaOffsetNoteAggregateData, "cursor"> & {
+export type GassmaGassmaOffsetNoteGroupByData = Omit<GassmaGassmaOffsetNoteAggregateData, "cursor" | "orderBy"> & {
   by: "id" | "title" | "value" | ("id" | "title" | "value")[];
+  orderBy?: GassmaGassmaOffsetNoteOrderByWithAggregation | GassmaGassmaOffsetNoteOrderByWithAggregation[];
   having?: GassmaGassmaOffsetNoteHavingUse;
 };
 
-export type GassmaGassmaUserGroupByData = Omit<GassmaGassmaUserAggregateData, "cursor"> & {
+export type GassmaGassmaUserGroupByData = Omit<GassmaGassmaUserAggregateData, "cursor" | "orderBy"> & {
   by: "id" | "email" | "name" | "age" | "isActive" | "role" | "createdAt" | ("id" | "email" | "name" | "age" | "isActive" | "role" | "createdAt")[];
+  orderBy?: GassmaGassmaUserOrderByWithAggregation | GassmaGassmaUserOrderByWithAggregation[];
   having?: GassmaGassmaUserHavingUse;
 };
 
-export type GassmaGassmaProfileGroupByData = Omit<GassmaGassmaProfileAggregateData, "cursor"> & {
+export type GassmaGassmaProfileGroupByData = Omit<GassmaGassmaProfileAggregateData, "cursor" | "orderBy"> & {
   by: "id" | "bio" | "website" | "userId" | ("id" | "bio" | "website" | "userId")[];
+  orderBy?: GassmaGassmaProfileOrderByWithAggregation | GassmaGassmaProfileOrderByWithAggregation[];
   having?: GassmaGassmaProfileHavingUse;
 };
 
@@ -4768,6 +9705,195 @@ export type GassmaGassmaProfileOrderBy = {
   "userId"?: "asc" | "desc" | Gassma.SortOrderInput;
   "user"?: GassmaGassmaUserOrderBy | { _count: "asc" | "desc" };
   "_count"?: { "user"?: "asc" | "desc" };
+};
+
+export type GassmaGassmaPostOrderByWithAggregation = {
+  "id"?: "asc" | "desc" | Gassma.SortOrderInput;
+  "title"?: "asc" | "desc" | Gassma.SortOrderInput;
+  "content"?: "asc" | "desc" | Gassma.SortOrderInput;
+  "published"?: "asc" | "desc" | Gassma.SortOrderInput;
+  "viewCount"?: "asc" | "desc" | Gassma.SortOrderInput;
+  "rating"?: "asc" | "desc" | Gassma.SortOrderInput;
+  "authorId"?: "asc" | "desc" | Gassma.SortOrderInput;
+  "categoryId"?: "asc" | "desc" | Gassma.SortOrderInput;
+  "createdAt"?: "asc" | "desc" | Gassma.SortOrderInput;
+  "updatedAt"?: "asc" | "desc" | Gassma.SortOrderInput;
+  "_avg"?: { "id"?: "asc" | "desc"; "content"?: "asc" | "desc"; "viewCount"?: "asc" | "desc"; "rating"?: "asc" | "desc"; "authorId"?: "asc" | "desc"; "categoryId"?: "asc" | "desc" };
+  "_count"?: { "id"?: "asc" | "desc"; "title"?: "asc" | "desc"; "content"?: "asc" | "desc"; "published"?: "asc" | "desc"; "viewCount"?: "asc" | "desc"; "rating"?: "asc" | "desc"; "authorId"?: "asc" | "desc"; "categoryId"?: "asc" | "desc"; "createdAt"?: "asc" | "desc"; "updatedAt"?: "asc" | "desc" };
+  "_max"?: { "id"?: "asc" | "desc"; "title"?: "asc" | "desc"; "content"?: "asc" | "desc"; "published"?: "asc" | "desc"; "viewCount"?: "asc" | "desc"; "rating"?: "asc" | "desc"; "authorId"?: "asc" | "desc"; "categoryId"?: "asc" | "desc"; "createdAt"?: "asc" | "desc"; "updatedAt"?: "asc" | "desc" };
+  "_min"?: { "id"?: "asc" | "desc"; "title"?: "asc" | "desc"; "content"?: "asc" | "desc"; "published"?: "asc" | "desc"; "viewCount"?: "asc" | "desc"; "rating"?: "asc" | "desc"; "authorId"?: "asc" | "desc"; "categoryId"?: "asc" | "desc"; "createdAt"?: "asc" | "desc"; "updatedAt"?: "asc" | "desc" };
+  "_sum"?: { "id"?: "asc" | "desc"; "content"?: "asc" | "desc"; "viewCount"?: "asc" | "desc"; "rating"?: "asc" | "desc"; "authorId"?: "asc" | "desc"; "categoryId"?: "asc" | "desc" };
+};
+
+export type GassmaGassmaCommentOrderByWithAggregation = {
+  "id"?: "asc" | "desc" | Gassma.SortOrderInput;
+  "text"?: "asc" | "desc" | Gassma.SortOrderInput;
+  "authorId"?: "asc" | "desc" | Gassma.SortOrderInput;
+  "postId"?: "asc" | "desc" | Gassma.SortOrderInput;
+  "createdAt"?: "asc" | "desc" | Gassma.SortOrderInput;
+  "_avg"?: { "id"?: "asc" | "desc"; "authorId"?: "asc" | "desc"; "postId"?: "asc" | "desc" };
+  "_count"?: { "id"?: "asc" | "desc"; "text"?: "asc" | "desc"; "authorId"?: "asc" | "desc"; "postId"?: "asc" | "desc"; "createdAt"?: "asc" | "desc" };
+  "_max"?: { "id"?: "asc" | "desc"; "text"?: "asc" | "desc"; "authorId"?: "asc" | "desc"; "postId"?: "asc" | "desc"; "createdAt"?: "asc" | "desc" };
+  "_min"?: { "id"?: "asc" | "desc"; "text"?: "asc" | "desc"; "authorId"?: "asc" | "desc"; "postId"?: "asc" | "desc"; "createdAt"?: "asc" | "desc" };
+  "_sum"?: { "id"?: "asc" | "desc"; "authorId"?: "asc" | "desc"; "postId"?: "asc" | "desc" };
+};
+
+export type GassmaGassmaCategoryOrderByWithAggregation = {
+  "id"?: "asc" | "desc" | Gassma.SortOrderInput;
+  "name"?: "asc" | "desc" | Gassma.SortOrderInput;
+  "parentId"?: "asc" | "desc" | Gassma.SortOrderInput;
+  "_avg"?: { "id"?: "asc" | "desc"; "parentId"?: "asc" | "desc" };
+  "_count"?: { "id"?: "asc" | "desc"; "name"?: "asc" | "desc"; "parentId"?: "asc" | "desc" };
+  "_max"?: { "id"?: "asc" | "desc"; "name"?: "asc" | "desc"; "parentId"?: "asc" | "desc" };
+  "_min"?: { "id"?: "asc" | "desc"; "name"?: "asc" | "desc"; "parentId"?: "asc" | "desc" };
+  "_sum"?: { "id"?: "asc" | "desc"; "parentId"?: "asc" | "desc" };
+};
+
+export type GassmaGassmaTagOrderByWithAggregation = {
+  "id"?: "asc" | "desc" | Gassma.SortOrderInput;
+  "name"?: "asc" | "desc" | Gassma.SortOrderInput;
+  "_avg"?: { "id"?: "asc" | "desc" };
+  "_count"?: { "id"?: "asc" | "desc"; "name"?: "asc" | "desc" };
+  "_max"?: { "id"?: "asc" | "desc"; "name"?: "asc" | "desc" };
+  "_min"?: { "id"?: "asc" | "desc"; "name"?: "asc" | "desc" };
+  "_sum"?: { "id"?: "asc" | "desc" };
+};
+
+export type GassmaGassmaSensorReadingOrderByWithAggregation = {
+  "id"?: "asc" | "desc" | Gassma.SortOrderInput;
+  "sensorName"?: "asc" | "desc" | Gassma.SortOrderInput;
+  "recordedAt"?: "asc" | "desc" | Gassma.SortOrderInput;
+  "_avg"?: { "id"?: "asc" | "desc" };
+  "_count"?: { "id"?: "asc" | "desc"; "sensorName"?: "asc" | "desc"; "recordedAt"?: "asc" | "desc" };
+  "_max"?: { "id"?: "asc" | "desc"; "sensorName"?: "asc" | "desc"; "recordedAt"?: "asc" | "desc" };
+  "_min"?: { "id"?: "asc" | "desc"; "sensorName"?: "asc" | "desc"; "recordedAt"?: "asc" | "desc" };
+  "_sum"?: { "id"?: "asc" | "desc" };
+};
+
+export type GassmaGassmaTimeSlotOrderByWithAggregation = {
+  "id"?: "asc" | "desc" | Gassma.SortOrderInput;
+  "label"?: "asc" | "desc" | Gassma.SortOrderInput;
+  "slotAt"?: "asc" | "desc" | Gassma.SortOrderInput;
+  "_avg"?: { "id"?: "asc" | "desc" };
+  "_count"?: { "id"?: "asc" | "desc"; "label"?: "asc" | "desc"; "slotAt"?: "asc" | "desc" };
+  "_max"?: { "id"?: "asc" | "desc"; "label"?: "asc" | "desc"; "slotAt"?: "asc" | "desc" };
+  "_min"?: { "id"?: "asc" | "desc"; "label"?: "asc" | "desc"; "slotAt"?: "asc" | "desc" };
+  "_sum"?: { "id"?: "asc" | "desc" };
+};
+
+export type GassmaGassmaReservationOrderByWithAggregation = {
+  "id"?: "asc" | "desc" | Gassma.SortOrderInput;
+  "guestName"?: "asc" | "desc" | Gassma.SortOrderInput;
+  "slotAt"?: "asc" | "desc" | Gassma.SortOrderInput;
+  "_avg"?: { "id"?: "asc" | "desc" };
+  "_count"?: { "id"?: "asc" | "desc"; "guestName"?: "asc" | "desc"; "slotAt"?: "asc" | "desc" };
+  "_max"?: { "id"?: "asc" | "desc"; "guestName"?: "asc" | "desc"; "slotAt"?: "asc" | "desc" };
+  "_min"?: { "id"?: "asc" | "desc"; "guestName"?: "asc" | "desc"; "slotAt"?: "asc" | "desc" };
+  "_sum"?: { "id"?: "asc" | "desc" };
+};
+
+export type GassmaGassmaProductOrderByWithAggregation = {
+  "id"?: "asc" | "desc" | Gassma.SortOrderInput;
+  "name"?: "asc" | "desc" | Gassma.SortOrderInput;
+  "price"?: "asc" | "desc" | Gassma.SortOrderInput;
+  "stock"?: "asc" | "desc" | Gassma.SortOrderInput;
+  "status"?: "asc" | "desc" | Gassma.SortOrderInput;
+  "createdAt"?: "asc" | "desc" | Gassma.SortOrderInput;
+  "updatedAt"?: "asc" | "desc" | Gassma.SortOrderInput;
+  "_avg"?: { "id"?: "asc" | "desc"; "price"?: "asc" | "desc"; "stock"?: "asc" | "desc" };
+  "_count"?: { "id"?: "asc" | "desc"; "name"?: "asc" | "desc"; "price"?: "asc" | "desc"; "stock"?: "asc" | "desc"; "status"?: "asc" | "desc"; "createdAt"?: "asc" | "desc"; "updatedAt"?: "asc" | "desc" };
+  "_max"?: { "id"?: "asc" | "desc"; "name"?: "asc" | "desc"; "price"?: "asc" | "desc"; "stock"?: "asc" | "desc"; "status"?: "asc" | "desc"; "createdAt"?: "asc" | "desc"; "updatedAt"?: "asc" | "desc" };
+  "_min"?: { "id"?: "asc" | "desc"; "name"?: "asc" | "desc"; "price"?: "asc" | "desc"; "stock"?: "asc" | "desc"; "status"?: "asc" | "desc"; "createdAt"?: "asc" | "desc"; "updatedAt"?: "asc" | "desc" };
+  "_sum"?: { "id"?: "asc" | "desc"; "price"?: "asc" | "desc"; "stock"?: "asc" | "desc" };
+};
+
+export type GassmaGassmaOrderOrderByWithAggregation = {
+  "id"?: "asc" | "desc" | Gassma.SortOrderInput;
+  "userId"?: "asc" | "desc" | Gassma.SortOrderInput;
+  "totalAmount"?: "asc" | "desc" | Gassma.SortOrderInput;
+  "quantity"?: "asc" | "desc" | Gassma.SortOrderInput;
+  "status"?: "asc" | "desc" | Gassma.SortOrderInput;
+  "createdAt"?: "asc" | "desc" | Gassma.SortOrderInput;
+  "_avg"?: { "id"?: "asc" | "desc"; "userId"?: "asc" | "desc"; "totalAmount"?: "asc" | "desc"; "quantity"?: "asc" | "desc" };
+  "_count"?: { "id"?: "asc" | "desc"; "userId"?: "asc" | "desc"; "totalAmount"?: "asc" | "desc"; "quantity"?: "asc" | "desc"; "status"?: "asc" | "desc"; "createdAt"?: "asc" | "desc" };
+  "_max"?: { "id"?: "asc" | "desc"; "userId"?: "asc" | "desc"; "totalAmount"?: "asc" | "desc"; "quantity"?: "asc" | "desc"; "status"?: "asc" | "desc"; "createdAt"?: "asc" | "desc" };
+  "_min"?: { "id"?: "asc" | "desc"; "userId"?: "asc" | "desc"; "totalAmount"?: "asc" | "desc"; "quantity"?: "asc" | "desc"; "status"?: "asc" | "desc"; "createdAt"?: "asc" | "desc" };
+  "_sum"?: { "id"?: "asc" | "desc"; "userId"?: "asc" | "desc"; "totalAmount"?: "asc" | "desc"; "quantity"?: "asc" | "desc" };
+};
+
+export type GassmaGassmaOrderItemOrderByWithAggregation = {
+  "id"?: "asc" | "desc" | Gassma.SortOrderInput;
+  "orderId"?: "asc" | "desc" | Gassma.SortOrderInput;
+  "productId"?: "asc" | "desc" | Gassma.SortOrderInput;
+  "quantity"?: "asc" | "desc" | Gassma.SortOrderInput;
+  "unitPrice"?: "asc" | "desc" | Gassma.SortOrderInput;
+  "_avg"?: { "id"?: "asc" | "desc"; "orderId"?: "asc" | "desc"; "productId"?: "asc" | "desc"; "quantity"?: "asc" | "desc"; "unitPrice"?: "asc" | "desc" };
+  "_count"?: { "id"?: "asc" | "desc"; "orderId"?: "asc" | "desc"; "productId"?: "asc" | "desc"; "quantity"?: "asc" | "desc"; "unitPrice"?: "asc" | "desc" };
+  "_max"?: { "id"?: "asc" | "desc"; "orderId"?: "asc" | "desc"; "productId"?: "asc" | "desc"; "quantity"?: "asc" | "desc"; "unitPrice"?: "asc" | "desc" };
+  "_min"?: { "id"?: "asc" | "desc"; "orderId"?: "asc" | "desc"; "productId"?: "asc" | "desc"; "quantity"?: "asc" | "desc"; "unitPrice"?: "asc" | "desc" };
+  "_sum"?: { "id"?: "asc" | "desc"; "orderId"?: "asc" | "desc"; "productId"?: "asc" | "desc"; "quantity"?: "asc" | "desc"; "unitPrice"?: "asc" | "desc" };
+};
+
+export type GassmaGassmaFormulaCellOrderByWithAggregation = {
+  "id"?: "asc" | "desc" | Gassma.SortOrderInput;
+  "label"?: "asc" | "desc" | Gassma.SortOrderInput;
+  "amount"?: "asc" | "desc" | Gassma.SortOrderInput;
+  "total"?: "asc" | "desc" | Gassma.SortOrderInput;
+  "_avg"?: { "id"?: "asc" | "desc"; "amount"?: "asc" | "desc"; "total"?: "asc" | "desc" };
+  "_count"?: { "id"?: "asc" | "desc"; "label"?: "asc" | "desc"; "amount"?: "asc" | "desc"; "total"?: "asc" | "desc" };
+  "_max"?: { "id"?: "asc" | "desc"; "label"?: "asc" | "desc"; "amount"?: "asc" | "desc"; "total"?: "asc" | "desc" };
+  "_min"?: { "id"?: "asc" | "desc"; "label"?: "asc" | "desc"; "amount"?: "asc" | "desc"; "total"?: "asc" | "desc" };
+  "_sum"?: { "id"?: "asc" | "desc"; "amount"?: "asc" | "desc"; "total"?: "asc" | "desc" };
+};
+
+export type GassmaGassmaNotificationOrderByWithAggregation = {
+  "id"?: "asc" | "desc" | Gassma.SortOrderInput;
+  "userId"?: "asc" | "desc" | Gassma.SortOrderInput;
+  "message"?: "asc" | "desc" | Gassma.SortOrderInput;
+  "isRead"?: "asc" | "desc" | Gassma.SortOrderInput;
+  "_avg"?: { "id"?: "asc" | "desc"; "userId"?: "asc" | "desc" };
+  "_count"?: { "id"?: "asc" | "desc"; "userId"?: "asc" | "desc"; "message"?: "asc" | "desc"; "isRead"?: "asc" | "desc" };
+  "_max"?: { "id"?: "asc" | "desc"; "userId"?: "asc" | "desc"; "message"?: "asc" | "desc"; "isRead"?: "asc" | "desc" };
+  "_min"?: { "id"?: "asc" | "desc"; "userId"?: "asc" | "desc"; "message"?: "asc" | "desc"; "isRead"?: "asc" | "desc" };
+  "_sum"?: { "id"?: "asc" | "desc"; "userId"?: "asc" | "desc" };
+};
+
+export type GassmaGassmaOffsetNoteOrderByWithAggregation = {
+  "id"?: "asc" | "desc" | Gassma.SortOrderInput;
+  "title"?: "asc" | "desc" | Gassma.SortOrderInput;
+  "value"?: "asc" | "desc" | Gassma.SortOrderInput;
+  "_avg"?: { "id"?: "asc" | "desc"; "value"?: "asc" | "desc" };
+  "_count"?: { "id"?: "asc" | "desc"; "title"?: "asc" | "desc"; "value"?: "asc" | "desc" };
+  "_max"?: { "id"?: "asc" | "desc"; "title"?: "asc" | "desc"; "value"?: "asc" | "desc" };
+  "_min"?: { "id"?: "asc" | "desc"; "title"?: "asc" | "desc"; "value"?: "asc" | "desc" };
+  "_sum"?: { "id"?: "asc" | "desc"; "value"?: "asc" | "desc" };
+};
+
+export type GassmaGassmaUserOrderByWithAggregation = {
+  "id"?: "asc" | "desc" | Gassma.SortOrderInput;
+  "email"?: "asc" | "desc" | Gassma.SortOrderInput;
+  "name"?: "asc" | "desc" | Gassma.SortOrderInput;
+  "age"?: "asc" | "desc" | Gassma.SortOrderInput;
+  "isActive"?: "asc" | "desc" | Gassma.SortOrderInput;
+  "role"?: "asc" | "desc" | Gassma.SortOrderInput;
+  "createdAt"?: "asc" | "desc" | Gassma.SortOrderInput;
+  "_avg"?: { "id"?: "asc" | "desc"; "age"?: "asc" | "desc" };
+  "_count"?: { "id"?: "asc" | "desc"; "email"?: "asc" | "desc"; "name"?: "asc" | "desc"; "age"?: "asc" | "desc"; "isActive"?: "asc" | "desc"; "role"?: "asc" | "desc"; "createdAt"?: "asc" | "desc" };
+  "_max"?: { "id"?: "asc" | "desc"; "email"?: "asc" | "desc"; "name"?: "asc" | "desc"; "age"?: "asc" | "desc"; "isActive"?: "asc" | "desc"; "role"?: "asc" | "desc"; "createdAt"?: "asc" | "desc" };
+  "_min"?: { "id"?: "asc" | "desc"; "email"?: "asc" | "desc"; "name"?: "asc" | "desc"; "age"?: "asc" | "desc"; "isActive"?: "asc" | "desc"; "role"?: "asc" | "desc"; "createdAt"?: "asc" | "desc" };
+  "_sum"?: { "id"?: "asc" | "desc"; "age"?: "asc" | "desc" };
+};
+
+export type GassmaGassmaProfileOrderByWithAggregation = {
+  "id"?: "asc" | "desc" | Gassma.SortOrderInput;
+  "bio"?: "asc" | "desc" | Gassma.SortOrderInput;
+  "website"?: "asc" | "desc" | Gassma.SortOrderInput;
+  "userId"?: "asc" | "desc" | Gassma.SortOrderInput;
+  "_avg"?: { "id"?: "asc" | "desc"; "userId"?: "asc" | "desc" };
+  "_count"?: { "id"?: "asc" | "desc"; "bio"?: "asc" | "desc"; "website"?: "asc" | "desc"; "userId"?: "asc" | "desc" };
+  "_max"?: { "id"?: "asc" | "desc"; "bio"?: "asc" | "desc"; "website"?: "asc" | "desc"; "userId"?: "asc" | "desc" };
+  "_min"?: { "id"?: "asc" | "desc"; "bio"?: "asc" | "desc"; "website"?: "asc" | "desc"; "userId"?: "asc" | "desc" };
+  "_sum"?: { "id"?: "asc" | "desc"; "userId"?: "asc" | "desc" };
 };
 
 export type GassmaGassmaPostSelect = {
@@ -5513,6 +10639,10 @@ export type GassmaGassmaProfileCountResult<T extends GassmaGassmaProfileCountDat
     : { [K in keyof S]: number }
   : number;
 
+/**
+ * Model Post
+ * 
+ */
 export type GassmaGassmaPostCreateReturn = {
  "id": number;
  "title": string;
@@ -5526,6 +10656,10 @@ export type GassmaGassmaPostCreateReturn = {
  "updatedAt": Date;
 };
 
+/**
+ * Model Comment
+ * 
+ */
 export type GassmaGassmaCommentCreateReturn = {
  "id": number;
  "text": string;
@@ -5534,35 +10668,59 @@ export type GassmaGassmaCommentCreateReturn = {
  "createdAt": Date;
 };
 
+/**
+ * Model Category
+ * 
+ */
 export type GassmaGassmaCategoryCreateReturn = {
  "id": number;
  "name": string;
  "parentId": number | null;
 };
 
+/**
+ * Model Tag
+ * 
+ */
 export type GassmaGassmaTagCreateReturn = {
  "id": number;
  "name": string;
 };
 
+/**
+ * Model SensorReading
+ * 
+ */
 export type GassmaGassmaSensorReadingCreateReturn = {
  "id": number;
  "sensorName": string;
  "recordedAt": Date;
 };
 
+/**
+ * Model TimeSlot
+ * 
+ */
 export type GassmaGassmaTimeSlotCreateReturn = {
  "id": number;
  "label": string;
  "slotAt": Date | null;
 };
 
+/**
+ * Model Reservation
+ * 
+ */
 export type GassmaGassmaReservationCreateReturn = {
  "id": number;
  "guestName": string;
  "slotAt": Date;
 };
 
+/**
+ * Model Product
+ * 
+ */
 export type GassmaGassmaProductCreateReturn = {
  "id": number;
  "name": string;
@@ -5573,6 +10731,10 @@ export type GassmaGassmaProductCreateReturn = {
  "updatedAt": Date;
 };
 
+/**
+ * Model Order
+ * 
+ */
 export type GassmaGassmaOrderCreateReturn = {
  "id": number;
  "userId": number;
@@ -5582,6 +10744,10 @@ export type GassmaGassmaOrderCreateReturn = {
  "createdAt": Date;
 };
 
+/**
+ * Model OrderItem
+ * 
+ */
 export type GassmaGassmaOrderItemCreateReturn = {
  "id": number;
  "orderId": number;
@@ -5590,6 +10756,10 @@ export type GassmaGassmaOrderItemCreateReturn = {
  "unitPrice": number;
 };
 
+/**
+ * Model FormulaCell
+ * 
+ */
 export type GassmaGassmaFormulaCellCreateReturn = {
  "id": number;
  "label": string;
@@ -5597,6 +10767,10 @@ export type GassmaGassmaFormulaCellCreateReturn = {
  "total": number;
 };
 
+/**
+ * Model Notification
+ * 
+ */
 export type GassmaGassmaNotificationCreateReturn = {
  "id": number;
  "userId": number;
@@ -5604,12 +10778,20 @@ export type GassmaGassmaNotificationCreateReturn = {
  "isRead": boolean;
 };
 
+/**
+ * Model OffsetNote
+ * 
+ */
 export type GassmaGassmaOffsetNoteCreateReturn = {
  "id": number;
  "title": string;
  "value": number;
 };
 
+/**
+ * Model User
+ * 
+ */
 export type GassmaGassmaUserCreateReturn = {
  "id": number;
  "email": string;
@@ -5620,6 +10802,10 @@ export type GassmaGassmaUserCreateReturn = {
  "createdAt": Date;
 };
 
+/**
+ * Model Profile
+ * 
+ */
 export type GassmaGassmaProfileCreateReturn = {
  "id": number;
  "bio": string | null;
@@ -5657,13 +10843,14 @@ export type GassmaGassmaUserDefaultFindResult = GassmaGassmaUserCreateReturn;
 
 export type GassmaGassmaProfileDefaultFindResult = GassmaGassmaProfileCreateReturn;
 
-export type GassmaGassmaPostFindResultBase<S, I = undefined, QO = undefined, GO = {}, O = {}> = (S extends GassmaGassmaPostFindSelect
-  ? {
+export type GassmaGassmaPostFindResultBase<S, I = undefined, QO = undefined, GO = {}, O = {}> = (S extends unknown
+  ? Gassma.SelectGiven<S> extends true
+    ? {
       [K in keyof S as S[K] extends false | undefined
         ? never
         : K & (keyof GassmaGassmaPostDefaultFindResult | "author" | "category" | "comments" | "tags" | "_count")]:
           K extends "author" | "category" | "comments" | "tags" ? {
-            "author": GassmaGassmaUserFindResultBase<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "User": infer TO } ? TO extends GassmaGassmaUserOmit ? TO : {} : {}, O> | null;
+            "author": GassmaGassmaUserFindResultBase<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "User": infer TO } ? TO extends GassmaGassmaUserOmit ? TO : {} : {}, O>;
             "category": GassmaGassmaCategoryFindResultBase<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "Category": infer TO } ? TO extends GassmaGassmaCategoryOmit ? TO : {} : {}, O> | null;
             "comments": GassmaGassmaCommentFindResultBase<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "Comment": infer TO } ? TO extends GassmaGassmaCommentOmit ? TO : {} : {}, O>[];
             "tags": GassmaGassmaTagFindResultBase<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "Tag": infer TO } ? TO extends GassmaGassmaTagOmit ? TO : {} : {}, O>[];
@@ -5671,17 +10858,18 @@ export type GassmaGassmaPostFindResultBase<S, I = undefined, QO = undefined, GO 
           K extends "_count" ? Gassma.CountResult<S[K]> :
           GassmaGassmaPostDefaultFindResult[K & keyof GassmaGassmaPostDefaultFindResult];
     }
-  : {
+    : {
       [K in keyof GassmaGassmaPostDefaultFindResult as K extends Gassma.ResolveOmitKeys<GO, QO>
         ? never
         : K]: GassmaGassmaPostDefaultFindResult[K];
-    }) &
+    }
+  : never) &
   (I extends undefined
     ? {}
     : {
         [K in keyof I as K extends "author" | "category" | "comments" | "tags" | "_count" ? K : never]:
           K extends "author" | "category" | "comments" | "tags" ? {
-            "author": GassmaGassmaUserFindResultBase<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "User": infer TO } ? TO extends GassmaGassmaUserOmit ? TO : {} : {}, O> | null;
+            "author": GassmaGassmaUserFindResultBase<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "User": infer TO } ? TO extends GassmaGassmaUserOmit ? TO : {} : {}, O>;
             "category": GassmaGassmaCategoryFindResultBase<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "Category": infer TO } ? TO extends GassmaGassmaCategoryOmit ? TO : {} : {}, O> | null;
             "comments": GassmaGassmaCommentFindResultBase<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "Comment": infer TO } ? TO extends GassmaGassmaCommentOmit ? TO : {} : {}, O>[];
             "tags": GassmaGassmaTagFindResultBase<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "Tag": infer TO } ? TO extends GassmaGassmaTagOmit ? TO : {} : {}, O>[];
@@ -5690,13 +10878,14 @@ export type GassmaGassmaPostFindResultBase<S, I = undefined, QO = undefined, GO 
           never;
       });
 
-export type GassmaGassmaPostFindResultCore<S, I = undefined, QO = undefined, GO = {}, O = {}, CMap = {}> = (S extends GassmaGassmaPostFindSelect
-  ? {
+export type GassmaGassmaPostFindResultCore<S, I = undefined, QO = undefined, GO = {}, O = {}, CMap = {}> = (S extends unknown
+  ? Gassma.SelectGiven<S> extends true
+    ? {
       [K in keyof S as S[K] extends false | undefined
         ? never
         : K & (keyof GassmaGassmaPostDefaultFindResult | "author" | "category" | "comments" | "tags" | "_count")]:
           K extends "author" | "category" | "comments" | "tags" ? {
-            "author": GassmaGassmaUserFindResult<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "User": infer TO } ? TO extends GassmaGassmaUserOmit ? TO : {} : {}, O, CMap> | null;
+            "author": GassmaGassmaUserFindResult<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "User": infer TO } ? TO extends GassmaGassmaUserOmit ? TO : {} : {}, O, CMap>;
             "category": GassmaGassmaCategoryFindResult<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "Category": infer TO } ? TO extends GassmaGassmaCategoryOmit ? TO : {} : {}, O, CMap> | null;
             "comments": GassmaGassmaCommentFindResult<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "Comment": infer TO } ? TO extends GassmaGassmaCommentOmit ? TO : {} : {}, O, CMap>[];
             "tags": GassmaGassmaTagFindResult<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "Tag": infer TO } ? TO extends GassmaGassmaTagOmit ? TO : {} : {}, O, CMap>[];
@@ -5704,17 +10893,18 @@ export type GassmaGassmaPostFindResultCore<S, I = undefined, QO = undefined, GO 
           K extends "_count" ? Gassma.CountResult<S[K]> :
           GassmaGassmaPostDefaultFindResult[K & keyof GassmaGassmaPostDefaultFindResult];
     }
-  : {
+    : {
       [K in keyof GassmaGassmaPostDefaultFindResult as K extends Gassma.ResolveOmitKeys<GO, QO>
         ? never
         : K]: GassmaGassmaPostDefaultFindResult[K];
-    }) &
+    }
+  : never) &
   (I extends undefined
     ? {}
     : {
         [K in keyof I as K extends "author" | "category" | "comments" | "tags" | "_count" ? K : never]:
           K extends "author" | "category" | "comments" | "tags" ? {
-            "author": GassmaGassmaUserFindResult<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "User": infer TO } ? TO extends GassmaGassmaUserOmit ? TO : {} : {}, O, CMap> | null;
+            "author": GassmaGassmaUserFindResult<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "User": infer TO } ? TO extends GassmaGassmaUserOmit ? TO : {} : {}, O, CMap>;
             "category": GassmaGassmaCategoryFindResult<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "Category": infer TO } ? TO extends GassmaGassmaCategoryOmit ? TO : {} : {}, O, CMap> | null;
             "comments": GassmaGassmaCommentFindResult<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "Comment": infer TO } ? TO extends GassmaGassmaCommentOmit ? TO : {} : {}, O, CMap>[];
             "tags": GassmaGassmaTagFindResult<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "Tag": infer TO } ? TO extends GassmaGassmaTagOmit ? TO : {} : {}, O, CMap>[];
@@ -5730,59 +10920,63 @@ export type GassmaGassmaPostFindResult<S, I = undefined, QO = undefined, GO = {}
   QO
 >;
 
-export type GassmaGassmaCommentFindResultBase<S, I = undefined, QO = undefined, GO = {}, O = {}> = (S extends GassmaGassmaCommentFindSelect
-  ? {
+export type GassmaGassmaCommentFindResultBase<S, I = undefined, QO = undefined, GO = {}, O = {}> = (S extends unknown
+  ? Gassma.SelectGiven<S> extends true
+    ? {
       [K in keyof S as S[K] extends false | undefined
         ? never
         : K & (keyof GassmaGassmaCommentDefaultFindResult | "author" | "post" | "_count")]:
           K extends "author" | "post" ? {
-            "author": GassmaGassmaUserFindResultBase<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "User": infer TO } ? TO extends GassmaGassmaUserOmit ? TO : {} : {}, O> | null;
-            "post": GassmaGassmaPostFindResultBase<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "Post": infer TO } ? TO extends GassmaGassmaPostOmit ? TO : {} : {}, O> | null;
+            "author": GassmaGassmaUserFindResultBase<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "User": infer TO } ? TO extends GassmaGassmaUserOmit ? TO : {} : {}, O>;
+            "post": GassmaGassmaPostFindResultBase<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "Post": infer TO } ? TO extends GassmaGassmaPostOmit ? TO : {} : {}, O>;
           }[K] :
           K extends "_count" ? Gassma.CountResult<S[K]> :
           GassmaGassmaCommentDefaultFindResult[K & keyof GassmaGassmaCommentDefaultFindResult];
     }
-  : {
+    : {
       [K in keyof GassmaGassmaCommentDefaultFindResult as K extends Gassma.ResolveOmitKeys<GO, QO>
         ? never
         : K]: GassmaGassmaCommentDefaultFindResult[K];
-    }) &
+    }
+  : never) &
   (I extends undefined
     ? {}
     : {
         [K in keyof I as K extends "author" | "post" | "_count" ? K : never]:
           K extends "author" | "post" ? {
-            "author": GassmaGassmaUserFindResultBase<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "User": infer TO } ? TO extends GassmaGassmaUserOmit ? TO : {} : {}, O> | null;
-            "post": GassmaGassmaPostFindResultBase<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "Post": infer TO } ? TO extends GassmaGassmaPostOmit ? TO : {} : {}, O> | null;
+            "author": GassmaGassmaUserFindResultBase<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "User": infer TO } ? TO extends GassmaGassmaUserOmit ? TO : {} : {}, O>;
+            "post": GassmaGassmaPostFindResultBase<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "Post": infer TO } ? TO extends GassmaGassmaPostOmit ? TO : {} : {}, O>;
           }[K] :
           K extends "_count" ? Gassma.CountResult<I[K]> :
           never;
       });
 
-export type GassmaGassmaCommentFindResultCore<S, I = undefined, QO = undefined, GO = {}, O = {}, CMap = {}> = (S extends GassmaGassmaCommentFindSelect
-  ? {
+export type GassmaGassmaCommentFindResultCore<S, I = undefined, QO = undefined, GO = {}, O = {}, CMap = {}> = (S extends unknown
+  ? Gassma.SelectGiven<S> extends true
+    ? {
       [K in keyof S as S[K] extends false | undefined
         ? never
         : K & (keyof GassmaGassmaCommentDefaultFindResult | "author" | "post" | "_count")]:
           K extends "author" | "post" ? {
-            "author": GassmaGassmaUserFindResult<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "User": infer TO } ? TO extends GassmaGassmaUserOmit ? TO : {} : {}, O, CMap> | null;
-            "post": GassmaGassmaPostFindResult<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "Post": infer TO } ? TO extends GassmaGassmaPostOmit ? TO : {} : {}, O, CMap> | null;
+            "author": GassmaGassmaUserFindResult<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "User": infer TO } ? TO extends GassmaGassmaUserOmit ? TO : {} : {}, O, CMap>;
+            "post": GassmaGassmaPostFindResult<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "Post": infer TO } ? TO extends GassmaGassmaPostOmit ? TO : {} : {}, O, CMap>;
           }[K] :
           K extends "_count" ? Gassma.CountResult<S[K]> :
           GassmaGassmaCommentDefaultFindResult[K & keyof GassmaGassmaCommentDefaultFindResult];
     }
-  : {
+    : {
       [K in keyof GassmaGassmaCommentDefaultFindResult as K extends Gassma.ResolveOmitKeys<GO, QO>
         ? never
         : K]: GassmaGassmaCommentDefaultFindResult[K];
-    }) &
+    }
+  : never) &
   (I extends undefined
     ? {}
     : {
         [K in keyof I as K extends "author" | "post" | "_count" ? K : never]:
           K extends "author" | "post" ? {
-            "author": GassmaGassmaUserFindResult<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "User": infer TO } ? TO extends GassmaGassmaUserOmit ? TO : {} : {}, O, CMap> | null;
-            "post": GassmaGassmaPostFindResult<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "Post": infer TO } ? TO extends GassmaGassmaPostOmit ? TO : {} : {}, O, CMap> | null;
+            "author": GassmaGassmaUserFindResult<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "User": infer TO } ? TO extends GassmaGassmaUserOmit ? TO : {} : {}, O, CMap>;
+            "post": GassmaGassmaPostFindResult<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "Post": infer TO } ? TO extends GassmaGassmaPostOmit ? TO : {} : {}, O, CMap>;
           }[K] :
           K extends "_count" ? Gassma.CountResult<I[K]> :
           never;
@@ -5795,8 +10989,9 @@ export type GassmaGassmaCommentFindResult<S, I = undefined, QO = undefined, GO =
   QO
 >;
 
-export type GassmaGassmaCategoryFindResultBase<S, I = undefined, QO = undefined, GO = {}, O = {}> = (S extends GassmaGassmaCategoryFindSelect
-  ? {
+export type GassmaGassmaCategoryFindResultBase<S, I = undefined, QO = undefined, GO = {}, O = {}> = (S extends unknown
+  ? Gassma.SelectGiven<S> extends true
+    ? {
       [K in keyof S as S[K] extends false | undefined
         ? never
         : K & (keyof GassmaGassmaCategoryDefaultFindResult | "posts" | "parent" | "children" | "_count")]:
@@ -5808,11 +11003,12 @@ export type GassmaGassmaCategoryFindResultBase<S, I = undefined, QO = undefined,
           K extends "_count" ? Gassma.CountResult<S[K]> :
           GassmaGassmaCategoryDefaultFindResult[K & keyof GassmaGassmaCategoryDefaultFindResult];
     }
-  : {
+    : {
       [K in keyof GassmaGassmaCategoryDefaultFindResult as K extends Gassma.ResolveOmitKeys<GO, QO>
         ? never
         : K]: GassmaGassmaCategoryDefaultFindResult[K];
-    }) &
+    }
+  : never) &
   (I extends undefined
     ? {}
     : {
@@ -5826,8 +11022,9 @@ export type GassmaGassmaCategoryFindResultBase<S, I = undefined, QO = undefined,
           never;
       });
 
-export type GassmaGassmaCategoryFindResultCore<S, I = undefined, QO = undefined, GO = {}, O = {}, CMap = {}> = (S extends GassmaGassmaCategoryFindSelect
-  ? {
+export type GassmaGassmaCategoryFindResultCore<S, I = undefined, QO = undefined, GO = {}, O = {}, CMap = {}> = (S extends unknown
+  ? Gassma.SelectGiven<S> extends true
+    ? {
       [K in keyof S as S[K] extends false | undefined
         ? never
         : K & (keyof GassmaGassmaCategoryDefaultFindResult | "posts" | "parent" | "children" | "_count")]:
@@ -5839,11 +11036,12 @@ export type GassmaGassmaCategoryFindResultCore<S, I = undefined, QO = undefined,
           K extends "_count" ? Gassma.CountResult<S[K]> :
           GassmaGassmaCategoryDefaultFindResult[K & keyof GassmaGassmaCategoryDefaultFindResult];
     }
-  : {
+    : {
       [K in keyof GassmaGassmaCategoryDefaultFindResult as K extends Gassma.ResolveOmitKeys<GO, QO>
         ? never
         : K]: GassmaGassmaCategoryDefaultFindResult[K];
-    }) &
+    }
+  : never) &
   (I extends undefined
     ? {}
     : {
@@ -5864,8 +11062,9 @@ export type GassmaGassmaCategoryFindResult<S, I = undefined, QO = undefined, GO 
   QO
 >;
 
-export type GassmaGassmaTagFindResultBase<S, I = undefined, QO = undefined, GO = {}, O = {}> = (S extends GassmaGassmaTagFindSelect
-  ? {
+export type GassmaGassmaTagFindResultBase<S, I = undefined, QO = undefined, GO = {}, O = {}> = (S extends unknown
+  ? Gassma.SelectGiven<S> extends true
+    ? {
       [K in keyof S as S[K] extends false | undefined
         ? never
         : K & (keyof GassmaGassmaTagDefaultFindResult | "posts" | "_count")]:
@@ -5875,11 +11074,12 @@ export type GassmaGassmaTagFindResultBase<S, I = undefined, QO = undefined, GO =
           K extends "_count" ? Gassma.CountResult<S[K]> :
           GassmaGassmaTagDefaultFindResult[K & keyof GassmaGassmaTagDefaultFindResult];
     }
-  : {
+    : {
       [K in keyof GassmaGassmaTagDefaultFindResult as K extends Gassma.ResolveOmitKeys<GO, QO>
         ? never
         : K]: GassmaGassmaTagDefaultFindResult[K];
-    }) &
+    }
+  : never) &
   (I extends undefined
     ? {}
     : {
@@ -5891,8 +11091,9 @@ export type GassmaGassmaTagFindResultBase<S, I = undefined, QO = undefined, GO =
           never;
       });
 
-export type GassmaGassmaTagFindResultCore<S, I = undefined, QO = undefined, GO = {}, O = {}, CMap = {}> = (S extends GassmaGassmaTagFindSelect
-  ? {
+export type GassmaGassmaTagFindResultCore<S, I = undefined, QO = undefined, GO = {}, O = {}, CMap = {}> = (S extends unknown
+  ? Gassma.SelectGiven<S> extends true
+    ? {
       [K in keyof S as S[K] extends false | undefined
         ? never
         : K & (keyof GassmaGassmaTagDefaultFindResult | "posts" | "_count")]:
@@ -5902,11 +11103,12 @@ export type GassmaGassmaTagFindResultCore<S, I = undefined, QO = undefined, GO =
           K extends "_count" ? Gassma.CountResult<S[K]> :
           GassmaGassmaTagDefaultFindResult[K & keyof GassmaGassmaTagDefaultFindResult];
     }
-  : {
+    : {
       [K in keyof GassmaGassmaTagDefaultFindResult as K extends Gassma.ResolveOmitKeys<GO, QO>
         ? never
         : K]: GassmaGassmaTagDefaultFindResult[K];
-    }) &
+    }
+  : never) &
   (I extends undefined
     ? {}
     : {
@@ -5925,8 +11127,9 @@ export type GassmaGassmaTagFindResult<S, I = undefined, QO = undefined, GO = {},
   QO
 >;
 
-export type GassmaGassmaSensorReadingFindResultBase<S, I = undefined, QO = undefined, GO = {}, O = {}> = (S extends GassmaGassmaSensorReadingFindSelect
-  ? {
+export type GassmaGassmaSensorReadingFindResultBase<S, I = undefined, QO = undefined, GO = {}, O = {}> = (S extends unknown
+  ? Gassma.SelectGiven<S> extends true
+    ? {
       [K in keyof S as S[K] extends false | undefined
         ? never
         : K & (keyof GassmaGassmaSensorReadingDefaultFindResult | "_count")]:
@@ -5934,11 +11137,12 @@ export type GassmaGassmaSensorReadingFindResultBase<S, I = undefined, QO = undef
           K extends "_count" ? Gassma.CountResult<S[K]> :
           GassmaGassmaSensorReadingDefaultFindResult[K & keyof GassmaGassmaSensorReadingDefaultFindResult];
     }
-  : {
+    : {
       [K in keyof GassmaGassmaSensorReadingDefaultFindResult as K extends Gassma.ResolveOmitKeys<GO, QO>
         ? never
         : K]: GassmaGassmaSensorReadingDefaultFindResult[K];
-    }) &
+    }
+  : never) &
   (I extends undefined
     ? {}
     : {
@@ -5948,8 +11152,9 @@ export type GassmaGassmaSensorReadingFindResultBase<S, I = undefined, QO = undef
           never;
       });
 
-export type GassmaGassmaSensorReadingFindResultCore<S, I = undefined, QO = undefined, GO = {}, O = {}, CMap = {}> = (S extends GassmaGassmaSensorReadingFindSelect
-  ? {
+export type GassmaGassmaSensorReadingFindResultCore<S, I = undefined, QO = undefined, GO = {}, O = {}, CMap = {}> = (S extends unknown
+  ? Gassma.SelectGiven<S> extends true
+    ? {
       [K in keyof S as S[K] extends false | undefined
         ? never
         : K & (keyof GassmaGassmaSensorReadingDefaultFindResult | "_count")]:
@@ -5957,11 +11162,12 @@ export type GassmaGassmaSensorReadingFindResultCore<S, I = undefined, QO = undef
           K extends "_count" ? Gassma.CountResult<S[K]> :
           GassmaGassmaSensorReadingDefaultFindResult[K & keyof GassmaGassmaSensorReadingDefaultFindResult];
     }
-  : {
+    : {
       [K in keyof GassmaGassmaSensorReadingDefaultFindResult as K extends Gassma.ResolveOmitKeys<GO, QO>
         ? never
         : K]: GassmaGassmaSensorReadingDefaultFindResult[K];
-    }) &
+    }
+  : never) &
   (I extends undefined
     ? {}
     : {
@@ -5978,8 +11184,9 @@ export type GassmaGassmaSensorReadingFindResult<S, I = undefined, QO = undefined
   QO
 >;
 
-export type GassmaGassmaTimeSlotFindResultBase<S, I = undefined, QO = undefined, GO = {}, O = {}> = (S extends GassmaGassmaTimeSlotFindSelect
-  ? {
+export type GassmaGassmaTimeSlotFindResultBase<S, I = undefined, QO = undefined, GO = {}, O = {}> = (S extends unknown
+  ? Gassma.SelectGiven<S> extends true
+    ? {
       [K in keyof S as S[K] extends false | undefined
         ? never
         : K & (keyof GassmaGassmaTimeSlotDefaultFindResult | "reservations" | "_count")]:
@@ -5989,11 +11196,12 @@ export type GassmaGassmaTimeSlotFindResultBase<S, I = undefined, QO = undefined,
           K extends "_count" ? Gassma.CountResult<S[K]> :
           GassmaGassmaTimeSlotDefaultFindResult[K & keyof GassmaGassmaTimeSlotDefaultFindResult];
     }
-  : {
+    : {
       [K in keyof GassmaGassmaTimeSlotDefaultFindResult as K extends Gassma.ResolveOmitKeys<GO, QO>
         ? never
         : K]: GassmaGassmaTimeSlotDefaultFindResult[K];
-    }) &
+    }
+  : never) &
   (I extends undefined
     ? {}
     : {
@@ -6005,8 +11213,9 @@ export type GassmaGassmaTimeSlotFindResultBase<S, I = undefined, QO = undefined,
           never;
       });
 
-export type GassmaGassmaTimeSlotFindResultCore<S, I = undefined, QO = undefined, GO = {}, O = {}, CMap = {}> = (S extends GassmaGassmaTimeSlotFindSelect
-  ? {
+export type GassmaGassmaTimeSlotFindResultCore<S, I = undefined, QO = undefined, GO = {}, O = {}, CMap = {}> = (S extends unknown
+  ? Gassma.SelectGiven<S> extends true
+    ? {
       [K in keyof S as S[K] extends false | undefined
         ? never
         : K & (keyof GassmaGassmaTimeSlotDefaultFindResult | "reservations" | "_count")]:
@@ -6016,11 +11225,12 @@ export type GassmaGassmaTimeSlotFindResultCore<S, I = undefined, QO = undefined,
           K extends "_count" ? Gassma.CountResult<S[K]> :
           GassmaGassmaTimeSlotDefaultFindResult[K & keyof GassmaGassmaTimeSlotDefaultFindResult];
     }
-  : {
+    : {
       [K in keyof GassmaGassmaTimeSlotDefaultFindResult as K extends Gassma.ResolveOmitKeys<GO, QO>
         ? never
         : K]: GassmaGassmaTimeSlotDefaultFindResult[K];
-    }) &
+    }
+  : never) &
   (I extends undefined
     ? {}
     : {
@@ -6039,55 +11249,59 @@ export type GassmaGassmaTimeSlotFindResult<S, I = undefined, QO = undefined, GO 
   QO
 >;
 
-export type GassmaGassmaReservationFindResultBase<S, I = undefined, QO = undefined, GO = {}, O = {}> = (S extends GassmaGassmaReservationFindSelect
-  ? {
+export type GassmaGassmaReservationFindResultBase<S, I = undefined, QO = undefined, GO = {}, O = {}> = (S extends unknown
+  ? Gassma.SelectGiven<S> extends true
+    ? {
       [K in keyof S as S[K] extends false | undefined
         ? never
         : K & (keyof GassmaGassmaReservationDefaultFindResult | "timeSlot" | "_count")]:
           K extends "timeSlot" ? {
-            "timeSlot": GassmaGassmaTimeSlotFindResultBase<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "TimeSlot": infer TO } ? TO extends GassmaGassmaTimeSlotOmit ? TO : {} : {}, O> | null;
+            "timeSlot": GassmaGassmaTimeSlotFindResultBase<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "TimeSlot": infer TO } ? TO extends GassmaGassmaTimeSlotOmit ? TO : {} : {}, O>;
           }[K] :
           K extends "_count" ? Gassma.CountResult<S[K]> :
           GassmaGassmaReservationDefaultFindResult[K & keyof GassmaGassmaReservationDefaultFindResult];
     }
-  : {
+    : {
       [K in keyof GassmaGassmaReservationDefaultFindResult as K extends Gassma.ResolveOmitKeys<GO, QO>
         ? never
         : K]: GassmaGassmaReservationDefaultFindResult[K];
-    }) &
+    }
+  : never) &
   (I extends undefined
     ? {}
     : {
         [K in keyof I as K extends "timeSlot" | "_count" ? K : never]:
           K extends "timeSlot" ? {
-            "timeSlot": GassmaGassmaTimeSlotFindResultBase<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "TimeSlot": infer TO } ? TO extends GassmaGassmaTimeSlotOmit ? TO : {} : {}, O> | null;
+            "timeSlot": GassmaGassmaTimeSlotFindResultBase<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "TimeSlot": infer TO } ? TO extends GassmaGassmaTimeSlotOmit ? TO : {} : {}, O>;
           }[K] :
           K extends "_count" ? Gassma.CountResult<I[K]> :
           never;
       });
 
-export type GassmaGassmaReservationFindResultCore<S, I = undefined, QO = undefined, GO = {}, O = {}, CMap = {}> = (S extends GassmaGassmaReservationFindSelect
-  ? {
+export type GassmaGassmaReservationFindResultCore<S, I = undefined, QO = undefined, GO = {}, O = {}, CMap = {}> = (S extends unknown
+  ? Gassma.SelectGiven<S> extends true
+    ? {
       [K in keyof S as S[K] extends false | undefined
         ? never
         : K & (keyof GassmaGassmaReservationDefaultFindResult | "timeSlot" | "_count")]:
           K extends "timeSlot" ? {
-            "timeSlot": GassmaGassmaTimeSlotFindResult<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "TimeSlot": infer TO } ? TO extends GassmaGassmaTimeSlotOmit ? TO : {} : {}, O, CMap> | null;
+            "timeSlot": GassmaGassmaTimeSlotFindResult<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "TimeSlot": infer TO } ? TO extends GassmaGassmaTimeSlotOmit ? TO : {} : {}, O, CMap>;
           }[K] :
           K extends "_count" ? Gassma.CountResult<S[K]> :
           GassmaGassmaReservationDefaultFindResult[K & keyof GassmaGassmaReservationDefaultFindResult];
     }
-  : {
+    : {
       [K in keyof GassmaGassmaReservationDefaultFindResult as K extends Gassma.ResolveOmitKeys<GO, QO>
         ? never
         : K]: GassmaGassmaReservationDefaultFindResult[K];
-    }) &
+    }
+  : never) &
   (I extends undefined
     ? {}
     : {
         [K in keyof I as K extends "timeSlot" | "_count" ? K : never]:
           K extends "timeSlot" ? {
-            "timeSlot": GassmaGassmaTimeSlotFindResult<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "TimeSlot": infer TO } ? TO extends GassmaGassmaTimeSlotOmit ? TO : {} : {}, O, CMap> | null;
+            "timeSlot": GassmaGassmaTimeSlotFindResult<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "TimeSlot": infer TO } ? TO extends GassmaGassmaTimeSlotOmit ? TO : {} : {}, O, CMap>;
           }[K] :
           K extends "_count" ? Gassma.CountResult<I[K]> :
           never;
@@ -6100,8 +11314,9 @@ export type GassmaGassmaReservationFindResult<S, I = undefined, QO = undefined, 
   QO
 >;
 
-export type GassmaGassmaProductFindResultBase<S, I = undefined, QO = undefined, GO = {}, O = {}> = (S extends GassmaGassmaProductFindSelect
-  ? {
+export type GassmaGassmaProductFindResultBase<S, I = undefined, QO = undefined, GO = {}, O = {}> = (S extends unknown
+  ? Gassma.SelectGiven<S> extends true
+    ? {
       [K in keyof S as S[K] extends false | undefined
         ? never
         : K & (keyof GassmaGassmaProductDefaultFindResult | "orderItems" | "_count")]:
@@ -6111,11 +11326,12 @@ export type GassmaGassmaProductFindResultBase<S, I = undefined, QO = undefined, 
           K extends "_count" ? Gassma.CountResult<S[K]> :
           GassmaGassmaProductDefaultFindResult[K & keyof GassmaGassmaProductDefaultFindResult];
     }
-  : {
+    : {
       [K in keyof GassmaGassmaProductDefaultFindResult as K extends Gassma.ResolveOmitKeys<GO, QO>
         ? never
         : K]: GassmaGassmaProductDefaultFindResult[K];
-    }) &
+    }
+  : never) &
   (I extends undefined
     ? {}
     : {
@@ -6127,8 +11343,9 @@ export type GassmaGassmaProductFindResultBase<S, I = undefined, QO = undefined, 
           never;
       });
 
-export type GassmaGassmaProductFindResultCore<S, I = undefined, QO = undefined, GO = {}, O = {}, CMap = {}> = (S extends GassmaGassmaProductFindSelect
-  ? {
+export type GassmaGassmaProductFindResultCore<S, I = undefined, QO = undefined, GO = {}, O = {}, CMap = {}> = (S extends unknown
+  ? Gassma.SelectGiven<S> extends true
+    ? {
       [K in keyof S as S[K] extends false | undefined
         ? never
         : K & (keyof GassmaGassmaProductDefaultFindResult | "orderItems" | "_count")]:
@@ -6138,11 +11355,12 @@ export type GassmaGassmaProductFindResultCore<S, I = undefined, QO = undefined, 
           K extends "_count" ? Gassma.CountResult<S[K]> :
           GassmaGassmaProductDefaultFindResult[K & keyof GassmaGassmaProductDefaultFindResult];
     }
-  : {
+    : {
       [K in keyof GassmaGassmaProductDefaultFindResult as K extends Gassma.ResolveOmitKeys<GO, QO>
         ? never
         : K]: GassmaGassmaProductDefaultFindResult[K];
-    }) &
+    }
+  : never) &
   (I extends undefined
     ? {}
     : {
@@ -6161,58 +11379,62 @@ export type GassmaGassmaProductFindResult<S, I = undefined, QO = undefined, GO =
   QO
 >;
 
-export type GassmaGassmaOrderFindResultBase<S, I = undefined, QO = undefined, GO = {}, O = {}> = (S extends GassmaGassmaOrderFindSelect
-  ? {
+export type GassmaGassmaOrderFindResultBase<S, I = undefined, QO = undefined, GO = {}, O = {}> = (S extends unknown
+  ? Gassma.SelectGiven<S> extends true
+    ? {
       [K in keyof S as S[K] extends false | undefined
         ? never
         : K & (keyof GassmaGassmaOrderDefaultFindResult | "user" | "items" | "_count")]:
           K extends "user" | "items" ? {
-            "user": GassmaGassmaUserFindResultBase<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "User": infer TO } ? TO extends GassmaGassmaUserOmit ? TO : {} : {}, O> | null;
+            "user": GassmaGassmaUserFindResultBase<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "User": infer TO } ? TO extends GassmaGassmaUserOmit ? TO : {} : {}, O>;
             "items": GassmaGassmaOrderItemFindResultBase<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "OrderItem": infer TO } ? TO extends GassmaGassmaOrderItemOmit ? TO : {} : {}, O>[];
           }[K] :
           K extends "_count" ? Gassma.CountResult<S[K]> :
           GassmaGassmaOrderDefaultFindResult[K & keyof GassmaGassmaOrderDefaultFindResult];
     }
-  : {
+    : {
       [K in keyof GassmaGassmaOrderDefaultFindResult as K extends Gassma.ResolveOmitKeys<GO, QO>
         ? never
         : K]: GassmaGassmaOrderDefaultFindResult[K];
-    }) &
+    }
+  : never) &
   (I extends undefined
     ? {}
     : {
         [K in keyof I as K extends "user" | "items" | "_count" ? K : never]:
           K extends "user" | "items" ? {
-            "user": GassmaGassmaUserFindResultBase<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "User": infer TO } ? TO extends GassmaGassmaUserOmit ? TO : {} : {}, O> | null;
+            "user": GassmaGassmaUserFindResultBase<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "User": infer TO } ? TO extends GassmaGassmaUserOmit ? TO : {} : {}, O>;
             "items": GassmaGassmaOrderItemFindResultBase<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "OrderItem": infer TO } ? TO extends GassmaGassmaOrderItemOmit ? TO : {} : {}, O>[];
           }[K] :
           K extends "_count" ? Gassma.CountResult<I[K]> :
           never;
       });
 
-export type GassmaGassmaOrderFindResultCore<S, I = undefined, QO = undefined, GO = {}, O = {}, CMap = {}> = (S extends GassmaGassmaOrderFindSelect
-  ? {
+export type GassmaGassmaOrderFindResultCore<S, I = undefined, QO = undefined, GO = {}, O = {}, CMap = {}> = (S extends unknown
+  ? Gassma.SelectGiven<S> extends true
+    ? {
       [K in keyof S as S[K] extends false | undefined
         ? never
         : K & (keyof GassmaGassmaOrderDefaultFindResult | "user" | "items" | "_count")]:
           K extends "user" | "items" ? {
-            "user": GassmaGassmaUserFindResult<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "User": infer TO } ? TO extends GassmaGassmaUserOmit ? TO : {} : {}, O, CMap> | null;
+            "user": GassmaGassmaUserFindResult<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "User": infer TO } ? TO extends GassmaGassmaUserOmit ? TO : {} : {}, O, CMap>;
             "items": GassmaGassmaOrderItemFindResult<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "OrderItem": infer TO } ? TO extends GassmaGassmaOrderItemOmit ? TO : {} : {}, O, CMap>[];
           }[K] :
           K extends "_count" ? Gassma.CountResult<S[K]> :
           GassmaGassmaOrderDefaultFindResult[K & keyof GassmaGassmaOrderDefaultFindResult];
     }
-  : {
+    : {
       [K in keyof GassmaGassmaOrderDefaultFindResult as K extends Gassma.ResolveOmitKeys<GO, QO>
         ? never
         : K]: GassmaGassmaOrderDefaultFindResult[K];
-    }) &
+    }
+  : never) &
   (I extends undefined
     ? {}
     : {
         [K in keyof I as K extends "user" | "items" | "_count" ? K : never]:
           K extends "user" | "items" ? {
-            "user": GassmaGassmaUserFindResult<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "User": infer TO } ? TO extends GassmaGassmaUserOmit ? TO : {} : {}, O, CMap> | null;
+            "user": GassmaGassmaUserFindResult<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "User": infer TO } ? TO extends GassmaGassmaUserOmit ? TO : {} : {}, O, CMap>;
             "items": GassmaGassmaOrderItemFindResult<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "OrderItem": infer TO } ? TO extends GassmaGassmaOrderItemOmit ? TO : {} : {}, O, CMap>[];
           }[K] :
           K extends "_count" ? Gassma.CountResult<I[K]> :
@@ -6226,59 +11448,63 @@ export type GassmaGassmaOrderFindResult<S, I = undefined, QO = undefined, GO = {
   QO
 >;
 
-export type GassmaGassmaOrderItemFindResultBase<S, I = undefined, QO = undefined, GO = {}, O = {}> = (S extends GassmaGassmaOrderItemFindSelect
-  ? {
+export type GassmaGassmaOrderItemFindResultBase<S, I = undefined, QO = undefined, GO = {}, O = {}> = (S extends unknown
+  ? Gassma.SelectGiven<S> extends true
+    ? {
       [K in keyof S as S[K] extends false | undefined
         ? never
         : K & (keyof GassmaGassmaOrderItemDefaultFindResult | "order" | "product" | "_count")]:
           K extends "order" | "product" ? {
-            "order": GassmaGassmaOrderFindResultBase<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "Order": infer TO } ? TO extends GassmaGassmaOrderOmit ? TO : {} : {}, O> | null;
-            "product": GassmaGassmaProductFindResultBase<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "Product": infer TO } ? TO extends GassmaGassmaProductOmit ? TO : {} : {}, O> | null;
+            "order": GassmaGassmaOrderFindResultBase<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "Order": infer TO } ? TO extends GassmaGassmaOrderOmit ? TO : {} : {}, O>;
+            "product": GassmaGassmaProductFindResultBase<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "Product": infer TO } ? TO extends GassmaGassmaProductOmit ? TO : {} : {}, O>;
           }[K] :
           K extends "_count" ? Gassma.CountResult<S[K]> :
           GassmaGassmaOrderItemDefaultFindResult[K & keyof GassmaGassmaOrderItemDefaultFindResult];
     }
-  : {
+    : {
       [K in keyof GassmaGassmaOrderItemDefaultFindResult as K extends Gassma.ResolveOmitKeys<GO, QO>
         ? never
         : K]: GassmaGassmaOrderItemDefaultFindResult[K];
-    }) &
+    }
+  : never) &
   (I extends undefined
     ? {}
     : {
         [K in keyof I as K extends "order" | "product" | "_count" ? K : never]:
           K extends "order" | "product" ? {
-            "order": GassmaGassmaOrderFindResultBase<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "Order": infer TO } ? TO extends GassmaGassmaOrderOmit ? TO : {} : {}, O> | null;
-            "product": GassmaGassmaProductFindResultBase<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "Product": infer TO } ? TO extends GassmaGassmaProductOmit ? TO : {} : {}, O> | null;
+            "order": GassmaGassmaOrderFindResultBase<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "Order": infer TO } ? TO extends GassmaGassmaOrderOmit ? TO : {} : {}, O>;
+            "product": GassmaGassmaProductFindResultBase<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "Product": infer TO } ? TO extends GassmaGassmaProductOmit ? TO : {} : {}, O>;
           }[K] :
           K extends "_count" ? Gassma.CountResult<I[K]> :
           never;
       });
 
-export type GassmaGassmaOrderItemFindResultCore<S, I = undefined, QO = undefined, GO = {}, O = {}, CMap = {}> = (S extends GassmaGassmaOrderItemFindSelect
-  ? {
+export type GassmaGassmaOrderItemFindResultCore<S, I = undefined, QO = undefined, GO = {}, O = {}, CMap = {}> = (S extends unknown
+  ? Gassma.SelectGiven<S> extends true
+    ? {
       [K in keyof S as S[K] extends false | undefined
         ? never
         : K & (keyof GassmaGassmaOrderItemDefaultFindResult | "order" | "product" | "_count")]:
           K extends "order" | "product" ? {
-            "order": GassmaGassmaOrderFindResult<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "Order": infer TO } ? TO extends GassmaGassmaOrderOmit ? TO : {} : {}, O, CMap> | null;
-            "product": GassmaGassmaProductFindResult<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "Product": infer TO } ? TO extends GassmaGassmaProductOmit ? TO : {} : {}, O, CMap> | null;
+            "order": GassmaGassmaOrderFindResult<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "Order": infer TO } ? TO extends GassmaGassmaOrderOmit ? TO : {} : {}, O, CMap>;
+            "product": GassmaGassmaProductFindResult<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "Product": infer TO } ? TO extends GassmaGassmaProductOmit ? TO : {} : {}, O, CMap>;
           }[K] :
           K extends "_count" ? Gassma.CountResult<S[K]> :
           GassmaGassmaOrderItemDefaultFindResult[K & keyof GassmaGassmaOrderItemDefaultFindResult];
     }
-  : {
+    : {
       [K in keyof GassmaGassmaOrderItemDefaultFindResult as K extends Gassma.ResolveOmitKeys<GO, QO>
         ? never
         : K]: GassmaGassmaOrderItemDefaultFindResult[K];
-    }) &
+    }
+  : never) &
   (I extends undefined
     ? {}
     : {
         [K in keyof I as K extends "order" | "product" | "_count" ? K : never]:
           K extends "order" | "product" ? {
-            "order": GassmaGassmaOrderFindResult<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "Order": infer TO } ? TO extends GassmaGassmaOrderOmit ? TO : {} : {}, O, CMap> | null;
-            "product": GassmaGassmaProductFindResult<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "Product": infer TO } ? TO extends GassmaGassmaProductOmit ? TO : {} : {}, O, CMap> | null;
+            "order": GassmaGassmaOrderFindResult<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "Order": infer TO } ? TO extends GassmaGassmaOrderOmit ? TO : {} : {}, O, CMap>;
+            "product": GassmaGassmaProductFindResult<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "Product": infer TO } ? TO extends GassmaGassmaProductOmit ? TO : {} : {}, O, CMap>;
           }[K] :
           K extends "_count" ? Gassma.CountResult<I[K]> :
           never;
@@ -6291,8 +11517,9 @@ export type GassmaGassmaOrderItemFindResult<S, I = undefined, QO = undefined, GO
   QO
 >;
 
-export type GassmaGassmaFormulaCellFindResultBase<S, I = undefined, QO = undefined, GO = {}, O = {}> = (S extends GassmaGassmaFormulaCellFindSelect
-  ? {
+export type GassmaGassmaFormulaCellFindResultBase<S, I = undefined, QO = undefined, GO = {}, O = {}> = (S extends unknown
+  ? Gassma.SelectGiven<S> extends true
+    ? {
       [K in keyof S as S[K] extends false | undefined
         ? never
         : K & (keyof GassmaGassmaFormulaCellDefaultFindResult | "_count")]:
@@ -6300,11 +11527,12 @@ export type GassmaGassmaFormulaCellFindResultBase<S, I = undefined, QO = undefin
           K extends "_count" ? Gassma.CountResult<S[K]> :
           GassmaGassmaFormulaCellDefaultFindResult[K & keyof GassmaGassmaFormulaCellDefaultFindResult];
     }
-  : {
+    : {
       [K in keyof GassmaGassmaFormulaCellDefaultFindResult as K extends Gassma.ResolveOmitKeys<GO, QO>
         ? never
         : K]: GassmaGassmaFormulaCellDefaultFindResult[K];
-    }) &
+    }
+  : never) &
   (I extends undefined
     ? {}
     : {
@@ -6314,8 +11542,9 @@ export type GassmaGassmaFormulaCellFindResultBase<S, I = undefined, QO = undefin
           never;
       });
 
-export type GassmaGassmaFormulaCellFindResultCore<S, I = undefined, QO = undefined, GO = {}, O = {}, CMap = {}> = (S extends GassmaGassmaFormulaCellFindSelect
-  ? {
+export type GassmaGassmaFormulaCellFindResultCore<S, I = undefined, QO = undefined, GO = {}, O = {}, CMap = {}> = (S extends unknown
+  ? Gassma.SelectGiven<S> extends true
+    ? {
       [K in keyof S as S[K] extends false | undefined
         ? never
         : K & (keyof GassmaGassmaFormulaCellDefaultFindResult | "_count")]:
@@ -6323,11 +11552,12 @@ export type GassmaGassmaFormulaCellFindResultCore<S, I = undefined, QO = undefin
           K extends "_count" ? Gassma.CountResult<S[K]> :
           GassmaGassmaFormulaCellDefaultFindResult[K & keyof GassmaGassmaFormulaCellDefaultFindResult];
     }
-  : {
+    : {
       [K in keyof GassmaGassmaFormulaCellDefaultFindResult as K extends Gassma.ResolveOmitKeys<GO, QO>
         ? never
         : K]: GassmaGassmaFormulaCellDefaultFindResult[K];
-    }) &
+    }
+  : never) &
   (I extends undefined
     ? {}
     : {
@@ -6344,8 +11574,9 @@ export type GassmaGassmaFormulaCellFindResult<S, I = undefined, QO = undefined, 
   QO
 >;
 
-export type GassmaGassmaNotificationFindResultBase<S, I = undefined, QO = undefined, GO = {}, O = {}> = (S extends GassmaGassmaNotificationFindSelect
-  ? {
+export type GassmaGassmaNotificationFindResultBase<S, I = undefined, QO = undefined, GO = {}, O = {}> = (S extends unknown
+  ? Gassma.SelectGiven<S> extends true
+    ? {
       [K in keyof S as S[K] extends false | undefined
         ? never
         : K & (keyof GassmaGassmaNotificationDefaultFindResult | "_count")]:
@@ -6353,11 +11584,12 @@ export type GassmaGassmaNotificationFindResultBase<S, I = undefined, QO = undefi
           K extends "_count" ? Gassma.CountResult<S[K]> :
           GassmaGassmaNotificationDefaultFindResult[K & keyof GassmaGassmaNotificationDefaultFindResult];
     }
-  : {
+    : {
       [K in keyof GassmaGassmaNotificationDefaultFindResult as K extends Gassma.ResolveOmitKeys<GO, QO>
         ? never
         : K]: GassmaGassmaNotificationDefaultFindResult[K];
-    }) &
+    }
+  : never) &
   (I extends undefined
     ? {}
     : {
@@ -6367,8 +11599,9 @@ export type GassmaGassmaNotificationFindResultBase<S, I = undefined, QO = undefi
           never;
       });
 
-export type GassmaGassmaNotificationFindResultCore<S, I = undefined, QO = undefined, GO = {}, O = {}, CMap = {}> = (S extends GassmaGassmaNotificationFindSelect
-  ? {
+export type GassmaGassmaNotificationFindResultCore<S, I = undefined, QO = undefined, GO = {}, O = {}, CMap = {}> = (S extends unknown
+  ? Gassma.SelectGiven<S> extends true
+    ? {
       [K in keyof S as S[K] extends false | undefined
         ? never
         : K & (keyof GassmaGassmaNotificationDefaultFindResult | "_count")]:
@@ -6376,11 +11609,12 @@ export type GassmaGassmaNotificationFindResultCore<S, I = undefined, QO = undefi
           K extends "_count" ? Gassma.CountResult<S[K]> :
           GassmaGassmaNotificationDefaultFindResult[K & keyof GassmaGassmaNotificationDefaultFindResult];
     }
-  : {
+    : {
       [K in keyof GassmaGassmaNotificationDefaultFindResult as K extends Gassma.ResolveOmitKeys<GO, QO>
         ? never
         : K]: GassmaGassmaNotificationDefaultFindResult[K];
-    }) &
+    }
+  : never) &
   (I extends undefined
     ? {}
     : {
@@ -6397,8 +11631,9 @@ export type GassmaGassmaNotificationFindResult<S, I = undefined, QO = undefined,
   QO
 >;
 
-export type GassmaGassmaOffsetNoteFindResultBase<S, I = undefined, QO = undefined, GO = {}, O = {}> = (S extends GassmaGassmaOffsetNoteFindSelect
-  ? {
+export type GassmaGassmaOffsetNoteFindResultBase<S, I = undefined, QO = undefined, GO = {}, O = {}> = (S extends unknown
+  ? Gassma.SelectGiven<S> extends true
+    ? {
       [K in keyof S as S[K] extends false | undefined
         ? never
         : K & (keyof GassmaGassmaOffsetNoteDefaultFindResult | "_count")]:
@@ -6406,11 +11641,12 @@ export type GassmaGassmaOffsetNoteFindResultBase<S, I = undefined, QO = undefine
           K extends "_count" ? Gassma.CountResult<S[K]> :
           GassmaGassmaOffsetNoteDefaultFindResult[K & keyof GassmaGassmaOffsetNoteDefaultFindResult];
     }
-  : {
+    : {
       [K in keyof GassmaGassmaOffsetNoteDefaultFindResult as K extends Gassma.ResolveOmitKeys<GO, QO>
         ? never
         : K]: GassmaGassmaOffsetNoteDefaultFindResult[K];
-    }) &
+    }
+  : never) &
   (I extends undefined
     ? {}
     : {
@@ -6420,8 +11656,9 @@ export type GassmaGassmaOffsetNoteFindResultBase<S, I = undefined, QO = undefine
           never;
       });
 
-export type GassmaGassmaOffsetNoteFindResultCore<S, I = undefined, QO = undefined, GO = {}, O = {}, CMap = {}> = (S extends GassmaGassmaOffsetNoteFindSelect
-  ? {
+export type GassmaGassmaOffsetNoteFindResultCore<S, I = undefined, QO = undefined, GO = {}, O = {}, CMap = {}> = (S extends unknown
+  ? Gassma.SelectGiven<S> extends true
+    ? {
       [K in keyof S as S[K] extends false | undefined
         ? never
         : K & (keyof GassmaGassmaOffsetNoteDefaultFindResult | "_count")]:
@@ -6429,11 +11666,12 @@ export type GassmaGassmaOffsetNoteFindResultCore<S, I = undefined, QO = undefine
           K extends "_count" ? Gassma.CountResult<S[K]> :
           GassmaGassmaOffsetNoteDefaultFindResult[K & keyof GassmaGassmaOffsetNoteDefaultFindResult];
     }
-  : {
+    : {
       [K in keyof GassmaGassmaOffsetNoteDefaultFindResult as K extends Gassma.ResolveOmitKeys<GO, QO>
         ? never
         : K]: GassmaGassmaOffsetNoteDefaultFindResult[K];
-    }) &
+    }
+  : never) &
   (I extends undefined
     ? {}
     : {
@@ -6450,8 +11688,9 @@ export type GassmaGassmaOffsetNoteFindResult<S, I = undefined, QO = undefined, G
   QO
 >;
 
-export type GassmaGassmaUserFindResultBase<S, I = undefined, QO = undefined, GO = {}, O = {}> = (S extends GassmaGassmaUserFindSelect
-  ? {
+export type GassmaGassmaUserFindResultBase<S, I = undefined, QO = undefined, GO = {}, O = {}> = (S extends unknown
+  ? Gassma.SelectGiven<S> extends true
+    ? {
       [K in keyof S as S[K] extends false | undefined
         ? never
         : K & (keyof GassmaGassmaUserDefaultFindResult | "posts" | "comments" | "orders" | "profile" | "_count")]:
@@ -6464,11 +11703,12 @@ export type GassmaGassmaUserFindResultBase<S, I = undefined, QO = undefined, GO 
           K extends "_count" ? Gassma.CountResult<S[K]> :
           GassmaGassmaUserDefaultFindResult[K & keyof GassmaGassmaUserDefaultFindResult];
     }
-  : {
+    : {
       [K in keyof GassmaGassmaUserDefaultFindResult as K extends Gassma.ResolveOmitKeys<GO, QO>
         ? never
         : K]: GassmaGassmaUserDefaultFindResult[K];
-    }) &
+    }
+  : never) &
   (I extends undefined
     ? {}
     : {
@@ -6483,8 +11723,9 @@ export type GassmaGassmaUserFindResultBase<S, I = undefined, QO = undefined, GO 
           never;
       });
 
-export type GassmaGassmaUserFindResultCore<S, I = undefined, QO = undefined, GO = {}, O = {}, CMap = {}> = (S extends GassmaGassmaUserFindSelect
-  ? {
+export type GassmaGassmaUserFindResultCore<S, I = undefined, QO = undefined, GO = {}, O = {}, CMap = {}> = (S extends unknown
+  ? Gassma.SelectGiven<S> extends true
+    ? {
       [K in keyof S as S[K] extends false | undefined
         ? never
         : K & (keyof GassmaGassmaUserDefaultFindResult | "posts" | "comments" | "orders" | "profile" | "_count")]:
@@ -6497,11 +11738,12 @@ export type GassmaGassmaUserFindResultCore<S, I = undefined, QO = undefined, GO 
           K extends "_count" ? Gassma.CountResult<S[K]> :
           GassmaGassmaUserDefaultFindResult[K & keyof GassmaGassmaUserDefaultFindResult];
     }
-  : {
+    : {
       [K in keyof GassmaGassmaUserDefaultFindResult as K extends Gassma.ResolveOmitKeys<GO, QO>
         ? never
         : K]: GassmaGassmaUserDefaultFindResult[K];
-    }) &
+    }
+  : never) &
   (I extends undefined
     ? {}
     : {
@@ -6523,55 +11765,59 @@ export type GassmaGassmaUserFindResult<S, I = undefined, QO = undefined, GO = {}
   QO
 >;
 
-export type GassmaGassmaProfileFindResultBase<S, I = undefined, QO = undefined, GO = {}, O = {}> = (S extends GassmaGassmaProfileFindSelect
-  ? {
+export type GassmaGassmaProfileFindResultBase<S, I = undefined, QO = undefined, GO = {}, O = {}> = (S extends unknown
+  ? Gassma.SelectGiven<S> extends true
+    ? {
       [K in keyof S as S[K] extends false | undefined
         ? never
         : K & (keyof GassmaGassmaProfileDefaultFindResult | "user" | "_count")]:
           K extends "user" ? {
-            "user": GassmaGassmaUserFindResultBase<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "User": infer TO } ? TO extends GassmaGassmaUserOmit ? TO : {} : {}, O> | null;
+            "user": GassmaGassmaUserFindResultBase<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "User": infer TO } ? TO extends GassmaGassmaUserOmit ? TO : {} : {}, O>;
           }[K] :
           K extends "_count" ? Gassma.CountResult<S[K]> :
           GassmaGassmaProfileDefaultFindResult[K & keyof GassmaGassmaProfileDefaultFindResult];
     }
-  : {
+    : {
       [K in keyof GassmaGassmaProfileDefaultFindResult as K extends Gassma.ResolveOmitKeys<GO, QO>
         ? never
         : K]: GassmaGassmaProfileDefaultFindResult[K];
-    }) &
+    }
+  : never) &
   (I extends undefined
     ? {}
     : {
         [K in keyof I as K extends "user" | "_count" ? K : never]:
           K extends "user" ? {
-            "user": GassmaGassmaUserFindResultBase<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "User": infer TO } ? TO extends GassmaGassmaUserOmit ? TO : {} : {}, O> | null;
+            "user": GassmaGassmaUserFindResultBase<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "User": infer TO } ? TO extends GassmaGassmaUserOmit ? TO : {} : {}, O>;
           }[K] :
           K extends "_count" ? Gassma.CountResult<I[K]> :
           never;
       });
 
-export type GassmaGassmaProfileFindResultCore<S, I = undefined, QO = undefined, GO = {}, O = {}, CMap = {}> = (S extends GassmaGassmaProfileFindSelect
-  ? {
+export type GassmaGassmaProfileFindResultCore<S, I = undefined, QO = undefined, GO = {}, O = {}, CMap = {}> = (S extends unknown
+  ? Gassma.SelectGiven<S> extends true
+    ? {
       [K in keyof S as S[K] extends false | undefined
         ? never
         : K & (keyof GassmaGassmaProfileDefaultFindResult | "user" | "_count")]:
           K extends "user" ? {
-            "user": GassmaGassmaUserFindResult<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "User": infer TO } ? TO extends GassmaGassmaUserOmit ? TO : {} : {}, O, CMap> | null;
+            "user": GassmaGassmaUserFindResult<Gassma.SelectOf<S[K]>, Gassma.IncludeOf<S[K]>, Gassma.OmitOf<S[K]>, O extends { "User": infer TO } ? TO extends GassmaGassmaUserOmit ? TO : {} : {}, O, CMap>;
           }[K] :
           K extends "_count" ? Gassma.CountResult<S[K]> :
           GassmaGassmaProfileDefaultFindResult[K & keyof GassmaGassmaProfileDefaultFindResult];
     }
-  : {
+    : {
       [K in keyof GassmaGassmaProfileDefaultFindResult as K extends Gassma.ResolveOmitKeys<GO, QO>
         ? never
         : K]: GassmaGassmaProfileDefaultFindResult[K];
-    }) &
+    }
+  : never) &
   (I extends undefined
     ? {}
     : {
         [K in keyof I as K extends "user" | "_count" ? K : never]:
           K extends "user" ? {
-            "user": GassmaGassmaUserFindResult<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "User": infer TO } ? TO extends GassmaGassmaUserOmit ? TO : {} : {}, O, CMap> | null;
+            "user": GassmaGassmaUserFindResult<Gassma.SelectOf<I[K]>, Gassma.IncludeOf<I[K]>, Gassma.OmitOf<I[K]>, O extends { "User": infer TO } ? TO extends GassmaGassmaUserOmit ? TO : {} : {}, O, CMap>;
           }[K] :
           K extends "_count" ? Gassma.CountResult<I[K]> :
           never;
@@ -9326,14 +14572,93 @@ export type GassmaGassmaExtension<O extends GassmaGassmaGlobalOmitConfig = {}> =
   result?: GassmaGassmaResultConfig;
 };
 
+/**
+ * `GassmaClient` proxy available in interactive transactions.
+ */
 export type GassmaGassmaTransactionClient<O extends Gassma.StrictGlobalOmit<O, GassmaGassmaGlobalOmitConfig> = {}> = GassmaGassmaSheet<O> & {
+  /**
+   * Creates an extended client with additional behaviour.
+   * Read more here: https://gassma.io/en/docs/reference/client-extensions/result
+   * @example
+   * ```
+   * const extended = gassma.$extends({
+   *   result: {
+   *     // ... provide result extensions here
+   *   }
+   * })
+   * ```
+   */
   $extends: GassmaGassmaExtendsFn<O, {}>;
 };
+/**
+ * ##  GASsma Client
+ * 
+ * Type-safe Google Sheets client for TypeScript & Google Apps Script
+ * @example
+ * ```
+ * const gassma = new GassmaClient()
+ * // Fetch zero or more Posts
+ * const posts = gassma.Post.findMany()
+ * ```
+ * 
+ * 
+ * Read more in our [docs](https://gassma.io/en/docs/reference/basic).
+ */
 export interface GassmaClient<O extends Gassma.StrictGlobalOmit<O, GassmaGassmaGlobalOmitConfig> = {}> extends GassmaGassmaSheet<O> {
+  /**
+   * Creates an extended client with additional behaviour.
+   * Read more here: https://gassma.io/en/docs/reference/client-extensions/result
+   * @example
+   * ```
+   * const extended = gassma.$extends({
+   *   result: {
+   *     // ... provide result extensions here
+   *   }
+   * })
+   * ```
+   */
   $extends: GassmaGassmaExtendsFn<O, {}>;
+  /**
+   * Allows the running of a sequence of read/write operations that are guaranteed to either succeed or fail as a whole.
+   * Read more here: https://gassma.io/en/docs/reference/transaction
+   * @example
+   * ```
+   * const [alice, bob] = gassma.$transaction((tx) => {
+   *   const alice = tx.Post.create({ data: { ... } })
+   *   const bob = tx.Post.create({ data: { ... } })
+   *   return [alice, bob]
+   * })
+   * ```
+   */
   $transaction<T>(fn: (tx: GassmaGassmaTransactionClient<O>) => T, options?: Gassma.GassmaTransactionOptions): T;
 }
+/**
+ * ##  GASsma Client
+ * 
+ * Type-safe Google Sheets client for TypeScript & Google Apps Script
+ * @example
+ * ```
+ * const gassma = new GassmaClient()
+ * // Fetch zero or more Posts
+ * const posts = gassma.Post.findMany()
+ * ```
+ * 
+ * 
+ * Read more in our [docs](https://gassma.io/en/docs/reference/basic).
+ */
 export declare class GassmaClient<O extends Gassma.StrictGlobalOmit<O, GassmaGassmaGlobalOmitConfig> = {}> {
+  /**
+   * Creates a GASsma client.
+   * @param {GassmaGassmaClientOptions} options - Spreadsheet id and model configuration.
+   * @example
+   * ```
+   * const gassma = new GassmaClient()
+   * ```
+   * 
+   * ```
+   * const gassma = new GassmaClient({ id: "<spreadsheet id>" })
+   * ```
+   */
   constructor(options?: GassmaGassmaClientOptions<O>);
 }
 
