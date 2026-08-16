@@ -15,6 +15,7 @@ import { testExtendsAll } from "./test/extends";
 import { testTransactionAll } from "./test/transaction";
 import { testMigrateAll } from "./test/migrate";
 import { testAutoincrementAll } from "./test/autoincrement";
+import { probeV8Support } from "./probe/v8Support";
 
 function main() {
   testRead();
@@ -33,4 +34,4 @@ function main() {
   testAutoincrementAll();
 }
 
-export { main, getSheetSnapshot, resetAllSheets, resetSheet, testRead, testCreateAll, testDeleteAll, testUpdateAll, testUpsertAll, testErrorAll, testSecurityAll, testGlobalOmitWriteAll, testSettingsAll, testFormulaAll, testExtendsAll, testTransactionAll, testMigrateAll, testAutoincrementAll };
+export { main, getSheetSnapshot, resetAllSheets, resetSheet, testRead, testCreateAll, testDeleteAll, testUpdateAll, testUpsertAll, testErrorAll, testSecurityAll, testGlobalOmitWriteAll, testSettingsAll, testFormulaAll, testExtendsAll, testTransactionAll, testMigrateAll, testAutoincrementAll, probeV8Support };
