@@ -7,7 +7,8 @@ function testGroupBy() {
   testGroupByBasic(client);
   testGroupByWithAggregate(client);
   testGroupByMultipleFields(client);
-  testGroupByTakeSkipBeforeGrouping(client);
+  testGroupByTakeSkipOnGroups(client);
+  testGroupByOrderByAggregate(client);
   testGroupByDateInstant(client);
 
   Logger.log("✅ testGroupBy: all passed");
@@ -43,14 +44,15 @@ function testGroupByWithAggregate(client: GassmaClient) {
 }
 
 function testGroupByMultipleFields(client: GassmaClient) {
+  // Post は 200 行 / [published, authorId] の組は 92 グループ (consts postData より)
   const result = client.Post.groupBy({
     by: ["published", "authorId"],
     _count: { id: true },
+    orderBy: [{ published: "asc" }, { authorId: "asc" }],
     take: 10,
   });
-  if (result.length === 0) {
-    throw new Error("groupBy multiple: expected results");
-  }
+
+  assertEquals(result.length, 10, "groupBy multiple: group count");
   result.forEach((group) => {
     if (typeof group.published !== "boolean") {
       throw new Error("groupBy multiple: published not boolean");
@@ -59,42 +61,64 @@ function testGroupByMultipleFields(client: GassmaClient) {
       throw new Error("groupBy multiple: authorId not number");
     }
   });
+
+  assertEquals(result[0].published, false, "groupBy multiple: first published");
+  assertEquals(result[0].authorId, 1, "groupBy multiple: first authorId");
+  assertEquals(result[0]._count.id, 2, "groupBy multiple: first count");
+
+  // take が行でなくグループに効いている証拠: 10 グループの行数合計は 10 を超える
+  const rowTotal = result.reduce((sum, group) => sum + group._count.id, 0);
+  assertEquals(rowTotal, 15, "groupBy multiple: rows behind the first 10 groups");
 }
 
-function testGroupByTakeSkipBeforeGrouping(client: GassmaClient) {
-  // GASsma 固有仕様: take/skip/orderBy はグループ化前の行に適用される
+function testGroupByTakeSkipOnGroups(client: GassmaClient) {
+  // take/skip はグループに適用される (本体 #226)
+  // role ごとの User 数は ADMIN=6, MODERATOR=12, USER=32 (consts userData より)
 
-  // id 昇順で先頭 5 行 (role: ADMIN,USER,USER,ADMIN,USER) → 2 グループ
   const takeResult = client.User.groupBy({
     by: "role",
-    orderBy: { id: "asc" },
-    take: 5,
+    orderBy: { role: "asc" },
+    take: 2,
     _count: { id: true },
   });
   assertEquals(takeResult.length, 2, "groupBy take: group count");
-  const adminGroup = takeResult.filter((g) => g.role === "ADMIN")[0];
-  const userGroup = takeResult.filter((g) => g.role === "USER")[0];
-  if (!adminGroup || !userGroup) {
-    throw new Error("groupBy take: expected ADMIN and USER groups");
-  }
-  assertEquals(adminGroup._count.id, 2, "groupBy take: ADMIN count");
-  assertEquals(userGroup._count.id, 3, "groupBy take: USER count");
+  assertEquals(takeResult[0].role, "ADMIN", "groupBy take: first role");
+  assertEquals(takeResult[0]._count.id, 6, "groupBy take: ADMIN count");
+  assertEquals(takeResult[1].role, "MODERATOR", "groupBy take: second role");
+  assertEquals(takeResult[1]._count.id, 12, "groupBy take: MODERATOR count");
 
-  // id 昇順で 48 行スキップ → 残り id 49(MODERATOR), 50(USER) → 2 グループ各 1 件
   const skipResult = client.User.groupBy({
     by: "role",
-    orderBy: { id: "asc" },
-    skip: 48,
+    orderBy: { role: "asc" },
+    skip: 2,
     _count: { id: true },
   });
-  assertEquals(skipResult.length, 2, "groupBy skip: group count");
-  skipResult.forEach((group) => {
-    assertEquals(group._count.id, 1, `groupBy skip: ${group.role} count`);
+  assertEquals(skipResult.length, 1, "groupBy skip: group count");
+  assertEquals(skipResult[0].role, "USER", "groupBy skip: role");
+  assertEquals(skipResult[0]._count.id, 32, "groupBy skip: USER count");
+}
+
+function testGroupByOrderByAggregate(client: GassmaClient) {
+  const result = client.User.groupBy({
+    by: "role",
+    _count: { id: true },
+    orderBy: { _count: { id: "desc" } },
   });
-  const skipRoles = skipResult.map((g) => g.role);
-  if (skipRoles.indexOf("MODERATOR") === -1 || skipRoles.indexOf("USER") === -1) {
-    throw new Error(`groupBy skip: unexpected roles ${JSON.stringify(skipRoles)}`);
-  }
+
+  assertEquals(result.length, 3, "groupBy orderBy aggregate: group count");
+  assertEquals(result.map((g) => g.role).join(","), "USER,MODERATOR,ADMIN", "groupBy orderBy aggregate: order");
+  assertEquals(result[0]._count.id, 32, "groupBy orderBy aggregate: USER count");
+  assertEquals(result[2]._count.id, 6, "groupBy orderBy aggregate: ADMIN count");
+
+  const top = client.User.groupBy({
+    by: "role",
+    _count: { id: true },
+    orderBy: { _count: { id: "desc" } },
+    take: 1,
+  });
+  assertEquals(top.length, 1, "groupBy orderBy aggregate + take: group count");
+  assertEquals(top[0].role, "USER", "groupBy orderBy aggregate + take: role");
+  assertEquals(top[0]._count.id, 32, "groupBy orderBy aggregate + take: count");
 }
 
 function testGroupByDateInstant(client: GassmaClient) {
