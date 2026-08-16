@@ -20,6 +20,7 @@ function testTopLevelIncludeSelectConflict(client: GassmaClient) {
   // トップレベルで include と select を同時指定するとエラー
   assertThrows(
     () => {
+      // @ts-expect-error 実行時に落ちることを確かめるテストなので、型の拒否は意図どおり
       client.User.findMany({
         select: { id: true },
         include: { posts: true },
@@ -31,6 +32,7 @@ function testTopLevelIncludeSelectConflict(client: GassmaClient) {
 
   assertThrows(
     () => {
+      // @ts-expect-error 実行時に落ちることを確かめるテストなので、型の拒否は意図どおり
       client.User.findFirst({
         select: { id: true },
         include: { posts: true },

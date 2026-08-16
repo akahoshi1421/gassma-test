@@ -84,6 +84,26 @@ export namespace Gassma {
       : Omit<Base, keyof ActiveComputed<C, QO>> & ActiveComputed<C, QO>;
 
   type Subset<T, U> = { [K in keyof T]: K extends keyof U ? T[K] : never };
+  type GroupByPaginationCheck<T, D extends { orderBy?: unknown }> = "orderBy" extends keyof T
+    ? unknown
+    : "take" extends keyof T
+      ? Required<Pick<D, "orderBy">> & 'Error: If you provide "take", you also need to provide "orderBy"'
+      : "skip" extends keyof T
+        ? Required<Pick<D, "orderBy">> & 'Error: If you provide "skip", you also need to provide "orderBy"'
+        : unknown;
+  type GroupByOrderFields<O> = O extends readonly (infer E)[] ? GroupByOrderFields<E> : O extends object ? Exclude<keyof O, `_${string}`> & string : never;
+  type GroupByByFields<B> = B extends readonly (infer E)[] ? GroupByByFields<E> : B;
+  type GroupByStrayOrderFields<T> = Exclude<
+    GroupByOrderFields<T extends { orderBy: infer O } ? O : never>,
+    GroupByByFields<T extends { by: infer B } ? B : never>
+  >;
+  type GroupByOrderByFieldCheck<T> = [GroupByStrayOrderFields<T>] extends [never]
+    ? unknown
+    : { [P in GroupByStrayOrderFields<T>]: `Error: Field "${P}" in "orderBy" needs to be provided in "by"` }[GroupByStrayOrderFields<T>];
+  type SelectAndInclude = { select: unknown; include: unknown };
+  type IncludeSelectCheck<T> = T extends SelectAndInclude
+    ? 'Error: Please either choose "select" or "include"'
+    : unknown;
   type ExactKeys<T, Shape> = Shape & { [K in Exclude<keyof T, keyof Shape>]?: never };
   type StrictGlobalOmit<O, Config> = Config & {
     [K in keyof O]?: K extends keyof Config
@@ -732,7 +752,7 @@ export declare class GassmaGassmaPostController<GO extends GassmaGassmaPostOmit 
    * })
    * 
    */
-  createManyAndReturn<T extends GassmaGassmaPostCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Post">>>(createdData: T & Gassma.Subset<T, GassmaGassmaPostCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Post">>>): GassmaGassmaPostFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  createManyAndReturn<T extends GassmaGassmaPostCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Post">>>(createdData: T & Gassma.Subset<T, GassmaGassmaPostCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Post">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaPostFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
   /**
    * Create a Post.
    * Read more here: https://gassma.io/en/docs/reference/crud/create/create
@@ -746,7 +766,7 @@ export declare class GassmaGassmaPostController<GO extends GassmaGassmaPostOmit 
    * })
    * 
    */
-  create<T extends GassmaGassmaPostCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "Post">>>(createdData: T & Gassma.Subset<T, GassmaGassmaPostCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "Post">>>): GassmaGassmaPostFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  create<T extends GassmaGassmaPostCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "Post">>>(createdData: T & Gassma.Subset<T, GassmaGassmaPostCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "Post">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaPostFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
   /**
    * Find the first Post that matches the filter.
    * Note, that providing `undefined` is treated as the value not being there.
@@ -760,7 +780,7 @@ export declare class GassmaGassmaPostController<GO extends GassmaGassmaPostOmit 
    *   }
    * })
    */
-  findFirst<T extends GassmaGassmaPostFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Post">>>(findData: T & Gassma.Subset<T, GassmaGassmaPostFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Post">>>): GassmaGassmaPostFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  findFirst<T extends GassmaGassmaPostFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Post">>>(findData: T & Gassma.Subset<T, GassmaGassmaPostFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Post">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaPostFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
   /**
    * Find the first Post.
    * Read more here: https://gassma.io/en/docs/reference/crud/read/findFirst
@@ -783,7 +803,7 @@ export declare class GassmaGassmaPostController<GO extends GassmaGassmaPostOmit 
    *   }
    * })
    */
-  findFirstOrThrow<T extends GassmaGassmaPostFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Post">>>(findData: T & Gassma.Subset<T, GassmaGassmaPostFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Post">>>): GassmaGassmaPostFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  findFirstOrThrow<T extends GassmaGassmaPostFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Post">>>(findData: T & Gassma.Subset<T, GassmaGassmaPostFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Post">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaPostFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
   /**
    * Find the first Post or throw `NotFoundError` if no Posts exist.
    * Read more here: https://gassma.io/en/docs/reference/crud/read/findFirstOrThrow
@@ -808,7 +828,7 @@ export declare class GassmaGassmaPostController<GO extends GassmaGassmaPostOmit 
    * const postWithIdOnly = gassma.Post.findMany({ select: { id: true } })
    * 
    */
-  findMany<T extends GassmaGassmaPostFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "Post">>>(findData: T & Gassma.Subset<T, GassmaGassmaPostFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "Post">>>): GassmaGassmaPostFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  findMany<T extends GassmaGassmaPostFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "Post">>>(findData: T & Gassma.Subset<T, GassmaGassmaPostFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "Post">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaPostFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
   /**
    * Find all Posts.
    * Read more here: https://gassma.io/en/docs/reference/crud/read/findMany
@@ -833,7 +853,7 @@ export declare class GassmaGassmaPostController<GO extends GassmaGassmaPostOmit 
    * })
    * 
    */
-  update<T extends GassmaGassmaPostUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Post">>>(updateData: T & Gassma.Subset<T, GassmaGassmaPostUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Post">>>): GassmaGassmaPostFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  update<T extends GassmaGassmaPostUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Post">>>(updateData: T & Gassma.Subset<T, GassmaGassmaPostUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Post">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaPostFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
   /**
    * Update zero or more Posts.
    * Note, that providing `undefined` is treated as the value not being there.
@@ -880,7 +900,7 @@ export declare class GassmaGassmaPostController<GO extends GassmaGassmaPostOmit 
    * })
    * 
    */
-  updateManyAndReturn<T extends GassmaGassmaPostUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Post">>>(updateData: T & Gassma.Subset<T, GassmaGassmaPostUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Post">>>): GassmaGassmaPostFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  updateManyAndReturn<T extends GassmaGassmaPostUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Post">>>(updateData: T & Gassma.Subset<T, GassmaGassmaPostUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Post">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaPostFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
   /**
    * Create or update one Post.
    * Read more here: https://gassma.io/en/docs/reference/crud/update/upsert
@@ -899,7 +919,7 @@ export declare class GassmaGassmaPostController<GO extends GassmaGassmaPostOmit 
    *   }
    * })
    */
-  upsert<T extends GassmaGassmaPostUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Post">>>(upsertData: T & Gassma.Subset<T, GassmaGassmaPostUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Post">>>): GassmaGassmaPostFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  upsert<T extends GassmaGassmaPostUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Post">>>(upsertData: T & Gassma.Subset<T, GassmaGassmaPostUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Post">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaPostFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
   /**
    * Delete a Post.
    * Read more here: https://gassma.io/en/docs/reference/crud/delete/delete
@@ -913,7 +933,7 @@ export declare class GassmaGassmaPostController<GO extends GassmaGassmaPostOmit 
    * })
    * 
    */
-  delete<T extends GassmaGassmaPostDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Post">>>(deleteData: T & Gassma.Subset<T, GassmaGassmaPostDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Post">>>): GassmaGassmaPostFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  delete<T extends GassmaGassmaPostDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Post">>>(deleteData: T & Gassma.Subset<T, GassmaGassmaPostDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Post">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaPostFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
   /**
    * Delete zero or more Posts.
    * Read more here: https://gassma.io/en/docs/reference/crud/delete/deleteMany
@@ -988,7 +1008,7 @@ export declare class GassmaGassmaPostController<GO extends GassmaGassmaPostOmit 
    * })
    * 
    */
-  groupBy<T extends GassmaGassmaPostGroupByData>(groupByData: T & Gassma.Subset<T, GassmaGassmaPostGroupByData>): GassmaGassmaPostGroupByResult<T>[];
+  groupBy<T extends GassmaGassmaPostGroupByData>(groupByData: T & Gassma.Subset<T, GassmaGassmaPostGroupByData> & Gassma.GroupByPaginationCheck<T, GassmaGassmaPostGroupByData> & Gassma.GroupByOrderByFieldCheck<T>): GassmaGassmaPostGroupByResult<T>[];
   /**
    * Get the value the next `create` will issue for an autoincrement field of Post.
    * Reading the counter is allowed inside `$transaction`.
@@ -1083,7 +1103,7 @@ export declare class GassmaGassmaCommentController<GO extends GassmaGassmaCommen
    * })
    * 
    */
-  createManyAndReturn<T extends GassmaGassmaCommentCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Comment">>>(createdData: T & Gassma.Subset<T, GassmaGassmaCommentCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Comment">>>): GassmaGassmaCommentFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  createManyAndReturn<T extends GassmaGassmaCommentCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Comment">>>(createdData: T & Gassma.Subset<T, GassmaGassmaCommentCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Comment">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaCommentFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
   /**
    * Create a Comment.
    * Read more here: https://gassma.io/en/docs/reference/crud/create/create
@@ -1097,7 +1117,7 @@ export declare class GassmaGassmaCommentController<GO extends GassmaGassmaCommen
    * })
    * 
    */
-  create<T extends GassmaGassmaCommentCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "Comment">>>(createdData: T & Gassma.Subset<T, GassmaGassmaCommentCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "Comment">>>): GassmaGassmaCommentFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  create<T extends GassmaGassmaCommentCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "Comment">>>(createdData: T & Gassma.Subset<T, GassmaGassmaCommentCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "Comment">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaCommentFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
   /**
    * Find the first Comment that matches the filter.
    * Note, that providing `undefined` is treated as the value not being there.
@@ -1111,7 +1131,7 @@ export declare class GassmaGassmaCommentController<GO extends GassmaGassmaCommen
    *   }
    * })
    */
-  findFirst<T extends GassmaGassmaCommentFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Comment">>>(findData: T & Gassma.Subset<T, GassmaGassmaCommentFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Comment">>>): GassmaGassmaCommentFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  findFirst<T extends GassmaGassmaCommentFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Comment">>>(findData: T & Gassma.Subset<T, GassmaGassmaCommentFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Comment">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaCommentFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
   /**
    * Find the first Comment.
    * Read more here: https://gassma.io/en/docs/reference/crud/read/findFirst
@@ -1134,7 +1154,7 @@ export declare class GassmaGassmaCommentController<GO extends GassmaGassmaCommen
    *   }
    * })
    */
-  findFirstOrThrow<T extends GassmaGassmaCommentFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Comment">>>(findData: T & Gassma.Subset<T, GassmaGassmaCommentFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Comment">>>): GassmaGassmaCommentFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  findFirstOrThrow<T extends GassmaGassmaCommentFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Comment">>>(findData: T & Gassma.Subset<T, GassmaGassmaCommentFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Comment">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaCommentFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
   /**
    * Find the first Comment or throw `NotFoundError` if no Comments exist.
    * Read more here: https://gassma.io/en/docs/reference/crud/read/findFirstOrThrow
@@ -1159,7 +1179,7 @@ export declare class GassmaGassmaCommentController<GO extends GassmaGassmaCommen
    * const commentWithIdOnly = gassma.Comment.findMany({ select: { id: true } })
    * 
    */
-  findMany<T extends GassmaGassmaCommentFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "Comment">>>(findData: T & Gassma.Subset<T, GassmaGassmaCommentFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "Comment">>>): GassmaGassmaCommentFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  findMany<T extends GassmaGassmaCommentFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "Comment">>>(findData: T & Gassma.Subset<T, GassmaGassmaCommentFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "Comment">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaCommentFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
   /**
    * Find all Comments.
    * Read more here: https://gassma.io/en/docs/reference/crud/read/findMany
@@ -1184,7 +1204,7 @@ export declare class GassmaGassmaCommentController<GO extends GassmaGassmaCommen
    * })
    * 
    */
-  update<T extends GassmaGassmaCommentUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Comment">>>(updateData: T & Gassma.Subset<T, GassmaGassmaCommentUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Comment">>>): GassmaGassmaCommentFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  update<T extends GassmaGassmaCommentUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Comment">>>(updateData: T & Gassma.Subset<T, GassmaGassmaCommentUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Comment">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaCommentFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
   /**
    * Update zero or more Comments.
    * Note, that providing `undefined` is treated as the value not being there.
@@ -1231,7 +1251,7 @@ export declare class GassmaGassmaCommentController<GO extends GassmaGassmaCommen
    * })
    * 
    */
-  updateManyAndReturn<T extends GassmaGassmaCommentUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Comment">>>(updateData: T & Gassma.Subset<T, GassmaGassmaCommentUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Comment">>>): GassmaGassmaCommentFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  updateManyAndReturn<T extends GassmaGassmaCommentUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Comment">>>(updateData: T & Gassma.Subset<T, GassmaGassmaCommentUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Comment">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaCommentFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
   /**
    * Create or update one Comment.
    * Read more here: https://gassma.io/en/docs/reference/crud/update/upsert
@@ -1250,7 +1270,7 @@ export declare class GassmaGassmaCommentController<GO extends GassmaGassmaCommen
    *   }
    * })
    */
-  upsert<T extends GassmaGassmaCommentUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Comment">>>(upsertData: T & Gassma.Subset<T, GassmaGassmaCommentUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Comment">>>): GassmaGassmaCommentFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  upsert<T extends GassmaGassmaCommentUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Comment">>>(upsertData: T & Gassma.Subset<T, GassmaGassmaCommentUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Comment">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaCommentFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
   /**
    * Delete a Comment.
    * Read more here: https://gassma.io/en/docs/reference/crud/delete/delete
@@ -1264,7 +1284,7 @@ export declare class GassmaGassmaCommentController<GO extends GassmaGassmaCommen
    * })
    * 
    */
-  delete<T extends GassmaGassmaCommentDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Comment">>>(deleteData: T & Gassma.Subset<T, GassmaGassmaCommentDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Comment">>>): GassmaGassmaCommentFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  delete<T extends GassmaGassmaCommentDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Comment">>>(deleteData: T & Gassma.Subset<T, GassmaGassmaCommentDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Comment">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaCommentFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
   /**
    * Delete zero or more Comments.
    * Read more here: https://gassma.io/en/docs/reference/crud/delete/deleteMany
@@ -1339,7 +1359,7 @@ export declare class GassmaGassmaCommentController<GO extends GassmaGassmaCommen
    * })
    * 
    */
-  groupBy<T extends GassmaGassmaCommentGroupByData>(groupByData: T & Gassma.Subset<T, GassmaGassmaCommentGroupByData>): GassmaGassmaCommentGroupByResult<T>[];
+  groupBy<T extends GassmaGassmaCommentGroupByData>(groupByData: T & Gassma.Subset<T, GassmaGassmaCommentGroupByData> & Gassma.GroupByPaginationCheck<T, GassmaGassmaCommentGroupByData> & Gassma.GroupByOrderByFieldCheck<T>): GassmaGassmaCommentGroupByResult<T>[];
   /**
    * Get the value the next `create` will issue for an autoincrement field of Comment.
    * Reading the counter is allowed inside `$transaction`.
@@ -1434,7 +1454,7 @@ export declare class GassmaGassmaCategoryController<GO extends GassmaGassmaCateg
    * })
    * 
    */
-  createManyAndReturn<T extends GassmaGassmaCategoryCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Category">>>(createdData: T & Gassma.Subset<T, GassmaGassmaCategoryCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Category">>>): GassmaGassmaCategoryFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  createManyAndReturn<T extends GassmaGassmaCategoryCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Category">>>(createdData: T & Gassma.Subset<T, GassmaGassmaCategoryCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Category">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaCategoryFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
   /**
    * Create a Category.
    * Read more here: https://gassma.io/en/docs/reference/crud/create/create
@@ -1448,7 +1468,7 @@ export declare class GassmaGassmaCategoryController<GO extends GassmaGassmaCateg
    * })
    * 
    */
-  create<T extends GassmaGassmaCategoryCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "Category">>>(createdData: T & Gassma.Subset<T, GassmaGassmaCategoryCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "Category">>>): GassmaGassmaCategoryFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  create<T extends GassmaGassmaCategoryCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "Category">>>(createdData: T & Gassma.Subset<T, GassmaGassmaCategoryCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "Category">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaCategoryFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
   /**
    * Find the first Category that matches the filter.
    * Note, that providing `undefined` is treated as the value not being there.
@@ -1462,7 +1482,7 @@ export declare class GassmaGassmaCategoryController<GO extends GassmaGassmaCateg
    *   }
    * })
    */
-  findFirst<T extends GassmaGassmaCategoryFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Category">>>(findData: T & Gassma.Subset<T, GassmaGassmaCategoryFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Category">>>): GassmaGassmaCategoryFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  findFirst<T extends GassmaGassmaCategoryFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Category">>>(findData: T & Gassma.Subset<T, GassmaGassmaCategoryFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Category">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaCategoryFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
   /**
    * Find the first Category.
    * Read more here: https://gassma.io/en/docs/reference/crud/read/findFirst
@@ -1485,7 +1505,7 @@ export declare class GassmaGassmaCategoryController<GO extends GassmaGassmaCateg
    *   }
    * })
    */
-  findFirstOrThrow<T extends GassmaGassmaCategoryFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Category">>>(findData: T & Gassma.Subset<T, GassmaGassmaCategoryFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Category">>>): GassmaGassmaCategoryFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  findFirstOrThrow<T extends GassmaGassmaCategoryFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Category">>>(findData: T & Gassma.Subset<T, GassmaGassmaCategoryFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Category">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaCategoryFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
   /**
    * Find the first Category or throw `NotFoundError` if no Categories exist.
    * Read more here: https://gassma.io/en/docs/reference/crud/read/findFirstOrThrow
@@ -1510,7 +1530,7 @@ export declare class GassmaGassmaCategoryController<GO extends GassmaGassmaCateg
    * const categoryWithIdOnly = gassma.Category.findMany({ select: { id: true } })
    * 
    */
-  findMany<T extends GassmaGassmaCategoryFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "Category">>>(findData: T & Gassma.Subset<T, GassmaGassmaCategoryFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "Category">>>): GassmaGassmaCategoryFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  findMany<T extends GassmaGassmaCategoryFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "Category">>>(findData: T & Gassma.Subset<T, GassmaGassmaCategoryFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "Category">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaCategoryFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
   /**
    * Find all Categories.
    * Read more here: https://gassma.io/en/docs/reference/crud/read/findMany
@@ -1535,7 +1555,7 @@ export declare class GassmaGassmaCategoryController<GO extends GassmaGassmaCateg
    * })
    * 
    */
-  update<T extends GassmaGassmaCategoryUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Category">>>(updateData: T & Gassma.Subset<T, GassmaGassmaCategoryUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Category">>>): GassmaGassmaCategoryFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  update<T extends GassmaGassmaCategoryUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Category">>>(updateData: T & Gassma.Subset<T, GassmaGassmaCategoryUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Category">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaCategoryFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
   /**
    * Update zero or more Categories.
    * Note, that providing `undefined` is treated as the value not being there.
@@ -1582,7 +1602,7 @@ export declare class GassmaGassmaCategoryController<GO extends GassmaGassmaCateg
    * })
    * 
    */
-  updateManyAndReturn<T extends GassmaGassmaCategoryUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Category">>>(updateData: T & Gassma.Subset<T, GassmaGassmaCategoryUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Category">>>): GassmaGassmaCategoryFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  updateManyAndReturn<T extends GassmaGassmaCategoryUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Category">>>(updateData: T & Gassma.Subset<T, GassmaGassmaCategoryUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Category">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaCategoryFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
   /**
    * Create or update one Category.
    * Read more here: https://gassma.io/en/docs/reference/crud/update/upsert
@@ -1601,7 +1621,7 @@ export declare class GassmaGassmaCategoryController<GO extends GassmaGassmaCateg
    *   }
    * })
    */
-  upsert<T extends GassmaGassmaCategoryUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Category">>>(upsertData: T & Gassma.Subset<T, GassmaGassmaCategoryUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Category">>>): GassmaGassmaCategoryFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  upsert<T extends GassmaGassmaCategoryUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Category">>>(upsertData: T & Gassma.Subset<T, GassmaGassmaCategoryUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Category">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaCategoryFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
   /**
    * Delete a Category.
    * Read more here: https://gassma.io/en/docs/reference/crud/delete/delete
@@ -1615,7 +1635,7 @@ export declare class GassmaGassmaCategoryController<GO extends GassmaGassmaCateg
    * })
    * 
    */
-  delete<T extends GassmaGassmaCategoryDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Category">>>(deleteData: T & Gassma.Subset<T, GassmaGassmaCategoryDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Category">>>): GassmaGassmaCategoryFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  delete<T extends GassmaGassmaCategoryDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Category">>>(deleteData: T & Gassma.Subset<T, GassmaGassmaCategoryDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Category">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaCategoryFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
   /**
    * Delete zero or more Categories.
    * Read more here: https://gassma.io/en/docs/reference/crud/delete/deleteMany
@@ -1690,7 +1710,7 @@ export declare class GassmaGassmaCategoryController<GO extends GassmaGassmaCateg
    * })
    * 
    */
-  groupBy<T extends GassmaGassmaCategoryGroupByData>(groupByData: T & Gassma.Subset<T, GassmaGassmaCategoryGroupByData>): GassmaGassmaCategoryGroupByResult<T>[];
+  groupBy<T extends GassmaGassmaCategoryGroupByData>(groupByData: T & Gassma.Subset<T, GassmaGassmaCategoryGroupByData> & Gassma.GroupByPaginationCheck<T, GassmaGassmaCategoryGroupByData> & Gassma.GroupByOrderByFieldCheck<T>): GassmaGassmaCategoryGroupByResult<T>[];
   /**
    * Get the value the next `create` will issue for an autoincrement field of Category.
    * Reading the counter is allowed inside `$transaction`.
@@ -1785,7 +1805,7 @@ export declare class GassmaGassmaTagController<GO extends GassmaGassmaTagOmit = 
    * })
    * 
    */
-  createManyAndReturn<T extends GassmaGassmaTagCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Tag">>>(createdData: T & Gassma.Subset<T, GassmaGassmaTagCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Tag">>>): GassmaGassmaTagFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  createManyAndReturn<T extends GassmaGassmaTagCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Tag">>>(createdData: T & Gassma.Subset<T, GassmaGassmaTagCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Tag">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaTagFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
   /**
    * Create a Tag.
    * Read more here: https://gassma.io/en/docs/reference/crud/create/create
@@ -1799,7 +1819,7 @@ export declare class GassmaGassmaTagController<GO extends GassmaGassmaTagOmit = 
    * })
    * 
    */
-  create<T extends GassmaGassmaTagCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "Tag">>>(createdData: T & Gassma.Subset<T, GassmaGassmaTagCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "Tag">>>): GassmaGassmaTagFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  create<T extends GassmaGassmaTagCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "Tag">>>(createdData: T & Gassma.Subset<T, GassmaGassmaTagCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "Tag">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaTagFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
   /**
    * Find the first Tag that matches the filter.
    * Note, that providing `undefined` is treated as the value not being there.
@@ -1813,7 +1833,7 @@ export declare class GassmaGassmaTagController<GO extends GassmaGassmaTagOmit = 
    *   }
    * })
    */
-  findFirst<T extends GassmaGassmaTagFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Tag">>>(findData: T & Gassma.Subset<T, GassmaGassmaTagFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Tag">>>): GassmaGassmaTagFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  findFirst<T extends GassmaGassmaTagFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Tag">>>(findData: T & Gassma.Subset<T, GassmaGassmaTagFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Tag">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaTagFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
   /**
    * Find the first Tag.
    * Read more here: https://gassma.io/en/docs/reference/crud/read/findFirst
@@ -1836,7 +1856,7 @@ export declare class GassmaGassmaTagController<GO extends GassmaGassmaTagOmit = 
    *   }
    * })
    */
-  findFirstOrThrow<T extends GassmaGassmaTagFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Tag">>>(findData: T & Gassma.Subset<T, GassmaGassmaTagFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Tag">>>): GassmaGassmaTagFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  findFirstOrThrow<T extends GassmaGassmaTagFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Tag">>>(findData: T & Gassma.Subset<T, GassmaGassmaTagFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Tag">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaTagFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
   /**
    * Find the first Tag or throw `NotFoundError` if no Tags exist.
    * Read more here: https://gassma.io/en/docs/reference/crud/read/findFirstOrThrow
@@ -1861,7 +1881,7 @@ export declare class GassmaGassmaTagController<GO extends GassmaGassmaTagOmit = 
    * const tagWithIdOnly = gassma.Tag.findMany({ select: { id: true } })
    * 
    */
-  findMany<T extends GassmaGassmaTagFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "Tag">>>(findData: T & Gassma.Subset<T, GassmaGassmaTagFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "Tag">>>): GassmaGassmaTagFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  findMany<T extends GassmaGassmaTagFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "Tag">>>(findData: T & Gassma.Subset<T, GassmaGassmaTagFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "Tag">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaTagFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
   /**
    * Find all Tags.
    * Read more here: https://gassma.io/en/docs/reference/crud/read/findMany
@@ -1886,7 +1906,7 @@ export declare class GassmaGassmaTagController<GO extends GassmaGassmaTagOmit = 
    * })
    * 
    */
-  update<T extends GassmaGassmaTagUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Tag">>>(updateData: T & Gassma.Subset<T, GassmaGassmaTagUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Tag">>>): GassmaGassmaTagFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  update<T extends GassmaGassmaTagUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Tag">>>(updateData: T & Gassma.Subset<T, GassmaGassmaTagUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Tag">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaTagFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
   /**
    * Update zero or more Tags.
    * Note, that providing `undefined` is treated as the value not being there.
@@ -1933,7 +1953,7 @@ export declare class GassmaGassmaTagController<GO extends GassmaGassmaTagOmit = 
    * })
    * 
    */
-  updateManyAndReturn<T extends GassmaGassmaTagUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Tag">>>(updateData: T & Gassma.Subset<T, GassmaGassmaTagUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Tag">>>): GassmaGassmaTagFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  updateManyAndReturn<T extends GassmaGassmaTagUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Tag">>>(updateData: T & Gassma.Subset<T, GassmaGassmaTagUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Tag">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaTagFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
   /**
    * Create or update one Tag.
    * Read more here: https://gassma.io/en/docs/reference/crud/update/upsert
@@ -1952,7 +1972,7 @@ export declare class GassmaGassmaTagController<GO extends GassmaGassmaTagOmit = 
    *   }
    * })
    */
-  upsert<T extends GassmaGassmaTagUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Tag">>>(upsertData: T & Gassma.Subset<T, GassmaGassmaTagUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Tag">>>): GassmaGassmaTagFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  upsert<T extends GassmaGassmaTagUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Tag">>>(upsertData: T & Gassma.Subset<T, GassmaGassmaTagUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Tag">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaTagFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
   /**
    * Delete a Tag.
    * Read more here: https://gassma.io/en/docs/reference/crud/delete/delete
@@ -1966,7 +1986,7 @@ export declare class GassmaGassmaTagController<GO extends GassmaGassmaTagOmit = 
    * })
    * 
    */
-  delete<T extends GassmaGassmaTagDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Tag">>>(deleteData: T & Gassma.Subset<T, GassmaGassmaTagDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Tag">>>): GassmaGassmaTagFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  delete<T extends GassmaGassmaTagDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Tag">>>(deleteData: T & Gassma.Subset<T, GassmaGassmaTagDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Tag">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaTagFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
   /**
    * Delete zero or more Tags.
    * Read more here: https://gassma.io/en/docs/reference/crud/delete/deleteMany
@@ -2041,7 +2061,7 @@ export declare class GassmaGassmaTagController<GO extends GassmaGassmaTagOmit = 
    * })
    * 
    */
-  groupBy<T extends GassmaGassmaTagGroupByData>(groupByData: T & Gassma.Subset<T, GassmaGassmaTagGroupByData>): GassmaGassmaTagGroupByResult<T>[];
+  groupBy<T extends GassmaGassmaTagGroupByData>(groupByData: T & Gassma.Subset<T, GassmaGassmaTagGroupByData> & Gassma.GroupByPaginationCheck<T, GassmaGassmaTagGroupByData> & Gassma.GroupByOrderByFieldCheck<T>): GassmaGassmaTagGroupByResult<T>[];
   /**
    * Get the value the next `create` will issue for an autoincrement field of Tag.
    * Reading the counter is allowed inside `$transaction`.
@@ -2136,7 +2156,7 @@ export declare class GassmaGassmaSensorReadingController<GO extends GassmaGassma
    * })
    * 
    */
-  createManyAndReturn<T extends GassmaGassmaSensorReadingCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "SensorReading">>>(createdData: T & Gassma.Subset<T, GassmaGassmaSensorReadingCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "SensorReading">>>): GassmaGassmaSensorReadingFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  createManyAndReturn<T extends GassmaGassmaSensorReadingCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "SensorReading">>>(createdData: T & Gassma.Subset<T, GassmaGassmaSensorReadingCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "SensorReading">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaSensorReadingFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
   /**
    * Create a SensorReading.
    * Read more here: https://gassma.io/en/docs/reference/crud/create/create
@@ -2150,7 +2170,7 @@ export declare class GassmaGassmaSensorReadingController<GO extends GassmaGassma
    * })
    * 
    */
-  create<T extends GassmaGassmaSensorReadingCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "SensorReading">>>(createdData: T & Gassma.Subset<T, GassmaGassmaSensorReadingCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "SensorReading">>>): GassmaGassmaSensorReadingFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  create<T extends GassmaGassmaSensorReadingCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "SensorReading">>>(createdData: T & Gassma.Subset<T, GassmaGassmaSensorReadingCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "SensorReading">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaSensorReadingFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
   /**
    * Find the first SensorReading that matches the filter.
    * Note, that providing `undefined` is treated as the value not being there.
@@ -2164,7 +2184,7 @@ export declare class GassmaGassmaSensorReadingController<GO extends GassmaGassma
    *   }
    * })
    */
-  findFirst<T extends GassmaGassmaSensorReadingFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "SensorReading">>>(findData: T & Gassma.Subset<T, GassmaGassmaSensorReadingFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "SensorReading">>>): GassmaGassmaSensorReadingFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  findFirst<T extends GassmaGassmaSensorReadingFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "SensorReading">>>(findData: T & Gassma.Subset<T, GassmaGassmaSensorReadingFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "SensorReading">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaSensorReadingFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
   /**
    * Find the first SensorReading.
    * Read more here: https://gassma.io/en/docs/reference/crud/read/findFirst
@@ -2187,7 +2207,7 @@ export declare class GassmaGassmaSensorReadingController<GO extends GassmaGassma
    *   }
    * })
    */
-  findFirstOrThrow<T extends GassmaGassmaSensorReadingFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "SensorReading">>>(findData: T & Gassma.Subset<T, GassmaGassmaSensorReadingFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "SensorReading">>>): GassmaGassmaSensorReadingFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  findFirstOrThrow<T extends GassmaGassmaSensorReadingFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "SensorReading">>>(findData: T & Gassma.Subset<T, GassmaGassmaSensorReadingFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "SensorReading">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaSensorReadingFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
   /**
    * Find the first SensorReading or throw `NotFoundError` if no SensorReadings exist.
    * Read more here: https://gassma.io/en/docs/reference/crud/read/findFirstOrThrow
@@ -2212,7 +2232,7 @@ export declare class GassmaGassmaSensorReadingController<GO extends GassmaGassma
    * const sensorReadingWithIdOnly = gassma.SensorReading.findMany({ select: { id: true } })
    * 
    */
-  findMany<T extends GassmaGassmaSensorReadingFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "SensorReading">>>(findData: T & Gassma.Subset<T, GassmaGassmaSensorReadingFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "SensorReading">>>): GassmaGassmaSensorReadingFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  findMany<T extends GassmaGassmaSensorReadingFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "SensorReading">>>(findData: T & Gassma.Subset<T, GassmaGassmaSensorReadingFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "SensorReading">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaSensorReadingFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
   /**
    * Find all SensorReadings.
    * Read more here: https://gassma.io/en/docs/reference/crud/read/findMany
@@ -2237,7 +2257,7 @@ export declare class GassmaGassmaSensorReadingController<GO extends GassmaGassma
    * })
    * 
    */
-  update<T extends GassmaGassmaSensorReadingUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "SensorReading">>>(updateData: T & Gassma.Subset<T, GassmaGassmaSensorReadingUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "SensorReading">>>): GassmaGassmaSensorReadingFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  update<T extends GassmaGassmaSensorReadingUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "SensorReading">>>(updateData: T & Gassma.Subset<T, GassmaGassmaSensorReadingUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "SensorReading">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaSensorReadingFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
   /**
    * Update zero or more SensorReadings.
    * Note, that providing `undefined` is treated as the value not being there.
@@ -2284,7 +2304,7 @@ export declare class GassmaGassmaSensorReadingController<GO extends GassmaGassma
    * })
    * 
    */
-  updateManyAndReturn<T extends GassmaGassmaSensorReadingUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "SensorReading">>>(updateData: T & Gassma.Subset<T, GassmaGassmaSensorReadingUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "SensorReading">>>): GassmaGassmaSensorReadingFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  updateManyAndReturn<T extends GassmaGassmaSensorReadingUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "SensorReading">>>(updateData: T & Gassma.Subset<T, GassmaGassmaSensorReadingUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "SensorReading">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaSensorReadingFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
   /**
    * Create or update one SensorReading.
    * Read more here: https://gassma.io/en/docs/reference/crud/update/upsert
@@ -2303,7 +2323,7 @@ export declare class GassmaGassmaSensorReadingController<GO extends GassmaGassma
    *   }
    * })
    */
-  upsert<T extends GassmaGassmaSensorReadingUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "SensorReading">>>(upsertData: T & Gassma.Subset<T, GassmaGassmaSensorReadingUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "SensorReading">>>): GassmaGassmaSensorReadingFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  upsert<T extends GassmaGassmaSensorReadingUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "SensorReading">>>(upsertData: T & Gassma.Subset<T, GassmaGassmaSensorReadingUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "SensorReading">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaSensorReadingFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
   /**
    * Delete a SensorReading.
    * Read more here: https://gassma.io/en/docs/reference/crud/delete/delete
@@ -2317,7 +2337,7 @@ export declare class GassmaGassmaSensorReadingController<GO extends GassmaGassma
    * })
    * 
    */
-  delete<T extends GassmaGassmaSensorReadingDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "SensorReading">>>(deleteData: T & Gassma.Subset<T, GassmaGassmaSensorReadingDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "SensorReading">>>): GassmaGassmaSensorReadingFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  delete<T extends GassmaGassmaSensorReadingDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "SensorReading">>>(deleteData: T & Gassma.Subset<T, GassmaGassmaSensorReadingDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "SensorReading">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaSensorReadingFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
   /**
    * Delete zero or more SensorReadings.
    * Read more here: https://gassma.io/en/docs/reference/crud/delete/deleteMany
@@ -2392,7 +2412,7 @@ export declare class GassmaGassmaSensorReadingController<GO extends GassmaGassma
    * })
    * 
    */
-  groupBy<T extends GassmaGassmaSensorReadingGroupByData>(groupByData: T & Gassma.Subset<T, GassmaGassmaSensorReadingGroupByData>): GassmaGassmaSensorReadingGroupByResult<T>[];
+  groupBy<T extends GassmaGassmaSensorReadingGroupByData>(groupByData: T & Gassma.Subset<T, GassmaGassmaSensorReadingGroupByData> & Gassma.GroupByPaginationCheck<T, GassmaGassmaSensorReadingGroupByData> & Gassma.GroupByOrderByFieldCheck<T>): GassmaGassmaSensorReadingGroupByResult<T>[];
   /**
    * Get the value the next `create` will issue for an autoincrement field of SensorReading.
    * Reading the counter is allowed inside `$transaction`.
@@ -2487,7 +2507,7 @@ export declare class GassmaGassmaTimeSlotController<GO extends GassmaGassmaTimeS
    * })
    * 
    */
-  createManyAndReturn<T extends GassmaGassmaTimeSlotCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "TimeSlot">>>(createdData: T & Gassma.Subset<T, GassmaGassmaTimeSlotCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "TimeSlot">>>): GassmaGassmaTimeSlotFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  createManyAndReturn<T extends GassmaGassmaTimeSlotCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "TimeSlot">>>(createdData: T & Gassma.Subset<T, GassmaGassmaTimeSlotCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "TimeSlot">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaTimeSlotFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
   /**
    * Create a TimeSlot.
    * Read more here: https://gassma.io/en/docs/reference/crud/create/create
@@ -2501,7 +2521,7 @@ export declare class GassmaGassmaTimeSlotController<GO extends GassmaGassmaTimeS
    * })
    * 
    */
-  create<T extends GassmaGassmaTimeSlotCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "TimeSlot">>>(createdData: T & Gassma.Subset<T, GassmaGassmaTimeSlotCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "TimeSlot">>>): GassmaGassmaTimeSlotFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  create<T extends GassmaGassmaTimeSlotCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "TimeSlot">>>(createdData: T & Gassma.Subset<T, GassmaGassmaTimeSlotCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "TimeSlot">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaTimeSlotFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
   /**
    * Find the first TimeSlot that matches the filter.
    * Note, that providing `undefined` is treated as the value not being there.
@@ -2515,7 +2535,7 @@ export declare class GassmaGassmaTimeSlotController<GO extends GassmaGassmaTimeS
    *   }
    * })
    */
-  findFirst<T extends GassmaGassmaTimeSlotFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "TimeSlot">>>(findData: T & Gassma.Subset<T, GassmaGassmaTimeSlotFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "TimeSlot">>>): GassmaGassmaTimeSlotFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  findFirst<T extends GassmaGassmaTimeSlotFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "TimeSlot">>>(findData: T & Gassma.Subset<T, GassmaGassmaTimeSlotFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "TimeSlot">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaTimeSlotFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
   /**
    * Find the first TimeSlot.
    * Read more here: https://gassma.io/en/docs/reference/crud/read/findFirst
@@ -2538,7 +2558,7 @@ export declare class GassmaGassmaTimeSlotController<GO extends GassmaGassmaTimeS
    *   }
    * })
    */
-  findFirstOrThrow<T extends GassmaGassmaTimeSlotFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "TimeSlot">>>(findData: T & Gassma.Subset<T, GassmaGassmaTimeSlotFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "TimeSlot">>>): GassmaGassmaTimeSlotFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  findFirstOrThrow<T extends GassmaGassmaTimeSlotFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "TimeSlot">>>(findData: T & Gassma.Subset<T, GassmaGassmaTimeSlotFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "TimeSlot">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaTimeSlotFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
   /**
    * Find the first TimeSlot or throw `NotFoundError` if no TimeSlots exist.
    * Read more here: https://gassma.io/en/docs/reference/crud/read/findFirstOrThrow
@@ -2563,7 +2583,7 @@ export declare class GassmaGassmaTimeSlotController<GO extends GassmaGassmaTimeS
    * const timeSlotWithIdOnly = gassma.TimeSlot.findMany({ select: { id: true } })
    * 
    */
-  findMany<T extends GassmaGassmaTimeSlotFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "TimeSlot">>>(findData: T & Gassma.Subset<T, GassmaGassmaTimeSlotFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "TimeSlot">>>): GassmaGassmaTimeSlotFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  findMany<T extends GassmaGassmaTimeSlotFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "TimeSlot">>>(findData: T & Gassma.Subset<T, GassmaGassmaTimeSlotFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "TimeSlot">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaTimeSlotFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
   /**
    * Find all TimeSlots.
    * Read more here: https://gassma.io/en/docs/reference/crud/read/findMany
@@ -2588,7 +2608,7 @@ export declare class GassmaGassmaTimeSlotController<GO extends GassmaGassmaTimeS
    * })
    * 
    */
-  update<T extends GassmaGassmaTimeSlotUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "TimeSlot">>>(updateData: T & Gassma.Subset<T, GassmaGassmaTimeSlotUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "TimeSlot">>>): GassmaGassmaTimeSlotFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  update<T extends GassmaGassmaTimeSlotUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "TimeSlot">>>(updateData: T & Gassma.Subset<T, GassmaGassmaTimeSlotUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "TimeSlot">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaTimeSlotFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
   /**
    * Update zero or more TimeSlots.
    * Note, that providing `undefined` is treated as the value not being there.
@@ -2635,7 +2655,7 @@ export declare class GassmaGassmaTimeSlotController<GO extends GassmaGassmaTimeS
    * })
    * 
    */
-  updateManyAndReturn<T extends GassmaGassmaTimeSlotUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "TimeSlot">>>(updateData: T & Gassma.Subset<T, GassmaGassmaTimeSlotUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "TimeSlot">>>): GassmaGassmaTimeSlotFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  updateManyAndReturn<T extends GassmaGassmaTimeSlotUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "TimeSlot">>>(updateData: T & Gassma.Subset<T, GassmaGassmaTimeSlotUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "TimeSlot">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaTimeSlotFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
   /**
    * Create or update one TimeSlot.
    * Read more here: https://gassma.io/en/docs/reference/crud/update/upsert
@@ -2654,7 +2674,7 @@ export declare class GassmaGassmaTimeSlotController<GO extends GassmaGassmaTimeS
    *   }
    * })
    */
-  upsert<T extends GassmaGassmaTimeSlotUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "TimeSlot">>>(upsertData: T & Gassma.Subset<T, GassmaGassmaTimeSlotUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "TimeSlot">>>): GassmaGassmaTimeSlotFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  upsert<T extends GassmaGassmaTimeSlotUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "TimeSlot">>>(upsertData: T & Gassma.Subset<T, GassmaGassmaTimeSlotUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "TimeSlot">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaTimeSlotFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
   /**
    * Delete a TimeSlot.
    * Read more here: https://gassma.io/en/docs/reference/crud/delete/delete
@@ -2668,7 +2688,7 @@ export declare class GassmaGassmaTimeSlotController<GO extends GassmaGassmaTimeS
    * })
    * 
    */
-  delete<T extends GassmaGassmaTimeSlotDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "TimeSlot">>>(deleteData: T & Gassma.Subset<T, GassmaGassmaTimeSlotDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "TimeSlot">>>): GassmaGassmaTimeSlotFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  delete<T extends GassmaGassmaTimeSlotDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "TimeSlot">>>(deleteData: T & Gassma.Subset<T, GassmaGassmaTimeSlotDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "TimeSlot">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaTimeSlotFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
   /**
    * Delete zero or more TimeSlots.
    * Read more here: https://gassma.io/en/docs/reference/crud/delete/deleteMany
@@ -2743,7 +2763,7 @@ export declare class GassmaGassmaTimeSlotController<GO extends GassmaGassmaTimeS
    * })
    * 
    */
-  groupBy<T extends GassmaGassmaTimeSlotGroupByData>(groupByData: T & Gassma.Subset<T, GassmaGassmaTimeSlotGroupByData>): GassmaGassmaTimeSlotGroupByResult<T>[];
+  groupBy<T extends GassmaGassmaTimeSlotGroupByData>(groupByData: T & Gassma.Subset<T, GassmaGassmaTimeSlotGroupByData> & Gassma.GroupByPaginationCheck<T, GassmaGassmaTimeSlotGroupByData> & Gassma.GroupByOrderByFieldCheck<T>): GassmaGassmaTimeSlotGroupByResult<T>[];
   /**
    * Get the value the next `create` will issue for an autoincrement field of TimeSlot.
    * Reading the counter is allowed inside `$transaction`.
@@ -2838,7 +2858,7 @@ export declare class GassmaGassmaReservationController<GO extends GassmaGassmaRe
    * })
    * 
    */
-  createManyAndReturn<T extends GassmaGassmaReservationCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Reservation">>>(createdData: T & Gassma.Subset<T, GassmaGassmaReservationCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Reservation">>>): GassmaGassmaReservationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  createManyAndReturn<T extends GassmaGassmaReservationCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Reservation">>>(createdData: T & Gassma.Subset<T, GassmaGassmaReservationCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Reservation">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaReservationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
   /**
    * Create a Reservation.
    * Read more here: https://gassma.io/en/docs/reference/crud/create/create
@@ -2852,7 +2872,7 @@ export declare class GassmaGassmaReservationController<GO extends GassmaGassmaRe
    * })
    * 
    */
-  create<T extends GassmaGassmaReservationCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "Reservation">>>(createdData: T & Gassma.Subset<T, GassmaGassmaReservationCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "Reservation">>>): GassmaGassmaReservationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  create<T extends GassmaGassmaReservationCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "Reservation">>>(createdData: T & Gassma.Subset<T, GassmaGassmaReservationCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "Reservation">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaReservationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
   /**
    * Find the first Reservation that matches the filter.
    * Note, that providing `undefined` is treated as the value not being there.
@@ -2866,7 +2886,7 @@ export declare class GassmaGassmaReservationController<GO extends GassmaGassmaRe
    *   }
    * })
    */
-  findFirst<T extends GassmaGassmaReservationFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Reservation">>>(findData: T & Gassma.Subset<T, GassmaGassmaReservationFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Reservation">>>): GassmaGassmaReservationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  findFirst<T extends GassmaGassmaReservationFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Reservation">>>(findData: T & Gassma.Subset<T, GassmaGassmaReservationFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Reservation">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaReservationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
   /**
    * Find the first Reservation.
    * Read more here: https://gassma.io/en/docs/reference/crud/read/findFirst
@@ -2889,7 +2909,7 @@ export declare class GassmaGassmaReservationController<GO extends GassmaGassmaRe
    *   }
    * })
    */
-  findFirstOrThrow<T extends GassmaGassmaReservationFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Reservation">>>(findData: T & Gassma.Subset<T, GassmaGassmaReservationFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Reservation">>>): GassmaGassmaReservationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  findFirstOrThrow<T extends GassmaGassmaReservationFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Reservation">>>(findData: T & Gassma.Subset<T, GassmaGassmaReservationFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Reservation">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaReservationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
   /**
    * Find the first Reservation or throw `NotFoundError` if no Reservations exist.
    * Read more here: https://gassma.io/en/docs/reference/crud/read/findFirstOrThrow
@@ -2914,7 +2934,7 @@ export declare class GassmaGassmaReservationController<GO extends GassmaGassmaRe
    * const reservationWithIdOnly = gassma.Reservation.findMany({ select: { id: true } })
    * 
    */
-  findMany<T extends GassmaGassmaReservationFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "Reservation">>>(findData: T & Gassma.Subset<T, GassmaGassmaReservationFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "Reservation">>>): GassmaGassmaReservationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  findMany<T extends GassmaGassmaReservationFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "Reservation">>>(findData: T & Gassma.Subset<T, GassmaGassmaReservationFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "Reservation">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaReservationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
   /**
    * Find all Reservations.
    * Read more here: https://gassma.io/en/docs/reference/crud/read/findMany
@@ -2939,7 +2959,7 @@ export declare class GassmaGassmaReservationController<GO extends GassmaGassmaRe
    * })
    * 
    */
-  update<T extends GassmaGassmaReservationUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Reservation">>>(updateData: T & Gassma.Subset<T, GassmaGassmaReservationUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Reservation">>>): GassmaGassmaReservationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  update<T extends GassmaGassmaReservationUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Reservation">>>(updateData: T & Gassma.Subset<T, GassmaGassmaReservationUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Reservation">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaReservationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
   /**
    * Update zero or more Reservations.
    * Note, that providing `undefined` is treated as the value not being there.
@@ -2986,7 +3006,7 @@ export declare class GassmaGassmaReservationController<GO extends GassmaGassmaRe
    * })
    * 
    */
-  updateManyAndReturn<T extends GassmaGassmaReservationUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Reservation">>>(updateData: T & Gassma.Subset<T, GassmaGassmaReservationUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Reservation">>>): GassmaGassmaReservationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  updateManyAndReturn<T extends GassmaGassmaReservationUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Reservation">>>(updateData: T & Gassma.Subset<T, GassmaGassmaReservationUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Reservation">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaReservationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
   /**
    * Create or update one Reservation.
    * Read more here: https://gassma.io/en/docs/reference/crud/update/upsert
@@ -3005,7 +3025,7 @@ export declare class GassmaGassmaReservationController<GO extends GassmaGassmaRe
    *   }
    * })
    */
-  upsert<T extends GassmaGassmaReservationUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Reservation">>>(upsertData: T & Gassma.Subset<T, GassmaGassmaReservationUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Reservation">>>): GassmaGassmaReservationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  upsert<T extends GassmaGassmaReservationUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Reservation">>>(upsertData: T & Gassma.Subset<T, GassmaGassmaReservationUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Reservation">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaReservationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
   /**
    * Delete a Reservation.
    * Read more here: https://gassma.io/en/docs/reference/crud/delete/delete
@@ -3019,7 +3039,7 @@ export declare class GassmaGassmaReservationController<GO extends GassmaGassmaRe
    * })
    * 
    */
-  delete<T extends GassmaGassmaReservationDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Reservation">>>(deleteData: T & Gassma.Subset<T, GassmaGassmaReservationDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Reservation">>>): GassmaGassmaReservationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  delete<T extends GassmaGassmaReservationDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Reservation">>>(deleteData: T & Gassma.Subset<T, GassmaGassmaReservationDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Reservation">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaReservationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
   /**
    * Delete zero or more Reservations.
    * Read more here: https://gassma.io/en/docs/reference/crud/delete/deleteMany
@@ -3094,7 +3114,7 @@ export declare class GassmaGassmaReservationController<GO extends GassmaGassmaRe
    * })
    * 
    */
-  groupBy<T extends GassmaGassmaReservationGroupByData>(groupByData: T & Gassma.Subset<T, GassmaGassmaReservationGroupByData>): GassmaGassmaReservationGroupByResult<T>[];
+  groupBy<T extends GassmaGassmaReservationGroupByData>(groupByData: T & Gassma.Subset<T, GassmaGassmaReservationGroupByData> & Gassma.GroupByPaginationCheck<T, GassmaGassmaReservationGroupByData> & Gassma.GroupByOrderByFieldCheck<T>): GassmaGassmaReservationGroupByResult<T>[];
   /**
    * Get the value the next `create` will issue for an autoincrement field of Reservation.
    * Reading the counter is allowed inside `$transaction`.
@@ -3189,7 +3209,7 @@ export declare class GassmaGassmaProductController<GO extends GassmaGassmaProduc
    * })
    * 
    */
-  createManyAndReturn<T extends GassmaGassmaProductCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Product">>>(createdData: T & Gassma.Subset<T, GassmaGassmaProductCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Product">>>): GassmaGassmaProductFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  createManyAndReturn<T extends GassmaGassmaProductCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Product">>>(createdData: T & Gassma.Subset<T, GassmaGassmaProductCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Product">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaProductFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
   /**
    * Create a Product.
    * Read more here: https://gassma.io/en/docs/reference/crud/create/create
@@ -3203,7 +3223,7 @@ export declare class GassmaGassmaProductController<GO extends GassmaGassmaProduc
    * })
    * 
    */
-  create<T extends GassmaGassmaProductCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "Product">>>(createdData: T & Gassma.Subset<T, GassmaGassmaProductCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "Product">>>): GassmaGassmaProductFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  create<T extends GassmaGassmaProductCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "Product">>>(createdData: T & Gassma.Subset<T, GassmaGassmaProductCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "Product">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaProductFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
   /**
    * Find the first Product that matches the filter.
    * Note, that providing `undefined` is treated as the value not being there.
@@ -3217,7 +3237,7 @@ export declare class GassmaGassmaProductController<GO extends GassmaGassmaProduc
    *   }
    * })
    */
-  findFirst<T extends GassmaGassmaProductFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Product">>>(findData: T & Gassma.Subset<T, GassmaGassmaProductFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Product">>>): GassmaGassmaProductFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  findFirst<T extends GassmaGassmaProductFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Product">>>(findData: T & Gassma.Subset<T, GassmaGassmaProductFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Product">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaProductFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
   /**
    * Find the first Product.
    * Read more here: https://gassma.io/en/docs/reference/crud/read/findFirst
@@ -3240,7 +3260,7 @@ export declare class GassmaGassmaProductController<GO extends GassmaGassmaProduc
    *   }
    * })
    */
-  findFirstOrThrow<T extends GassmaGassmaProductFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Product">>>(findData: T & Gassma.Subset<T, GassmaGassmaProductFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Product">>>): GassmaGassmaProductFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  findFirstOrThrow<T extends GassmaGassmaProductFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Product">>>(findData: T & Gassma.Subset<T, GassmaGassmaProductFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Product">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaProductFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
   /**
    * Find the first Product or throw `NotFoundError` if no Products exist.
    * Read more here: https://gassma.io/en/docs/reference/crud/read/findFirstOrThrow
@@ -3265,7 +3285,7 @@ export declare class GassmaGassmaProductController<GO extends GassmaGassmaProduc
    * const productWithIdOnly = gassma.Product.findMany({ select: { id: true } })
    * 
    */
-  findMany<T extends GassmaGassmaProductFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "Product">>>(findData: T & Gassma.Subset<T, GassmaGassmaProductFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "Product">>>): GassmaGassmaProductFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  findMany<T extends GassmaGassmaProductFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "Product">>>(findData: T & Gassma.Subset<T, GassmaGassmaProductFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "Product">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaProductFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
   /**
    * Find all Products.
    * Read more here: https://gassma.io/en/docs/reference/crud/read/findMany
@@ -3290,7 +3310,7 @@ export declare class GassmaGassmaProductController<GO extends GassmaGassmaProduc
    * })
    * 
    */
-  update<T extends GassmaGassmaProductUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Product">>>(updateData: T & Gassma.Subset<T, GassmaGassmaProductUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Product">>>): GassmaGassmaProductFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  update<T extends GassmaGassmaProductUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Product">>>(updateData: T & Gassma.Subset<T, GassmaGassmaProductUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Product">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaProductFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
   /**
    * Update zero or more Products.
    * Note, that providing `undefined` is treated as the value not being there.
@@ -3337,7 +3357,7 @@ export declare class GassmaGassmaProductController<GO extends GassmaGassmaProduc
    * })
    * 
    */
-  updateManyAndReturn<T extends GassmaGassmaProductUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Product">>>(updateData: T & Gassma.Subset<T, GassmaGassmaProductUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Product">>>): GassmaGassmaProductFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  updateManyAndReturn<T extends GassmaGassmaProductUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Product">>>(updateData: T & Gassma.Subset<T, GassmaGassmaProductUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Product">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaProductFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
   /**
    * Create or update one Product.
    * Read more here: https://gassma.io/en/docs/reference/crud/update/upsert
@@ -3356,7 +3376,7 @@ export declare class GassmaGassmaProductController<GO extends GassmaGassmaProduc
    *   }
    * })
    */
-  upsert<T extends GassmaGassmaProductUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Product">>>(upsertData: T & Gassma.Subset<T, GassmaGassmaProductUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Product">>>): GassmaGassmaProductFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  upsert<T extends GassmaGassmaProductUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Product">>>(upsertData: T & Gassma.Subset<T, GassmaGassmaProductUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Product">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaProductFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
   /**
    * Delete a Product.
    * Read more here: https://gassma.io/en/docs/reference/crud/delete/delete
@@ -3370,7 +3390,7 @@ export declare class GassmaGassmaProductController<GO extends GassmaGassmaProduc
    * })
    * 
    */
-  delete<T extends GassmaGassmaProductDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Product">>>(deleteData: T & Gassma.Subset<T, GassmaGassmaProductDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Product">>>): GassmaGassmaProductFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  delete<T extends GassmaGassmaProductDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Product">>>(deleteData: T & Gassma.Subset<T, GassmaGassmaProductDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Product">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaProductFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
   /**
    * Delete zero or more Products.
    * Read more here: https://gassma.io/en/docs/reference/crud/delete/deleteMany
@@ -3445,7 +3465,7 @@ export declare class GassmaGassmaProductController<GO extends GassmaGassmaProduc
    * })
    * 
    */
-  groupBy<T extends GassmaGassmaProductGroupByData>(groupByData: T & Gassma.Subset<T, GassmaGassmaProductGroupByData>): GassmaGassmaProductGroupByResult<T>[];
+  groupBy<T extends GassmaGassmaProductGroupByData>(groupByData: T & Gassma.Subset<T, GassmaGassmaProductGroupByData> & Gassma.GroupByPaginationCheck<T, GassmaGassmaProductGroupByData> & Gassma.GroupByOrderByFieldCheck<T>): GassmaGassmaProductGroupByResult<T>[];
   /**
    * Get the value the next `create` will issue for an autoincrement field of Product.
    * Reading the counter is allowed inside `$transaction`.
@@ -3540,7 +3560,7 @@ export declare class GassmaGassmaOrderController<GO extends GassmaGassmaOrderOmi
    * })
    * 
    */
-  createManyAndReturn<T extends GassmaGassmaOrderCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Order">>>(createdData: T & Gassma.Subset<T, GassmaGassmaOrderCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Order">>>): GassmaGassmaOrderFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  createManyAndReturn<T extends GassmaGassmaOrderCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Order">>>(createdData: T & Gassma.Subset<T, GassmaGassmaOrderCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Order">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaOrderFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
   /**
    * Create a Order.
    * Read more here: https://gassma.io/en/docs/reference/crud/create/create
@@ -3554,7 +3574,7 @@ export declare class GassmaGassmaOrderController<GO extends GassmaGassmaOrderOmi
    * })
    * 
    */
-  create<T extends GassmaGassmaOrderCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "Order">>>(createdData: T & Gassma.Subset<T, GassmaGassmaOrderCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "Order">>>): GassmaGassmaOrderFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  create<T extends GassmaGassmaOrderCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "Order">>>(createdData: T & Gassma.Subset<T, GassmaGassmaOrderCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "Order">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaOrderFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
   /**
    * Find the first Order that matches the filter.
    * Note, that providing `undefined` is treated as the value not being there.
@@ -3568,7 +3588,7 @@ export declare class GassmaGassmaOrderController<GO extends GassmaGassmaOrderOmi
    *   }
    * })
    */
-  findFirst<T extends GassmaGassmaOrderFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Order">>>(findData: T & Gassma.Subset<T, GassmaGassmaOrderFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Order">>>): GassmaGassmaOrderFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  findFirst<T extends GassmaGassmaOrderFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Order">>>(findData: T & Gassma.Subset<T, GassmaGassmaOrderFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Order">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaOrderFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
   /**
    * Find the first Order.
    * Read more here: https://gassma.io/en/docs/reference/crud/read/findFirst
@@ -3591,7 +3611,7 @@ export declare class GassmaGassmaOrderController<GO extends GassmaGassmaOrderOmi
    *   }
    * })
    */
-  findFirstOrThrow<T extends GassmaGassmaOrderFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Order">>>(findData: T & Gassma.Subset<T, GassmaGassmaOrderFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Order">>>): GassmaGassmaOrderFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  findFirstOrThrow<T extends GassmaGassmaOrderFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Order">>>(findData: T & Gassma.Subset<T, GassmaGassmaOrderFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Order">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaOrderFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
   /**
    * Find the first Order or throw `NotFoundError` if no Orders exist.
    * Read more here: https://gassma.io/en/docs/reference/crud/read/findFirstOrThrow
@@ -3616,7 +3636,7 @@ export declare class GassmaGassmaOrderController<GO extends GassmaGassmaOrderOmi
    * const orderWithIdOnly = gassma.Order.findMany({ select: { id: true } })
    * 
    */
-  findMany<T extends GassmaGassmaOrderFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "Order">>>(findData: T & Gassma.Subset<T, GassmaGassmaOrderFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "Order">>>): GassmaGassmaOrderFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  findMany<T extends GassmaGassmaOrderFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "Order">>>(findData: T & Gassma.Subset<T, GassmaGassmaOrderFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "Order">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaOrderFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
   /**
    * Find all Orders.
    * Read more here: https://gassma.io/en/docs/reference/crud/read/findMany
@@ -3641,7 +3661,7 @@ export declare class GassmaGassmaOrderController<GO extends GassmaGassmaOrderOmi
    * })
    * 
    */
-  update<T extends GassmaGassmaOrderUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Order">>>(updateData: T & Gassma.Subset<T, GassmaGassmaOrderUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Order">>>): GassmaGassmaOrderFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  update<T extends GassmaGassmaOrderUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Order">>>(updateData: T & Gassma.Subset<T, GassmaGassmaOrderUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Order">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaOrderFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
   /**
    * Update zero or more Orders.
    * Note, that providing `undefined` is treated as the value not being there.
@@ -3688,7 +3708,7 @@ export declare class GassmaGassmaOrderController<GO extends GassmaGassmaOrderOmi
    * })
    * 
    */
-  updateManyAndReturn<T extends GassmaGassmaOrderUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Order">>>(updateData: T & Gassma.Subset<T, GassmaGassmaOrderUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Order">>>): GassmaGassmaOrderFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  updateManyAndReturn<T extends GassmaGassmaOrderUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Order">>>(updateData: T & Gassma.Subset<T, GassmaGassmaOrderUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Order">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaOrderFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
   /**
    * Create or update one Order.
    * Read more here: https://gassma.io/en/docs/reference/crud/update/upsert
@@ -3707,7 +3727,7 @@ export declare class GassmaGassmaOrderController<GO extends GassmaGassmaOrderOmi
    *   }
    * })
    */
-  upsert<T extends GassmaGassmaOrderUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Order">>>(upsertData: T & Gassma.Subset<T, GassmaGassmaOrderUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Order">>>): GassmaGassmaOrderFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  upsert<T extends GassmaGassmaOrderUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Order">>>(upsertData: T & Gassma.Subset<T, GassmaGassmaOrderUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Order">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaOrderFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
   /**
    * Delete a Order.
    * Read more here: https://gassma.io/en/docs/reference/crud/delete/delete
@@ -3721,7 +3741,7 @@ export declare class GassmaGassmaOrderController<GO extends GassmaGassmaOrderOmi
    * })
    * 
    */
-  delete<T extends GassmaGassmaOrderDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Order">>>(deleteData: T & Gassma.Subset<T, GassmaGassmaOrderDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Order">>>): GassmaGassmaOrderFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  delete<T extends GassmaGassmaOrderDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Order">>>(deleteData: T & Gassma.Subset<T, GassmaGassmaOrderDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Order">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaOrderFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
   /**
    * Delete zero or more Orders.
    * Read more here: https://gassma.io/en/docs/reference/crud/delete/deleteMany
@@ -3796,7 +3816,7 @@ export declare class GassmaGassmaOrderController<GO extends GassmaGassmaOrderOmi
    * })
    * 
    */
-  groupBy<T extends GassmaGassmaOrderGroupByData>(groupByData: T & Gassma.Subset<T, GassmaGassmaOrderGroupByData>): GassmaGassmaOrderGroupByResult<T>[];
+  groupBy<T extends GassmaGassmaOrderGroupByData>(groupByData: T & Gassma.Subset<T, GassmaGassmaOrderGroupByData> & Gassma.GroupByPaginationCheck<T, GassmaGassmaOrderGroupByData> & Gassma.GroupByOrderByFieldCheck<T>): GassmaGassmaOrderGroupByResult<T>[];
   /**
    * Get the value the next `create` will issue for an autoincrement field of Order.
    * Reading the counter is allowed inside `$transaction`.
@@ -3891,7 +3911,7 @@ export declare class GassmaGassmaOrderItemController<GO extends GassmaGassmaOrde
    * })
    * 
    */
-  createManyAndReturn<T extends GassmaGassmaOrderItemCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "OrderItem">>>(createdData: T & Gassma.Subset<T, GassmaGassmaOrderItemCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "OrderItem">>>): GassmaGassmaOrderItemFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  createManyAndReturn<T extends GassmaGassmaOrderItemCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "OrderItem">>>(createdData: T & Gassma.Subset<T, GassmaGassmaOrderItemCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "OrderItem">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaOrderItemFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
   /**
    * Create a OrderItem.
    * Read more here: https://gassma.io/en/docs/reference/crud/create/create
@@ -3905,7 +3925,7 @@ export declare class GassmaGassmaOrderItemController<GO extends GassmaGassmaOrde
    * })
    * 
    */
-  create<T extends GassmaGassmaOrderItemCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "OrderItem">>>(createdData: T & Gassma.Subset<T, GassmaGassmaOrderItemCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "OrderItem">>>): GassmaGassmaOrderItemFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  create<T extends GassmaGassmaOrderItemCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "OrderItem">>>(createdData: T & Gassma.Subset<T, GassmaGassmaOrderItemCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "OrderItem">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaOrderItemFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
   /**
    * Find the first OrderItem that matches the filter.
    * Note, that providing `undefined` is treated as the value not being there.
@@ -3919,7 +3939,7 @@ export declare class GassmaGassmaOrderItemController<GO extends GassmaGassmaOrde
    *   }
    * })
    */
-  findFirst<T extends GassmaGassmaOrderItemFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "OrderItem">>>(findData: T & Gassma.Subset<T, GassmaGassmaOrderItemFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "OrderItem">>>): GassmaGassmaOrderItemFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  findFirst<T extends GassmaGassmaOrderItemFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "OrderItem">>>(findData: T & Gassma.Subset<T, GassmaGassmaOrderItemFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "OrderItem">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaOrderItemFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
   /**
    * Find the first OrderItem.
    * Read more here: https://gassma.io/en/docs/reference/crud/read/findFirst
@@ -3942,7 +3962,7 @@ export declare class GassmaGassmaOrderItemController<GO extends GassmaGassmaOrde
    *   }
    * })
    */
-  findFirstOrThrow<T extends GassmaGassmaOrderItemFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "OrderItem">>>(findData: T & Gassma.Subset<T, GassmaGassmaOrderItemFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "OrderItem">>>): GassmaGassmaOrderItemFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  findFirstOrThrow<T extends GassmaGassmaOrderItemFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "OrderItem">>>(findData: T & Gassma.Subset<T, GassmaGassmaOrderItemFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "OrderItem">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaOrderItemFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
   /**
    * Find the first OrderItem or throw `NotFoundError` if no OrderItems exist.
    * Read more here: https://gassma.io/en/docs/reference/crud/read/findFirstOrThrow
@@ -3967,7 +3987,7 @@ export declare class GassmaGassmaOrderItemController<GO extends GassmaGassmaOrde
    * const orderItemWithIdOnly = gassma.OrderItem.findMany({ select: { id: true } })
    * 
    */
-  findMany<T extends GassmaGassmaOrderItemFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "OrderItem">>>(findData: T & Gassma.Subset<T, GassmaGassmaOrderItemFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "OrderItem">>>): GassmaGassmaOrderItemFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  findMany<T extends GassmaGassmaOrderItemFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "OrderItem">>>(findData: T & Gassma.Subset<T, GassmaGassmaOrderItemFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "OrderItem">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaOrderItemFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
   /**
    * Find all OrderItems.
    * Read more here: https://gassma.io/en/docs/reference/crud/read/findMany
@@ -3992,7 +4012,7 @@ export declare class GassmaGassmaOrderItemController<GO extends GassmaGassmaOrde
    * })
    * 
    */
-  update<T extends GassmaGassmaOrderItemUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "OrderItem">>>(updateData: T & Gassma.Subset<T, GassmaGassmaOrderItemUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "OrderItem">>>): GassmaGassmaOrderItemFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  update<T extends GassmaGassmaOrderItemUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "OrderItem">>>(updateData: T & Gassma.Subset<T, GassmaGassmaOrderItemUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "OrderItem">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaOrderItemFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
   /**
    * Update zero or more OrderItems.
    * Note, that providing `undefined` is treated as the value not being there.
@@ -4039,7 +4059,7 @@ export declare class GassmaGassmaOrderItemController<GO extends GassmaGassmaOrde
    * })
    * 
    */
-  updateManyAndReturn<T extends GassmaGassmaOrderItemUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "OrderItem">>>(updateData: T & Gassma.Subset<T, GassmaGassmaOrderItemUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "OrderItem">>>): GassmaGassmaOrderItemFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  updateManyAndReturn<T extends GassmaGassmaOrderItemUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "OrderItem">>>(updateData: T & Gassma.Subset<T, GassmaGassmaOrderItemUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "OrderItem">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaOrderItemFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
   /**
    * Create or update one OrderItem.
    * Read more here: https://gassma.io/en/docs/reference/crud/update/upsert
@@ -4058,7 +4078,7 @@ export declare class GassmaGassmaOrderItemController<GO extends GassmaGassmaOrde
    *   }
    * })
    */
-  upsert<T extends GassmaGassmaOrderItemUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "OrderItem">>>(upsertData: T & Gassma.Subset<T, GassmaGassmaOrderItemUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "OrderItem">>>): GassmaGassmaOrderItemFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  upsert<T extends GassmaGassmaOrderItemUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "OrderItem">>>(upsertData: T & Gassma.Subset<T, GassmaGassmaOrderItemUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "OrderItem">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaOrderItemFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
   /**
    * Delete a OrderItem.
    * Read more here: https://gassma.io/en/docs/reference/crud/delete/delete
@@ -4072,7 +4092,7 @@ export declare class GassmaGassmaOrderItemController<GO extends GassmaGassmaOrde
    * })
    * 
    */
-  delete<T extends GassmaGassmaOrderItemDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "OrderItem">>>(deleteData: T & Gassma.Subset<T, GassmaGassmaOrderItemDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "OrderItem">>>): GassmaGassmaOrderItemFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  delete<T extends GassmaGassmaOrderItemDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "OrderItem">>>(deleteData: T & Gassma.Subset<T, GassmaGassmaOrderItemDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "OrderItem">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaOrderItemFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
   /**
    * Delete zero or more OrderItems.
    * Read more here: https://gassma.io/en/docs/reference/crud/delete/deleteMany
@@ -4147,7 +4167,7 @@ export declare class GassmaGassmaOrderItemController<GO extends GassmaGassmaOrde
    * })
    * 
    */
-  groupBy<T extends GassmaGassmaOrderItemGroupByData>(groupByData: T & Gassma.Subset<T, GassmaGassmaOrderItemGroupByData>): GassmaGassmaOrderItemGroupByResult<T>[];
+  groupBy<T extends GassmaGassmaOrderItemGroupByData>(groupByData: T & Gassma.Subset<T, GassmaGassmaOrderItemGroupByData> & Gassma.GroupByPaginationCheck<T, GassmaGassmaOrderItemGroupByData> & Gassma.GroupByOrderByFieldCheck<T>): GassmaGassmaOrderItemGroupByResult<T>[];
   /**
    * Get the value the next `create` will issue for an autoincrement field of OrderItem.
    * Reading the counter is allowed inside `$transaction`.
@@ -4242,7 +4262,7 @@ export declare class GassmaGassmaFormulaCellController<GO extends GassmaGassmaFo
    * })
    * 
    */
-  createManyAndReturn<T extends GassmaGassmaFormulaCellCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "FormulaCell">>>(createdData: T & Gassma.Subset<T, GassmaGassmaFormulaCellCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "FormulaCell">>>): GassmaGassmaFormulaCellFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  createManyAndReturn<T extends GassmaGassmaFormulaCellCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "FormulaCell">>>(createdData: T & Gassma.Subset<T, GassmaGassmaFormulaCellCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "FormulaCell">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaFormulaCellFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
   /**
    * Create a FormulaCell.
    * Read more here: https://gassma.io/en/docs/reference/crud/create/create
@@ -4256,7 +4276,7 @@ export declare class GassmaGassmaFormulaCellController<GO extends GassmaGassmaFo
    * })
    * 
    */
-  create<T extends GassmaGassmaFormulaCellCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "FormulaCell">>>(createdData: T & Gassma.Subset<T, GassmaGassmaFormulaCellCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "FormulaCell">>>): GassmaGassmaFormulaCellFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  create<T extends GassmaGassmaFormulaCellCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "FormulaCell">>>(createdData: T & Gassma.Subset<T, GassmaGassmaFormulaCellCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "FormulaCell">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaFormulaCellFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
   /**
    * Find the first FormulaCell that matches the filter.
    * Note, that providing `undefined` is treated as the value not being there.
@@ -4270,7 +4290,7 @@ export declare class GassmaGassmaFormulaCellController<GO extends GassmaGassmaFo
    *   }
    * })
    */
-  findFirst<T extends GassmaGassmaFormulaCellFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "FormulaCell">>>(findData: T & Gassma.Subset<T, GassmaGassmaFormulaCellFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "FormulaCell">>>): GassmaGassmaFormulaCellFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  findFirst<T extends GassmaGassmaFormulaCellFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "FormulaCell">>>(findData: T & Gassma.Subset<T, GassmaGassmaFormulaCellFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "FormulaCell">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaFormulaCellFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
   /**
    * Find the first FormulaCell.
    * Read more here: https://gassma.io/en/docs/reference/crud/read/findFirst
@@ -4293,7 +4313,7 @@ export declare class GassmaGassmaFormulaCellController<GO extends GassmaGassmaFo
    *   }
    * })
    */
-  findFirstOrThrow<T extends GassmaGassmaFormulaCellFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "FormulaCell">>>(findData: T & Gassma.Subset<T, GassmaGassmaFormulaCellFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "FormulaCell">>>): GassmaGassmaFormulaCellFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  findFirstOrThrow<T extends GassmaGassmaFormulaCellFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "FormulaCell">>>(findData: T & Gassma.Subset<T, GassmaGassmaFormulaCellFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "FormulaCell">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaFormulaCellFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
   /**
    * Find the first FormulaCell or throw `NotFoundError` if no FormulaCells exist.
    * Read more here: https://gassma.io/en/docs/reference/crud/read/findFirstOrThrow
@@ -4318,7 +4338,7 @@ export declare class GassmaGassmaFormulaCellController<GO extends GassmaGassmaFo
    * const formulaCellWithIdOnly = gassma.FormulaCell.findMany({ select: { id: true } })
    * 
    */
-  findMany<T extends GassmaGassmaFormulaCellFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "FormulaCell">>>(findData: T & Gassma.Subset<T, GassmaGassmaFormulaCellFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "FormulaCell">>>): GassmaGassmaFormulaCellFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  findMany<T extends GassmaGassmaFormulaCellFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "FormulaCell">>>(findData: T & Gassma.Subset<T, GassmaGassmaFormulaCellFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "FormulaCell">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaFormulaCellFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
   /**
    * Find all FormulaCells.
    * Read more here: https://gassma.io/en/docs/reference/crud/read/findMany
@@ -4343,7 +4363,7 @@ export declare class GassmaGassmaFormulaCellController<GO extends GassmaGassmaFo
    * })
    * 
    */
-  update<T extends GassmaGassmaFormulaCellUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "FormulaCell">>>(updateData: T & Gassma.Subset<T, GassmaGassmaFormulaCellUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "FormulaCell">>>): GassmaGassmaFormulaCellFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  update<T extends GassmaGassmaFormulaCellUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "FormulaCell">>>(updateData: T & Gassma.Subset<T, GassmaGassmaFormulaCellUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "FormulaCell">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaFormulaCellFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
   /**
    * Update zero or more FormulaCells.
    * Note, that providing `undefined` is treated as the value not being there.
@@ -4390,7 +4410,7 @@ export declare class GassmaGassmaFormulaCellController<GO extends GassmaGassmaFo
    * })
    * 
    */
-  updateManyAndReturn<T extends GassmaGassmaFormulaCellUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "FormulaCell">>>(updateData: T & Gassma.Subset<T, GassmaGassmaFormulaCellUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "FormulaCell">>>): GassmaGassmaFormulaCellFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  updateManyAndReturn<T extends GassmaGassmaFormulaCellUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "FormulaCell">>>(updateData: T & Gassma.Subset<T, GassmaGassmaFormulaCellUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "FormulaCell">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaFormulaCellFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
   /**
    * Create or update one FormulaCell.
    * Read more here: https://gassma.io/en/docs/reference/crud/update/upsert
@@ -4409,7 +4429,7 @@ export declare class GassmaGassmaFormulaCellController<GO extends GassmaGassmaFo
    *   }
    * })
    */
-  upsert<T extends GassmaGassmaFormulaCellUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "FormulaCell">>>(upsertData: T & Gassma.Subset<T, GassmaGassmaFormulaCellUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "FormulaCell">>>): GassmaGassmaFormulaCellFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  upsert<T extends GassmaGassmaFormulaCellUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "FormulaCell">>>(upsertData: T & Gassma.Subset<T, GassmaGassmaFormulaCellUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "FormulaCell">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaFormulaCellFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
   /**
    * Delete a FormulaCell.
    * Read more here: https://gassma.io/en/docs/reference/crud/delete/delete
@@ -4423,7 +4443,7 @@ export declare class GassmaGassmaFormulaCellController<GO extends GassmaGassmaFo
    * })
    * 
    */
-  delete<T extends GassmaGassmaFormulaCellDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "FormulaCell">>>(deleteData: T & Gassma.Subset<T, GassmaGassmaFormulaCellDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "FormulaCell">>>): GassmaGassmaFormulaCellFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  delete<T extends GassmaGassmaFormulaCellDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "FormulaCell">>>(deleteData: T & Gassma.Subset<T, GassmaGassmaFormulaCellDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "FormulaCell">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaFormulaCellFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
   /**
    * Delete zero or more FormulaCells.
    * Read more here: https://gassma.io/en/docs/reference/crud/delete/deleteMany
@@ -4498,7 +4518,7 @@ export declare class GassmaGassmaFormulaCellController<GO extends GassmaGassmaFo
    * })
    * 
    */
-  groupBy<T extends GassmaGassmaFormulaCellGroupByData>(groupByData: T & Gassma.Subset<T, GassmaGassmaFormulaCellGroupByData>): GassmaGassmaFormulaCellGroupByResult<T>[];
+  groupBy<T extends GassmaGassmaFormulaCellGroupByData>(groupByData: T & Gassma.Subset<T, GassmaGassmaFormulaCellGroupByData> & Gassma.GroupByPaginationCheck<T, GassmaGassmaFormulaCellGroupByData> & Gassma.GroupByOrderByFieldCheck<T>): GassmaGassmaFormulaCellGroupByResult<T>[];
   /**
    * Get the value the next `create` will issue for an autoincrement field of FormulaCell.
    * FormulaCell has no autoincrement field, so this cannot be called.
@@ -4577,7 +4597,7 @@ export declare class GassmaGassmaNotificationController<GO extends GassmaGassmaN
    * })
    * 
    */
-  createManyAndReturn<T extends GassmaGassmaNotificationCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Notification">>>(createdData: T & Gassma.Subset<T, GassmaGassmaNotificationCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Notification">>>): GassmaGassmaNotificationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  createManyAndReturn<T extends GassmaGassmaNotificationCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Notification">>>(createdData: T & Gassma.Subset<T, GassmaGassmaNotificationCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Notification">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaNotificationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
   /**
    * Create a Notification.
    * Read more here: https://gassma.io/en/docs/reference/crud/create/create
@@ -4591,7 +4611,7 @@ export declare class GassmaGassmaNotificationController<GO extends GassmaGassmaN
    * })
    * 
    */
-  create<T extends GassmaGassmaNotificationCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "Notification">>>(createdData: T & Gassma.Subset<T, GassmaGassmaNotificationCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "Notification">>>): GassmaGassmaNotificationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  create<T extends GassmaGassmaNotificationCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "Notification">>>(createdData: T & Gassma.Subset<T, GassmaGassmaNotificationCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "Notification">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaNotificationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
   /**
    * Find the first Notification that matches the filter.
    * Note, that providing `undefined` is treated as the value not being there.
@@ -4605,7 +4625,7 @@ export declare class GassmaGassmaNotificationController<GO extends GassmaGassmaN
    *   }
    * })
    */
-  findFirst<T extends GassmaGassmaNotificationFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Notification">>>(findData: T & Gassma.Subset<T, GassmaGassmaNotificationFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Notification">>>): GassmaGassmaNotificationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  findFirst<T extends GassmaGassmaNotificationFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Notification">>>(findData: T & Gassma.Subset<T, GassmaGassmaNotificationFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Notification">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaNotificationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
   /**
    * Find the first Notification.
    * Read more here: https://gassma.io/en/docs/reference/crud/read/findFirst
@@ -4628,7 +4648,7 @@ export declare class GassmaGassmaNotificationController<GO extends GassmaGassmaN
    *   }
    * })
    */
-  findFirstOrThrow<T extends GassmaGassmaNotificationFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Notification">>>(findData: T & Gassma.Subset<T, GassmaGassmaNotificationFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Notification">>>): GassmaGassmaNotificationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  findFirstOrThrow<T extends GassmaGassmaNotificationFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Notification">>>(findData: T & Gassma.Subset<T, GassmaGassmaNotificationFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Notification">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaNotificationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
   /**
    * Find the first Notification or throw `NotFoundError` if no Notifications exist.
    * Read more here: https://gassma.io/en/docs/reference/crud/read/findFirstOrThrow
@@ -4653,7 +4673,7 @@ export declare class GassmaGassmaNotificationController<GO extends GassmaGassmaN
    * const notificationWithIdOnly = gassma.Notification.findMany({ select: { id: true } })
    * 
    */
-  findMany<T extends GassmaGassmaNotificationFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "Notification">>>(findData: T & Gassma.Subset<T, GassmaGassmaNotificationFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "Notification">>>): GassmaGassmaNotificationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  findMany<T extends GassmaGassmaNotificationFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "Notification">>>(findData: T & Gassma.Subset<T, GassmaGassmaNotificationFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "Notification">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaNotificationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
   /**
    * Find all Notifications.
    * Read more here: https://gassma.io/en/docs/reference/crud/read/findMany
@@ -4678,7 +4698,7 @@ export declare class GassmaGassmaNotificationController<GO extends GassmaGassmaN
    * })
    * 
    */
-  update<T extends GassmaGassmaNotificationUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Notification">>>(updateData: T & Gassma.Subset<T, GassmaGassmaNotificationUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Notification">>>): GassmaGassmaNotificationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  update<T extends GassmaGassmaNotificationUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Notification">>>(updateData: T & Gassma.Subset<T, GassmaGassmaNotificationUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Notification">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaNotificationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
   /**
    * Update zero or more Notifications.
    * Note, that providing `undefined` is treated as the value not being there.
@@ -4725,7 +4745,7 @@ export declare class GassmaGassmaNotificationController<GO extends GassmaGassmaN
    * })
    * 
    */
-  updateManyAndReturn<T extends GassmaGassmaNotificationUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Notification">>>(updateData: T & Gassma.Subset<T, GassmaGassmaNotificationUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Notification">>>): GassmaGassmaNotificationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  updateManyAndReturn<T extends GassmaGassmaNotificationUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Notification">>>(updateData: T & Gassma.Subset<T, GassmaGassmaNotificationUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Notification">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaNotificationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
   /**
    * Create or update one Notification.
    * Read more here: https://gassma.io/en/docs/reference/crud/update/upsert
@@ -4744,7 +4764,7 @@ export declare class GassmaGassmaNotificationController<GO extends GassmaGassmaN
    *   }
    * })
    */
-  upsert<T extends GassmaGassmaNotificationUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Notification">>>(upsertData: T & Gassma.Subset<T, GassmaGassmaNotificationUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Notification">>>): GassmaGassmaNotificationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  upsert<T extends GassmaGassmaNotificationUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Notification">>>(upsertData: T & Gassma.Subset<T, GassmaGassmaNotificationUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Notification">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaNotificationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
   /**
    * Delete a Notification.
    * Read more here: https://gassma.io/en/docs/reference/crud/delete/delete
@@ -4758,7 +4778,7 @@ export declare class GassmaGassmaNotificationController<GO extends GassmaGassmaN
    * })
    * 
    */
-  delete<T extends GassmaGassmaNotificationDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Notification">>>(deleteData: T & Gassma.Subset<T, GassmaGassmaNotificationDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Notification">>>): GassmaGassmaNotificationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  delete<T extends GassmaGassmaNotificationDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Notification">>>(deleteData: T & Gassma.Subset<T, GassmaGassmaNotificationDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Notification">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaNotificationFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
   /**
    * Delete zero or more Notifications.
    * Read more here: https://gassma.io/en/docs/reference/crud/delete/deleteMany
@@ -4833,7 +4853,7 @@ export declare class GassmaGassmaNotificationController<GO extends GassmaGassmaN
    * })
    * 
    */
-  groupBy<T extends GassmaGassmaNotificationGroupByData>(groupByData: T & Gassma.Subset<T, GassmaGassmaNotificationGroupByData>): GassmaGassmaNotificationGroupByResult<T>[];
+  groupBy<T extends GassmaGassmaNotificationGroupByData>(groupByData: T & Gassma.Subset<T, GassmaGassmaNotificationGroupByData> & Gassma.GroupByPaginationCheck<T, GassmaGassmaNotificationGroupByData> & Gassma.GroupByOrderByFieldCheck<T>): GassmaGassmaNotificationGroupByResult<T>[];
   /**
    * Get the value the next `create` will issue for an autoincrement field of Notification.
    * Reading the counter is allowed inside `$transaction`.
@@ -4928,7 +4948,7 @@ export declare class GassmaGassmaOffsetNoteController<GO extends GassmaGassmaOff
    * })
    * 
    */
-  createManyAndReturn<T extends GassmaGassmaOffsetNoteCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "OffsetNote">>>(createdData: T & Gassma.Subset<T, GassmaGassmaOffsetNoteCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "OffsetNote">>>): GassmaGassmaOffsetNoteFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  createManyAndReturn<T extends GassmaGassmaOffsetNoteCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "OffsetNote">>>(createdData: T & Gassma.Subset<T, GassmaGassmaOffsetNoteCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "OffsetNote">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaOffsetNoteFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
   /**
    * Create a OffsetNote.
    * Read more here: https://gassma.io/en/docs/reference/crud/create/create
@@ -4942,7 +4962,7 @@ export declare class GassmaGassmaOffsetNoteController<GO extends GassmaGassmaOff
    * })
    * 
    */
-  create<T extends GassmaGassmaOffsetNoteCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "OffsetNote">>>(createdData: T & Gassma.Subset<T, GassmaGassmaOffsetNoteCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "OffsetNote">>>): GassmaGassmaOffsetNoteFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  create<T extends GassmaGassmaOffsetNoteCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "OffsetNote">>>(createdData: T & Gassma.Subset<T, GassmaGassmaOffsetNoteCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "OffsetNote">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaOffsetNoteFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
   /**
    * Find the first OffsetNote that matches the filter.
    * Note, that providing `undefined` is treated as the value not being there.
@@ -4956,7 +4976,7 @@ export declare class GassmaGassmaOffsetNoteController<GO extends GassmaGassmaOff
    *   }
    * })
    */
-  findFirst<T extends GassmaGassmaOffsetNoteFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "OffsetNote">>>(findData: T & Gassma.Subset<T, GassmaGassmaOffsetNoteFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "OffsetNote">>>): GassmaGassmaOffsetNoteFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  findFirst<T extends GassmaGassmaOffsetNoteFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "OffsetNote">>>(findData: T & Gassma.Subset<T, GassmaGassmaOffsetNoteFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "OffsetNote">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaOffsetNoteFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
   /**
    * Find the first OffsetNote.
    * Read more here: https://gassma.io/en/docs/reference/crud/read/findFirst
@@ -4979,7 +4999,7 @@ export declare class GassmaGassmaOffsetNoteController<GO extends GassmaGassmaOff
    *   }
    * })
    */
-  findFirstOrThrow<T extends GassmaGassmaOffsetNoteFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "OffsetNote">>>(findData: T & Gassma.Subset<T, GassmaGassmaOffsetNoteFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "OffsetNote">>>): GassmaGassmaOffsetNoteFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  findFirstOrThrow<T extends GassmaGassmaOffsetNoteFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "OffsetNote">>>(findData: T & Gassma.Subset<T, GassmaGassmaOffsetNoteFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "OffsetNote">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaOffsetNoteFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
   /**
    * Find the first OffsetNote or throw `NotFoundError` if no OffsetNotes exist.
    * Read more here: https://gassma.io/en/docs/reference/crud/read/findFirstOrThrow
@@ -5004,7 +5024,7 @@ export declare class GassmaGassmaOffsetNoteController<GO extends GassmaGassmaOff
    * const offsetNoteWithIdOnly = gassma.OffsetNote.findMany({ select: { id: true } })
    * 
    */
-  findMany<T extends GassmaGassmaOffsetNoteFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "OffsetNote">>>(findData: T & Gassma.Subset<T, GassmaGassmaOffsetNoteFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "OffsetNote">>>): GassmaGassmaOffsetNoteFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  findMany<T extends GassmaGassmaOffsetNoteFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "OffsetNote">>>(findData: T & Gassma.Subset<T, GassmaGassmaOffsetNoteFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "OffsetNote">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaOffsetNoteFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
   /**
    * Find all OffsetNotes.
    * Read more here: https://gassma.io/en/docs/reference/crud/read/findMany
@@ -5029,7 +5049,7 @@ export declare class GassmaGassmaOffsetNoteController<GO extends GassmaGassmaOff
    * })
    * 
    */
-  update<T extends GassmaGassmaOffsetNoteUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "OffsetNote">>>(updateData: T & Gassma.Subset<T, GassmaGassmaOffsetNoteUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "OffsetNote">>>): GassmaGassmaOffsetNoteFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  update<T extends GassmaGassmaOffsetNoteUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "OffsetNote">>>(updateData: T & Gassma.Subset<T, GassmaGassmaOffsetNoteUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "OffsetNote">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaOffsetNoteFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
   /**
    * Update zero or more OffsetNotes.
    * Note, that providing `undefined` is treated as the value not being there.
@@ -5076,7 +5096,7 @@ export declare class GassmaGassmaOffsetNoteController<GO extends GassmaGassmaOff
    * })
    * 
    */
-  updateManyAndReturn<T extends GassmaGassmaOffsetNoteUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "OffsetNote">>>(updateData: T & Gassma.Subset<T, GassmaGassmaOffsetNoteUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "OffsetNote">>>): GassmaGassmaOffsetNoteFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  updateManyAndReturn<T extends GassmaGassmaOffsetNoteUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "OffsetNote">>>(updateData: T & Gassma.Subset<T, GassmaGassmaOffsetNoteUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "OffsetNote">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaOffsetNoteFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
   /**
    * Create or update one OffsetNote.
    * Read more here: https://gassma.io/en/docs/reference/crud/update/upsert
@@ -5095,7 +5115,7 @@ export declare class GassmaGassmaOffsetNoteController<GO extends GassmaGassmaOff
    *   }
    * })
    */
-  upsert<T extends GassmaGassmaOffsetNoteUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "OffsetNote">>>(upsertData: T & Gassma.Subset<T, GassmaGassmaOffsetNoteUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "OffsetNote">>>): GassmaGassmaOffsetNoteFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  upsert<T extends GassmaGassmaOffsetNoteUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "OffsetNote">>>(upsertData: T & Gassma.Subset<T, GassmaGassmaOffsetNoteUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "OffsetNote">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaOffsetNoteFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
   /**
    * Delete a OffsetNote.
    * Read more here: https://gassma.io/en/docs/reference/crud/delete/delete
@@ -5109,7 +5129,7 @@ export declare class GassmaGassmaOffsetNoteController<GO extends GassmaGassmaOff
    * })
    * 
    */
-  delete<T extends GassmaGassmaOffsetNoteDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "OffsetNote">>>(deleteData: T & Gassma.Subset<T, GassmaGassmaOffsetNoteDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "OffsetNote">>>): GassmaGassmaOffsetNoteFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  delete<T extends GassmaGassmaOffsetNoteDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "OffsetNote">>>(deleteData: T & Gassma.Subset<T, GassmaGassmaOffsetNoteDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "OffsetNote">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaOffsetNoteFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
   /**
    * Delete zero or more OffsetNotes.
    * Read more here: https://gassma.io/en/docs/reference/crud/delete/deleteMany
@@ -5184,7 +5204,7 @@ export declare class GassmaGassmaOffsetNoteController<GO extends GassmaGassmaOff
    * })
    * 
    */
-  groupBy<T extends GassmaGassmaOffsetNoteGroupByData>(groupByData: T & Gassma.Subset<T, GassmaGassmaOffsetNoteGroupByData>): GassmaGassmaOffsetNoteGroupByResult<T>[];
+  groupBy<T extends GassmaGassmaOffsetNoteGroupByData>(groupByData: T & Gassma.Subset<T, GassmaGassmaOffsetNoteGroupByData> & Gassma.GroupByPaginationCheck<T, GassmaGassmaOffsetNoteGroupByData> & Gassma.GroupByOrderByFieldCheck<T>): GassmaGassmaOffsetNoteGroupByResult<T>[];
   /**
    * Get the value the next `create` will issue for an autoincrement field of OffsetNote.
    * OffsetNote has no autoincrement field, so this cannot be called.
@@ -5263,7 +5283,7 @@ export declare class GassmaGassmaUserController<GO extends GassmaGassmaUserOmit 
    * })
    * 
    */
-  createManyAndReturn<T extends GassmaGassmaUserCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "User">>>(createdData: T & Gassma.Subset<T, GassmaGassmaUserCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "User">>>): GassmaGassmaUserFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  createManyAndReturn<T extends GassmaGassmaUserCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "User">>>(createdData: T & Gassma.Subset<T, GassmaGassmaUserCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "User">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaUserFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
   /**
    * Create a User.
    * Read more here: https://gassma.io/en/docs/reference/crud/create/create
@@ -5277,7 +5297,7 @@ export declare class GassmaGassmaUserController<GO extends GassmaGassmaUserOmit 
    * })
    * 
    */
-  create<T extends GassmaGassmaUserCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "User">>>(createdData: T & Gassma.Subset<T, GassmaGassmaUserCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "User">>>): GassmaGassmaUserFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  create<T extends GassmaGassmaUserCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "User">>>(createdData: T & Gassma.Subset<T, GassmaGassmaUserCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "User">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaUserFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
   /**
    * Find the first User that matches the filter.
    * Note, that providing `undefined` is treated as the value not being there.
@@ -5291,7 +5311,7 @@ export declare class GassmaGassmaUserController<GO extends GassmaGassmaUserOmit 
    *   }
    * })
    */
-  findFirst<T extends GassmaGassmaUserFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "User">>>(findData: T & Gassma.Subset<T, GassmaGassmaUserFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "User">>>): GassmaGassmaUserFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  findFirst<T extends GassmaGassmaUserFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "User">>>(findData: T & Gassma.Subset<T, GassmaGassmaUserFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "User">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaUserFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
   /**
    * Find the first User.
    * Read more here: https://gassma.io/en/docs/reference/crud/read/findFirst
@@ -5314,7 +5334,7 @@ export declare class GassmaGassmaUserController<GO extends GassmaGassmaUserOmit 
    *   }
    * })
    */
-  findFirstOrThrow<T extends GassmaGassmaUserFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "User">>>(findData: T & Gassma.Subset<T, GassmaGassmaUserFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "User">>>): GassmaGassmaUserFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  findFirstOrThrow<T extends GassmaGassmaUserFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "User">>>(findData: T & Gassma.Subset<T, GassmaGassmaUserFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "User">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaUserFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
   /**
    * Find the first User or throw `NotFoundError` if no Users exist.
    * Read more here: https://gassma.io/en/docs/reference/crud/read/findFirstOrThrow
@@ -5339,7 +5359,7 @@ export declare class GassmaGassmaUserController<GO extends GassmaGassmaUserOmit 
    * const userWithIdOnly = gassma.User.findMany({ select: { id: true } })
    * 
    */
-  findMany<T extends GassmaGassmaUserFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "User">>>(findData: T & Gassma.Subset<T, GassmaGassmaUserFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "User">>>): GassmaGassmaUserFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  findMany<T extends GassmaGassmaUserFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "User">>>(findData: T & Gassma.Subset<T, GassmaGassmaUserFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "User">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaUserFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
   /**
    * Find all Users.
    * Read more here: https://gassma.io/en/docs/reference/crud/read/findMany
@@ -5364,7 +5384,7 @@ export declare class GassmaGassmaUserController<GO extends GassmaGassmaUserOmit 
    * })
    * 
    */
-  update<T extends GassmaGassmaUserUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "User">>>(updateData: T & Gassma.Subset<T, GassmaGassmaUserUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "User">>>): GassmaGassmaUserFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  update<T extends GassmaGassmaUserUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "User">>>(updateData: T & Gassma.Subset<T, GassmaGassmaUserUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "User">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaUserFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
   /**
    * Update zero or more Users.
    * Note, that providing `undefined` is treated as the value not being there.
@@ -5411,7 +5431,7 @@ export declare class GassmaGassmaUserController<GO extends GassmaGassmaUserOmit 
    * })
    * 
    */
-  updateManyAndReturn<T extends GassmaGassmaUserUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "User">>>(updateData: T & Gassma.Subset<T, GassmaGassmaUserUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "User">>>): GassmaGassmaUserFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  updateManyAndReturn<T extends GassmaGassmaUserUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "User">>>(updateData: T & Gassma.Subset<T, GassmaGassmaUserUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "User">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaUserFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
   /**
    * Create or update one User.
    * Read more here: https://gassma.io/en/docs/reference/crud/update/upsert
@@ -5430,7 +5450,7 @@ export declare class GassmaGassmaUserController<GO extends GassmaGassmaUserOmit 
    *   }
    * })
    */
-  upsert<T extends GassmaGassmaUserUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "User">>>(upsertData: T & Gassma.Subset<T, GassmaGassmaUserUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "User">>>): GassmaGassmaUserFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  upsert<T extends GassmaGassmaUserUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "User">>>(upsertData: T & Gassma.Subset<T, GassmaGassmaUserUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "User">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaUserFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
   /**
    * Delete a User.
    * Read more here: https://gassma.io/en/docs/reference/crud/delete/delete
@@ -5444,7 +5464,7 @@ export declare class GassmaGassmaUserController<GO extends GassmaGassmaUserOmit 
    * })
    * 
    */
-  delete<T extends GassmaGassmaUserDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "User">>>(deleteData: T & Gassma.Subset<T, GassmaGassmaUserDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "User">>>): GassmaGassmaUserFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  delete<T extends GassmaGassmaUserDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "User">>>(deleteData: T & Gassma.Subset<T, GassmaGassmaUserDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "User">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaUserFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
   /**
    * Delete zero or more Users.
    * Read more here: https://gassma.io/en/docs/reference/crud/delete/deleteMany
@@ -5519,7 +5539,7 @@ export declare class GassmaGassmaUserController<GO extends GassmaGassmaUserOmit 
    * })
    * 
    */
-  groupBy<T extends GassmaGassmaUserGroupByData>(groupByData: T & Gassma.Subset<T, GassmaGassmaUserGroupByData>): GassmaGassmaUserGroupByResult<T>[];
+  groupBy<T extends GassmaGassmaUserGroupByData>(groupByData: T & Gassma.Subset<T, GassmaGassmaUserGroupByData> & Gassma.GroupByPaginationCheck<T, GassmaGassmaUserGroupByData> & Gassma.GroupByOrderByFieldCheck<T>): GassmaGassmaUserGroupByResult<T>[];
   /**
    * Get the value the next `create` will issue for an autoincrement field of User.
    * Reading the counter is allowed inside `$transaction`.
@@ -5614,7 +5634,7 @@ export declare class GassmaGassmaProfileController<GO extends GassmaGassmaProfil
    * })
    * 
    */
-  createManyAndReturn<T extends GassmaGassmaProfileCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Profile">>>(createdData: T & Gassma.Subset<T, GassmaGassmaProfileCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Profile">>>): GassmaGassmaProfileFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  createManyAndReturn<T extends GassmaGassmaProfileCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Profile">>>(createdData: T & Gassma.Subset<T, GassmaGassmaProfileCreateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Profile">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaProfileFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
   /**
    * Create a Profile.
    * Read more here: https://gassma.io/en/docs/reference/crud/create/create
@@ -5628,7 +5648,7 @@ export declare class GassmaGassmaProfileController<GO extends GassmaGassmaProfil
    * })
    * 
    */
-  create<T extends GassmaGassmaProfileCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "Profile">>>(createdData: T & Gassma.Subset<T, GassmaGassmaProfileCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "Profile">>>): GassmaGassmaProfileFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  create<T extends GassmaGassmaProfileCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "Profile">>>(createdData: T & Gassma.Subset<T, GassmaGassmaProfileCreateData & Gassma.ComputedArgs<Gassma.At<CMap, "Profile">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaProfileFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
   /**
    * Find the first Profile that matches the filter.
    * Note, that providing `undefined` is treated as the value not being there.
@@ -5642,7 +5662,7 @@ export declare class GassmaGassmaProfileController<GO extends GassmaGassmaProfil
    *   }
    * })
    */
-  findFirst<T extends GassmaGassmaProfileFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Profile">>>(findData: T & Gassma.Subset<T, GassmaGassmaProfileFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Profile">>>): GassmaGassmaProfileFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  findFirst<T extends GassmaGassmaProfileFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Profile">>>(findData: T & Gassma.Subset<T, GassmaGassmaProfileFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Profile">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaProfileFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
   /**
    * Find the first Profile.
    * Read more here: https://gassma.io/en/docs/reference/crud/read/findFirst
@@ -5665,7 +5685,7 @@ export declare class GassmaGassmaProfileController<GO extends GassmaGassmaProfil
    *   }
    * })
    */
-  findFirstOrThrow<T extends GassmaGassmaProfileFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Profile">>>(findData: T & Gassma.Subset<T, GassmaGassmaProfileFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Profile">>>): GassmaGassmaProfileFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  findFirstOrThrow<T extends GassmaGassmaProfileFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Profile">>>(findData: T & Gassma.Subset<T, GassmaGassmaProfileFindFirstData & Gassma.ComputedArgs<Gassma.At<CMap, "Profile">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaProfileFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
   /**
    * Find the first Profile or throw `NotFoundError` if no Profiles exist.
    * Read more here: https://gassma.io/en/docs/reference/crud/read/findFirstOrThrow
@@ -5690,7 +5710,7 @@ export declare class GassmaGassmaProfileController<GO extends GassmaGassmaProfil
    * const profileWithIdOnly = gassma.Profile.findMany({ select: { id: true } })
    * 
    */
-  findMany<T extends GassmaGassmaProfileFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "Profile">>>(findData: T & Gassma.Subset<T, GassmaGassmaProfileFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "Profile">>>): GassmaGassmaProfileFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  findMany<T extends GassmaGassmaProfileFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "Profile">>>(findData: T & Gassma.Subset<T, GassmaGassmaProfileFindManyData & Gassma.ComputedArgs<Gassma.At<CMap, "Profile">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaProfileFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
   /**
    * Find all Profiles.
    * Read more here: https://gassma.io/en/docs/reference/crud/read/findMany
@@ -5715,7 +5735,7 @@ export declare class GassmaGassmaProfileController<GO extends GassmaGassmaProfil
    * })
    * 
    */
-  update<T extends GassmaGassmaProfileUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Profile">>>(updateData: T & Gassma.Subset<T, GassmaGassmaProfileUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Profile">>>): GassmaGassmaProfileFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  update<T extends GassmaGassmaProfileUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Profile">>>(updateData: T & Gassma.Subset<T, GassmaGassmaProfileUpdateSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Profile">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaProfileFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
   /**
    * Update zero or more Profiles.
    * Note, that providing `undefined` is treated as the value not being there.
@@ -5762,7 +5782,7 @@ export declare class GassmaGassmaProfileController<GO extends GassmaGassmaProfil
    * })
    * 
    */
-  updateManyAndReturn<T extends GassmaGassmaProfileUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Profile">>>(updateData: T & Gassma.Subset<T, GassmaGassmaProfileUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Profile">>>): GassmaGassmaProfileFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
+  updateManyAndReturn<T extends GassmaGassmaProfileUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Profile">>>(updateData: T & Gassma.Subset<T, GassmaGassmaProfileUpdateManyAndReturnData & Gassma.ComputedArgs<Gassma.At<CMap, "Profile">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaProfileFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>[];
   /**
    * Create or update one Profile.
    * Read more here: https://gassma.io/en/docs/reference/crud/update/upsert
@@ -5781,7 +5801,7 @@ export declare class GassmaGassmaProfileController<GO extends GassmaGassmaProfil
    *   }
    * })
    */
-  upsert<T extends GassmaGassmaProfileUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Profile">>>(upsertData: T & Gassma.Subset<T, GassmaGassmaProfileUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Profile">>>): GassmaGassmaProfileFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
+  upsert<T extends GassmaGassmaProfileUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Profile">>>(upsertData: T & Gassma.Subset<T, GassmaGassmaProfileUpsertSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Profile">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaProfileFindResult<T["select"], T["include"], T["omit"], GO, O, CMap>;
   /**
    * Delete a Profile.
    * Read more here: https://gassma.io/en/docs/reference/crud/delete/delete
@@ -5795,7 +5815,7 @@ export declare class GassmaGassmaProfileController<GO extends GassmaGassmaProfil
    * })
    * 
    */
-  delete<T extends GassmaGassmaProfileDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Profile">>>(deleteData: T & Gassma.Subset<T, GassmaGassmaProfileDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Profile">>>): GassmaGassmaProfileFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
+  delete<T extends GassmaGassmaProfileDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Profile">>>(deleteData: T & Gassma.Subset<T, GassmaGassmaProfileDeleteSingleData & Gassma.ComputedArgs<Gassma.At<CMap, "Profile">>> & Gassma.IncludeSelectCheck<T>): GassmaGassmaProfileFindResult<T["select"], T["include"], T["omit"], GO, O, CMap> | null;
   /**
    * Delete zero or more Profiles.
    * Read more here: https://gassma.io/en/docs/reference/crud/delete/deleteMany
@@ -5870,7 +5890,7 @@ export declare class GassmaGassmaProfileController<GO extends GassmaGassmaProfil
    * })
    * 
    */
-  groupBy<T extends GassmaGassmaProfileGroupByData>(groupByData: T & Gassma.Subset<T, GassmaGassmaProfileGroupByData>): GassmaGassmaProfileGroupByResult<T>[];
+  groupBy<T extends GassmaGassmaProfileGroupByData>(groupByData: T & Gassma.Subset<T, GassmaGassmaProfileGroupByData> & Gassma.GroupByPaginationCheck<T, GassmaGassmaProfileGroupByData> & Gassma.GroupByOrderByFieldCheck<T>): GassmaGassmaProfileGroupByResult<T>[];
   /**
    * Get the value the next `create` will issue for an autoincrement field of Profile.
    * Reading the counter is allowed inside `$transaction`.
