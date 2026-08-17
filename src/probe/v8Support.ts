@@ -1,6 +1,11 @@
 // GAS の V8 が何をサポートしているかを実機で測る。gassma とは無関係の環境調査用。
 // 構文は eval 越しに、API は名前引きで判定する。ビルド時の変換や tsconfig の lib に
 // 結果が左右されると、素の実行環境の能力を測ったことにならないため。
+//
+// ⚠️ eval が測るのは実行時パーサで、GAS がファイルを読むときのパーサはこれより古い。
+// 実測: eval("1_000") は通るが、ファイルに直接 Logger.log(10_000) と書くと動かない。
+// つまり「構文が OK」= 「バンドルに書ける」ではない。esbuild の target を決める根拠に
+// この節を使わないこと。
 
 type Probe = { es: string; name: string; check: () => boolean };
 
@@ -82,7 +87,7 @@ const runProbes = (title: string, probes: Probe[]): string[] => {
 function probeV8Support() {
   const lines = [
     "GAS V8 サポート状況",
-    ...runProbes("構文 (eval で判定)", syntaxProbes),
+    ...runProbes("構文 (eval = 実行時パーサ。ファイルに直接書けるかは別)", syntaxProbes),
     ...runProbes("API (名前引きで判定)", apiProbes),
   ];
   Logger.log(lines.join("\n"));
